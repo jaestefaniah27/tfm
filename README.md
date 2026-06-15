@@ -27,19 +27,16 @@ tfm/
 │   └── fsbl_cdhs/                # FSBL modificado (First Stage Boot Loader)
 │
 ├── 03_software_rtems/
-│   ├── configurable_transceiver/          # BSP del transceptor (driver + app simple)
-│   ├── configurable_transceiver_inter/    # Versión inter-comunicaciones (con hardware/)
-│   ├── configurable_transceiver_library/  # Versión librería
-│   ├── configurable_transceiver_piton_app/# Variante para PITON
-│   ├── test_cdhs/                         # App completa CDHS (CAN + SPI + RS-422)
-│   ├── test_2_cdhs_setup/                 # Setup CDHS v2 (con scripts Vivado integrados)
-│   ├── spi_test/                          # Test SPI con ADC ADS7950
+│   ├── configurable_transceiver_inter/  # BSP definitivo del transceptor (con hardware/)
+│   ├── test_cdhs/                       # App completa CDHS (CAN + SPI + RS-422)
+│   ├── test_2_cdhs_setup/               # Setup CDHS v2 (con scripts Vivado integrados)
+│   ├── spi_test/                        # Test SPI con ADC ADS7950
 │   └── examples/
-│       ├── and_gate/                      # Ejemplo básico PS-PL (AND gate via AXI GPIO)
-│       └── serial_example_1/              # Ejemplo comunicación serie
+│       ├── and_gate/                    # Ejemplo básico PS-PL (AND gate via AXI GPIO)
+│       └── serial_example_1/            # Ejemplo comunicación serie
 │
 └── 04_tools/
-    └── serial_gui.py                      # GUI Python para monitorizar el puerto serie
+    └── serial_gui.py                    # GUI Python para monitorizar el puerto serie
 ```
 
 ---
@@ -102,17 +99,8 @@ Todas las aplicaciones usan **Waf** como sistema de build y el framework `rtems_
 > ./make_img.sh
 > ```
 
-#### `configurable_transceiver/`
-BSP mínimo del transceptor. Contiene el driver C (`configurable_transceiver.c`) y el init de RTEMS. Punto de partida para cualquier aplicación basada en el IP de transceptor.
-
 #### `configurable_transceiver_inter/`
-Versión inter-comunicaciones del BSP. Añade `main.c` con lógica de RX/TX, `transceiver.c/h` (driver reutilizable), GUI serie (`serial_gui.py`) y la carpeta `hardware/` con el diseño Vivado de 4 transcriptores completo.
-
-#### `configurable_transceiver_library/`
-Versión librería del driver del transceptor. Misma API que `_inter` pero organizada como módulo reutilizable.
-
-#### `configurable_transceiver_piton_app/`
-Variante de la aplicación adaptada al interfaz PITON. Usa el driver del transceptor con un protocolo de capa superior específico.
+**BSP definitivo del transceptor serie configurable**. Contiene el driver `transceiver.c/h`, la aplicación principal con lógica RX/TX (`main.c`), la GUI serie (`serial_gui.py`) y la carpeta `hardware/` con el diseño Vivado completo (VHDL + scripts TCL para regenerar el proyecto con múltiples instancias de transceptor).
 
 #### `test_cdhs/`
 **Aplicación principal del CDHS**. Prueba de integración completa que ejercita:
@@ -132,7 +120,6 @@ Setup alternativo del CDHS v2. Incluye scripts TCL para recrear el proyecto Viva
 #### `spi_test/`
 Prueba del bus SPI con el ADC **ADS7950** de Texas Instruments.
 - `ads7950.c/h` — Driver del ADC.
-- `cadence_spi_low.c/h` — Driver de bajo nivel del controlador SPI Cadence (PS).
 - `main.c` — Aplicación de prueba de adquisición.
 
 #### `examples/and_gate/`
