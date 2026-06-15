@@ -35,7 +35,9 @@ tfm/
 │       ├── and_gate/                    # Ejemplo básico PS-PL (AND gate via AXI GPIO)
 │       └── serial_example_1/            # Ejemplo comunicación serie
 │
-└── 04_tools/
+└── 04_tools/                            # Scripts de desarrollo compartidos
+    ├── make_img.sh                      # Compilar app RTEMS y generar rtems.img
+    ├── automate_ymodem_update.py        # Cargar rtems.img (y BOOT.bin) en la SD vía YMODEM
     └── serial_gui.py                    # GUI Python para monitorizar el puerto serie
 ```
 
@@ -90,13 +92,13 @@ Código fuente del FSBL (*First Stage Boot Loader*) de Xilinx, versión `fsbl_fu
 
 ### `03_software_rtems/` — Aplicaciones RTEMS
 
-Todas las aplicaciones usan **Waf** como sistema de build y el framework `rtems_waf` (submódulo Git, no incluido en este repo). El script `make_img.sh` automatiza la compilación y generación de la imagen U-Boot.
+Todas las aplicaciones usan **Waf** como sistema de build y el framework `rtems_waf` (submódulo Git, no incluido en este repo). El script `make_img.sh` de `04_tools/` automatiza la compilación y generación de la imagen U-Boot.
 
-> **Dependencias comunes** (no incluidas):
+> **Dependencias comunes** (no incluidas en este repo):
 > ```bash
 > git submodule update --init --recursive   # clona rtems_waf y device-tree-xlnx
 > export RTEMS_PREFIX=$HOME/quick-start/rtems/7
-> ./make_img.sh
+> ../../04_tools/make_img.sh                # desde el directorio de la app
 > ```
 
 #### `configurable_transceiver_inter/`
@@ -130,10 +132,54 @@ Ejemplo mínimo de comunicación serie desde RTEMS.
 
 ---
 
-### `04_tools/`
+### `04_tools/` — Scripts de desarrollo compartidos
+
+Estos scripts son herramientas de apoyo al flujo de desarrollo. Son comunes a todas las aplicaciones RTEMS y están centralizados aquí para evitar duplicidades.
+
+#### `make_img.sh`
+Compila la aplicación RTEMS con Waf y genera el archivo `rtems.img` listo para cargar en la SD.
+
+Detecta automáticamente el nombre de la aplicación a partir del directorio en el que se ejecuta, por lo que funciona para cualquier app sin modificarlo.
+
+```bash
+# Uso (desde el directorio de cualquier app RTEMS):
+export RTEMS_PREFIX=$HOME/quick-start/rtems/7   # si no está en el PATH
+cd tfm/03_software_rtems/test_cdhs
+../../04_tools/make_img.sh
+# → genera rtems.img en el directorio actual
+```
+
+El script:
+1. Localiza el toolchain `aarch64-rtems7-*` en `RTEMS_PREFIX`.
+2. Inicializa submódulos (`rtems_waf`) si no existen.
+3. Ejecuta `./waf` (y `./waf configure` automáticamente si es la primera vez).
+4. Convierte el `.exe` a binario plano con `objcopy`, lo comprime con gzip y genera la imagen U-Boot con `mkimage`.
+
+#### `automate_ymodem_update.py`
+Carga `rtems.img` en la tarjeta SD de la ZCU102 **sin sacar la SD del equipo**, enviándola por el puerto serie USB mediante el protocolo YMODEM y comandos de U-Boot.
+
+```bash
+# Uso básico (solo actualiza rtems.img):
+python3 04_tools/automate_ymodem_update.py
+
+# También actualizar el BOOT.bin (solo si cambió el hardware):
+python3 04_tools/automate_ymodem_update.py --boot ./BOOT.bin
+```
+
+El script:
+1. Abre el puerto serie (`/dev/ttyUSB0` a 115200), interrumpe el autoboot de U-Boot y manda `mmcinit`.
+2. Envía el fichero por YMODEM (`sb`, paquete `lrzsz`) a la dirección de carga `loady`.
+3. Escribe en la partición FAT de la SD con `fatwrite`.
+4. Opcionalmente intenta un reset automático por JTAG vía XSDB antes de pedirte que pulses el botón físico.
+
+> Requiere: `python3`, `pyserial`, `lrzsz` (`apt install lrzsz`).
 
 #### `serial_gui.py`
-GUI Python para monitorizar y enviar datos por el puerto serie USB de la ZCU102. Útil durante el desarrollo para visualizar la salida de los transcriptores sin necesidad de un terminal externo.
+GUI Python para monitorizar y enviar datos por el puerto serie USB de la ZCU102. Útil para visualizar en tiempo real la salida de los transcriptores durante el desarrollo, sin necesitar un terminal externo.
+
+```bash
+python3 04_tools/serial_gui.py
+```
 
 ---
 
@@ -150,12 +196,13 @@ GUI Python para monitorizar y enviar datos por el puerto serie USB de la ZCU102.
        └─ Salida:  BOOT.bin
 
 3. Compilar app RTEMS
-   └─ cd tfm/03_software_rtems/test_cdhs && ./make_img.sh
+   └─ cd tfm/03_software_rtems/test_cdhs
+      ../../04_tools/make_img.sh
        └─ Salida: rtems.img
 
-4. Cargar en SD Card
-   └─ Copiar BOOT.bin + rtems.img a la raíz de la SD
-   └─ Arrancar ZCU102 en modo SD (jumper J15: 0-1)
+4. Cargar en SD Card (sin sacar la SD)
+   └─ python tfm/04_tools/automate_ymodem_update.py [--boot ./BOOT.bin]
+       └─ Envía rtems.img por YMODEM a U-Boot y escribe en FAT
 
 5. Monitorizar
    └─ python tfm/04_tools/serial_gui.py  (o minicom/putty a 115200 8N1)
