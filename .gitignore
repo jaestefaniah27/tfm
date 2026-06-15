@@ -1,0 +1,50 @@
+# Binarios y artefactos de compilación
+*.bin
+*.bin.gz
+*.img
+*.bit
+*.xsa
+*.elf
+*.o
+*.a
+
+# Carpetas de build
+build/
+_ide/
+.Xil/
+.wsdata/
+*.backup.jou
+*.backup.log
+vivado.jou
+vivado.log
+*.str
+*.pb
+xvlog.pb
+
+# Vivado cache y archivos generados
+*.cache/
+*.runs/
+*.ip_user_files/
+*.sim/
+*.gen/
+*.hw/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# Submódulos de terceros (referenciar con git submodule)
+rtems_waf/
+device-tree-xlnx/
+
+# Ejecutable waf
+waf
+
+# Editor
+*.swp
+*~
+.vscode/
+.idea/
