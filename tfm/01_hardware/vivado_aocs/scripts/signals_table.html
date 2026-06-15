@@ -1,0 +1,299 @@
+<html>
+
+<head>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            font-family: Arial, sans-serif;
+        }
+
+        th,
+        td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+
+<body>
+    <table border="1" class="dataframe dataframe">
+        <thead>
+            <tr style="text-align: left;">
+                <th>Subsistema</th>
+                <th>Señal Lógica</th>
+                <th>Red (FMC HPC0)</th>
+                <th>Pin FMC (P1)</th>
+                <th>Pin Zynq MPSoC</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>RS1 (Serial J1)</td>
+                <td>TX</td>
+                <td>FMC_HPC0_LA20_N</td>
+                <td>G22</td>
+                <td>M13</td>
+            </tr>
+            <tr>
+                <td>RS1 (Serial J1)</td>
+                <td>RX</td>
+                <td>FMC_HPC0_LA20_P</td>
+                <td>G21</td>
+                <td>N13</td>
+            </tr>
+            <tr>
+                <td>RS1 (Serial J1)</td>
+                <td>DE</td>
+                <td>FMC_HPC0_LA19_P</td>
+                <td>H22</td>
+                <td>L13</td>
+            </tr>
+            <tr>
+                <td>MOT-PWM (Motor J2)</td>
+                <td>PWM_X_1</td>
+                <td>FMC_HPC0_LA17_CC_N</td>
+                <td>D21</td>
+                <td>N11</td>
+            </tr>
+            <tr>
+                <td>MOT-PWM (Motor J2)</td>
+                <td>PWM_X_2</td>
+                <td>FMC_HPC0_LA15_N</td>
+                <td>H20</td>
+                <td>Y9</td>
+            </tr>
+            <tr>
+                <td>MOT-PWM (Motor J2)</td>
+                <td>PWM_Y_1</td>
+                <td>FMC_HPC0_LA16_N</td>
+                <td>G19</td>
+                <td>AA12</td>
+            </tr>
+            <tr>
+                <td>MOT-PWM (Motor J2)</td>
+                <td>PWM_Y_2</td>
+                <td>FMC_HPC0_LA15_P</td>
+                <td>H19</td>
+                <td>Y10</td>
+            </tr>
+            <tr>
+                <td>MOT-PWM (Motor J2)</td>
+                <td>PWM_Z_1</td>
+                <td>FMC_HPC0_LA16_P</td>
+                <td>G18</td>
+                <td>Y12</td>
+            </tr>
+            <tr>
+                <td>MOT-PWM (Motor J2)</td>
+                <td>PWM_Z_2</td>
+                <td>FMC_HPC0_LA13_N</td>
+                <td>D18</td>
+                <td>AC8</td>
+            </tr>
+            <tr>
+                <td>RS3 (Serial J3)</td>
+                <td>TX</td>
+                <td>FMC_HPC0_LA11_N</td>
+                <td>H17</td>
+                <td>AB5</td>
+            </tr>
+            <tr>
+                <td>RS3 (Serial J3)</td>
+                <td>RX</td>
+                <td>FMC_HPC0_LA12_P</td>
+                <td>G15</td>
+                <td>W7</td>
+            </tr>
+            <tr>
+                <td>RS3 (Serial J3)</td>
+                <td>DE</td>
+                <td>FMC_HPC0_LA11_P</td>
+                <td>H16</td>
+                <td>AB6</td>
+            </tr>
+            <tr>
+                <td>RS4 (Serial J4)</td>
+                <td>TX</td>
+                <td>FMC_HPC0_LA09_P</td>
+                <td>D14</td>
+                <td>W2</td>
+            </tr>
+            <tr>
+                <td>RS4 (Serial J4)</td>
+                <td>RX</td>
+                <td>FMC_HPC0_LA08_N</td>
+                <td>G13</td>
+                <td>V3</td>
+            </tr>
+            <tr>
+                <td>RS4 (Serial J4)</td>
+                <td>DE</td>
+                <td>FMC_HPC0_LA07_N</td>
+                <td>H14</td>
+                <td>U4</td>
+            </tr>
+            <tr>
+                <td>RS5 (Serial J5)</td>
+                <td>TX</td>
+                <td>FMC_HPC0_LA07_P</td>
+                <td>H13</td>
+                <td>U5</td>
+            </tr>
+            <tr>
+                <td>RS5 (Serial J5)</td>
+                <td>RX</td>
+                <td>FMC_HPC0_LA05_P</td>
+                <td>D11</td>
+                <td>AB3</td>
+            </tr>
+            <tr>
+                <td>RS5 (Serial J5)</td>
+                <td>DE</td>
+                <td>FMC_HPC0_LA08_P</td>
+                <td>G12</td>
+                <td>V4</td>
+            </tr>
+            <tr>
+                <td>SPW1 (SpaceWire J6)</td>
+                <td>DIN_P</td>
+                <td>FMC_HPC0_LA02_P</td>
+                <td>H7</td>
+                <td>V2</td>
+            </tr>
+            <tr>
+                <td>SPW1 (SpaceWire J6)</td>
+                <td>DIN_N</td>
+                <td>FMC_HPC0_LA02_N</td>
+                <td>H8</td>
+                <td>V1</td>
+            </tr>
+            <tr>
+                <td>SPW1 (SpaceWire J6)</td>
+                <td>SIN_P</td>
+                <td>FMC_HPC0_LA04_P</td>
+                <td>H10</td>
+                <td>AA2</td>
+            </tr>
+            <tr>
+                <td>SPW1 (SpaceWire J6)</td>
+                <td>SIN_N</td>
+                <td>FMC_HPC0_LA04_N</td>
+                <td>H11</td>
+                <td>AA1</td>
+            </tr>
+            <tr>
+                <td>SPW1 (SpaceWire J6)</td>
+                <td>SOUT_P</td>
+                <td>FMC_HPC0_LA01_CC_P</td>
+                <td>D8</td>
+                <td>AB4</td>
+            </tr>
+            <tr>
+                <td>SPW1 (SpaceWire J6)</td>
+                <td>SOUT_N</td>
+                <td>FMC_HPC0_LA01_CC_N</td>
+                <td>D9</td>
+                <td>AC4</td>
+            </tr>
+            <tr>
+                <td>SPW1 (SpaceWire J6)</td>
+                <td>DOUT_P</td>
+                <td>FMC_HPC0_LA00_CC_P</td>
+                <td>G6</td>
+                <td>Y4</td>
+            </tr>
+            <tr>
+                <td>SPW1 (SpaceWire J6)</td>
+                <td>DOUT_N</td>
+                <td>FMC_HPC0_LA00_CC_N</td>
+                <td>G7</td>
+                <td>Y3</td>
+            </tr>
+            <tr>
+                <td>SPW2 (SpaceWire J7)</td>
+                <td>DIN_P</td>
+                <td>FMC_HPC0_LA21_P</td>
+                <td>H25</td>
+                <td>P12</td>
+            </tr>
+            <tr>
+                <td>SPW2 (SpaceWire J7)</td>
+                <td>DIN_N</td>
+                <td>FMC_HPC0_LA21_N</td>
+                <td>H26</td>
+                <td>N12</td>
+            </tr>
+            <tr>
+                <td>SPW2 (SpaceWire J7)</td>
+                <td>SIN_P</td>
+                <td>FMC_HPC0_LA24_P</td>
+                <td>H28</td>
+                <td>L12</td>
+            </tr>
+            <tr>
+                <td>SPW2 (SpaceWire J7)</td>
+                <td>SIN_N</td>
+                <td>FMC_HPC0_LA24_N</td>
+                <td>H29</td>
+                <td>K12</td>
+            </tr>
+            <tr>
+                <td>SPW2 (SpaceWire J7)</td>
+                <td>SOUT_P</td>
+                <td>FMC_HPC0_LA28_P</td>
+                <td>H31</td>
+                <td>T7</td>
+            </tr>
+            <tr>
+                <td>SPW2 (SpaceWire J7)</td>
+                <td>SOUT_N</td>
+                <td>FMC_HPC0_LA28_N</td>
+                <td>H32</td>
+                <td>T6</td>
+            </tr>
+            <tr>
+                <td>SPW2 (SpaceWire J7)</td>
+                <td>DOUT_P</td>
+                <td>FMC_HPC0_LA30_P</td>
+                <td>H34</td>
+                <td>V6</td>
+            </tr>
+            <tr>
+                <td>SPW2 (SpaceWire J7)</td>
+                <td>DOUT_N</td>
+                <td>FMC_HPC0_LA30_N</td>
+                <td>H35</td>
+                <td>U6</td>
+            </tr>
+            <tr>
+                <td>RS8 (Serial J8)</td>
+                <td>TX</td>
+                <td>FMC_HPC0_LA22_N</td>
+                <td>G25</td>
+                <td>M14</td>
+            </tr>
+            <tr>
+                <td>RS8 (Serial J8)</td>
+                <td>RX</td>
+                <td>FMC_HPC0_LA19_N</td>
+                <td>H23</td>
+                <td>K13</td>
+            </tr>
+            <tr>
+                <td>RS8 (Serial J8)</td>
+                <td>DE</td>
+                <td>FMC_HPC0_LA22_P</td>
+                <td>G24</td>
+                <td>M15</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+
+</html>
