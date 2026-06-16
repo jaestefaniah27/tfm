@@ -17,6 +17,7 @@ create_project -force $project_name $project_dir -part xczu9eg-ffvb1156-2-e
 
 # 2. Añadir fuentes VHDL y Constraints
 add_files [glob $vhdl_dir/*.vhd]
+add_files [glob ./src/*.vhd]
 add_files -fileset constrs_1 $shared_scripts/zcu102_constraints.xdc
 update_compile_order -fileset sources_1
 

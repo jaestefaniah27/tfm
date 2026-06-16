@@ -279,6 +279,8 @@ Se desarrolló un script de TCL (EXPLICAR TCL) que permitía generar y conectar 
 También se desarrolló otro script de TCL que regenera el proyecto entero con un número determinado de transceptores. (CITAR SCRIPT EN EL ANEXO)
 ## generación binario en vitis (ps)
 Una vez diseñada la lógica hardware en Vivado y exportado el hardware, se siguieron los pasos establecidos previamente para generar el binario BOOT.bin.
+
+El proceso manual de exportación del XSA, creación de la plataforma Vitis, compilación del FSBL y ensamblado del BOOT.BIN con `bootgen` resultó tedioso de repetir en cada iteración del diseño. Para automatizarlo, desarrollé el script `generate_boot.sh` (disponible en `tfm/04_tools/`), un wizard interactivo en Bash que encadena todos estos pasos de forma desatendida. El script ofrece tres puntos de entrada según el estado en que se encuentre el trabajo: partir del proyecto de Vivado y generar bitstream desde cero, partir de un proyecto con bitstream ya generado y solo exportar el XSA, o partir directamente de un XSA ya exportado. A partir de ahí invoca Vitis en modo script mediante su API Python para crear la plataforma y compilar el FSBL, y llama a `bootgen` para ensamblar el BOOT.BIN final con los componentes de arranque precompilados (PMUFW, BL31, U-Boot, DTB). Esto redujo el tiempo de iteración hardware→imagen de varios minutos de clicks a una sola ejecución de terminal.
 ## diseño driver serie en rtems (ps)
 Desarrollo de la librería C para el driver serie sobre RTEMS
 Motivación y contexto
@@ -447,6 +449,8 @@ Esta decisión responde a dos motivos concretos. Por un lado, el equipo de Indra
 ### Subsistema PWM (calentadores)
 
 Cuatro señales PWM de 1.8 V procedentes del FMC se elevan a 3.3 V mediante el adaptador de niveles **TXU0104PWR** para excitar los circuitos de control de calentadores externos. El nivel de salida de 3.3 V fue el requerido por Indra para esta interfaz. Las cuatro líneas adaptadas salen por J5.
+
+Para la validación de esta interfaz se diseñó un bloque VHDL autónomo, `PWMx4_auto_test`, sintetizado en la PL junto al resto del diseño de Vivado. El bloque genera cuatro señales PWM independientes con duty cycle del 50% a partir del reloj de 100 MHz de la FPGA: canal 0 a 10 kHz, canal 1 a 5 kHz, canal 2 a 1 kHz y canal 3 a 100 Hz. Al ser completamente autónomo no requiere ningún driver ni intervención de la PS, lo que permitió verificar el subsistema PWM de la placa con el mismo `BOOT.BIN` utilizado para las pruebas serie.
 
 ### Subsistema ADC (termistores)
 
@@ -646,7 +650,7 @@ Para poder probar la funcionalidad de la placa CDHS, faltaba añadir soporte fir
 La manera de preparar el entorno para probar esta placa fue la siguiente: se preparó el hardware en la PL para poder probar las líneas de RS422 y RS485, SPI, CAN y PWM, creando un proyecto en vivado con el script de tcl de regenerate_all con 3 transceivers serie, y añadiendo el bloque de control PWM. Además se configuró la PS para conectar SPI y CAN con el exterior:
 
 En la imagen se ve como en la parte de la izquierda, aparecen activadas las líneas de SPI 0, CAN 0 y CAN 1. Estas tres interfaces se configuraron como externas para que fueran a pines externos directamente conectados al conector FMC hacia la placa CDHS.
-Para controlar las líneas de PWM, se creó un circuito en Vivado que generaba 4 señales de PWM diferentes, desde dentro de la FPGA, para que salieran directamente al level shifter de la placa, sin necesidad de añadir ningún control por software en la PS.
+Para controlar las líneas de PWM se instanció el bloque `PWMx4_auto_test`, que genera desde la PL cuatro señales PWM a 10 kHz, 5 kHz, 1 kHz y 100 Hz con duty cycle del 50%, sin necesidad de ningún driver en la PS.
 se utilizó el mismo BOOT.bin para todas las pruebas de CDHS.
 Se utilizó la app de test en RTEMS de los drivers serial para probar el PWM y las líneas serie.
 Para probar el ADC ADS7950 de la placa CDHS, se desarrolló una pequeña aplicación de lectura SPI sobre RTEMS. Dado que el BSP de RTEMS 7 para ZCU102 no incluía en ese momento un driver SPI de alto nivel, se accedió directamente al controlador SPI Cadence integrado en el PS mediante mapeo de registros en memoria (MMIO), siguiendo el mapa de registros descrito en el Manual de Referencia Técnico del Zynq UltraScale+ (AMD/Xilinx, UG1085). El protocolo de comunicación con el ADC —formato de trama de 16 bits, selección de canal en Manual Mode y gestión de la latencia de conversión— se implementó conforme al datasheet del ADS7950 (Texas Instruments, SLAS605C).
@@ -787,7 +791,7 @@ ADS7950: CH0= 246  CH1=  43  CH2= 102  CH3=  22   ← de vuelta a 0V
 
 ## Validación PWM (calentadores CDHS y puentes en H AOCS)
 
-Las señales PWM generadas desde la FPGA se midieron con el osciloscopio sobre los conectores DS9 correspondientes, verificando la frecuencia y el ciclo de trabajo configurados.
+Las señales PWM generadas por el bloque `PWMx4_auto_test` se midieron con el osciloscopio sobre el conector J5 de la placa CDHS, verificando los cuatro canales: 10 kHz, 5 kHz, 1 kHz y 100 Hz, todos con duty cycle del 50%.
 
 Para la placa AOCS, el bloque VHDL de control de motores generó señales PWM alternando la dirección de giro cada pocos segundos (línea 1 activa con línea 2 a 0, y a continuación línea 1 a 0 con línea 2 activa), permitiendo verificar el control de puentes en H con una fuente de alimentación externa conectada a los bornes banana.
 
