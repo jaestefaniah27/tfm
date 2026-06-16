@@ -2,10 +2,10 @@
 # -------------------------------------------------------------------------
 set project_name "zynq_transceiver_system"
 set project_dir  "./vivado_proj"
-set src_dir      "./src"
-set script_dir   "./scripts"
+set vhdl_dir     "../../ip_transceiver_serie/vhdl"
+set shared_scripts "../../ip_transceiver_serie/scripts"
 
-# El número de canales a instanciar (13 físicos + 1 phantom si usas 14)
+# CDHS: 3 canales RS
 set num_transceivers 3
 
 puts "----------------------------------------------------------------"
@@ -16,8 +16,8 @@ puts "----------------------------------------------------------------"
 create_project -force $project_name $project_dir -part xczu9eg-ffvb1156-2-e
 
 # 2. Añadir fuentes VHDL y Constraints
-add_files [glob $src_dir/*.vhd]
-add_files -fileset constrs_1 $src_dir/zcu102_constraints.xdc
+add_files [glob $vhdl_dir/*.vhd]
+add_files -fileset constrs_1 $shared_scripts/zcu102_constraints.xdc
 update_compile_order -fileset sources_1
 
 # =========================================================================
@@ -59,7 +59,7 @@ set_property -dict [list \
 
 # 5. GENERAR TRANSCEPTORES
 puts "-> Llamando a new_generate_transceivers.tcl..."
-source $script_dir/new_generate_transceivers.tcl
+source $shared_scripts/new_generate_transceivers.tcl
 create_many_transceivers $num_transceivers "zynq_ultra_ps_e_0" "axi_smc"
 
 # =========================================================================
@@ -75,13 +75,12 @@ foreach pin_name $pins_to_check {
 }
 
 # =========================================================================
-# 6. VALIDACIÓN Y CREACIÓN DE WRAPPER (A prueba de Vivado 202X+)
+# 6. VALIDACIÓN Y CREACIÓN DE WRAPPER
 # =========================================================================
 puts "-> Validando Diseño y Creando Wrapper..."
 validate_bd_design
 save_bd_design
 
-# Obtener el archivo .bd de forma nativa en lugar de usar rutas relativas frágiles
 set bd_file [get_files system.bd]
 set wrapper_path [make_wrapper -fileset sources_1 -files $bd_file -top]
 add_files -norecurse -fileset sources_1 $wrapper_path
