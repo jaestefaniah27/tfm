@@ -38,7 +38,14 @@ DESARROLLO DE UNA PLATAFORMA DE COMUNICACIÓN CON PERIFÉRICOS SOBRE MPSoC DE AL
 JORGE ALEJANDRO ESTEFANÍA HIDALGO
 2026
 # RESUMEN
-Número máximo de palabras: 500…
+
+Este Trabajo de Fin de Máster presenta el desarrollo de una plataforma de comunicación con periféricos serie sobre el MPSoC Zynq UltraScale+ ZCU102, en el marco del proyecto LINCE (Línea de industrialización de cargas de pago y plataformas espaciales), una iniciativa del PERTE Aeroespacial liderada por Indra para el desarrollo de microsatélites de órbita baja.
+
+El trabajo abarca tres áreas complementarias. En primer lugar, se diseñó e implementó en VHDL un IP core de transceptor serie configurable para la lógica programable (PL) del MPSoC. Este transceptor soporta los estándares RS422 y RS485, y permite configurar en tiempo de ejecución parámetros como baudrate (de 9.600 a 4.000.000 baudios), paridad, número de bits de datos, bits de parada y orden de bit. El generador de baudrate se basa en un oscilador controlado numéricamente (NCO) de 32 bits capaz de reproducir un amplio rango de frecuencias con error inferior a 20 ppm para la mayoría de los valores de la tabla. En segundo lugar, se desarrolló en C un driver completo para el sistema operativo de tiempo real RTEMS que gestiona hasta 14 instancias del transceptor de forma simultánea. El driver implementa un modelo de interrupciones con ISR maestra y tareas worker por canal, buffers circulares de 4 KB para RX y TX, y una API pública de cinco funciones que abstrae completamente el mapa de registros hardware. En tercer lugar, se diseñaron y fabricaron dos tarjetas de circuito impreso para la validación del sistema: la placa CDHS, orientada al subsistema de gestión de datos y calentadores, con interfaces RS422/RS485, CAN, SPI y PWM; y la placa AOCS, orientada al control de actitud y órbita, con interfaces RS422/RS485, SpaceWire y PWM para control de motores. Ambas tarjetas se conectan a la ZCU102 mediante conector FMC HPC.
+
+La validación del sistema confirmó el correcto funcionamiento de los transceptores RS422 y RS485, verificado mediante osciloscopio y terminal serie. El bus CAN se validó correctamente, comprobando además el efecto de las resistencias de terminación sobre la integridad de la señal. El driver SPI del ADC ADS7950 de la placa CDHS produjo lecturas correctas: la tensión de entrada a 3,3 V resultó en el valor digital máximo (4095) y a 0 V el valor se aproximó a 0, confirmando el rango de conversión esperado. No se llegó a probar la interfaz SpaceWire de la placa AOCS por falta del arnés micro-D9 necesario. Quedan pendientes para la fase final del trabajo la fabricación de la PCB de diseño propio y el desarrollo de la aplicación de testing exhaustivo de los 14 transceptores en paralelo.
+
+El conjunto del trabajo constituye una plataforma funcional y documentada que el laboratorio B105 puede utilizar como base para el subsistema de comunicaciones del ordenador de a bordo del satélite LINCE.
 
 # summary
 Maximum number of words: 500…
@@ -70,10 +77,39 @@ anexo b: presupuesto económico	7
 
 ## Introducción y motivación
 
+El diseño de ordenadores de a bordo (OBC) para satélites exige resolver un reto de ingeniería que va más allá del procesamiento puro: conseguir que el procesador central se comunique de forma determinista y fiable con una familia heterogénea de periféricos —sensores de actitud, actuadores, cargas de pago— a través de buses serie con especificaciones eléctricas y de temporización muy diferentes entre sí. En el marco del proyecto LINCE, el grupo B105 Electronic Systems Lab de la Universidad Politécnica de Madrid asume la responsabilidad del subsistema de comunicaciones del OBC.
+
+Me incorporé al laboratorio B105 como colaborador en prácticas para trabajar en el proyecto LINCE, y mi tarea inicial consistió en implementar el soporte de comunicaciones serie RS422 y RS485 sobre la plataforma de evaluación Zynq UltraScale+ ZCU102. Esta plataforma, basada en un MPSoC que integra en un mismo encapsulado un subsistema de procesamiento ARM (PS) y una lógica programable tipo FPGA (PL), proporciona la flexibilidad necesaria para implementar transceptores serie a medida. Se optó por un diseño propio en VHDL en lugar de emplear IPs de terceros, con el objetivo de obtener control total sobre el comportamiento del transceptor: parámetros de temporización, gestión de errores y adaptación a los requisitos concretos del sistema.
+
+A medida que avanzaba el desarrollo, el alcance del trabajo se fue ampliando: las tareas de hardware me fueron asignadas al ir demostrando capacidad para asumirlas. Así, además del diseño del transceptor y su driver software, asumí el diseño de las tarjetas de circuito impreso necesarias para validar el sistema frente a los requisitos del consorcio. La colaboración directa con Sener —socio tecnológico del proyecto LINCE, con reuniones quincenales y comunicación continua por correo— fue determinante tanto para definir esos requisitos como para iterar sobre el diseño. A su vez, Sener traslada los requisitos técnicos impuestos por Indra, que lidera el consorcio.
+
+El resultado de todo este trabajo es una plataforma funcional que abarca el codiseño hardware-software del subsistema de comunicaciones serie, su integración bajo el sistema operativo de tiempo real RTEMS, y la fabricación y validación de dos tarjetas de prueba.
+
 ## Objetivos
 
+El objetivo principal de este trabajo es desarrollar una plataforma funcional y validada de comunicación con periféricos serie sobre el MPSoC Zynq UltraScale+ ZCU102, que sirva como base para el OBC del proyecto LINCE. Para alcanzarlo, me propuse los siguientes objetivos específicos:
+
+1. **Diseñar un IP core de transceptor serie configurable en VHDL** para la lógica programable del MPSoC, capaz de operar sobre los estándares RS422 y RS485, con parámetros configurables en tiempo de ejecución: baudrate, paridad, número de bits de datos, bits de parada y orden de bit.
+
+2. **Desarrollar un driver de software completo en C para RTEMS** que abstraiga el acceso al hardware y permita a la aplicación gestionar hasta 14 instancias de transceptor simultáneas mediante una API orientada a interrupciones, sin recurrir a polling de CPU.
+
+3. **Diseñar y fabricar las tarjetas de expansión de prueba** requeridas para validar el sistema frente a los subsistemas CDHS (gestión de datos y calentadores) y AOCS (control de actitud y órbita) del satélite, integrando interfaces RS422/RS485, CAN, SPI, SpaceWire y PWM.
+
+4. **Desarrollar herramientas de automatización del flujo de desarrollo**, incluyendo scripts TCL para la generación automática del diseño en Vivado y scripts de despliegue de imágenes, con el fin de reducir los tiempos de iteración.
+
+5. **Integrar y validar el sistema completo**, verificando la comunicación entre la ZCU102 y las tarjetas de expansión a través de los distintos buses implementados.
+
 # Metodología
-## scrum asdfs
+
+El desarrollo de este trabajo se enmarcó en la dinámica de trabajo colaborativo del proyecto LINCE. Mantuve reuniones quincenales con los ingenieros de Sener asignados al proyecto, además de comunicación continua por correo para resolver dudas técnicas y alinear requisitos. Las tareas se gestionaron mediante Jira, donde cada reunión servía para revisar el estado de los ítems abiertos, identificar bloqueos y planificar los próximos hitos. Los requisitos de diseño de las PCBs de prueba llegaron a través de Sener, que los traslada desde Indra como líder del consorcio.
+
+El trabajo se estructuró en dos fases principales:
+
+**Fase 1 — Familiarización y establecimiento del entorno (octubre – enero):** Dediqué los primeros meses a establecer las bases del entorno de desarrollo: instalación y configuración de Vivado y Vitis, compilación de RTEMS 7 desde código fuente para la arquitectura AArch64 mediante el RTEMS Source Builder, y validación del flujo completo (síntesis en Vivado → empaquetado en Vitis → ejecución en RTEMS sobre la ZCU102) con un ejemplo funcional de extremo a extremo. Esta fase fue fundamental para comprender la arquitectura PS-PL del MPSoC y las particularidades del entorno de compilación cruzada para sistemas empotrados.
+
+**Fase 2 — Desarrollo e integración (febrero – junio):** Con el entorno establecido, abordé el desarrollo principal: el transceptor serie en VHDL, el driver para RTEMS, el diseño de las PCBs CDHS y AOCS, y las aplicaciones de prueba. Seguí una metodología iterativa: cada módulo se implementaba, se validaba de forma aislada (mediante simulación en Vivado o prueba directa sobre la placa) y se integraba en el sistema global antes de avanzar al siguiente.
+
+Quedan pendientes para la fase final, antes de la entrega del TFM en septiembre de 2026, la fabricación y validación de la PCB de diseño propio y el desarrollo de la aplicación de testing exhaustivo de los 14 transceptores en paralelo.
 
 # Marco teórico
 
@@ -202,8 +238,25 @@ Número de bits (entre 5 y 9).
 
 El siguiente diagrama FSM resume el comportamiento del transmisor. Debido a su tamaño, se ha troceado en tres partes para su legibilidad.
 
+> **[FIGURA: Diagrama FSM del transmisor — tres partes]**
+
+Durante las pruebas sobre la placa CDHS se detectó que en las primeras recepciones aparecían ocasionalmente caracteres corruptos. Como primera hipótesis se consideró que la señal DE podría estar conmutando demasiado rápido al paso de transmisión a recepción, haciendo que el transceptor físico no tuviera tiempo de establecerse. Para corregirlo, se añadieron dos estados adicionales en la FSM del transmisor que introducen un retardo de microsegundos entre la desactivación del último bit y la desactivación de DE. Sin embargo, esto no resolvió el problema, descartando la hipótesis inicial.
+
 ### receptor
+
 El siguiente diagrama FSM resume el comportamiento del receptor.
+
+> **[FIGURA: Diagrama FSM del receptor]**
+
+#### Decisión de diseño: verificación de start-bit a mitad de período
+
+Tras descartar el flanco de DE como causa de los caracteres corruptos, el análisis se centró en el receptor. El protocolo serie comienza con un **start-bit**: la línea, normalmente en reposo en nivel alto, cae a nivel bajo para señalizar el inicio de una trama. El receptor detecta este flanco descendente y arranca la máquina de estados de recepción.
+
+El problema era que pulsos de ruido breves en la línea generaban flancos descendentes espurios que el receptor interpretaba como start-bits válidos, capturando una trama de basura y enviando un carácter corrupto al buffer.
+
+La solución se implementó directamente en la FSM: en el estado de recepción del start-bit, una vez transcurrido el **primer medio período de bit**, se vuelve a muestrear la línea antes de continuar. Si la línea ha vuelto a nivel alto, el pulso era ruido y la FSM regresa al estado IDLE sin capturar nada. Solo si la línea sigue en bajo al llegar a la mitad del bit se considera un start-bit legítimo y se procede con la recepción del resto de la trama.
+
+Esta técnica —verificación a mitad de start-bit— es una práctica estándar de robustez en receptores UART. Su implementación en la FSM VHDL eliminó por completo la aparición de caracteres corruptos en las pruebas posteriores.
 
 ### oscilador controlado numéricamente
 Este oscilador sirve para generar una señal de enable a un baudrate seleccionado. Hay 54 valores de velocidad seleccionables almacenados en una tabla de verdad. Para poder generar frecuencias que no son divisibles de la frecuencia de reloj de la FPGA, se utiliza este circuito que es capaz de corregir cada ciertos pulsos el desfase generado por esta imprecisión, logrando replicar un amplio número de frecuencias con muy poco error. El circuito consiste en un sumador, que para cada frecuencia seleccionada tiene calculado un incremento concreto, el cual depende del número de bits del sumador. Cuantos más bits tenga este sumador, mejor precisión se consigue con el NCO. En esta implementación, se han utilizado 32 bits. Este incremento se suma y se va acumulando en cada período de reloj. Cuando eventualmente el sumador se desborda, se utiliza el bit de carry_out del sumador como tick del NCO. Este tick se genera a una frecuencia igual o menor a la frecuencia deseada, que con el tiempo va acumulando error. Para corregirlo, el incremento es calculado de manera que cada cierto número de ticks, se genera un tick con una suma menos que los demás, debido al resto que se ha ido acumulando tras cada suma. Este tick generado con un ciclo de reloj menos es el que corrige el error acumulado. Para verificar que este oscilador funcionaba correctamente en las frecuencias de trabajo, se realizó una simulación que comprobaba varias frecuencias y calculaba el error obtenido en cada frecuencia concreta. Los resultados se recogen en una tabla (CITAR TABLA DEL ANEXO). 
@@ -297,67 +350,163 @@ Compatibilidad multi-instancia mediante tabla global. El array g_instances[] per
 
 Modo SLO. El bit BIT_SLO del registro de control activa en el hardware VHDL una rampa de subida más lenta en las señales de salida, reduciendo el contenido espectral de alta frecuencia y mejorando la compatibilidad electromagnética en entornos con restricciones EMI.
 
-Perfecto, ahí tienes el apartado completo. Está estructurado para encajar en el cuerpo de un TFM: comienza con la motivación, explica la interfaz hardware, desarrolla la arquitectura software con sus decisiones de diseño, y cierra con la API pública. Puedes ajustar el nivel de detalle de cualquier sección o añadir fragmentos de código si el estilo del resto del documento lo incluye.
-
 # desarrollo hardware
-Después de desarrollar el firmware del transceptor serie configurable, se procedió a desarrollar hardware sobre el que probarlo de manera más exhaustiva. En una primera instancia, se había establecido como plan hacer una única placa de circuito impreso con un diseño propio. Después de diseñar esta placa, surgió en el proyecto Lince la necesidad de desarrollar dos placas más con especificaciones impuestas por Indra, que servirían para ofrecer el soporte hardware necesario para que ellos probaran su firmware sobre la ZCU102.
-## diseño placa diseño propia
-El objetivo de esta placa era poder probar varias líneas serie simultáneas, pudiendo conectarlas entre sí en buses compartidos de manera sencilla, además de poder probar la comunicación con periféricos reales.
-METER FOTO PLACA PROPIA
+
+Una vez completado el firmware del transceptor serie, desarrollé el hardware de prueba necesario para validar el sistema en condiciones reales. El plan inicial era diseñar una única PCB propia para testear múltiples líneas serie. Posteriormente, el proyecto LINCE requirió dos tarjetas adicionales con especificaciones impuestas por Indra —la placa CDHS y la placa AOCS— para que Sener pudiera validar su firmware sobre la ZCU102. Los esquemáticos completos, BOMs y archivos de fabricación de las tres placas están disponibles en el repositorio del proyecto bajo `HARDWARE/`.
+
+## diseño placa de comunicación serie (diseño propio)
+
+El objetivo de esta placa es poder ejercitar simultáneamente los 14 transceptores del IP core, replicando las topologías de bus reales que se encontrarán en el satélite: RS485 multipunto con múltiples nodos en el mismo cable, y RS422 en configuración master/slave con cruce de TX y RX. A diferencia de las placas CDHS y AOCS, cuyas especificaciones vinieron dictadas por Indra, esta placa fue diseñada con total libertad para maximizar la flexibilidad de los ensayos en laboratorio.
+
+La arquitectura general de la placa, visible en la hoja de nivel superior del esquemático, divide los 14 canales en dos grupos conectados al FMC:
+
+> **[FIGURA: `LINCE_comunicacion_serial.pdf` — hoja TOP.SchDoc (hoja 1): arquitectura general de la placa con los 7 drivers RS485 a la izquierda, el conector FMC en el centro y los 7 drivers RS422 a la derecha]**
+
+- **7 drivers RS485 (RS0–RS6)** conectados a un bus diferencial común mediante jumpers, formando una topología multipunto configurable.
+- **7 drivers RS422 (RS7–RS13)** organizados en dos buses master/slave independientes (BUS 1: 1 master + 3 slaves; BUS 2: 1 master + 2 slaves), con la línea TX cruzada con RX para emular la conexión real punto a punto RS422.
+
+### Topología RS485: bus compartido configurable por jumper
+
+La decisión de diseño más relevante de esta placa es el mecanismo de bus compartido RS485 sin necesidad de recablear. Cada driver RS485 tiene un conector Dupont de 3 pines (A+, B−, GND) que actúa a la vez como punto de conexión hacia el exterior y como punto de interconexión entre drivers adyacentes. Colocando un jumper entre dos conectores consecutivos, las líneas A y B de ambos drivers quedan físicamente unidas, formando un segmento de bus RS485 compartido. Retirando el jumper, el driver queda independiente y puede conectarse a un periférico externo de forma individual.
+
+> **[FIGURA: `LINCE_comunicacion_serial.pdf` — hoja RS485-Dupont-Conector.SchDoc (hoja 7): circuito del conector Dupont con la sección "Use" mostrando el jumper de bus compartido y la sección "Example" con drivers 0–2 en bus 1 y drivers 3–6 en bus 2]**
+
+Este mecanismo permite configurar por hardware cualquier partición de los 7 drivers RS485 en uno o varios buses, sin modificar el firmware ni el cableado exterior. Por ejemplo, se pueden agrupar tres drivers en un bus para simular un segmento de red del OBC, y dejar los otros cuatro libres para conectar periféricos reales.
+
+### Selector de conector Micro-D para RS485
+
+Los conectores de mayor densidad (Micro-D) de la placa son compartidos entre el Driver 0 y el Driver 6 mediante un jumper de selección de hardware. Dependiendo de la posición del jumper, los conectores Micro-D quedan asignados a uno u otro driver, lo que permite usar un único tipo de conector con cableado de satélite sin duplicar el número de conectores en la placa.
+
+> **[FIGURA: `LINCE_comunicacion_serial.pdf` — hoja Driver-selector-0-6-485.SchDoc (hoja 11): circuito del selector con las dos posiciones de jumper y los ejemplos de conectividad resultantes]**
+
+### Topología RS422: master/slave configurable por jumper
+
+Para RS422, cada driver slave dispone de un conector con las líneas TX cruzadas a RX (TX-Y+/TX-Z− conectadas a RX del bus), replicando la conexión estándar punto a punto RS422 donde el receptor del esclavo escucha las transmisiones del master. Al igual que en RS485, un jumper determina si el driver se une al bus común o permanece independiente.
+
+> **[FIGURA: `LINCE_comunicacion_serial.pdf` — hoja RS422-Slave-Conector.SchDoc (hoja 12): circuito con el cruce TX↔RX y la sección "Use/Example" mostrando el master con sus esclavos conectados al bus]**
+
+El esquemático completo (12 hojas) y la BOM están disponibles en `HARDWARE/lince_comunicacion_serial/` del repositorio del proyecto.
+
+> **[FIGURA: Foto de la placa fabricada — pendiente]**
 
 ## diseño placa cdhs
-El objetivo de esta placa era ser una placa de interconexión para probar y enrutar las señales entre el subsistema principal ZCU102 (conectado mediante un puerto FMC) y periféricos externos.
-Las especificaciones de la PCB han sido impuestas por parte de Indra, tanto el tipo y número de conectores como los tipos de comunicación y de señales que pasan por cada uno. Según estas especificaciones, el enrutamiento hacia el exterior se realiza a través de 6 conectores D-Sub-9 (DS9) etiquetados de J1 a J6, y la placa centraliza la comunicación CAN, buses seriales RS422/RS485, adaptación de niveles para PWM y adquisición de señales analógicas de termistores.
-METER AQUÍ TABLA CDHS SI ME DEJAN
-Dado que la interfaz de conexión de la PCB con la ZCU102 se realiza a través del conector FMC J5 y que los bancos de pines a los que se conectan las señales que salen por este conector trabajan a 1.8V, se han buscado componentes que ofrezcan compatibilidad nativa con este nivel de tensión a fin de simplificar el diseño.
-En las siguientes imágenes se ve el renderizado en tres dimensiones de la PCB por delante y por detrás.
 
-### Subsistemas de Hardware
-Interfaz CAN
-Implementa un bus CAN con topología redundante, dividida en CAN Nominal (CAN_NOM) y CAN Redundante (CAN_RED) y utiliza dos transceptores TCAN1044AVDRQ1. La tensión de alimentación principal (VCC) de los transceptores es de 5V, mientras que la interfaz lógica (VIO) opera a 1V8 para ser compatible con las señales del MPSoC. Las líneas diferenciales cuentan con diodos de protección ESD ESDCAN24-2BLY. Ambas líneas (Nominal y Redundante) convergen en el conector DS9 J1.
-Interfaces Seriales RS422/RS485
-Dispone de tres bloques idénticos e independientes para comunicación serial (RS1, RS2 y RS3). Cada canal emplea el transceptor THVD1424RGTR, alimentado a 5V (VCC) y 1V8 (VIO). La configuración del transceptor es seleccionable por hardware mediante jumpers físicos (headers de 2 pines):
-H/F: Conmuta entre funcionamiento Half-Duplex y Full-Duplex.
-SLR: Controla el Slew Rate del integrado.
-TERM_TX / TERM_RX: Habilitan las resistencias de terminación integradas para las líneas de transmisión y recepción.
-Las líneas diferenciales (TX_P/N y RX_P/N) incluyen diodos de protección TVS SM712-02HTG. Estos buses se exponen al exterior en los conectores DS9 J2, J3 y J4 respectivamente.
-Control de Calentadores - Level Shifter
-Dedicado a la adaptación de niveles lógicos para 4 señales PWM (Heater 1 a 4). Las señales digitales de 1V8 provenientes del conector FMC se elevan a 3V3 utilizando el integrado adaptador de niveles TXU0104PWR. Las 4 líneas PWM adaptadas tienen salida en el conector DS9 J5.
-Adquisición de Datos – ADC
-Subsistema destinado a la lectura analógica de 4 termistores (CH0 a CH3). Se implementa mediante el conversor analógico-digital de aproximaciones sucesivas ADS7950QDBTRQ1. La comunicación de datos y configuración del ADC hacia el controlador principal se realiza a través de un bus SPI alimentado a 1V8 (+VBD), mientras que la circuitería analógica (+VA) opera a 3V3. Las entradas de los termistores se conectan mediante el puerto DS9 J6.
-### Alimentación y conectividad
-**Conexión Principal**: Utiliza un conector FMC (ASP-134604-01) de alta velocidad que transporta las señales de los buses (SPI, CAN_Dig, SERIAL), señales lógicas de control y líneas de alimentación (12P0V, 3P3V, VADJ a 1V8).
-**Conversión DC/DC**: Incluye un convertidor conmutado R-785.0-1.0 (etiquetado como PS1) que recibe los +12V del bus FMC y genera el carril de +5V necesario para la etapa de potencia de los transceptores RS422/RS485 y CAN.
-**Conectores Externos**: Los puertos DS9 (J1 a J6) son todos del tipo D-Sub-9 pines (D09S13A4GL00LF y D09P13A4GL00LF), con terminales de escudo térmico (SH1, SH2) derivados al plano de tierra (GND) para mantener el apantallamiento EMI de los cables. Del J1 al J5 son conectores hembra, el conector J6 es macho.
+La placa LINCE3 CDHS BreakoutBox es una tarjeta de interconexión entre la ZCU102 (conectada por FMC) y los periféricos del subsistema de gestión de datos y calentadores del satélite. Sus especificaciones fueron definidas por Indra: 6 conectores D-Sub-9 (J1–J6), interfaces CAN redundante, tres canales RS422/RS485, cuatro líneas PWM para calentadores y un ADC para termistores.
+
+> **[FIGURA: `LINCE3_CDHS.pdf` — hoja LINCE3\_TOP.SchDoc (hoja 1): diagrama jerárquico con el bloque CAN (J1), los tres bloques RS (J2–J4), el bloque PWM (J5) y el bloque ADC/THERM (J6) conectados al bloque MPSoC/FMC]**
+
+> **[FIGURA: Render 3D de la PCB — vista superior e inferior]**
+
+### Decisión de nivel de tensión: 1.8 V
+
+Todos los bancos de pines del conector FMC HPC utilizados por esta placa operan a 1.8 V. Se buscaron deliberadamente componentes con VIO nativo a 1.8 V para evitar etapas de adaptación de nivel adicionales entre el MPSoC y los transceptores. Esta decisión simplifica el diseño y reduce el número de componentes activos en la cadena de señal.
+
+### Subsistema CAN
+
+El bus CAN implementa topología redundante con dos instancias independientes: CAN Nominal (CAN_NOM) y CAN Redundante (CAN_RED). Se seleccionó el transceptor **TCAN1044AVDRQ1** de Texas Instruments por su compatibilidad nativa con VIO de 1.8 V, grado automotriz y baja corriente en modo standby. Ambos canales convergen en el conector J1.
+
+#### Terminación split con jumpers
+
+Las resistencias de terminación siguen el esquema *split termination* recomendado en las notas de aplicación del estándar CAN (ISO 11898-2). En lugar de una única resistencia de 120 Ω entre CANH y CANL, se emplean **dos resistencias de 60 Ω en serie** con un **condensador de 4.7 nF** conectado desde el punto medio al plano de masa. Cada una de las dos resistencias de 60 Ω está controlada por un jumper independiente, lo que permite habilitar o deshabilitar la terminación sin modificar el circuito. Las ventajas de este esquema frente a la terminación simple son dos: la resistencia equivalente sigue siendo 120 Ω cuando ambos jumpers están colocados, y el condensador de derivación crea un camino de baja impedancia para las interferencias de modo común de alta frecuencia hacia masa, mejorando el comportamiento EMC del bus. Este último aspecto resultó observable durante las pruebas, donde la forma de onda diferencial mejoraba visiblemente al conectar las resistencias de terminación.
+
+#### Protección ESD
+
+Las líneas CANH y CANL de cada canal incorporan diodos de protección ESD **ESDCAN24-2BLY**, específicamente diseñados para buses CAN. Este componente garantiza que los transceptores no sufran daños por descargas electrostáticas al conectar o desconectar cables en el laboratorio, y su capacidad parásita reducida preserva la integridad de señal a las velocidades de operación del bus CAN.
+
+> **[FIGURA: `LINCE3_CDHS.pdf` — hoja CAN.SchDoc: transceptores TCAN1044 con la red de terminación split (2×60 Ω + 4.7 nF) controlada por jumpers y los diodos ESD ESDCAN24-2BLY]**
+
+### Subsistema RS422/RS485
+
+Se disponen tres canales serie idénticos e independientes (RS1, RS2, RS3), cada uno con el transceptor **THVD1424RGTR**. Este integrado fue elegido porque soporta VIO de 1.8 V, incorpora resistencias de terminación internas conmutables, y permite seleccionar entre modo Half-Duplex y Full-Duplex sin cambiar el hardware. La configuración se expone mediante jumpers físicos de 2 pines:
+
+- **H/F**: conmuta entre Half-Duplex (bus compartido RS485) y Full-Duplex (punto a punto RS422).
+- **SLR**: habilita el control de slew rate del driver, reduciendo las emisiones EMI a expensas de velocidad.
+- **TERM\_TX / TERM\_RX**: conectan las resistencias de terminación internas del integrado en las líneas TX y RX respectivamente.
+
+Esta flexibilidad por jumper permite probar ambos protocolos (RS422 y RS485) con la misma placa y el mismo cableado, cambiando únicamente la configuración física del transceptor. Los tres canales salen por los conectores J2, J3 y J4.
+
+#### Protección ESD en canales RS
+
+Tanto las líneas RX (RX\_P / RX\_N) como las TX (TX\_P / TX\_N) de cada canal llevan un par de diodos TVS **SM712-02HTG** conectados entre las líneas diferenciales y el plano de masa. El SM712 es un TVS bidireccional de baja capacidad específicamente indicado para interfaces de datos de alta velocidad, que clampea transitorios por encima de su tensión de ruptura sin introducir una capacitancia parásita significativa que degradaría la integridad de señal. Esta protección resulta especialmente relevante en el contexto de laboratorio, donde los cables se conectan y desconectan frecuentemente con la alimentación activa.
+
+#### Decisión de diseño: cortocircuito DE–RE
+
+El THVD1424 expone dos pines de control independientes: **DE** (*Driver Enable*, activo en alto) habilita el transmisor, y **RE** (*Receiver Enable*, activo en bajo) habilita el receptor. En el esquemático, ambos pines están conectados a la misma señal de control procedente del MPSoC.
+
+El resultado es que una única línea digital controla simultáneamente transmisor y receptor de forma complementaria:
+
+| Señal DE/RE | Transmisor (DE) | Receptor (RE activo bajo) |
+|---|---|---|
+| **1 (alto)** | Habilitado | Deshabilitado |
+| **0 (bajo)** | Deshabilitado | Habilitado |
+
+Esta decisión responde a dos motivos concretos. Por un lado, el equipo de Indra comunicó que en la arquitectura del satélite los esclavos solo transmiten bajo demanda del OBC, por lo que no existe un escenario real en el que un nodo deba transmitir y recibir simultáneamente. Por otro lado, cuando el THVD1424 se configura en modo Half-Duplex, las líneas TX y RX comparten físicamente el mismo par diferencial A/B. Si el receptor permaneciera activo durante la transmisión, el nodo escucharía su propio eco, lo que podría confundir al driver de software. Cortocircuitar DE con RE elimina este problema sin ningún componente adicional: al activar la transmisión (DE=1) se deshabilita automáticamente la recepción (RE=1, inactivo), y al volver al modo de escucha (DE=0) el receptor se rehabilita de forma inmediata.
+
+> **[FIGURA: `LINCE3_CDHS.pdf` — hoja RS.SchDoc (hoja 4): circuito completo de un canal RS con el THVD1424RGTR, el cortocircuito DE–RE (ambos pines al mismo net de control), los jumpers H/F (P3), SLR (P4), TERM\_TX (P5) y TERM\_RX (P6), y los diodos TVS SM712-02HTG en RX\_P/N y TX\_P/N]**
+
+### Subsistema PWM (calentadores)
+
+Cuatro señales PWM de 1.8 V procedentes del FMC se elevan a 3.3 V mediante el adaptador de niveles **TXU0104PWR** para excitar los circuitos de control de calentadores externos. El nivel de salida de 3.3 V fue el requerido por Indra para esta interfaz. Las cuatro líneas adaptadas salen por J5.
+
+### Subsistema ADC (termistores)
+
+Cuatro entradas analógicas de termistores (CH0–CH3) se digitalizan con el ADC SAR de 12 bits **ADS7950QDBTRQ1**, comunicado al procesador por SPI a 1.8 V. La circuitería analógica opera a 3.3 V por requerimientos del ADC; ambos carriles (+VBD a 1.8 V y +VA a 3.3 V) son independientes para evitar acoplos entre el dominio digital y el analógico. Los termistores se conectan por J6.
+
+### Alimentación
+
+El conector FMC suministra 12 V, 3.3 V y el carril VADJ a 1.8 V. El convertidor conmutado **R-78E5.0-1.0** genera los 5 V necesarios para la etapa de potencia de los transceptores RS y CAN a partir de los 12 V del FMC. Se eligió este módulo DC/DC por su integración en un footprint reducido de 3 pines (equivalente a un regulador lineal) y su eficiencia ≥ 96%, evitando la disipación térmica que tendría un LDO con ese diferencial de tensión.
+
+### Conectores externos
+
+Los seis puertos D-Sub-9 (J1–J6) son de tipo macho o hembra según la convención de uso: J1–J5 hembra (para cables con conector macho en los periféricos externos), J6 macho (el ADC actúa como maestro SPI). Los escudos metálicos de todos los conectores (SH1, SH2) están conectados al plano de GND para mantener la continuidad de apantallamiento EMI con los cables blindados.
+
 ### Mapa de señales
-A continuación, se muestra una tabla completa con el mapeo de las señales digitales hacia el conector FMC:
+
+El mapa completo de señales entre la placa CDHS y el conector FMC se encuentra en el Anexo 1 de este documento. El esquemático completo y la BOM están disponibles en `HARDWARE/CDHS/`.
 
 ## diseño placa aocs
-### Visión general y arquitectura
-La PCB LINCE3_AOCS BreakoutBox testing PCB (diseñada por Jorge A. Estefanía) es una placa de interconexión para probar y enrutar las señales entre el subsistema principal ZCU102 (conectado mediante un puerto FMC) y periféricos externos orientados al control de actitud y órbita (AOCS).
-Las especificaciones de la PCB determinan que el enrutamiento hacia el exterior se realiza a través de 8 conectores D-Sub-9 (DS9), centralizando la comunicación a través de buses seriales RS422/RS485, enlaces de alta velocidad SpaceWire y la adaptación de niveles para el control de potencia de motores (MOT-PWM).
-Dado que la interfaz de conexión de la PCB con la ZCU102 se realiza a través del conector FMC y que los bancos de pines a los que se conectan las señales trabajan a 1.8V, se han implementado componentes que ofrecen compatibilidad nativa con este nivel de tensión a fin de simplificar el diseño y garantizar la integridad de las señales.
 
-*Vista superior.*
+La placa LINCE3 AOCS BreakoutBox es la tarjeta de interconexión para el subsistema de control de actitud y órbita del satélite. Al igual que la CDHS, conecta la ZCU102 mediante FMC y expone las interfaces al exterior a través de conectores D-Sub-9, en este caso 8 conectores (J1–J8).
 
-*Vista inferior.*
-### subsistemas de hardware
-Puertos de Comunicaciones Serie (RS422/RS485)
-La placa centraliza 5 canales serie independientes (RS1, RS3, RS4, RS5 y RS8), son exactamente los mismos que los utilizados para la placa CDHS.
-Comunicación de Alta Velocidad - SpaceWire
-Para el manejo de grandes volúmenes de datos de telemetría y control, se implementan dos enlaces SpaceWire independientes (SPW1 y SPW2) utilizando señalización diferencial LVDS a través de los conectores DS9_1 y DS9_2. Los pares diferenciales se han trazado con técnicas de igualación de longitud (skew matching) y una impedancia característica controlada de 100 Ohmios.
- Control de Potencia y Actuadores (MOT-PWM)
-Este bloque realiza la adaptación de niveles lógicos (level shifting) para las señales PWM provenientes del MPSoC, elevándose a los niveles requeridos por las etapas de potencia externas de los motores.
-### Alimentación y conectividad
-La gestión de potencia toma como entrada el carril de 12V proporcionado por el bus del conector FMC. Asimismo, alimentación para el control de motores por PWM se realiza a través de dos conectores banana, para poder enchufar una fuente de alimentación externa y alimentar los puentes en H directamente de forma externa.
+> **[FIGURA: `LINCE3_AOCS.pdf` — hoja LINCE3\_TOP.SchDoc (hoja 1): diagrama jerárquico con los 5 bloques RS (J1, J3–J5, J8), el bloque MOT-PWM (J2), los dos bloques SpaceWire LVDS (J6, J7) y el bloque FMC]**
+
+> **[FIGURA: Render 3D de la PCB — vista superior e inferior]**
+
+### Canales RS422/RS485
+
+La placa incorpora 5 canales serie (RS1, RS3, RS4, RS5, RS8) con exactamente el mismo diseño de transceptor THVD1424RGTR descrito en la sección de la placa CDHS, incluyendo el cortocircuito DE–RE y los jumpers de configuración H/F, SLR y terminación. Los canales salen por J1, J3, J4, J5 y J8.
+
+### Canales SpaceWire
+
+Se implementan dos enlaces SpaceWire full-duplex independientes (SPW1 y SPW2) mediante señalización diferencial LVDS, sin transceptor activo adicional ya que el estándar SpaceWire opera directamente a niveles LVDS compatibles con los bancos del FMC. Los pares diferenciales —cuatro por enlace: DIN, SIN, SOUT y DOUT— se han trazado en la PCB con técnicas de igualación de longitud (*length matching*) para minimizar el *skew* entre el par de datos y el par de strobe, y con impedancia característica controlada de 100 Ω diferencial. Los dos enlaces salen por J6 y J7.
+
+> **[FIGURA: Página del esquemático AOCS del subsistema SpaceWire, mostrando los cuatro pares diferenciales y su conexión al FMC]**
+
+### Control de motores (MOT-PWM)
+
+Seis señales PWM de 1.8 V procedentes del FMC se elevan al nivel de tensión requerido por los puentes en H externos mediante un adaptador de niveles. Las señales se agrupan en tres pares (X, Y, Z para los tres ejes del satélite), con dos líneas por eje para controlar la dirección de giro del motor. Salen por J2. La alimentación de potencia de los motores se conecta mediante dos bornes banana independientes de la alimentación de la placa, permitiendo usar una fuente de laboratorio externa para los puentes en H sin interferir con la electrónica de señal.
+
+### Alimentación
+
+Misma arquitectura que la placa CDHS: 12 V del FMC, convertidor DC/DC para los 5 V de potencia, y VADJ 1.8 V para los transceptores.
+
 ### Mapa de señales
-A continuación, se muestra una tabla completa con el mapeo de las señales digitales hacia el conector FMC:
+
+El mapa completo de señales entre la placa AOCS y el conector FMC se encuentra en el Anexo 1 de este documento. El esquemático completo y la BOM están disponibles en `HARDWARE/AOCS/`.
 
 ## fabricación
-Una vez diseñadas las placas, se pidieron las placas con stencil para la cara donde están los componentes montados superficialmente a PCBWay y los componentes a distintos proveedores como Mouser o DigiKey. Cuando llegaron, se siguió el siguiente procedimiento:
-Aplicación de la pasta de soldadura. Se fijó la placa a la mesa rodeándola con placas del mismo grosor y asegurando el montaje a la mesa con cinta de pintor. Después, se colocó el stencil encima de la placa, y se aplicó la pasta de soldadura con una espátula.
-Colocación de componentes: se fueron colocando los componentes con pinzas en las placas. En este paso, se colocaron componentes sobre dos placas con pasta de soldadura a la vez, para ahorrar tiempo logístico al fabricar.
-Horneado de reflujo: se colocaron las placas en el Reflow Oven (MEJORAR ESTO) y se seleccionó la curva de temperatura adecuada, en nuestro horno la curva 3.
+
+Una vez validados los esquemáticos y completado el rutado de las PCBs, se encargaron las placas con stencil a **PCBWay**, y los componentes a **Mouser** y **DigiKey** según disponibilidad. El proceso de montaje en el laboratorio siguió los pasos habituales de soldadura por reflujo SMD:
+
+1. **Aplicación de pasta de soldadura.** Se fijó la placa a la mesa con placas de idéntico grosor alrededor y cinta de pintor. Se colocó el stencil alineado y se extendió la pasta con espátula.
+2. **Colocación de componentes.** Con pinzas de punta fina, se colocaron los componentes SMD sobre la pasta. Se montaron dos placas en paralelo para optimizar el tiempo de proceso.
+3. **Reflujo.** Las placas se introdujeron en el horno de reflujo del laboratorio seleccionando el perfil de temperatura adecuado para la pasta de soldadura utilizada.
+
+> **[FIGURA: Foto del proceso de fabricación — aplicación de pasta con stencil, o colocación de componentes]**
+
+> **[FIGURA: Foto de la placa CDHS soldada (cara superior)]**
+
+> **[FIGURA: Foto de la placa AOCS soldada (cara superior)]**
 
 # desarrollo herramientas orientadas a testing
 
@@ -500,155 +649,13 @@ En la imagen se ve como en la parte de la izquierda, aparecen activadas las lín
 Para controlar las líneas de PWM, se creó un circuito en Vivado que generaba 4 señales de PWM diferentes, desde dentro de la FPGA, para que salieran directamente al level shifter de la placa, sin necesidad de añadir ningún control por software en la PS.
 se utilizó el mismo BOOT.bin para todas las pruebas de CDHS.
 Se utilizó la app de test en RTEMS de los drivers serial para probar el PWM y las líneas serie.
-Para probar el SPI, se creó una aplicación en RTEMS para conectarse con el ADC de la placa. 
-Para controlar las líneas de SPI:
-Diseño del Software para Comunicación SPI con los ADCs de la Placa CDHS
-1. Contexto y hardware implicado
-La placa CDHS incorpora convertidores analógico-digitales (ADC) del modelo ADS7950 de Texas Instruments, conectados al procesador a través del bus SPI (Serial Peripheral Interface). El software corre sobre el sistema operativo de tiempo real RTEMS 7 ejecutado en el subsistema de procesamiento (PS) del SoC Xilinx Zynq UltraScale+ ZCU102 (procesador ARM Cortex-A53 aarch64). El controlador SPI hardware disponible es el Cadence SPI integrado en el PS del ZynqMP, accesible mediante mapeo directo de memoria (MMIO).
+Para probar el ADC ADS7950 de la placa CDHS, se desarrolló una pequeña aplicación de lectura SPI sobre RTEMS. Dado que el BSP de RTEMS 7 para ZCU102 no incluía en ese momento un driver SPI de alto nivel, se accedió directamente al controlador SPI Cadence integrado en el PS mediante mapeo de registros en memoria (MMIO), siguiendo el mapa de registros descrito en el Manual de Referencia Técnico del Zynq UltraScale+ (AMD/Xilinx, UG1085). El protocolo de comunicación con el ADC —formato de trama de 16 bits, selección de canal en Manual Mode y gestión de la latencia de conversión— se implementó conforme al datasheet del ADS7950 (Texas Instruments, SLAS605C).
 
-2. Fuentes de información
-Recurso	Descripción	Referencia
-Datasheet ADS7950	Especificación completa del ADC: protocolo SPI, modos de operación, formato de trama, temporización	Texas Instruments, ADS7950/51/52/53/…, 12/10/8-bit, 1-MSPS ADC Family, SLAS605C, revisado julio 2018. Disponible en: https://www.ti.com/lit/ds/symlink/ads7950.pdf
-Zynq UltraScale+ TRM	Descripción del controlador SPI Cadence integrado en el PS del ZynqMP: mapa de registros, bits de control, procedimiento de transferencia	Xilinx/AMD, Zynq UltraScale+ MPSoC Technical Reference Manual, UG1085. Disponible en: https://docs.amd.com/r/en-US/ug1085-zynq-ultrascale-trm
-Documentación RTEMS 7	API del sistema operativo: configuración de tareas, temporización, gestión de memoria	https://docs.rtems.org
-El datasheet del ADS7950 se encuentra también incluido localmente en el repositorio como spi_test/ads7950.pdf y como texto extraído en spi_test/ads7950.txt.
+**Referencias:**
 
-3. Arquitectura software en capas
-El software se organiza en tres capas bien diferenciadas:
+Texas Instruments. (2018). *ADS7950/51/52/53 — 12/10/8-Bit, 1-MSPS, 4-/8-Channel, Serial Interface, MicroPower Sampling Analog-to-Digital Converter* (SLAS605C). Recuperado de https://www.ti.com/lit/ds/symlink/ads7950.pdf
 
-┌─────────────────────────────────────────────┐
-│              main.c                          │  ← Lógica de aplicación RTEMS
-├─────────────────────────────────────────────┤
-│         ads7950.c / ads7950.h                │  ← Driver del ADC ADS7950
-├─────────────────────────────────────────────┤
-│    cadence_spi_low.c / cadence_spi_low.h     │  ← Driver SPI Cadence (MMIO)
-└─────────────────────────────────────────────┘
-                    Hardware (PS SPI0)
-4. Capa 1 — Driver SPI Cadence de bajo nivel (cadence_spi_low)
-Origen y motivación
-RTEMS 7 no proporciona en su BSP para ZCU102 un driver SPI de alto nivel accesible mediante la API de dispositivos estándar en el momento del desarrollo. Por ello se desarrolló un driver de acceso directo a los registros del controlador SPI Cadence, cuya dirección base en el ZynqMP es 0xFF040000 (SPI0 del PS), tal y como documenta el TRM de Xilinx (UG1085, capítulo de SPI).
-
-El driver se compone de dos ficheros: spi_test/cadence_spi_low.h y spi_test/cadence_spi_low.c.
-
-Mapa de registros implementado
-Los offsets de los registros se definieron a partir del TRM (UG1085):
-
-#define CSPI_CONTROL_REG      0x00U  // Configuration Register (CR)
-#define CSPI_INTR_STATUS_REG  0x04U  // Interrupt Status Register (ISR)
-#define CSPI_INTR_DISABLE_REG 0x0CU  // Interrupt Disable Register
-#define CSPI_ENABLE_REG       0x14U  // SPI Enable/Disable
-#define CSPI_TX_DATA_REG      0x1CU  // TX FIFO
-#define CSPI_RX_DATA_REG      0x20U  // RX FIFO
-El acceso a estos registros se realiza mediante punteros volátiles sobre la dirección física, técnica válida en RTEMS ya que el kernel mapea el espacio de E/S del PS en el espacio de direcciones físicas sin MMU adicional:
-
-static volatile uint32_t *spi_reg_base = (volatile uint32_t *)(uintptr_t)base;
-Inicialización (cadence_spi_init)
-La función de inicialización, definida en cadence_spi_low.c:17, sigue el procedimiento indicado en el TRM:
-
-Deshabilitar el controlador antes de cualquier configuración (registro ENABLE_REG = 0).
-Enmascarar todas las interrupciones (se utiliza polling en lugar de interrupciones para simplificar el diseño).
-Limpiar flags de estado residuales del ISR.
-Calcular el divisor del prescaler: el reloj de entrada al SPI del PS es de 100 MHz (ADS7950_INPUT_CLOCK_HZ). La fórmula del divisor es 2^(prescaler+1), con prescaler en el rango [0, 7] (divisores de 4 a 512). Para la velocidad configurada de 500 kHz (ADS7950_DEFAULT_SPEED_HZ), el bucle calcula el prescaler mínimo que no supere esa frecuencia.
-Configurar el registro de control (CR): se activan el modo maestro (MSTREN), el prescaler calculado, y el chip select forzado (SSFORCE) con todos los CS deseleccionados inicialmente (SSCTRL = 0xF). El modo SPI se fija en Modo 0 (CPOL=0, CPHA=0), que es el requerido por el ADS7950 según su datasheet (SLAS605C, sección 7.9, Timing Requirements): el dato SDO del ADC se actualiza en el flanco de bajada de SCLK y el maestro lo muestrea en el flanco de subida.
-Habilitar el controlador de nuevo (ENABLE_REG = 1).
-Transferencia SPI full-duplex (cadence_spi_transfer)
-La función definida en cadence_spi_low.c:61 implementa una transferencia full-duplex byte a byte mediante polling del FIFO:
-
-Se vacía el RX FIFO de datos anteriores.
-Se selecciona el chip select CS0 escribiendo 0x0E en el campo SSCTRL del CR (en el Cadence SPI, el campo SSCTRL con decodificación deshabilitada usa máscara invertida: 0xE = 1110b activa CS0 en bajo).
-Se ejecuta un bucle lockstep: por cada byte enviado al TX FIFO, se espera a que el byte correspondiente llegue al RX FIFO. Esto garantiza la naturaleza full-duplex del protocolo SPI.
-Al finalizar, se deselecciona el CS (SSCTRL = 0xF) para liberar el bus.
-5. Capa 2 — Driver del ADC ADS7950 (ads7950)
-El ADS7950 y su protocolo SPI
-El ADS7950 (SLAS605C) es un ADC SAR de 12 bits, 4 canales, con velocidad de muestreo de hasta 1 MSPS e interfaz SPI de 20 MHz. Su protocolo funciona mediante tramas de 16 bits full-duplex: mientras el maestro envía una palabra de comando al ADC (SDI), el ADC devuelve simultáneamente el resultado de la conversión anterior (SDO).
-
-Esta característica introduce una latencia de un frame: el resultado de la conversión del canal solicitado en la trama N se recibe en la trama N+1. Esto está documentado en el datasheet (SLAS605C, Figure 1, Device Operation Timing Diagram).
-
-El driver se compone de spi_test/ads7950.h y spi_test/ads7950.c.
-
-Construcción de la palabra de comando (Manual Mode)
-El ADS7950 soporta varios modos de operación. Se utilizó el Manual Mode, en el que cada trama selecciona explícitamente el canal a convertir a continuación. Según la sección de programación del datasheet (SLAS605C, sección 8.5, Manual Mode), la palabra de 16 bits enviada por SDI tiene el siguiente formato:
-
-Bit 15..12: 0001  → Identificador de Manual Mode
-Bit 11:     0     → DI11 (GPIO/Range, no usado)
-Bit 10:     X     → DI10
-Bit  9:     0     → DI09 (range = 0: 0 a VREF)  
-Bit  8:     0     → DI08
-Bits 10..7: CCCC  → Selección de canal (4 bits)
-Bits  6..0: 0000000 → bits reservados/GPIO
-En código, esto se implementa en ads7950.c:13:
-
-static inline uint16_t ads7950_build_command(uint8_t channel)
-{
-    return (uint16_t)(0x1800u | ((uint16_t)(channel & 0x0Fu) << 7));
-}
-El prefijo 0x1800 corresponde a 0001 1000 0000 0000b, donde el bit 11 establece el Manual Mode (DI15..12 = 0001) y el campo de canal se desplaza 7 bits para ocupar las posiciones DI10..DI07.
-
-La palabra se transmite MSB first, conforme al datasheet: el byte alto se envía primero, luego el byte bajo.
-
-Lectura de los 4 canales (ADS7950_ReadChannels)
-Para obtener los valores de los 4 canales (CH0–CH3) compensando la latencia de un frame, la función ads7950.c:62 ejecuta 6 transferencias en lugar de 4, descartando los 2 primeros resultados (que corresponden al estado previo del ADC):
-
-const uint8_t sequence[6] = { 0, 1, 2, 3, 0, 1 };
-
-for (int i = 0; i < 6; i++) {
-    ads7950_transfer(adc, sequence[i], &response);
-    if (i >= 2) {
-        values[i - 2] = response & 0x0FFFu;
-    }
-}
-La secuencia funciona así:
-
-Frame	Comando enviado	Resultado recibido	¿Se guarda?
-0	"Lee CH0"	(anterior, descartado)	No
-1	"Lee CH1"	CH0	No (i<2)
-2	"Lee CH2"	CH1	Sí → values[0]
-3	"Lee CH3"	CH2	Sí → values[1]
-4	"Lee CH0"	CH3	Sí → values[2]
-5	"Lee CH1"	CH0 (segundo)	Sí → values[3]
-El resultado se enmascara con 0x0FFF para extraer únicamente los 12 bits de dato de la respuesta del ADC, ya que los 4 bits superiores de la respuesta SDO contienen información de estado del canal.
-
-Inicialización y destrucción
-ADS7950_Init (ads7950.c:33): llama a cadence_spi_init y reserva mediante malloc dos buffers de 2 bytes para TX y RX. La separación en buffers dinámicos permite alineamiento flexible en caso de requerir DMA en el futuro.
-ADS7950_Destroy (ads7950.c:84): libera los buffers con free.
-6. Capa 3 — Aplicación principal (main.c)
-El fichero spi_test/main.c contiene la tarea de entrada RTEMS (Init), que es el punto de arranque del sistema bajo RTEMS 7 (equivalente a main() en un programa convencional).
-
-La configuración del sistema RTEMS (recursos, drivers de reloj y consola, tamaño de pila, etc.) se define en el fichero spi_test/init.c mediante las macros del sistema de configuración de RTEMS (<rtems/confdefs.h>). Los parámetros clave son:
-
-Tick del sistema: 10 ms (100 Hz), necesario para rtems_task_wake_after.
-Stack de la tarea Init: 64 KB.
-Drivers: se activan el driver de reloj (CLOCK_DRIVER) y el de consola UART (CONSOLE_DRIVER) para printf.
-La lógica de la aplicación es la siguiente:
-
-rtems_task Init(rtems_task_argument arg)
-{
-    ADS7950 adc = { .speed_hz = 0 };
-    uint16_t values[ADS7950_NUM_CHANNELS];
-
-    // 1. Inicializar el ADC sobre el dispositivo SPI a 500 kHz
-    ADS7950_Init(&adc, ADS7950_SPI_DEVICE, ADS7950_DEFAULT_SPEED_HZ);
-
-    // 2. Bucle infinito: leer los 4 canales cada 500 ms
-    for (;;) {
-        ADS7950_ReadChannels(&adc, values);
-        printf("CH0=%u  CH1=%u  CH2=%u  CH3=%u\n", ...);
-        rtems_task_wake_after(RTEMS_MILLISECONDS_TO_TICKS(500));
-    }
-}
-El intervalo de muestreo de 500 ms (definido por ADS7950_PRINT_INTERVAL_MS) se implementa mediante rtems_task_wake_after, que suspende la tarea el número de ticks correspondiente sin consumir CPU, permitiendo que el scheduler de RTEMS atienda otras tareas durante ese tiempo.
-
-7. Resumen de parámetros de configuración SPI
-Parámetro	Valor	Fuente
-Dirección base SPI0 PS	0xFF040000	Xilinx UG1085
-Reloj de entrada SPI	100 MHz	Xilinx UG1085
-Velocidad de reloj SPI	500 kHz	Diseño propio (conservador)
-Modo SPI	Modo 0 (CPOL=0, CPHA=0)	TI SLAS605C, §7.9
-Longitud de trama	16 bits	TI SLAS605C, §8.5
-Orden de bits	MSB first	TI SLAS605C, §7.6
-Resolución ADC	12 bits	TI SLAS605C
-Canales leídos	4 (CH0–CH3)	TI SLAS605C
-Tramas por lectura completa	6 (2 de preambulo + 4 datos)	TI SLAS605C, Fig. 1
+AMD/Xilinx. (2023). *Zynq UltraScale+ MPSoC Technical Reference Manual* (UG1085). Recuperado de https://docs.amd.com/r/en-US/ug1085-zynq-ultrascale-trm
 
 Para probar el CAN, se utilizó una aplicación hecha por mi compañero en el laboratorio y en el proyecto Lince Diego Ramos. En su aplicación, se configuran las líneas de can y se establecen test que comprueban que la conexión por can funciona correctamente. Se cargó una imagen de RTEMS probada por él para probar mi placa.
 
@@ -674,29 +681,151 @@ Se utilizó un osciloscopio y una Fuente de alimentación de hasta 32V.
 Esto es un ejemplo de cita a una referencia bibliográfica …
 
 # resultados
-CDHS soldada:
 
-AOCS soldada:
+En este capítulo se recogen los resultados de la validación hardware del sistema completo. Las pruebas se realizaron con la placa CDHS y la placa AOCS conectadas a la ZCU102 mediante FMC. La placa de comunicación serie de diseño propio queda pendiente de fabricación y sus resultados se incorporarán antes de la entrega final.
 
-Osciloscopio:
+## Montaje del sistema
 
-LECTURAS OSCILOSCOPIO
+> **[FIGURA: Foto del sistema completo montado — ZCU102 con la placa CDHS conectada al puerto FMC J5, alimentación y cables de laboratorio]**
 
-CDHS:
-ORANIZAR AQUÍ RESULTADOS LECTURAS RS
+> **[FIGURA: Foto de la placa CDHS soldada (vista superior con los componentes montados)]**
 
-ORGANIZAR AQUÍ RESULTADOS LECTURAS CAN (TEST DE DIEGO)
+> **[FIGURA: Foto de la placa AOCS soldada (vista superior)]**
 
-ORGANIZAR AQUÍ RESULTADOS LECTURAS ADC
+## Validación de comunicaciones serie RS422/RS485
 
-AOCS:
-ORGANIZAR AQUÍ LECTURAS RS
+Las pruebas de comunicaciones serie se realizaron con la aplicación de testing en RTEMS, que expone una consola interactiva por USB donde el usuario puede enviar mensajes a cualquier transceptor con el formato `<ID> <MENSAJE>` o a todos simultáneamente con `ALL <MENSAJE>`. Se construyeron arneses de loopback para interconectar los canales:
+
+- **RS422**: arnés a 4 hilos cruzando TX\_P/N de un canal con RX\_P/N del opuesto.
+- **RS485**: arnés a 2 hilos conectando A+ y B− de un canal con A+ y B− del otro.
+
+### CDHS — 3 transceptores
+
+Al arrancar, el driver descubrió automáticamente los 3 transceptores instanciados en el bitstream e imprimió sus direcciones base (`0xA0000000`, `0xA0001000`, `0xA0002000`), confirmando el mecanismo de descubrimiento dinámico de hardware. A continuación, la consola reportó `UART 00 [OK]`, `UART 01 [OK]`, `UART 02 [OK]`.
+
+Las pruebas de loopback mostraron que los mensajes enviados por UART 0 llegaban a UART 2 y viceversa, y los enviados por UART 1 llegaban correctamente. En las primeras recepciones de esta captura aparecen caracteres corruptos (`?`), correspondientes a una iteración previa del diseño antes de aplicar la corrección de robustez del receptor descrita en la sección del transceptor VHDL (verificación de start-bit a mitad de período). Una vez implementada esa mejora en la FSM del receptor, los caracteres corruptos desaparecieron por completo en las pruebas posteriores.
+
+```
+[TRANSCEIVER DEBUG] Detectados: 3 | Base: 0xA0000000 | INT: 0xA0003000
+UART 00 [OK]  UART 01 [OK]  UART 02 [OK]
+CMD> 0 HOLA MUNDO
+Tx -> UART 0: OK
+[RX UART 02]: HOLA MUNDO
+CMD> 2 HOLA MUNDO
+Tx -> UART 2: OK
+[RX UART 00]: HOLA MUNDO
+```
+
+> **[FIGURA: captura completa del terminal `cdhs_testing_rs` disponible en `tfm/terminal/`]**
+
+### AOCS — 5 transceptores
+
+Con el bitstream de 5 transceptores para la placa AOCS, el descubrimiento detectó correctamente 5 instancias (`0xA0000000`–`0xA0004000`, INTC en `0xA0005000`). Las pruebas de loopback entre distintos pares de canales —UART 0↔4, UART 0↔3, UART 0↔2, UART 0↔1— resultaron todas correctas sin errores de framing.
+
+```
+[TRANSCEIVER DEBUG] Detectados: 5 | Base: 0xA0000000 | INT: 0xA0005000
+CMD> 0 HOLA  →  [RX UART 04]: HOLA
+CMD> 4 HOLA  →  [RX UART 00]: HOLA
+CMD> 0 HOLA  →  [RX UART 03]: HOLA
+CMD> 0 HOLA  →  [RX UART 01]: HOLA
+```
+
+> **[FIGURA: captura completa del terminal `aocs_testing_rs` disponible en `tfm/terminal/`]**
+
+### Prueba con 13 transceptores simultáneos
+
+Para verificar el correcto funcionamiento del driver con un número elevado de instancias, se cargó un bitstream con 13 transceptores instanciados, conectando los canales adicionales a los pines externos del conector J3 de la ZCU102. El sistema arrancó y operó correctamente con todos los canales, confirmando que la arquitectura de ISR maestra con tareas worker individuales escala sin problemas hasta el número máximo de instancias soportado. La prueba con los 14 transceptores sobre la placa de comunicación serie de diseño propio queda pendiente de fabricación.
+
+## Validación del bus CAN
+
+Las pruebas del bus CAN se realizaron con la aplicación de test desarrollada por Diego Ramos (compañero del laboratorio B105 en el proyecto LINCE), que configura los canales CAN y ejecuta una batería de tests de enlace. La aplicación se cargó sobre una imagen RTEMS generada y validada previamente por él.
+
+La suite de tests ejecutó 26 pruebas cubriendo inicialización, loopback interno, transferencia física CAN0↔CAN1, filtrado de identificadores estándar y extendido, manejo de tramas RTR y pruebas de interrupción por hardware. El resultado fue **26/26 tests PASS, 0 FAILED**:
+
+```
+[PASS] CAN0 initialization (Fast Mode)
+[PASS] CAN1 initialization (Slow Mode)
+[PASS] Loopback RX ID matches TX ID
+[PASS] Loopback RX Data matches TX Data
+[PASS] CAN0 received correct ID from CAN1        (físico)
+[PASS] CAN0 received correct Data from CAN1      (físico)
+[PASS] Standard ID: Exact Match Accepted (0x1A4)
+[PASS] Extended ID: Exact Match Accepted (0x12345678)
+[PASS] RTR Filter: Accepted matching Remote Request
+[PASS] TxOk fired successfully
+[PASS] RxOk fired and FIFO was drained successfully (No Storm)
+... (26/26 PASS, 0 FAILED)
+```
+
+> **[FIGURA: captura completa del terminal `cdhs_testing_can.txt` disponible en `tfm/terminal/`]**
+
+Un resultado relevante adicional fue la verificación del efecto de las resistencias de terminación sobre la integridad de la señal CAN. Se realizaron capturas de osciloscopio de la tensión diferencial CAN\_H − CAN\_L con los jumpers desconectados y conectados. Sin terminación, la señal presentaba reflexiones visibles que degradaban los flancos; con ambas resistencias de 60 Ω conectadas, la forma de onda resultó limpia y bien definida.
+
+> **[FIGURA: captura de osciloscopio — señal CAN sin resistencias de terminación]**
+
+> **[FIGURA: captura de osciloscopio — señal CAN con resistencias de terminación]**
+
+## Validación del ADC SPI (termistores CDHS)
+
+La aplicación de lectura del ADC ADS7950 muestreó los cuatro canales a 500 ms de intervalo e imprimió los valores digitales por el terminal. Para verificar la linealidad de la cadena de adquisición se aplicaron tensiones de referencia conocidas a las entradas analógicas:
+
+- Tensión de entrada 0 V → valor digital próximo a 0 (fondo de escala inferior).
+- Tensión de entrada 3,3 V → valor digital próximo a 4095 (fondo de escala superior, 12 bits).
+
+Los resultados confirmaron el rango de conversión esperado, validando el driver SPI de bajo nivel y la cadena analógica de la placa CDHS. La captura registra el canal CH2 siendo sometido a un barrido de tensión con la fuente de laboratorio: partiendo de 0 (valor digital ≈ 0), la tensión se elevó progresivamente hasta aproximadamente 2,9 V (valor digital ≈ 3565 sobre 4095), se mantuvo, y se redujo de vuelta a 0, con el ADC siguiendo la rampa en tiempo real. Los canales CH0 (≈245), CH1 (≈43) y CH3 (≈19) mostraron valores estables bajos durante todo el ensayo, correspondientes a las entradas no excitadas.
+
+```
+ADS7950: CH0= 244  CH1=  43  CH2=   0  CH3=  19   ← tensión en CH2 = 0V
+ADS7950: CH0= 245  CH1=  43  CH2=1577  CH3=  19   ← subida
+ADS7950: CH0= 245  CH1=  43  CH2=3419  CH3=  21   ← cerca del máximo
+ADS7950: CH0= 245  CH1=  43  CH2=3565  CH3=  21   ← ~2.9V aplicados
+ADS7950: CH0= 245  CH1=  43  CH2=2436  CH3=  22   ← bajada
+ADS7950: CH0= 246  CH1=  43  CH2= 102  CH3=  22   ← de vuelta a 0V
+```
+
+> **[FIGURA: captura completa del terminal `cdhs_testing_adc.txt` disponible en `tfm/terminal/`]**
+
+## Validación PWM (calentadores CDHS y puentes en H AOCS)
+
+Las señales PWM generadas desde la FPGA se midieron con el osciloscopio sobre los conectores DS9 correspondientes, verificando la frecuencia y el ciclo de trabajo configurados.
+
+Para la placa AOCS, el bloque VHDL de control de motores generó señales PWM alternando la dirección de giro cada pocos segundos (línea 1 activa con línea 2 a 0, y a continuación línea 1 a 0 con línea 2 activa), permitiendo verificar el control de puentes en H con una fuente de alimentación externa conectada a los bornes banana.
+
+> **[FIGURA: Captura de osciloscopio — señal PWM medida en el conector J5 de la placa CDHS (frecuencia y duty cycle)]**
+
+> **[FIGURA: Captura de osciloscopio — señales PWM de control de motor (AOCS): par de señales complementarias para control de dirección del puente en H]]**
 
 # conclusiones y líneas futuras
+
 ## Conclusiones
-…
+
+El objetivo principal de este trabajo era desarrollar una plataforma funcional de comunicación con periféricos serie sobre el MPSoC Zynq UltraScale+ ZCU102, adaptada a los requisitos del proyecto LINCE. A lo largo del desarrollo he conseguido los siguientes resultados:
+
+El transceptor serie configurable diseñado en VHDL funciona correctamente sobre la lógica programable del ZCU102. Soporta los estándares RS422 y RS485 con configuración completa de protocolo en tiempo de ejecución, y el NCO de 32 bits implementado garantiza un error de baudrate inferior a 20 ppm para la mayoría de las velocidades estándar validadas, desde 9.600 hasta 4.000.000 baudios.
+
+El driver desarrollado para RTEMS abstrae el hardware de forma efectiva y permite gestionar hasta 14 instancias simultáneas del transceptor mediante una arquitectura orientada a interrupciones. La separación entre la ISR maestra y las tareas worker garantiza tiempos de latencia mínimos en la atención de interrupciones, manteniendo el determinismo propio de un sistema de tiempo real.
+
+Las dos tarjetas de circuito impreso diseñadas y fabricadas —la placa CDHS y la placa AOCS— cumplen con las especificaciones impuestas por Indra a través de Sener y han permitido validar el sistema de comunicaciones en un entorno hardware real. La fabricación se realizó en el propio laboratorio mediante proceso de soldadura por reflujo con stencil.
+
+La validación experimental ha confirmado el correcto funcionamiento de las interfaces RS422, RS485 y CAN de la placa CDHS, así como de las interfaces RS422 y RS485 de la placa AOCS. En el caso del bus CAN, se comprobó experimentalmente la importancia de las resistencias de terminación para la integridad de la señal diferencial. El driver SPI del ADC ADS7950 produjo lecturas coherentes con la tensión de entrada aplicada, validando la cadena de adquisición analógica de la placa CDHS.
+
+En conjunto, el trabajo ha servido como contribución directa al proyecto LINCE, proporcionando al laboratorio B105 una base funcional y documentada para el subsistema de comunicaciones del ordenador de a bordo del satélite.
+
 ## Líneas futuras
-…
+
+A partir del trabajo realizado, identifico las siguientes líneas de continuación:
+
+**Validación SpaceWire.** La interfaz SpaceWire de la placa AOCS no pudo probarse por falta del arnés micro-D9 adecuado. Completar esta validación es el paso inmediato más relevante, ya que SpaceWire es el protocolo de alta velocidad previsto para los enlaces de mayor ancho de banda del satélite.
+
+**Fabricación y validación de la PCB de diseño propio.** La primera placa diseñada, orientada a la prueba simultánea de múltiples líneas serie con posibilidad de interconexión en buses compartidos, está pendiente de fabricación. Su validación completaría el conjunto de hardware de prueba.
+
+**Aplicación de testing exhaustivo de los 14 transceptores.** El driver soporta hasta 14 instancias simultáneas pero la aplicación de testing actual no las ejercita todas a la vez de forma controlada. Desarrollar una aplicación que pruebe los 14 canales en paralelo, con métricas de throughput y tasa de errores, permitiría caracterizar completamente el rendimiento del sistema.
+
+**Migración a AXI-Stream con transferencia por DMA.** La arquitectura actual del transceptor serie utiliza AXI GPIO como interfaz entre la PS y la PL, lo que implica que la CPU interviene en cada byte transferido. Durante el desarrollo se identificó una alternativa significativamente más eficiente: reemplazar AXI GPIO por **AXI-Stream** para el flujo de datos entre PS y PL, y añadir un controlador **DMA** (*Direct Memory Access*) que mueva los bloques de datos directamente entre la memoria del procesador y la PL sin intervención de la CPU. Esto permitiría que el procesador quede completamente libre durante las transferencias, relegando toda la lógica de serialización y control de protocolo a la FPGA. Esta migración es factible sin comprometer los recursos disponibles: con 14 transceptores instanciados simultáneamente, la utilización de la FPGA se sitúa en torno al 7% de los recursos totales disponibles, dejando margen más que suficiente para absorber la lógica adicional del controlador DMA y los FIFOs AXI-Stream en la PL.
+
+**Integración con el stack de software de vuelo de Sener.** El driver y las PCBs han sido diseñados con los requisitos de Indra/Sener como guía. El siguiente paso natural es la integración del driver en el stack de software de vuelo de Sener y la realización de pruebas de validación conjuntas en entorno Hardware-in-the-Loop.
+
+**Soporte de protocolos adicionales.** La arquitectura modular del transceptor VHDL facilita la incorporación de nuevos modos de operación. Una extensión interesante sería añadir soporte nativo del protocolo MIL-STD-1553, ampliamente utilizado en sistemas espaciales de mayor herencia.
 
 # anexo 1
 
