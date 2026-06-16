@@ -1,0 +1,49 @@
+=========================================
+   ZCU102 CAN DRIVER RTEMS TEST SUITE    
+=========================================
+
+--- Running Initialization Tests ---
+[PASS] CAN0 initialization (Fast Mode)
+[PASS] CAN1 initialization (Slow Mode)
+
+--- Running Loopback Tests ---
+[PASS] Loopback RX ID matches TX ID
+[PASS] Loopback RX Data matches TX Data
+
+--- Running CAN1 -> CAN0 Physical TX/RX Tests ---
+NOTE: This requires CAN0 and CAN1 to be physically connected on the board.
+[PASS] CAN0 received correct ID from CAN1
+[PASS] CAN0 received correct Data from CAN1
+
+--- Running CAN0 -> CAN1 Physical TX/RX Tests ---
+NOTE: This requires CAN0 and CAN1 to be physically connected on the board.
+[PASS] CAN1 received correct ID from CAN0
+[PASS] CAN1 received correct Data from CAN0
+
+--- Running Mixed ID Filter Tests (Physical CAN0 -> CAN1) ---
+[PASS] Standard ID: Exact Match Accepted (0x1A4)
+[PASS] Standard ID: Exact Match Rejected (0x1A5)
+[PASS] Extended ID: Exact Match Accepted (0x12345678)
+[PASS] Extended ID: Exact Match Rejected (0x12345679)
+[PASS] Extended ID: Mask Match Accepted (0x1ABCDEF5)
+[PASS] Extended ID: Mask Match Rejected (0x1ABCDE00)
+
+--- Running Advanced Filter Edge-Case Tests ---
+[PASS] RTR Filter: Accepted matching Remote Request
+[PASS] RTR Filter: Successfully rejected Data Frame with identical ID
+[PASS] Data Filter: Accepted matching Data Frame
+[PASS] Data Filter: Successfully rejected RTR Frame with identical ID
+[PASS] IDE Filter: Successfully rejected Extended ID overlapping with Standard ID filter
+[PASS] Catch-All Mask: Successfully caught an unmapped random ID
+
+--- Running Hardware Interrupt Tests (Physical CAN0 -> CAN1) ---
+[PASS] TxOk fired successfully
+[PASS] RxOk fired and FIFO was drained successfully (No Storm)
+[PASS] Data was correctly saved by the callback
+[PASS] Extended RTR Interrupts handled safely
+[PASS] RTR flagged correctly via callback extraction
+[PASS] TxFull fired correctly under stress (No ACK received)
+
+=========================================
+TEST RESULTS: 26 Passed, 0 Failed
+=========================================

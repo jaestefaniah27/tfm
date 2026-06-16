@@ -1,0 +1,76 @@
+MMU_MAP: return from mmu_map_pl_axi_early()
+[TRANSCEIVER DEBUG] Detectados: 3 | Base: 0xA0000000 | INT: 0xA0003000
+[TRANSCEIVER DEBUG]   - Transceptor 0: 0xA0000000
+[TRANSCEIVER DEBUG]   - Transceptor 1: 0xA0001000
+[TRANSCEIVER DEBUG]   - Transceptor 2: 0xA0002000
+
+=== ARRANQUE SISTEMA ZCU102 (5 UARTs) ===
+UART 00 [OK] Base: 0xA0000000
+UART 01 [OK] Base: 0xA0001000
+UART 02 [OK] Base: 0xA0002000
+[RX UART 00]: UART 2 Lista.
+
+=======================================================
+ CONSOLA DE CONTROL MULTI-TRANSCEPTOR
+-------------------------------------------------------
+ Formato: <ID> <MENSAJE> | <ID> SLO ON | <ID> SLO OFF
+ Ejemplos:
+   '0 Hola'      -> Envia 'Hola' por UART 0
+   'ALL Reset'   -> Envia 'Reset' por TODAS las UARTs
+   '2 SLO ON'    -> Activa el modo Slow Rate en UART 2
+   'ALL SLO OFF' -> Desactiva el modo Slow en TODAS
+=======================================================
+
+CMD> 
+---- Sent utf8 encoded message: "0 hola\n" ----
+0 hola
+Tx -> UART 0: OK
+CMD> [RX UART 02]: hola
+---- Sent utf8 encoded message: "2 hola\n" ----
+2 hola
+Tx -> UART 2: OK
+CMD> [RX UART 00]: hola
+---- Sent utf8 encoded message: "0 hola\n" ----
+0 hola
+Tx -> UART 0: OK
+CMD> [RX UART 02]: hola
+---- Sent utf8 encoded message: "2 hola\n" ----
+2 hola
+Tx -> UART 2: OK
+CMD> [RX UART 00]: hola
+---- Sent utf8 encoded message: "0 hola\n" ----
+0 hola
+Tx -> UART 0: OK
+CMD> [RX UART 02]: �hola
+---- Sent utf8 encoded message: "2 hola\n" ----
+2 hola
+Tx -> UART 2: OK
+CMD> [RX UART 00]: �hola
+---- Sent utf8 encoded message: "0 hola\n" ----
+0 hola
+Tx -> UART 0: OK
+CMD> [RX UART 02]: �hola
+---- Sent utf8 encoded message: "2 hola\n" ----
+2 hola
+Tx -> UART 2: OK
+CMD> [RX UART 00]: �hola
+---- Sent utf8 encoded message: "0 hola\n" ----
+0 hola
+Tx -> UART 0: OK
+CMD> [RX UART 02]: hola
+---- Sent utf8 encoded message: "2 hola\n" ----
+2 hola
+Tx -> UART 2: OK
+CMD> [RX UART 00]: hola
+---- Sent utf8 encoded message: "0 HOLA MUNDO\n" ----
+0 HOLA MUNDO
+Tx -> UART 0: OK
+CMD> [RX UART 02]: HOLA MUNDO
+---- Sent utf8 encoded message: "1 HOLA MUNDO\n" ----
+1 HOLA MUNDO
+Tx -> UART 1: OK
+CMD> 
+---- Sent utf8 encoded message: "2 HOLA MUNDO\n" ----
+2 HOLA MUNDO
+Tx -> UART 2: OK
+CMD> [RX UART 00]: HOLA MUNDO
