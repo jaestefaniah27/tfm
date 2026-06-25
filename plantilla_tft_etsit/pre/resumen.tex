@@ -1,0 +1,61 @@
+\chapter*{}
+\addcontentsline{toc}{chapter}{Resumen y Palabras Clave}
+% Resumen en español
+\Large{\textsc{\textcolor{nar}{Resumen}}} \par
+\vspace{0.2cm}
+\normalsize{%
+Este Trabajo de Fin de Máster presenta el desarrollo de una plataforma de comunicación con
+periféricos sobre el MPSoC Zynq UltraScale+ ZCU102, en el marco del proyecto LINCE, una
+iniciativa del PERTE Aeroespacial liderada por Indra para el desarrollo de microsatélites de
+órbita baja.
+
+El trabajo abarca cuatro áreas principales. 
+
+En primer lugar, el diseño e implementación en VHDL de un transceptor serie altamente configurable para 
+la lógica programable del MPSoC.
+
+En segundo lugar, el desarrollo de un driver serie en C sobre el sistema operativo en tiempo real RTEMS 
+en el sistema de procesamiento del MPSoC, que utiliza el transceptor serie desarrollado y ofrece una 
+API pública que abstrae completamente del hardware. 
+En tercer lugar, el diseño y fabricación de tres placas de circuito impreso de ampliación de la ZCU102
+que se conectan a ella para expandir sus capacidades y permiten ampliar la ventana de
+desarrollo. La primera placa ofrece soporte hardware para 7 líneas RS422 y 7 líneas RS485,
+las cuales se pueden conectar en buses compartidos configurables por hardware. La segunda
+placa ofrece soporte para 3 líneas RS422 o RS485 seleccionable, dos líneas CAN, cuatro
+líneas PWM y cuatro líneas analógicas. La tercera placa ofrece soporte para cinco líneas
+RS422 o RS485 seleccionable, tres pares de líneas de potencia para controlar motores por
+PWM y dos líneas SpaceWire.
+
+En cuarto lugar, la validación de la plataforma mediante el desarrollo de herramientas de software
+y hardware adicionales, que permitieron verificar el correcto funcionamiento del driver serie 
+y de las distintas funcionalidades de las placas de ampliación.
+
+El conjunto del trabajo constituye una plataforma funcional y validada que el equipo de
+Sener, Indra y el laboratorio B105 pueden utilizar como base para el subsistema de
+comunicaciones del ordenador de a bordo del satélite LINCE en el futuro.
+}
+
+\vspace{0.9cm}
+
+% Summary (resumen en inglés)
+\Large{\textsc{\textcolor{nar}{Summary}}} \par
+\vspace{0.2cm}
+\normalsize{%
+% TODO: traducción al inglés (máximo 500 palabras)
+\textit{[Pendiente de redacción — máximo 500 palabras.]}
+}
+\vspace{0.9cm}
+
+% Palabras clave
+\Large{\textsc{\textcolor{nar}{Palabras Clave}}} \par \par
+\vspace{0.2cm}
+\normalsize{MPSoC, FPGA, VHDL, RTEMS, RS422, RS485, CAN, SpaceWire, driver serie, PCB,
+sistemas empotrados, tiempo real, satélite, ordenador de a bordo.} \par
+\vspace{0.8cm}
+
+\Large{\textsc{\textcolor{nar}{Keywords}}} \par
+\vspace{0.2cm}
+\normalsize{%
+% TODO: palabras clave en inglés
+\textit{[Pendiente de redacción.]}
+} \par

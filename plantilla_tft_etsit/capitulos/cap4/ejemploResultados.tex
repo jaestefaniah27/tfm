@@ -1,0 +1,211 @@
+En este capítulo se recogen los resultados de la validación hardware del sistema completo.
+Las pruebas se realizaron con la placa CDHS y la placa AOCS conectadas a la ZCU102
+mediante FMC. La placa de comunicación serie de diseño propio queda pendiente de
+fabricación y sus resultados se incorporarán antes de la entrega final.
+
+\section{Montaje del sistema}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\parbox{0.85\textwidth}{\centering \textit{[Figura pendiente: foto del sistema completo montado --- ZCU102 con placa CDHS en FMC J5]}\vspace{0.5cm}}}
+    \caption{Sistema completo montado: ZCU102 con la placa CDHS conectada al FMC.}
+    \label{fig:sistema_montado}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\parbox{0.85\textwidth}{\centering \textit{[Figura pendiente: foto de la placa CDHS soldada --- vista superior]}\vspace{0.5cm}}}
+    \caption{Placa CDHS con componentes montados (vista superior).}
+    \label{fig:cdhs_foto}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\parbox{0.85\textwidth}{\centering \textit{[Figura pendiente: foto de la placa AOCS soldada --- vista superior]}\vspace{0.5cm}}}
+    \caption{Placa AOCS con componentes montados (vista superior).}
+    \label{fig:aocs_foto}
+\end{figure}
+
+\section{Validación de comunicaciones serie RS422/RS485}
+
+Las pruebas de comunicaciones serie se realizaron con la aplicación de testing en RTEMS,
+que expone una consola interactiva por USB donde el usuario puede enviar mensajes a
+cualquier transceptor con el formato \texttt{<ID> <MENSAJE>} o a todos simultáneamente con
+\texttt{ALL <MENSAJE>}. Se construyeron arneses de \textit{loopback} para interconectar los canales:
+
+\begin{itemize}
+    \item \textbf{RS422}: arnés a 4 hilos cruzando TX\_P/N de un canal con RX\_P/N del opuesto.
+    \item \textbf{RS485}: arnés a 2 hilos conectando A+ y B$-$ de un canal con A+ y B$-$ del otro.
+\end{itemize}
+
+\subsection{CDHS --- 3 transceptores}
+
+Al arrancar, el driver descubrió automáticamente los 3 transceptores instanciados en el
+\textit{bitstream} e imprimió sus direcciones base (\texttt{0xA0000000}, \texttt{0xA0001000},
+\texttt{0xA0002000}), confirmando el mecanismo de descubrimiento dinámico de hardware. A
+continuación, la consola reportó \texttt{UART 00 [OK]}, \texttt{UART 01 [OK]},
+\texttt{UART 02 [OK]}.
+
+Las pruebas de \textit{loopback} mostraron que los mensajes enviados por UART 0 llegaban a
+UART 2 y viceversa, y los enviados por UART 1 llegaban correctamente. En las primeras
+recepciones de esta captura aparecen caracteres corruptos (\texttt{?}), correspondientes a
+una iteración previa del diseño antes de aplicar la corrección de robustez del receptor
+descrita en el Capítulo~3 (verificación de \textit{start-bit} a mitad de período). Una
+vez implementada esa mejora en la FSM del receptor, los caracteres corruptos desaparecieron
+por completo en las pruebas posteriores.
+
+\begin{lstlisting}[caption={Salida de terminal --- prueba RS422/RS485 con la placa CDHS (3 transceptores)}]
+[TRANSCEIVER DEBUG] Detectados: 3 | Base: 0xA0000000 | INT: 0xA0003000
+UART 00 [OK]  UART 01 [OK]  UART 02 [OK]
+CMD> 0 HOLA MUNDO
+Tx -> UART 0: OK
+[RX UART 02]: HOLA MUNDO
+CMD> 2 HOLA MUNDO
+Tx -> UART 2: OK
+[RX UART 00]: HOLA MUNDO
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\parbox{0.85\textwidth}{\centering \textit{[Figura pendiente: captura completa del terminal \texttt{cdhs\_testing\_rs} disponible en \texttt{tfm/terminal/}]}\vspace{0.5cm}}}
+    \caption{Captura completa del terminal de pruebas RS en la placa CDHS.}
+    \label{fig:cdhs_rs_terminal}
+\end{figure}
+
+\subsection{AOCS --- 5 transceptores}
+
+Con el \textit{bitstream} de 5 transceptores para la placa AOCS, el descubrimiento detectó
+correctamente 5 instancias (\texttt{0xA0000000}--\texttt{0xA0004000}, INTC en
+\texttt{0xA0005000}). Las pruebas de \textit{loopback} entre distintos pares de canales
+---UART 0$\leftrightarrow$4, UART 0$\leftrightarrow$3, UART 0$\leftrightarrow$2,
+UART 0$\leftrightarrow$1--- resultaron todas correctas sin errores de \textit{framing}.
+
+\begin{lstlisting}[caption={Salida de terminal --- prueba RS422/RS485 con la placa AOCS (5 transceptores)}]
+[TRANSCEIVER DEBUG] Detectados: 5 | Base: 0xA0000000 | INT: 0xA0005000
+CMD> 0 HOLA  ->  [RX UART 04]: HOLA
+CMD> 4 HOLA  ->  [RX UART 00]: HOLA
+CMD> 0 HOLA  ->  [RX UART 03]: HOLA
+CMD> 0 HOLA  ->  [RX UART 01]: HOLA
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\parbox{0.85\textwidth}{\centering \textit{[Figura pendiente: captura completa del terminal \texttt{aocs\_testing\_rs} disponible en \texttt{tfm/terminal/}]}\vspace{0.5cm}}}
+    \caption{Captura completa del terminal de pruebas RS en la placa AOCS.}
+    \label{fig:aocs_rs_terminal}
+\end{figure}
+
+\subsection{Prueba con 13 transceptores simultáneos}
+
+Para verificar el correcto funcionamiento del driver con un número elevado de instancias, se
+cargó un \textit{bitstream} con 13 transceptores instanciados, conectando los canales adicionales a
+los pines externos del conector J3 de la ZCU102. El sistema arrancó y operó correctamente
+con todos los canales, confirmando que la arquitectura de ISR maestra con tareas \textit{worker}
+individuales escala sin problemas hasta el número máximo de instancias soportado. La
+prueba con los 14 transceptores sobre la placa de comunicación serie de diseño propio queda
+pendiente de fabricación.
+
+\section{Validación del bus CAN}
+
+Las pruebas del bus CAN se realizaron con la aplicación de test desarrollada por Diego Ramos
+(compañero del laboratorio B105 en el proyecto LINCE), que configura los canales CAN y
+ejecuta una batería de tests de enlace.
+
+La suite de tests ejecutó 26 pruebas cubriendo inicialización, \textit{loopback} interno,
+transferencia física CAN0$\leftrightarrow$CAN1, filtrado de identificadores estándar y
+extendido, manejo de tramas RTR y pruebas de interrupción por hardware. El resultado fue
+\textbf{26/26 tests PASS, 0 FAILED}:
+
+\begin{lstlisting}[caption={Resumen de resultados del test CAN (placa CDHS)}]
+[PASS] CAN0 initialization (Fast Mode)
+[PASS] CAN1 initialization (Slow Mode)
+[PASS] Loopback RX ID matches TX ID
+[PASS] Loopback RX Data matches TX Data
+[PASS] CAN0 received correct ID from CAN1        (fisico)
+[PASS] CAN0 received correct Data from CAN1      (fisico)
+[PASS] Standard ID: Exact Match Accepted (0x1A4)
+[PASS] Extended ID: Exact Match Accepted (0x12345678)
+[PASS] RTR Filter: Accepted matching Remote Request
+[PASS] TxOk fired successfully
+[PASS] RxOk fired and FIFO was drained successfully (No Storm)
+... (26/26 PASS, 0 FAILED)
+\end{lstlisting}
+
+Un resultado relevante adicional fue la verificación del efecto de las resistencias de
+terminación sobre la integridad de la señal CAN. Sin terminación, la señal presentaba
+reflexiones visibles que degradaban los flancos; con ambas resistencias de 60~$\Omega$
+conectadas, la forma de onda resultó limpia y bien definida.
+
+\begin{figure}[H]
+    \centering
+    \fbox{\parbox{0.85\textwidth}{\centering \textit{[Figura pendiente: captura de osciloscopio --- señal CAN sin resistencias de terminación]}\vspace{0.5cm}}}
+    \caption{Señal diferencial CAN sin resistencias de terminación.}
+    \label{fig:can_sin_term}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\parbox{0.85\textwidth}{\centering \textit{[Figura pendiente: captura de osciloscopio --- señal CAN con resistencias de terminación]}\vspace{0.5cm}}}
+    \caption{Señal diferencial CAN con resistencias de terminación (60~$\Omega$ + 60~$\Omega$).}
+    \label{fig:can_con_term}
+\end{figure}
+
+\section{Validación del ADC SPI (termistores CDHS)}
+
+La aplicación de lectura del ADC ADS7950 muestreó los cuatro canales a 500~ms de intervalo
+e imprimió los valores digitales por el terminal. Para verificar la linealidad de la cadena de
+adquisición se aplicaron tensiones de referencia conocidas a las entradas analógicas:
+
+\begin{itemize}
+    \item Tensión de entrada 0~V $\rightarrow$ valor digital próximo a 0 (fondo de escala inferior).
+    \item Tensión de entrada 3,3~V $\rightarrow$ valor digital próximo a 4095 (fondo de escala
+    superior, 12 bits).
+\end{itemize}
+
+Los resultados confirmaron el rango de conversión esperado, validando el driver SPI de bajo
+nivel y la cadena analógica de la placa CDHS. La captura registra el canal CH2 siendo
+sometido a un barrido de tensión con la fuente de laboratorio:
+
+\begin{lstlisting}[caption={Lectura del ADC ADS7950 durante barrido de tensión en CH2}]
+ADS7950: CH0= 244  CH1=  43  CH2=   0  CH3=  19   <- tension en CH2 = 0 V
+ADS7950: CH0= 245  CH1=  43  CH2=1577  CH3=  19   <- subida
+ADS7950: CH0= 245  CH1=  43  CH2=3419  CH3=  21   <- cerca del maximo
+ADS7950: CH0= 245  CH1=  43  CH2=3565  CH3=  21   <- ~2.9 V aplicados
+ADS7950: CH0= 245  CH1=  43  CH2=2436  CH3=  22   <- bajada
+ADS7950: CH0= 246  CH1=  43  CH2= 102  CH3=  22   <- de vuelta a 0 V
+\end{lstlisting}
+
+Los canales CH0 ($\approx$245), CH1 ($\approx$43) y CH3 ($\approx$19) mostraron valores
+estables bajos durante todo el ensayo, correspondientes a las entradas no excitadas.
+
+\begin{figure}[H]
+    \centering
+    \fbox{\parbox{0.85\textwidth}{\centering \textit{[Figura pendiente: captura completa del terminal \texttt{cdhs\_testing\_adc.txt} disponible en \texttt{tfm/terminal/}]}\vspace{0.5cm}}}
+    \caption{Captura completa del terminal de lectura ADC (placa CDHS).}
+    \label{fig:cdhs_adc_terminal}
+\end{figure}
+
+\section{Validación PWM (calentadores CDHS y puentes en H AOCS)}
+
+Las señales PWM generadas por el bloque \texttt{PWMx4\_auto\_test} se midieron con el
+osciloscopio sobre el conector J5 de la placa CDHS, verificando los cuatro canales: 10~kHz,
+5~kHz, 1~kHz y 100~Hz, todos con \textit{duty cycle} del 50\%.
+
+Para la placa AOCS, el bloque VHDL de control de motores generó señales PWM alternando
+la dirección de giro cada pocos segundos (línea 1 activa con línea 2 a 0, y a continuación
+línea 1 a 0 con línea 2 activa), permitiendo verificar el control de puentes en H con una
+fuente de alimentación externa conectada a los bornes banana.
+
+\begin{figure}[H]
+    \centering
+    \fbox{\parbox{0.85\textwidth}{\centering \textit{[Figura pendiente: captura de osciloscopio --- señal PWM en J5 de la placa CDHS (frecuencia y duty cycle)]}\vspace{0.5cm}}}
+    \caption{Señal PWM medida en el conector J5 de la placa CDHS.}
+    \label{fig:cdhs_pwm}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\parbox{0.85\textwidth}{\centering \textit{[Figura pendiente: captura de osciloscopio --- par de señales PWM complementarias de control de motor (AOCS)]}\vspace{0.5cm}}}
+    \caption{Señales PWM de control de motor en la placa AOCS (par complementario para puente en H).}
+    \label{fig:aocs_pwm}
+\end{figure}

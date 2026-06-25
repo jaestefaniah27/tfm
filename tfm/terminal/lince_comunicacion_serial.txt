@@ -1,0 +1,109 @@
+## Transferring control to RTEMS (at address 00010000) ...
+MMU_MAP: mmu_map_pl_axi_early() called -> begin=0xa0000000 end=0xa0ffffff
+MMU_MAP: aarch64_mmu_set_translation_table_entries rc=0
+MMU_MAP: return from mmu_map_pl_axi_early()
+[TRANSCEIVER DEBUG] Detectados: 14 | Base: 0xA0000000 | INT: 0xA000E000
+[TRANSCEIVER DEBUG]   - Transceptor 0: 0xA0000000
+[TRANSCEIVER DEBUG]   - Transceptor 1: 0xA0001000
+[TRANSCEIVER DEBUG]   - Transceptor 2: 0xA0002000
+[TRANSCEIVER DEBUG]   - Transceptor 3: 0xA0003000
+[TRANSCEIVER DEBUG]   - Transceptor 4: 0xA0004000
+[TRANSCEIVER DEBUG]   - Transceptor 5: 0xA0005000
+[TRANSCEIVER DEBUG]   - Transceptor 6: 0xA0006000
+[TRANSCEIVER DEBUG]   - Transceptor 7: 0xA0007000
+[TRANSCEIVER DEBUG]   - Transceptor 8: 0xA0008000
+[TRANSCEIVER DEBUG]   - Transceptor 9: 0xA0009000
+[TRANSCEIVER DEBUG]   - Transceptor 10: 0xA000A000
+[TRANSCEIVER DEBUG]   - Transceptor 11: 0xA000B000
+[TRANSCEIVER DEBUG]   - Transceptor 12: 0xA000C000
+[TRANSCEIVER DEBUG]   - Transceptor 13: 0xA000D000
+
+=== ARRANQUE SISTEMA ZCU102 (14 UARTs) ===
+UART 00 [OK] Base: 0xA0000000
+UART 01 [OK] Base: 0xA0001000
+UART 02 [OK] Base: 0xA0002000
+UART 03 [OK] Base: 0xA0003000
+UART 04 [OK] Base: 0xA0004000
+UART 05 [OK] Base: 0xA0005000
+UART 06 [OK] Base: 0xA0006000
+UART 07 [OK] Base: 0xA0007000
+UART 08 [OK] Base: 0xA0008000
+UART 09 [OK] Base: 0xA0009000
+UART 10 [OK] Base: 0xA000A000
+UART 11 [OK] Base: 0xA000B000
+UART 12 [OK] Base: 0xA000C000
+UART 13 [OK] Base: 0xA000D000
+
+=======================================================
+ CONSOLA DE CONTROL MULTI-TRANSCEPTOR
+-------------------------------------------------------
+ Formato: <ID> <MENSAJE> | <ID> SLO ON | <ID> SLO OFF
+ Ejemplos:
+   '0 Hola'      -> Envia 'Hola' por UART 0
+   'ALL Reset'   -> Envia 'Reset' por TODAS las UARTs
+   '2 SLO ON'    -> Activa el modo Slow Rate en UART 2
+   'ALL SLO OFF' -> Desactiva el modo Slow en TODAS
+=======================================================
+
+CMD> 
+---- Sent utf8 encoded message: "6 hola\n" ----
+6 hola
+Tx -> UART 6: OK
+CMD> [RX UART 05]: hola
+---- Sent utf8 encoded message: "5 hola seis\n" ----
+5 hola seis
+Tx -> UART 5: OK
+CMD> [RX UART 06]: hola seis
+---- Sent utf8 encoded message: "4 Hola Cinco y Seis\n" ----
+4 Hola Cinco y Seis
+Tx -> UART 4: OK
+CMD> [RX UART 05]: Hola Cinco y Seis
+[RX UART 06]: Hola Cinco y Seis
+---- Sent utf8 encoded message: "5 Hola Cuatro y Seis\n" ----
+5 Hola Cuatro y Seis
+Tx -> UART 5: OK
+CMD> [RX UART 04]: Hola Cuatro y Seis
+[RX UART 06]: Hola Cuatro y Seis
+---- Sent utf8 encoded message: "6 Hola Cuatro y Cinco\n" ----
+6 Hola Cuatro y Cinco
+Tx -> UART 6: OK
+CMD> [RX UART 04]: Hola Cuatro y Cinco
+[RX UART 05]: Hola Cuatro y Cinco
+---- Sent utf8 encoded message: "0 Hola \n" ----
+0 Hola 
+Tx -> UART 0: OK
+CMD> [RX UART 01]: Hola 
+[RX UART 02]: Hola 
+[RX UART 03]: Hola 
+---- Sent utf8 encoded message: "7 hola\n" ----
+7 hola
+Tx -> UART 7: OK
+CMD> [RX UART 08]: hola
+---- Sent utf8 encoded message: "7 hola\n" ----
+7 hola
+Tx -> UART 7: OK
+CMD> [RX UART 08]: hola
+[RX UART 09]: hola
+---- Sent utf8 encoded message: "8 holoa\n" ----
+8 holoa
+Tx -> UART 8: OK
+CMD> [RX UART 07]: holoa
+---- Sent utf8 encoded message: "9 hola\n" ----
+9 hola
+Tx -> UART 9: OK
+CMD> [RX UART 07]: hola
+---- Sent utf8 encoded message: "11 hola\n" ----
+11 hola
+Tx -> UART 11: OK
+CMD> [RX UART 12]: hola
+---- Sent utf8 encoded message: "12 hola\n" ----
+12 hola
+Tx -> UART 12: OK
+CMD> [RX UART 11]: hola
+---- Sent utf8 encoded message: "13 hola\n" ----
+13 hola
+Tx -> UART 13: OK
+CMD> 
+---- Sent utf8 encoded message: "10 hola\n" ----
+10 hola
+Tx -> UART 10: OK

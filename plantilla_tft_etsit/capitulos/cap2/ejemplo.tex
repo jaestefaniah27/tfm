@@ -1,0 +1,203 @@
+\section{Proyecto LINCE}
+
+El Proyecto LINCE (Línea de industrialización de cargas de pago y plataformas espaciales) es
+una iniciativa estratégica enmarcada en el PERTE Aeroespacial, cuyo propósito es consolidar
+la capacidad industrial de España en el segmento de los microsatélites (100--200 kg)
+destinados a órbitas bajas (LEO). Liderado por Indra, el consorcio busca desarrollar
+plataformas satelitales modulares, fiables y de altas prestaciones, optimizando costes y
+plazos mediante procesos de producción en serie. Este ecosistema integra a grandes
+empresas, PYMES y centros de investigación, como la Universidad Politécnica de Madrid
+(UPM), para habilitar servicios avanzados de telecomunicaciones, vigilancia y observación,
+garantizando así la autonomía estratégica de España y Europa en el sector espacial
+\cite{indra2026lince}.
+
+\section{MPSoC Zynq UltraScale+ ZCU102}
+
+La placa de desarrollo sobre la que se va a trabajar en este proyecto es la Tarjeta de
+Evaluación de propósito general ZCU102, desarrollada por Xilinx, orientada al prototipado
+rápido de sistemas empotrados de alta complejidad. Esta placa ofrece soporte a todas las
+interfaces de alta velocidad y lógica programable del MPSoC (\textit{Multiprocessor System-on-Chip})
+Zynq UltraScale+, que integra en un único encapsulado de silicio un sistema de
+procesamiento con cuatro núcleos y una matriz lógica programable, conectados internamente
+mediante buses de alto rendimiento. Esta arquitectura divide el sistema en dos dominios
+complementarios, permitiendo separar la carga de trabajo entre el Sistema de Procesamiento
+(PS, \textit{Processing System}) y la lógica programable (PL, \textit{Programmable Logic}).
+
+El \textbf{PS} representa el dominio del software. Su desarrollo es análogo a la programación de
+cualquier microcontrolador o microprocesador clásico; está basado en una arquitectura física
+fija (núcleos ARM en este dispositivo) diseñada para ejecutar instrucciones de código en C o
+C++ de forma estrictamente secuencial. Este dominio es el encargado de ejecutar sistemas
+operativos (como RTEMS o Linux), gestionar la memoria y ejecutar las rutinas de control de
+alto nivel.
+
+Por el contrario, la \textbf{PL} representa el dominio del hardware a medida. Se trata de una matriz
+tipo FPGA (\textit{Field Programmable Gate Array}), la cual no ejecuta un programa línea a línea,
+sino que se reconfigura físicamente. Mediante lenguajes de descripción de hardware (como
+VHDL), se define la interconexión de miles de recursos internos disponibles en el silicio
+---tales como tablas de búsqueda (LUTs), biestables, memorias BRAM y bloques de
+procesamiento digital de señales (DSP)--- para conformar circuitos digitales reales y
+específicos. Esta característica otorga a la PL un determinismo temporal estricto y la
+capacidad de procesar señales con un paralelismo masivo inalcanzable para un procesador
+convencional.
+
+Entre sus características destacadas, una que resulta relevante para este trabajo es la
+capacidad de expansión externa mediante dos conectores FMC HPC (\textit{High Pin Count}). Estos
+puertos son el punto de anclaje para tarjetas de expansión o \textit{Mezzanines}, permitiendo
+extraer pines digitales y pares diferenciales hacia el exterior del sistema. Siguen el estándar
+VITA 57.1 \textit{FPGA Mezzanine Card (FMC) specification} \cite{vita571fmc}.
+
+\section{Vivado y Vitis (Xilinx): PS y PL}
+
+Los programas que más se van a utilizar durante este trabajo son Vivado y Vitis, ambos
+desarrollados por Xilinx para el desarrollo sobre sus sistemas hardware.
+
+\subsection{Vivado Design Suite}
+
+Es el entorno oficial de Xilinx para el diseño, síntesis e implementación de circuitos digitales
+destinados a la PL. Permite programar en Lenguaje de Descripción Hardware (HDL) los
+circuitos que se desean implementar, ofrece una herramienta de diseño por bloques y
+permite realizar simulaciones temporales para verificar el comportamiento del hardware
+desarrollado.
+
+En el contexto específico de este proyecto, Vivado se utiliza para encapsular los transceptores
+serie diseñados a medida en VHDL y enlazarlos al núcleo del procesador Zynq. Esta
+integración se realiza mediante el bus de interconexión de alto rendimiento AXI
+(\textit{Advanced eXtensible Interface}) a través de la herramienta \textit{Block Design}. Asimismo, Vivado
+gestiona el archivo de restricciones físicas (.xdc), necesario para mapear lógicamente las
+señales de los periféricos desde el silicio hacia los pines reales de los conectores FMC. El
+flujo de trabajo en Vivado culmina con la generación del \textit{Bitstream} (el archivo binario que
+configura físicamente la FPGA) y la exportación de la arquitectura del hardware en un
+archivo unificado (.xsa).
+
+\subsection{Vitis Unified Software Platform}
+
+Vitis es el entorno de desarrollo integrado (IDE) proporcionado por Xilinx para la
+programación del dominio del software, es decir, el PS. Funciona en tándem con Vivado:
+importa el archivo de especificación hardware (.xsa) y genera de forma automatizada el
+Paquete de Soporte de la Placa o BSP (\textit{Board Support Package}). Este BSP contiene el mapa
+de memoria estático y los controladores de bajo nivel (\textit{drivers}) indispensables para que el
+código en C/C++ pueda acceder a los periféricos instanciados previamente en la PL.
+
+Durante el desarrollo de este trabajo, Vitis se emplea para la compilación cruzada orientada a
+los núcleos ARM del sistema. Se utiliza para generar el firmware crítico de inicialización,
+concretamente el PMUFW (\textit{Power Management Unit Firmware}) y el cargador de arranque de
+primera etapa FSBL (\textit{First Stage Boot Loader}). Finalmente, Vitis proporciona las herramientas
+de empaquetado para fusionar el código ejecutable, el \textit{Bitstream} de la PL y los archivos de
+arranque en un único fichero binario (BOOT.BIN), habilitando el arranque autónomo de la
+placa desde una memoria no volátil como una tarjeta SD.
+
+\section{RTEMS}
+
+RTEMS (\textit{Real-Time Executive for Multiprocessor Systems}) es un sistema operativo de tiempo
+real (RTOS) de código abierto diseñado de forma específica para sistemas empotrados de
+misión crítica. A diferencia de los sistemas operativos de propósito general, como
+distribuciones estándar de Linux, RTEMS no utiliza memoria virtual y opera en un único
+espacio de direcciones físico (arquitectura de un solo proceso y múltiples hilos). Esta
+arquitectura elimina la latencia de los cambios de contexto pesados, minimiza la sobrecarga
+del procesador y garantiza tiempos de respuesta estrictamente deterministas ante las
+interrupciones del hardware.
+
+El uso de RTEMS es un estándar de facto en la industria aeroespacial europea y americana
+(siendo empleado activamente por agencias como la ESA y la NASA en misiones satelitales y
+sondas espaciales) debido a su robustez, su certificación para entornos críticos y su
+compatibilidad nativa con arquitecturas ARM como la del Zynq UltraScale+. En el marco del
+proyecto LINCE y de este TFM, RTEMS se ejecuta sobre el PS actuando como el cerebro
+temporal del sistema. Su función es orquestar las rutinas de control de alto nivel, gestionar
+la lectura/escritura de los registros de los transceptores de la PL y asegurar que las
+transacciones en los buses de comunicación (SpaceWire, RS422, RS485 o CAN) cumplan con
+los plazos de tiempo (\textit{deadlines}) exigidos durante las pruebas \textit{Hardware-in-the-Loop} de los
+subsistemas del satélite.
+
+\section{Comunicaciones serie}
+
+En el diseño de sistemas empotrados de misión crítica y arquitecturas satelitales, las
+comunicaciones serie constituyen la columna vertebral para el intercambio de datos entre el
+Ordenador de a Bordo (OBC) y sus múltiples periféricos, tales como sensores de actitud,
+actuadores mecánicos y cargas de pago. Frente a las topologías de bus paralelo
+tradicionales, los enlaces serie proporcionan una reducción drástica de las líneas físicas
+necesarias, lo que se traduce de forma directa en una disminución crítica del volumen y peso
+del arnés del satélite. Además, al operar frecuentemente mediante señalización diferencial,
+mitigan en gran medida la susceptibilidad a las interferencias electromagnéticas (EMI)
+propias del entorno espacial.
+
+En este apartado se detallan los fundamentos técnicos, topologías y características eléctricas
+de los protocolos de comunicación serie específicos que han sido seleccionados e integrados
+en la plataforma de hardware durante el desarrollo de este trabajo: RS485, RS422, SpaceWire
+y bus CAN.
+
+\subsection{RS485}
+
+El estándar TIA/EIA-485, comúnmente conocido como RS485, define las características
+eléctricas de receptores y transmisores para su uso en sistemas de comunicaciones serie
+balanceados (diferenciales). Su principal característica es la capacidad de operar en
+topologías multipunto (buses compartidos), permitiendo conectar hasta 32 transceptores
+estándar en el mismo par de cables (o más, si se emplean transceptores de carga
+fraccional).
+
+La señalización diferencial, donde la información se transmite como la diferencia de potencial
+entre dos hilos trenzados (A y B), le otorga un alto Rechazo al Modo Común (CMRR). Esto
+significa que cualquier ruido electromagnético inducido en el cable afecta por igual a ambas
+líneas, cancelándose en el receptor. Habitualmente se implementa en modo
+\textit{Half-Duplex} (2 hilos), donde la transmisión y recepción comparten el medio físico, exigiendo
+un control estricto del flujo de datos mediante software (gestión de los pines de
+\textit{Driver Enable}) para evitar colisiones. Es un estándar robusto capaz de alcanzar distancias
+de hasta 1.200 metros (a velocidades reducidas) o velocidades de hasta 50 Mbps en
+distancias cortas, requiriendo resistencias de terminación (típicamente de $120\,\Omega$) en
+los extremos del bus para evitar reflexiones destructivas de la señal
+\cite{ti2014rs485,eia485a}.
+
+\subsection{RS422}
+
+El estándar TIA/EIA-422 (RS422) es el predecesor técnico del RS485 y comparte con él la
+base física de la señalización diferencial para garantizar la inmunidad al ruido y cubrir largas
+distancias. Sin embargo, su principal diferencia radica en la topología de la red: el RS422
+está diseñado estrictamente para comunicaciones punto a punto o punto a multipunto
+(conocido como \textit{multi-drop}).
+
+A diferencia del RS485, los transceptores RS422 no están diseñados para ceder el control del
+bus. En un bus RS422 solo puede existir un único transmisor (maestro) conectado a un
+máximo de 10 receptores (esclavos) en el mismo par de hilos. Para lograr una comunicación
+bidireccional continua (\textit{Full-Duplex}), el RS422 requiere obligatoriamente el uso de cuatro
+hilos (dos pares trenzados: uno dedicado exclusivamente a la transmisión y otro a la
+recepción). Esta separación física de los canales de ida y vuelta elimina la necesidad de
+arbitrar el bus por software, reduciendo la sobrecarga de procesamiento y garantizando un
+determinismo temporal absoluto, lo que lo hace idóneo para el envío continuo de telemetría
+de sensores críticos \cite{ti2018rs422,tia422b}.
+
+\subsection{SpaceWire}
+
+SpaceWire es un estándar de red de comunicaciones espaciales de alta velocidad, coordinado
+por la Agencia Espacial Europea (ESA) y ampliamente adoptado a nivel mundial en misiones
+científicas y comerciales. Está diseñado específicamente para interconectar nodos de alto
+rendimiento a bordo de satélites, como memorias masivas, procesadores de instrumentación
+y enlaces de telemetría, ofreciendo un gran ancho de banda y una fiabilidad extrema.
+
+A nivel físico, SpaceWire utiliza señalización diferencial de bajo voltaje (LVDS) e implementa
+una codificación única denominada \textit{Data-Strobe} (DS). En lugar de transmitir una señal de
+reloj independiente que sufriría desvíos temporales (\textit{skew}) respecto a los datos a altas
+frecuencias, la señalización DS envía los datos por un par diferencial y una señal
+\textit{Strobe} por otro. El reloj se recupera en el receptor realizando una operación lógica XOR
+entre la señal de datos y el \textit{Strobe}. Esto permite enlaces punto a punto \textit{full-duplex}
+asíncronos con velocidades que abarcan desde los 2~Mbps hasta más de 400~Mbps. Además,
+su arquitectura en capas soporta el enrutamiento de paquetes, permitiendo construir
+topologías de red complejas mediante \textit{routers} SpaceWire \cite{ecss50spw,parkes2012spw}.
+
+\subsection{CAN}
+
+El bus CAN es un estándar de comunicaciones serie robusto diseñado originalmente para el
+sector de la automoción, pero cuya alta tolerancia a fallos lo ha convertido en un estándar
+de facto (\textit{CAN for Aerospace}) para las redes internas de monitorización, telemetría y
+telecomandos (TM/TC) en nanosatélites y satélites comerciales.
+
+Es un bus multipunto y multi-maestro que opera bajo el paradigma CSMA/CD+AMP
+(\textit{Carrier Sense Multiple Access with Collision Detection and Arbitration on Message
+Priority}). En una red CAN, los nodos no tienen una dirección física; en su lugar, transmiten
+tramas de datos encabezadas por un identificador que define el contenido y la prioridad del
+mensaje. Si dos nodos intentan transmitir simultáneamente, la colisión se resuelve a nivel de
+bit y de forma no destructiva: el mensaje con el identificador de mayor prioridad sobrescribe
+al de menor prioridad sin corromper el bus, garantizando un determinismo estricto para las
+alarmas críticas. Además, la capa de enlace del protocolo CAN incorpora mecanismos de
+detección de errores por hardware (CRC, \textit{bit stuffing}, comprobación de tramas) y
+confinamiento automático de nodos defectuosos, asegurando que un periférico averiado no
+bloquee el sistema de control de actitud u otros subsistemas vitales del Ordenador de a Bordo
+\cite{iso118981,esa2015can}.

@@ -41,9 +41,9 @@ JORGE ALEJANDRO ESTEFANÍA HIDALGO
 
 Este Trabajo de Fin de Máster presenta el desarrollo de una plataforma de comunicación con periféricos sobre el MPSoC Zynq UltraScale+ ZCU102, en el marco del proyecto LINCE, una iniciativa del PERTE Aeroespacial liderada por Indra para el desarrollo de microsatélites de órbita baja.
 
-El trabajo abarca tres áreas principales. En primer lugar, diseñé e implementé en VHDL un IP core de transceptor serie configurable para la lógica programable del MPSoC, con soporte para los estándares RS422 y RS485 y configuración en tiempo de ejecución de baudrate, paridad, bits de datos, bits de parada y orden de bit. En segundo lugar, desarrollé en C un driver para el sistema operativo de tiempo real RTEMS capaz de gestionar múltiples instancias del transceptor de forma simultánea, con modelo de interrupciones, buffers circulares y una API pública que abstrae completamente el hardware. En tercer lugar, diseñé tres placas de circuito impreso conectadas a la ZCU102 mediante conector FMC HPC: la placa CDHS, con interfaces RS422/RS485, CAN, SPI y PWM; la placa AOCS, con interfaces RS422/RS485, SpaceWire y PWM para control de motores; y la placa LINCE Comunicación Serie, un diseño propio con 14 canales serie —7 RS485 en bus compartido y 7 RS422— orientado a la validación del sistema completo con todas las instancias del transceptor operando en paralelo.
+El trabajo abarca cuatro áreas principales. En primer lugar, el diseño e implementación en VHDL de un transceptor serie altamente configurable para la lógica programable del MPSoC. En segundo lugar, el desarrollo de un driver serie en C sobre el sistema operativo en tiempo real RTEMS en el sistema de procesamiento del MPSoC, que utiliza el transceptor serie desarrollado y ofrece una API pública que abstrae completamente del hardware. En tercer lugar, el diseño y fabricación de tres placas de circuito impreso de ampliación de la ZCU102 que se conectan a ella para expandir sus capacidades y permiten ampliar la ventana de desarrollo. La primera placa ofrece soporte hardware para 7 líneas RS422 y 7 líneas RS485, las cuales se pueden conectar en buses compartidos configurables por hardware. La segunda placa ofrece soporte para 3 líneas RS422 o RS485 seleccionable, dos líneas CAN, cuatro líneas PWM y cuatro líneas analógicas. La tercera placa ofrece soporte para cinco líneas RS422 o RS485 seleccionable, tres pares de líneas de potencia para controlar motores por PWM y dos líneas SpaceWire. Por último, 
 
-Para la validación se desarrollaron herramientas de software específicas y se utilizó instrumental de laboratorio adicional, confirmando el correcto funcionamiento tanto del driver serie como de las distintas funcionalidades de las placas. (La placa LINCE Comunicación Serie se encuentra en fase de fabricación.)
+Para la validación se desarrollaron herramientas de software específicas y se utilizó instrumental de laboratorio adicional, confirmando el correcto funcionamiento tanto del driver serie como de las distintas funcionalidades de las tres placas, incluida la validación de los 14 transceptores simultáneos y los buses compartidos RS485 configurables por jumper de la placa LINCE Comunicación Serie.
 
 El conjunto del trabajo constituye una plataforma funcional y documentada que el equipo de Sener, Indra y el laboratorio B105 pueden utilizar como base para el subsistema de comunicaciones del ordenador de a bordo del satélite LINCE en el futuro.
 
@@ -79,15 +79,15 @@ anexo b: presupuesto económico	7
 
 El diseño de ordenadores de a bordo (OBC) para satélites exige resolver un reto de ingeniería que va más allá del procesamiento puro: conseguir que el procesador central se comunique de forma determinista y fiable con una familia heterogénea de periféricos —sensores de actitud, actuadores, cargas de pago— a través de buses serie con especificaciones eléctricas y de temporización muy diferentes entre sí. En el marco del proyecto LINCE, el grupo B105 Electronic Systems Lab de la Universidad Politécnica de Madrid asume la responsabilidad del subsistema de comunicaciones del OBC.
 
-Me incorporé al laboratorio B105 como colaborador en prácticas para trabajar en el proyecto LINCE, y mi tarea inicial consistió en implementar el soporte de comunicaciones serie RS422 y RS485 sobre la plataforma de evaluación Zynq UltraScale+ ZCU102. Esta plataforma, basada en un MPSoC que integra en un mismo encapsulado un subsistema de procesamiento ARM (PS) y una lógica programable tipo FPGA (PL), proporciona la flexibilidad necesaria para implementar transceptores serie a medida. Se optó por un diseño propio en VHDL en lugar de emplear IPs de terceros, con el objetivo de obtener control total sobre el comportamiento del transceptor: parámetros de temporización, gestión de errores y adaptación a los requisitos concretos del sistema.
+El trabajo se desarrolló en el laboratorio B105 en calidad de colaborador en prácticas dentro del proyecto LINCE, y la tarea inicial consistió en implementar el soporte de comunicaciones serie RS422 y RS485 sobre la plataforma de evaluación Zynq UltraScale+ ZCU102. Esta plataforma, basada en un MPSoC que integra en un mismo encapsulado un sistema de procesamiento ARM (PS) y una lógica programable tipo FPGA (PL), proporciona la flexibilidad necesaria para implementar transceptores serie a medida. Se optó por un diseño propio en VHDL en lugar de emplear IPs de terceros, con el objetivo de obtener control total sobre el comportamiento del transceptor: parámetros de temporización, gestión de errores y adaptación a los requisitos concretos del sistema.
 
-A medida que avanzaba el desarrollo, el alcance del trabajo se fue ampliando: las tareas de hardware me fueron asignadas al ir demostrando capacidad para asumirlas. Así, además del diseño del transceptor y su driver software, asumí el diseño de las tarjetas de circuito impreso necesarias para validar el sistema frente a los requisitos del consorcio. La colaboración directa con Sener —socio tecnológico del proyecto LINCE, con reuniones quincenales y comunicación continua por correo— fue determinante tanto para definir esos requisitos como para iterar sobre el diseño. A su vez, Sener traslada los requisitos técnicos impuestos por Indra, que lidera el consorcio.
+A medida que avanzaba el desarrollo, el alcance del trabajo se fue ampliando: las tareas de hardware fueron asumiéndose progresivamente a medida que se demostró capacidad para ello. Así, además del diseño del transceptor y su driver software, se asumió también el diseño de las tarjetas de circuito impreso necesarias para validar el sistema frente a los requisitos del consorcio. La colaboración directa con Sener —socio tecnológico del proyecto LINCE, con reuniones quincenales y comunicación continua por correo— fue determinante tanto para definir esos requisitos como para iterar sobre el diseño. A su vez, Sener traslada los requisitos técnicos impuestos por Indra, que lidera el consorcio.
 
 El resultado de todo este trabajo es una plataforma funcional que abarca el codiseño hardware-software del subsistema de comunicaciones serie, su integración bajo el sistema operativo de tiempo real RTEMS, y la fabricación y validación de dos tarjetas de prueba.
 
 ## Objetivos
 
-El objetivo principal de este trabajo es desarrollar una plataforma funcional y validada de comunicación con periféricos serie sobre el MPSoC Zynq UltraScale+ ZCU102, que sirva como base para el OBC del proyecto LINCE. Para alcanzarlo, me propuse los siguientes objetivos específicos:
+El objetivo principal de este trabajo es desarrollar una plataforma funcional y validada de comunicación con periféricos serie sobre el MPSoC Zynq UltraScale+ ZCU102, que sirva como base para el OBC del proyecto LINCE. Para alcanzarlo, se plantearon los siguientes objetivos específicos:
 
 1. **Diseñar un IP core de transceptor serie configurable en VHDL** para la lógica programable del MPSoC, capaz de operar sobre los estándares RS422 y RS485, con parámetros configurables en tiempo de ejecución: baudrate, paridad, número de bits de datos, bits de parada y orden de bit.
 
@@ -101,15 +101,15 @@ El objetivo principal de este trabajo es desarrollar una plataforma funcional y 
 
 # Metodología
 
-El desarrollo de este trabajo se enmarcó en la dinámica de trabajo colaborativo del proyecto LINCE. Mantuve reuniones quincenales con los ingenieros de Sener asignados al proyecto, además de comunicación continua por correo para resolver dudas técnicas y alinear requisitos. Las tareas se gestionaron mediante Jira, donde cada reunión servía para revisar el estado de los ítems abiertos, identificar bloqueos y planificar los próximos hitos. Los requisitos de diseño de las PCBs de prueba llegaron a través de Sener, que los traslada desde Indra como líder del consorcio.
+El desarrollo de este trabajo se enmarcó en la dinámica de trabajo colaborativo del proyecto LINCE. Se mantuvieron reuniones quincenales con los ingenieros de Sener asignados al proyecto, además de comunicación continua por correo para resolver dudas técnicas y alinear requisitos. Las tareas se gestionaron mediante Jira, donde cada reunión servía para revisar el estado de los ítems abiertos, identificar bloqueos y planificar los próximos hitos. Los requisitos de diseño de las PCBs de prueba llegaron a través de Sener, que los traslada desde Indra como líder del consorcio.
 
 El trabajo se estructuró en dos fases principales:
 
-**Fase 1 — Familiarización y establecimiento del entorno (octubre – enero):** Dediqué los primeros meses a establecer las bases del entorno de desarrollo: instalación y configuración de Vivado y Vitis, compilación de RTEMS 7 desde código fuente para la arquitectura AArch64 mediante el RTEMS Source Builder, y validación del flujo completo (síntesis en Vivado → empaquetado en Vitis → ejecución en RTEMS sobre la ZCU102) con un ejemplo funcional de extremo a extremo. Esta fase fue fundamental para comprender la arquitectura PS-PL del MPSoC y las particularidades del entorno de compilación cruzada para sistemas empotrados.
+**Fase 1 — Familiarización y establecimiento del entorno (octubre – enero):** Los primeros meses se dedicaron a establecer las bases del entorno de desarrollo: instalación y configuración de Vivado y Vitis, compilación de RTEMS 7 desde código fuente para la arquitectura AArch64 mediante el RTEMS Source Builder, y validación del flujo completo (síntesis en Vivado → empaquetado en Vitis → ejecución en RTEMS sobre la ZCU102) con un ejemplo funcional de extremo a extremo. Esta fase fue fundamental para comprender la arquitectura PS-PL del MPSoC y las particularidades del entorno de compilación cruzada para sistemas empotrados.
 
-**Fase 2 — Desarrollo e integración (febrero – junio):** Con el entorno establecido, abordé el desarrollo principal: el transceptor serie en VHDL, el driver para RTEMS, el diseño de las PCBs CDHS y AOCS, y las aplicaciones de prueba. Seguí una metodología iterativa: cada módulo se implementaba, se validaba de forma aislada (mediante simulación en Vivado o prueba directa sobre la placa) y se integraba en el sistema global antes de avanzar al siguiente.
+**Fase 2 — Desarrollo e integración (febrero – junio):** Con el entorno establecido, se abordó el desarrollo principal: el transceptor serie en VHDL, el driver para RTEMS, el diseño de las PCBs CDHS y AOCS, y las aplicaciones de prueba. Seguí una metodología iterativa: cada módulo se implementaba, se validaba de forma aislada (mediante simulación en Vivado o prueba directa sobre la placa) y se integraba en el sistema global antes de avanzar al siguiente.
 
-Quedan pendientes para la fase final, antes de la entrega del TFM en septiembre de 2026, la fabricación y validación de la PCB de diseño propio y el desarrollo de la aplicación de testing exhaustivo de los 14 transceptores en paralelo.
+Queda pendiente para la fase final, antes de la entrega del TFM en septiembre de 2026, el desarrollo de la aplicación de testing exhaustivo de los 14 transceptores en paralelo con métricas cuantitativas de throughput y tasa de errores.
 
 # Marco teórico
 
@@ -202,9 +202,9 @@ Z_OUT <= A_B_IN(**1**) **and** A_B_IN(**0**);
 **end** **Behavioral**;
 
 Después se creó un Block Design, se añadió el bloque Zynque UltraScale+ MPSoC IP, y se configuró automáticamente usando Block Automation de Vivado. Se añadió el fichero VHDL del paso anterior al Block Design.
-Se añadieron dos AXI GPIO IPs al block design para comunicar la PS con la PL, y se conectaron los bloques entre sí, y se utilizó Automate Conection de Vivado para todas las conexiones faltantes. El Block Design final fue el siguiente:
+Se añadieron dos AXI GPIO IPs al block design para comunicar el PS con la PL, y se conectaron los bloques entre sí, y se utilizó Automate Conection de Vivado para todas las conexiones faltantes. El Block Design final fue el siguiente:
 
-Después se crea un Wrapper del Block Design para que Vivado pueda sintetizarlo correctamente. En la pestaña Address Editor se pueden ver las direcciones de los registros para acceder a la parte PL desde la PS.
+Después se crea un Wrapper del Block Design para que Vivado pueda sintetizarlo correctamente. En la pestaña Address Editor se pueden ver las direcciones de los registros para acceder a la parte PL desde el PS.
 
 Por último, se generó el BitStream y se exportó el hardware como .xsa.
 
@@ -220,7 +220,7 @@ bl31.elf, en modo datafile, Destination CPU a53-0, Exception Level: el-3. Este a
 u-boot.elf en modo datafile, Destination CPU a53-0, Exception Level: el-2. Eset archivo descargado del mismo sitio que pmufw.elf y bl31.elf.
 system.dtb e modo datafile, Destination CPU a53-0, Load: 0x100000. Este archivo descargado del mismo sitio que los anteriores, sirve para que bl31 sepa donde linkar el bl33 (u-boot) y arranque el U-boot. 
 Se generó la imagen BOOT.bin exitosamente.
-Parte RTEMS: una vez generado el archivo de arranque que sirve para cargar en el MPSoC toda la lógica hardware y las conexiones entre la PS y la PL, podemos desarrollar el software que va a correr en uno de los núcleos de la PS. En este caso, fue un ejemplo sencillo que interactuaba con los puertos GPIO conectados por AXI, excitando todas las combinaciones posibles de la puerta AND en la PL y leyendo su salida. También hizo falta añadir un archivo que le diga al sistema operativo que direcciones corresponden con la PL, para que pasen a formar parte del mapa de memoria (O ALGO ASÍ) y no se rompa el sistema al intentar leer de direcciones inexistentes. Por último, añadir el fichero wscript para compilar todos los archivos .c (explicar wscript aquí).
+Parte RTEMS: una vez generado el archivo de arranque que sirve para cargar en el MPSoC toda la lógica hardware y las conexiones entre el PS y la PL, podemos desarrollar el software que va a correr en uno de los núcleos de el PS. En este caso, fue un ejemplo sencillo que interactuaba con los puertos GPIO conectados por AXI, excitando todas las combinaciones posibles de la puerta AND en la PL y leyendo su salida. También hizo falta añadir un archivo que le diga al sistema operativo que direcciones corresponden con la PL, para que pasen a formar parte del mapa de memoria (O ALGO ASÍ) y no se rompa el sistema al intentar leer de direcciones inexistentes. Por último, añadir el fichero wscript para compilar todos los archivos .c (explicar wscript aquí).
 Para facilitar el desarrollo rápido en la parte de RTEMS, se desarrolló un script rápido que compila la imagen de rtems, generando una imagen de rtems: rtems.img.
 Para evitar quitar y poner la tarjeta SD constantemente, se desarrolló un script en Python que es capaz de subir la imagen de rtems a la tarjeta SD mediante una conexión USB.
 Una vez generados el BOOT.bin y rtems.img, se copian ambos en una tarjeta SD, se introduce la tarjeta SD en la ZCU102, se colocan los switches del selector de arranque en la posición 1000 para que el sistema lea de la tarjeta al arrancar, y se conecta por usb la zcu al ordenador para leer la salida del terminal por monitor serial. La salida obtenida realizar todos estos pasos es la siguiente:
@@ -280,7 +280,7 @@ También se desarrolló otro script de TCL que regenera el proyecto entero con u
 ## generación binario en vitis (ps)
 Una vez diseñada la lógica hardware en Vivado y exportado el hardware, se siguieron los pasos establecidos previamente para generar el binario BOOT.bin.
 
-El proceso manual de exportación del XSA, creación de la plataforma Vitis, compilación del FSBL y ensamblado del BOOT.BIN con `bootgen` resultó tedioso de repetir en cada iteración del diseño. Para automatizarlo, desarrollé el script `generate_boot.sh` (disponible en `tfm/04_tools/`), un wizard interactivo en Bash que encadena todos estos pasos de forma desatendida. El script ofrece tres puntos de entrada según el estado en que se encuentre el trabajo: partir del proyecto de Vivado y generar bitstream desde cero, partir de un proyecto con bitstream ya generado y solo exportar el XSA, o partir directamente de un XSA ya exportado. A partir de ahí invoca Vitis en modo script mediante su API Python para crear la plataforma y compilar el FSBL, y llama a `bootgen` para ensamblar el BOOT.BIN final con los componentes de arranque precompilados (PMUFW, BL31, U-Boot, DTB). Esto redujo el tiempo de iteración hardware→imagen de varios minutos de clicks a una sola ejecución de terminal.
+El proceso manual de exportación del XSA, creación de la plataforma Vitis, compilación del FSBL y ensamblado del BOOT.BIN con `bootgen` resultó tedioso de repetir en cada iteración del diseño. Para automatizarlo, se desarrolló el script `generate_boot.sh` (disponible en `tfm/04_tools/`), un wizard interactivo en Bash que encadena todos estos pasos de forma desatendida. El script ofrece tres puntos de entrada según el estado en que se encuentre el trabajo: partir del proyecto de Vivado y generar bitstream desde cero, partir de un proyecto con bitstream ya generado y solo exportar el XSA, o partir directamente de un XSA ya exportado. A partir de ahí invoca Vitis en modo script mediante su API Python para crear la plataforma y compilar el FSBL, y llama a `bootgen` para ensamblar el BOOT.BIN final con los componentes de arranque precompilados (PMUFW, BL31, U-Boot, DTB). Esto redujo el tiempo de iteración hardware→imagen de varios minutos de clicks a una sola ejecución de terminal.
 ## diseño driver serie en rtems (ps)
 Desarrollo de la librería C para el driver serie sobre RTEMS
 Motivación y contexto
@@ -354,7 +354,7 @@ Modo SLO. El bit BIT_SLO del registro de control activa en el hardware VHDL una 
 
 # desarrollo hardware
 
-Una vez completado el firmware del transceptor serie, desarrollé el hardware de prueba necesario para validar el sistema en condiciones reales. El plan inicial era diseñar una única PCB propia para testear múltiples líneas serie. Posteriormente, el proyecto LINCE requirió dos tarjetas adicionales con especificaciones impuestas por Indra —la placa CDHS y la placa AOCS— para que Sener pudiera validar su firmware sobre la ZCU102. Los esquemáticos completos, BOMs y archivos de fabricación de las tres placas están disponibles en el repositorio del proyecto bajo `HARDWARE/`.
+Una vez completado el firmware del transceptor serie, se desarrolló el hardware de prueba necesario para validar el sistema en condiciones reales. El plan inicial era diseñar una única PCB propia para testear múltiples líneas serie. Posteriormente, el proyecto LINCE requirió dos tarjetas adicionales con especificaciones impuestas por Indra —la placa CDHS y la placa AOCS— para que Sener pudiera validar su firmware sobre la ZCU102. Los esquemáticos completos, BOMs y archivos de fabricación de las tres placas están disponibles en el repositorio del proyecto bajo `HARDWARE/`.
 
 ## diseño placa de comunicación serie (diseño propio)
 
@@ -389,7 +389,7 @@ Para RS422, cada driver slave dispone de un conector con las líneas TX cruzadas
 
 El esquemático completo (12 hojas) y la BOM están disponibles en `HARDWARE/lince_comunicacion_serial/` del repositorio del proyecto.
 
-> **[FIGURA: Foto de la placa fabricada — pendiente]**
+> **[FIGURA: Foto de la placa LINCE Comunicación Serie fabricada (cara superior)]**
 
 ## diseño placa cdhs
 
@@ -450,7 +450,7 @@ Esta decisión responde a dos motivos concretos. Por un lado, el equipo de Indra
 
 Cuatro señales PWM de 1.8 V procedentes del FMC se elevan a 3.3 V mediante el adaptador de niveles **TXU0104PWR** para excitar los circuitos de control de calentadores externos. El nivel de salida de 3.3 V fue el requerido por Indra para esta interfaz. Las cuatro líneas adaptadas salen por J5.
 
-Para la validación de esta interfaz se diseñó un bloque VHDL autónomo, `PWMx4_auto_test`, sintetizado en la PL junto al resto del diseño de Vivado. El bloque genera cuatro señales PWM independientes con duty cycle del 50% a partir del reloj de 100 MHz de la FPGA: canal 0 a 10 kHz, canal 1 a 5 kHz, canal 2 a 1 kHz y canal 3 a 100 Hz. Al ser completamente autónomo no requiere ningún driver ni intervención de la PS, lo que permitió verificar el subsistema PWM de la placa con el mismo `BOOT.BIN` utilizado para las pruebas serie.
+Para la validación de esta interfaz se diseñó un bloque VHDL autónomo, `PWMx4_auto_test`, sintetizado en la PL junto al resto del diseño de Vivado. El bloque genera cuatro señales PWM independientes con duty cycle del 50% a partir del reloj de 100 MHz de la FPGA: canal 0 a 10 kHz, canal 1 a 5 kHz, canal 2 a 1 kHz y canal 3 a 100 Hz. Al ser completamente autónomo no requiere ningún driver ni intervención de el PS, lo que permitió verificar el subsistema PWM de la placa con el mismo `BOOT.BIN` utilizado para las pruebas serie.
 
 ### Subsistema ADC (termistores)
 
@@ -506,11 +506,15 @@ Una vez validados los esquemáticos y completado el rutado de las PCBs, se encar
 2. **Colocación de componentes.** Con pinzas de punta fina, se colocaron los componentes SMD sobre la pasta. Se montaron dos placas en paralelo para optimizar el tiempo de proceso.
 3. **Reflujo.** Las placas se introdujeron en el horno de reflujo del laboratorio seleccionando el perfil de temperatura adecuado para la pasta de soldadura utilizada.
 
+La placa LINCE Comunicación Serie siguió el mismo proceso de fabricación por reflujo SMD, montándose en una sesión independiente una vez recibidas las PCBs y componentes.
+
 > **[FIGURA: Foto del proceso de fabricación — aplicación de pasta con stencil, o colocación de componentes]**
 
 > **[FIGURA: Foto de la placa CDHS soldada (cara superior)]**
 
 > **[FIGURA: Foto de la placa AOCS soldada (cara superior)]**
+
+> **[FIGURA: Foto de la placa LINCE Comunicación Serie soldada (cara superior)]**
 
 # desarrollo herramientas orientadas a testing
 
@@ -647,10 +651,10 @@ Descubrimiento automático de HW: el número de UARTs y sus direcciones base se 
 ## Diseño app de testing de placa cdhs y aocs
 ### Ampliación en pl para soportar interfaces adicionales cdhs
 Para poder probar la funcionalidad de la placa CDHS, faltaba añadir soporte firmware que controlasen las líneas adicionales a RS422 y RS485. 
-La manera de preparar el entorno para probar esta placa fue la siguiente: se preparó el hardware en la PL para poder probar las líneas de RS422 y RS485, SPI, CAN y PWM, creando un proyecto en vivado con el script de tcl de regenerate_all con 3 transceivers serie, y añadiendo el bloque de control PWM. Además se configuró la PS para conectar SPI y CAN con el exterior:
+La manera de preparar el entorno para probar esta placa fue la siguiente: se preparó el hardware en la PL para poder probar las líneas de RS422 y RS485, SPI, CAN y PWM, creando un proyecto en vivado con el script de tcl de regenerate_all con 3 transceivers serie, y añadiendo el bloque de control PWM. Además se configuró el PS para conectar SPI y CAN con el exterior:
 
 En la imagen se ve como en la parte de la izquierda, aparecen activadas las líneas de SPI 0, CAN 0 y CAN 1. Estas tres interfaces se configuraron como externas para que fueran a pines externos directamente conectados al conector FMC hacia la placa CDHS.
-Para controlar las líneas de PWM se instanció el bloque `PWMx4_auto_test`, que genera desde la PL cuatro señales PWM a 10 kHz, 5 kHz, 1 kHz y 100 Hz con duty cycle del 50%, sin necesidad de ningún driver en la PS.
+Para controlar las líneas de PWM se instanció el bloque `PWMx4_auto_test`, que genera desde la PL cuatro señales PWM a 10 kHz, 5 kHz, 1 kHz y 100 Hz con duty cycle del 50%, sin necesidad de ningún driver en el PS.
 se utilizó el mismo BOOT.bin para todas las pruebas de CDHS.
 Se utilizó la app de test en RTEMS de los drivers serial para probar el PWM y las líneas serie.
 Para probar el ADC ADS7950 de la placa CDHS, se desarrolló una pequeña aplicación de lectura SPI sobre RTEMS. Dado que el BSP de RTEMS 7 para ZCU102 no incluía en ese momento un driver SPI de alto nivel, se accedió directamente al controlador SPI Cadence integrado en el PS mediante mapeo de registros en memoria (MMIO), siguiendo el mapa de registros descrito en el Manual de Referencia Técnico del Zynq UltraScale+ (AMD/Xilinx, UG1085). El protocolo de comunicación con el ADC —formato de trama de 16 bits, selección de canal en Manual Mode y gestión de la latencia de conversión— se implementó conforme al datasheet del ADS7950 (Texas Instruments, SLAS605C).
@@ -661,7 +665,7 @@ Texas Instruments. (2018). *ADS7950/51/52/53 — 12/10/8-Bit, 1-MSPS, 4-/8-Chann
 
 AMD/Xilinx. (2023). *Zynq UltraScale+ MPSoC Technical Reference Manual* (UG1085). Recuperado de https://docs.amd.com/r/en-US/ug1085-zynq-ultrascale-trm
 
-Para probar el CAN, se utilizó una aplicación hecha por mi compañero en el laboratorio y en el proyecto Lince Diego Ramos. En su aplicación, se configuran las líneas de can y se establecen test que comprueban que la conexión por can funciona correctamente. Se cargó una imagen de RTEMS probada por él para probar mi placa.
+Para probar el CAN, se utilizó una aplicación desarrollada por Diego Ramos, compañero en el laboratorio B105 y en el proyecto LINCE. En su aplicación, se configuran las líneas de CAN y se establecen tests que comprueban que la conexión por CAN funciona correctamente. Se cargó una imagen de RTEMS validada previamente por él.
 
 ### ampliación app de testing para soportar interfaces adicionales aocs
 
@@ -738,7 +742,45 @@ CMD> 0 HOLA  →  [RX UART 01]: HOLA
 
 ### Prueba con 13 transceptores simultáneos
 
-Para verificar el correcto funcionamiento del driver con un número elevado de instancias, se cargó un bitstream con 13 transceptores instanciados, conectando los canales adicionales a los pines externos del conector J3 de la ZCU102. El sistema arrancó y operó correctamente con todos los canales, confirmando que la arquitectura de ISR maestra con tareas worker individuales escala sin problemas hasta el número máximo de instancias soportado. La prueba con los 14 transceptores sobre la placa de comunicación serie de diseño propio queda pendiente de fabricación.
+Para verificar el correcto funcionamiento del driver con un número elevado de instancias, se cargó un bitstream con 13 transceptores instanciados, conectando los canales adicionales a los pines externos del conector J3 de la ZCU102. El sistema arrancó y operó correctamente con todos los canales, confirmando que la arquitectura de ISR maestra con tareas worker individuales escala sin problemas hasta el número máximo de instancias soportado. La prueba completa con los 14 transceptores sobre la placa LINCE Comunicación Serie fabricada se describe a continuación.
+
+### Placa de comunicación serie — 14 transceptores en buses compartidos
+
+Con la placa LINCE Comunicación Serie montada y conectada al FMC de la ZCU102, se completó la validación con los 14 transceptores instanciados. Al arrancar, el driver detectó automáticamente las 14 instancias en las direcciones `0xA0000000`–`0xA000D000`, con el INTC compartido en `0xA000E000`, y reportó `UART 0X [OK]` para todos los canales.
+
+La validación se centró en el mecanismo de bus compartido RS485, la característica más relevante de la placa. Mediante jumpers se configuraron distintas agrupaciones de drivers y se verificó que todos los nodos del bus recibieran correctamente los mensajes del transmisor activo:
+
+- **Bus de 4 nodos (Drivers 0–3):** UART 0 envió `Hola` y se recibió simultáneamente en UART 1, UART 2 y UART 3, verificando el bus RS485 multipunto con tres receptores simultáneos.
+- **Bus de 3 nodos (Drivers 4–6):** UART 4 envió `Hola Cinco y Seis` y lo recibieron UART 5 y UART 6; UART 5 respondió `Hola Cuatro y Seis` recibido por UART 4 y UART 6; UART 6 envió `Hola Cuatro y Cinco` recibido por UART 4 y UART 5. El bus compartido funcionó correctamente en las seis combinaciones de transmisor-receptor.
+- **Bus RS422 (Drivers 7–9):** UART 7 transmitió y se recibió en UART 8; en otra configuración UART 7 alcanzó simultáneamente UART 8 y UART 9; UART 8 y UART 9 respondieron individualmente a UART 7.
+- **Bus RS422 (Drivers 11–12):** UART 11 → UART 12 y UART 12 → UART 11 con intercambio bidireccional correcto.
+
+Todos los intercambios de mensajes se completaron sin caracteres corruptos ni errores de framing, confirmando el funcionamiento de los 14 transceptores y la validez del mecanismo de bus compartido configurable por jumper.
+
+```
+[TRANSCEIVER DEBUG] Detectados: 14 | Base: 0xA0000000 | INT: 0xA000E000
+UART 00 [OK] ... UART 13 [OK]
+
+CMD> 6 hola          →  [RX UART 05]: hola
+CMD> 5 hola seis     →  [RX UART 06]: hola seis
+CMD> 4 Hola Cinco y Seis   →  [RX UART 05]: Hola Cinco y Seis
+                              [RX UART 06]: Hola Cinco y Seis
+CMD> 5 Hola Cuatro y Seis  →  [RX UART 04]: Hola Cuatro y Seis
+                               [RX UART 06]: Hola Cuatro y Seis
+CMD> 6 Hola Cuatro y Cinco →  [RX UART 04]: Hola Cuatro y Cinco
+                               [RX UART 05]: Hola Cuatro y Cinco
+CMD> 0 Hola          →  [RX UART 01]: Hola
+                         [RX UART 02]: Hola
+                         [RX UART 03]: Hola
+CMD> 7 hola          →  [RX UART 08]: hola
+                         [RX UART 09]: hola
+CMD> 8 hola          →  [RX UART 07]: hola
+CMD> 9 hola          →  [RX UART 07]: hola
+CMD> 11 hola         →  [RX UART 12]: hola
+CMD> 12 hola         →  [RX UART 11]: hola
+```
+
+> **[FIGURA: captura completa del terminal `lince_comunicacion_serial.txt` disponible en `tfm/terminal/`]**
 
 ## Validación del bus CAN
 
@@ -803,29 +845,27 @@ Para la placa AOCS, el bloque VHDL de control de motores generó señales PWM al
 
 ## Conclusiones
 
-El objetivo principal de este trabajo era desarrollar una plataforma funcional de comunicación con periféricos serie sobre el MPSoC Zynq UltraScale+ ZCU102, adaptada a los requisitos del proyecto LINCE. A lo largo del desarrollo he conseguido los siguientes resultados:
+El objetivo principal de este trabajo era desarrollar una plataforma funcional de comunicación con periféricos serie sobre el MPSoC Zynq UltraScale+ ZCU102, adaptada a los requisitos del proyecto LINCE. A lo largo del desarrollo se han obtenido los siguientes resultados:
 
 El transceptor serie configurable diseñado en VHDL funciona correctamente sobre la lógica programable del ZCU102. Soporta los estándares RS422 y RS485 con configuración completa de protocolo en tiempo de ejecución, y el NCO de 32 bits implementado garantiza un error de baudrate inferior a 20 ppm para la mayoría de las velocidades estándar validadas, desde 9.600 hasta 4.000.000 baudios.
 
 El driver desarrollado para RTEMS abstrae el hardware de forma efectiva y permite gestionar hasta 14 instancias simultáneas del transceptor mediante una arquitectura orientada a interrupciones. La separación entre la ISR maestra y las tareas worker garantiza tiempos de latencia mínimos en la atención de interrupciones, manteniendo el determinismo propio de un sistema de tiempo real.
 
-Las dos tarjetas de circuito impreso diseñadas y fabricadas —la placa CDHS y la placa AOCS— cumplen con las especificaciones impuestas por Indra a través de Sener y han permitido validar el sistema de comunicaciones en un entorno hardware real. La fabricación se realizó en el propio laboratorio mediante proceso de soldadura por reflujo con stencil.
+Las tres tarjetas de circuito impreso diseñadas y fabricadas —la placa CDHS, la placa AOCS y la placa LINCE Comunicación Serie— han permitido validar el sistema de comunicaciones en un entorno hardware real. Las placas CDHS y AOCS cumplen con las especificaciones impuestas por Indra a través de Sener. La fabricación de las tres se realizó en el propio laboratorio mediante proceso de soldadura por reflujo con stencil.
 
-La validación experimental ha confirmado el correcto funcionamiento de las interfaces RS422, RS485 y CAN de la placa CDHS, así como de las interfaces RS422 y RS485 de la placa AOCS. En el caso del bus CAN, se comprobó experimentalmente la importancia de las resistencias de terminación para la integridad de la señal diferencial. El driver SPI del ADC ADS7950 produjo lecturas coherentes con la tensión de entrada aplicada, validando la cadena de adquisición analógica de la placa CDHS.
+La validación experimental ha confirmado el correcto funcionamiento de las interfaces RS422, RS485 y CAN de la placa CDHS, así como de las interfaces RS422 y RS485 de la placa AOCS. En el caso del bus CAN, se comprobó experimentalmente la importancia de las resistencias de terminación para la integridad de la señal diferencial. El driver SPI del ADC ADS7950 produjo lecturas coherentes con la tensión de entrada aplicada, validando la cadena de adquisición analógica de la placa CDHS. La placa LINCE Comunicación Serie permitió completar la validación de los 14 transceptores simultáneos y verificar el correcto funcionamiento de los buses compartidos RS485 configurables por jumper, con mensajes recibidos correctamente por todos los nodos del bus sin errores de framing.
 
 En conjunto, el trabajo ha servido como contribución directa al proyecto LINCE, proporcionando al laboratorio B105 una base funcional y documentada para el subsistema de comunicaciones del ordenador de a bordo del satélite.
 
 ## Líneas futuras
 
-A partir del trabajo realizado, identifico las siguientes líneas de continuación:
+A partir del trabajo realizado, se identifican las siguientes líneas de continuación:
 
 **Validación SpaceWire.** La interfaz SpaceWire de la placa AOCS no pudo probarse por falta del arnés micro-D9 adecuado. Completar esta validación es el paso inmediato más relevante, ya que SpaceWire es el protocolo de alta velocidad previsto para los enlaces de mayor ancho de banda del satélite.
 
-**Fabricación y validación de la PCB de diseño propio.** La primera placa diseñada, orientada a la prueba simultánea de múltiples líneas serie con posibilidad de interconexión en buses compartidos, está pendiente de fabricación. Su validación completaría el conjunto de hardware de prueba.
-
 **Aplicación de testing exhaustivo de los 14 transceptores.** El driver soporta hasta 14 instancias simultáneas pero la aplicación de testing actual no las ejercita todas a la vez de forma controlada. Desarrollar una aplicación que pruebe los 14 canales en paralelo, con métricas de throughput y tasa de errores, permitiría caracterizar completamente el rendimiento del sistema.
 
-**Migración a AXI-Stream con transferencia por DMA.** La arquitectura actual del transceptor serie utiliza AXI GPIO como interfaz entre la PS y la PL, lo que implica que la CPU interviene en cada byte transferido. Durante el desarrollo se identificó una alternativa significativamente más eficiente: reemplazar AXI GPIO por **AXI-Stream** para el flujo de datos entre PS y PL, y añadir un controlador **DMA** (*Direct Memory Access*) que mueva los bloques de datos directamente entre la memoria del procesador y la PL sin intervención de la CPU. Esto permitiría que el procesador quede completamente libre durante las transferencias, relegando toda la lógica de serialización y control de protocolo a la FPGA. Esta migración es factible sin comprometer los recursos disponibles: con 14 transceptores instanciados simultáneamente, la utilización de la FPGA se sitúa en torno al 7% de los recursos totales disponibles, dejando margen más que suficiente para absorber la lógica adicional del controlador DMA y los FIFOs AXI-Stream en la PL.
+**Migración a AXI-Stream con transferencia por DMA.** La arquitectura actual del transceptor serie utiliza AXI GPIO como interfaz entre el PS y la PL, lo que implica que la CPU interviene en cada byte transferido. Durante el desarrollo se identificó una alternativa significativamente más eficiente: reemplazar AXI GPIO por **AXI-Stream** para el flujo de datos entre PS y PL, y añadir un controlador **DMA** (*Direct Memory Access*) que mueva los bloques de datos directamente entre la memoria del procesador y la PL sin intervención de la CPU. Esto permitiría que el procesador quede completamente libre durante las transferencias, relegando toda la lógica de serialización y control de protocolo a la FPGA. Esta migración es factible sin comprometer los recursos disponibles: con 14 transceptores instanciados simultáneamente, la utilización de la FPGA se sitúa en torno al 7% de los recursos totales disponibles, dejando margen más que suficiente para absorber la lógica adicional del controlador DMA y los FIFOs AXI-Stream en la PL.
 
 **Integración con el stack de software de vuelo de Sener.** El driver y las PCBs han sido diseñados con los requisitos de Indra/Sener como guía. El siguiente paso natural es la integración del driver en el stack de software de vuelo de Sener y la realización de pruebas de validación conjuntas en entorno Hardware-in-the-Loop.
 
@@ -898,6 +938,67 @@ MAPA DE SEÑALES AOCS:
 | RS8 (Serial J8) | TX | FMC_HPC0_LA22_N | G25 | M14 |
 | RS8 (Serial J8) | RX | FMC_HPC0_LA19_N | H23 | K13 |
 | RS8 (Serial J8) | DE | FMC_HPC0_LA22_P | G24 | M15 |
+
+MAPA DE SEÑALES LINCE COMUNICACIÓN SERIAL — 14 drivers RS-485 (conector P2):
+
+| Driver | Señal | Red Interna | Red (FMC HPC0) | Pin FMC (P2) | Pin Zynq MPSoC |
+| --- | --- | --- | --- | --- | --- |
+| Driver0 | TX | TX0 | FMC_HPC0_LA32_N | H38 | T11 |
+| Driver0 | RX | RX0 | FMC_HPC0_LA26_N | D27 | K15 |
+| Driver0 | SLO | SLO0 | FMC_HPC0_LA27_N | C27 | L10 |
+| Driver0 | DE | DE0 | FMC_HPC0_LA33_N | G37 | V11 |
+| Driver1 | TX | TX1 | FMC_HPC0_LA33_P | G36 | V12 |
+| Driver1 | RX | RX1 | FMC_HPC0_LA30_N | H35 | U6 |
+| Driver1 | SLO | SLO1 | FMC_HPC0_LA32_P | H37 | U11 |
+| Driver1 | DE | DE1 | FMC_HPC0_LA27_P | C26 | M10 |
+| Driver2 | TX | TX2 | FMC_HPC0_LA30_P | H34 | V6 |
+| Driver2 | RX | RX2 | FMC_HPC0_LA26_P | D26 | L15 |
+| Driver2 | SLO | SLO2 | FMC_HPC0_LA31_N | G34 | V7 |
+| Driver2 | DE | DE2 | FMC_HPC0_LA31_P | G33 | V8 |
+| Driver3 | TX | TX3 | FMC_HPC0_LA29_N | G31 | U8 |
+| Driver3 | RX | RX3 | FMC_HPC0_LA29_P | G30 | U9 |
+| Driver3 | SLO | SLO3 | FMC_HPC0_LA28_N | H32 | T6 |
+| Driver3 | DE | DE3 | FMC_HPC0_LA28_P | H31 | T7 |
+| Driver4 | TX | TX4 | FMC_HPC0_LA14_P | C18 | AC7 |
+| Driver4 | RX | RX4 | FMC_HPC0_LA13_N | D18 | AC8 |
+| Driver4 | SLO | SLO4 | FMC_HPC0_LA22_P | G24 | M15 |
+| Driver4 | DE | DE4 | FMC_HPC0_LA19_N | H23 | K13 |
+| Driver5 | TX | TX5 | FMC_HPC0_LA20_N | G22 | M13 |
+| Driver5 | RX | RX5 | FMC_HPC0_LA15_N | H20 | Y9 |
+| Driver5 | SLO | SLO5 | FMC_HPC0_LA19_P | H22 | L13 |
+| Driver5 | DE | DE5 | FMC_HPC0_LA20_P | G21 | N13 |
+| Driver6 | TX | TX6 | FMC_HPC0_LA15_P | H19 | Y10 |
+| Driver6 | RX | RX6 | FMC_HPC0_LA13_P | D17 | AB8 |
+| Driver6 | SLO | SLO6 | FMC_HPC0_LA16_N | G19 | AA12 |
+| Driver6 | DE | DE6 | FMC_HPC0_LA16_P | G18 | Y12 |
+| Driver7 | TX | TX7 | FMC_HPC0_LA06_P | C10 | AC2 |
+| Driver7 | RX | RX7 | FMC_HPC0_LA01_CC_N | D9 | AC4 |
+| Driver7 | SLO | SLO7 | FMC_HPC0_LA01_CC_P | D8 | AB4 |
+| Driver8 | TX | TX8 | FMC_HPC0_LA05_P | D11 | AB3 |
+| Driver8 | RX | RX8 | FMC_HPC0_LA05_N | D12 | AC3 |
+| Driver8 | SLO | SLO8 | FMC_HPC0_LA06_N | C11 | AC1 |
+| Driver8 | DE | DE8 | FMC_HPC0_LA10_P | C14 | W5 |
+| Driver9 | TX | TX9 | FMC_HPC0_LA02_P | H7 | V2 |
+| Driver9 | RX | RX9 | FMC_HPC0_LA00_CC_N | G7 | Y3 |
+| Driver9 | SLO | SLO9 | FMC_HPC0_LA00_CC_P | G6 | Y4 |
+| Driver9 | DE | DE9 | FMC_HPC0_LA02_N | H8 | V1 |
+| Driver10 | TX | TX10 | FMC_HPC0_LA09_P | D14 | W2 |
+| Driver10 | RX | RX10 | FMC_HPC0_LA03_N | G10 | Y1 |
+| Driver10 | SLO | SLO10 | FMC_HPC0_LA03_P | G9 | Y2 |
+| Driver10 | DE | DE10 | FMC_HPC0_LA04_P | H10 | AA2 |
+| Driver11 | TX | TX11 | FMC_HPC0_LA08_N | G13 | V3 |
+| Driver11 | RX | RX11 | FMC_HPC0_LA08_P | G12 | V4 |
+| Driver11 | SLO | SLO11 | FMC_HPC0_LA04_N | H11 | AA1 |
+| Driver12 | TX | TX12 | FMC_HPC0_LA10_N | C15 | W4 |
+| Driver12 | RX | RX12 | FMC_HPC0_LA07_N | H14 | U4 |
+| Driver12 | SLO | SLO12 | FMC_HPC0_LA07_P | H13 | U5 |
+| Driver12 | DE | DE12 | FMC_HPC0_LA09_N | D15 | W1 |
+| Driver13 | TX | TX13 | FMC_HPC0_LA11_N | H17 | AB5 |
+| Driver13 | RX | RX13 | FMC_HPC0_LA11_P | H16 | AB6 |
+| Driver13 | SLO | SLO13 | FMC_HPC0_LA12_P | G15 | W7 |
+| Driver13 | DE | DE13 | FMC_HPC0_LA12_N | G16 | W6 |
+
+*Nota: DE7 y DE11 están hardcodeados en hardware (sin pin de control externo en P2).*
 
 TABLA NCO:
 

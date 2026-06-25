@@ -1,0 +1,35 @@
+\babel@toc {spanish}{}\relax 
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {3.1}{\ignorespaces Diagrama FSM del transmisor serie.}}{11}{figure.caption.57}%
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Diagrama FSM del receptor serie.}}{11}{figure.caption.58}%
+\contentsline {figure}{\numberline {3.3}{\ignorespaces Circuito del oscilador controlado numéricamente (NCO).}}{12}{figure.caption.60}%
+\contentsline {figure}{\numberline {3.4}{\ignorespaces Arquitectura general de la placa de comunicación serie.}}{17}{figure.caption.62}%
+\contentsline {figure}{\numberline {3.5}{\ignorespaces Diagrama de bloques de la placa CDHS.}}{18}{figure.caption.66}%
+\contentsline {figure}{\numberline {3.6}{\ignorespaces Render 3D de la placa CDHS.}}{18}{figure.caption.67}%
+\contentsline {figure}{\numberline {3.7}{\ignorespaces Subsistema CAN de la placa CDHS.}}{19}{figure.caption.70}%
+\contentsline {figure}{\numberline {3.8}{\ignorespaces Canal RS de la placa CDHS con THVD1424RGTR.}}{19}{figure.caption.74}%
+\contentsline {figure}{\numberline {3.9}{\ignorespaces Diagrama de bloques de la placa AOCS.}}{20}{figure.caption.79}%
+\contentsline {figure}{\numberline {3.10}{\ignorespaces Render 3D de la placa AOCS.}}{20}{figure.caption.80}%
+\contentsline {figure}{\numberline {3.11}{\ignorespaces Subsistema SpaceWire de la placa AOCS.}}{21}{figure.caption.83}%
+\contentsline {figure}{\numberline {3.12}{\ignorespaces Aplicación de pasta de soldadura con stencil.}}{22}{figure.caption.86}%
+\contentsline {figure}{\numberline {3.13}{\ignorespaces Placa CDHS tras el proceso de soldadura.}}{22}{figure.caption.87}%
+\contentsline {figure}{\numberline {3.14}{\ignorespaces Placa AOCS tras el proceso de soldadura.}}{22}{figure.caption.88}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {4.1}{\ignorespaces Sistema completo montado: ZCU102 con la placa CDHS conectada al FMC.}}{25}{figure.caption.97}%
+\contentsline {figure}{\numberline {4.2}{\ignorespaces Placa CDHS con componentes montados (vista superior).}}{25}{figure.caption.98}%
+\contentsline {figure}{\numberline {4.3}{\ignorespaces Placa AOCS con componentes montados (vista superior).}}{25}{figure.caption.99}%
+\contentsline {figure}{\numberline {4.4}{\ignorespaces Captura completa del terminal de pruebas RS en la placa CDHS.}}{26}{figure.caption.100}%
+\contentsline {figure}{\numberline {4.5}{\ignorespaces Captura completa del terminal de pruebas RS en la placa AOCS.}}{27}{figure.caption.101}%
+\contentsline {figure}{\numberline {4.6}{\ignorespaces Señal diferencial CAN sin resistencias de terminación.}}{28}{figure.caption.102}%
+\contentsline {figure}{\numberline {4.7}{\ignorespaces Señal diferencial CAN con resistencias de terminación (60~$\Omega $ + 60~$\Omega $).}}{28}{figure.caption.103}%
+\contentsline {figure}{\numberline {4.8}{\ignorespaces Captura completa del terminal de lectura ADC (placa CDHS).}}{28}{figure.caption.104}%
+\contentsline {figure}{\numberline {4.9}{\ignorespaces Señal PWM medida en el conector J5 de la placa CDHS.}}{29}{figure.caption.105}%
+\contentsline {figure}{\numberline {4.10}{\ignorespaces Señales PWM de control de motor en la placa AOCS (par complementario para puente en H).}}{29}{figure.caption.106}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\addvspace {10\p@ }

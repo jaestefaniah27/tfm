@@ -1,0 +1,29 @@
+\section{Objetivos} \label{objetivos}
+
+El objetivo principal de este trabajo es desarrollar una plataforma funcional y validada de
+comunicación con periféricos serie sobre el MPSoC Zynq UltraScale+ ZCU102, que sirva
+como base para el OBC del proyecto LINCE. Para alcanzarlo, se plantearon los siguientes
+objetivos específicos:
+
+\begin{enumerate}
+    \item \textbf{Diseñar un IP core de transceptor serie configurable en VHDL} para la lógica
+    programable del MPSoC, capaz de operar sobre los estándares RS422 y RS485, con
+    parámetros configurables en tiempo de ejecución: baudrate, paridad, número de bits de
+    datos, bits de parada y orden de bit.
+
+    \item \textbf{Desarrollar un driver de software completo en C para RTEMS} que abstraiga el
+    acceso al hardware y permita a la aplicación gestionar hasta 14 instancias de transceptor
+    simultáneas mediante una API orientada a interrupciones, sin recurrir a \textit{polling} de CPU.
+
+    \item \textbf{Diseñar y fabricar las tarjetas de expansión de prueba} requeridas para validar el
+    sistema frente a los subsistemas CDHS (gestión de datos y calentadores) y AOCS (control
+    de actitud y órbita) del satélite, integrando interfaces RS422/RS485, CAN, SPI, SpaceWire
+    y PWM.
+
+    \item \textbf{Desarrollar herramientas de automatización del flujo de desarrollo}, incluyendo
+    scripts TCL para la generación automática del diseño en Vivado y scripts de despliegue de
+    imágenes, con el fin de reducir los tiempos de iteración.
+
+    \item \textbf{Integrar y validar el sistema completo}, verificando la comunicación entre la
+    ZCU102 y las tarjetas de expansión a través de los distintos buses implementados.
+\end{enumerate}

@@ -1,0 +1,142 @@
+\babel@toc {spanish}{}\relax 
+\contentsline {chapter}{Resumen y Palabras Clave}{\es@scroman {ii}}{chapter*.3}%
+\contentsline {chapter}{Agradecimientos}{\es@scroman {iv}}{chapter*.4}%
+\contentsline {chapter}{Lista de acrónimos}{\es@scroman {viii}}{chapter*.8}%
+\contentsline {paragraph}{AOCS}{\es@scroman {viii}}{section*.9}%
+\contentsline {paragraph}{ADC}{\es@scroman {viii}}{section*.10}%
+\contentsline {paragraph}{AXI}{\es@scroman {viii}}{section*.11}%
+\contentsline {paragraph}{BRAM}{\es@scroman {viii}}{section*.12}%
+\contentsline {paragraph}{BSP}{\es@scroman {viii}}{section*.13}%
+\contentsline {paragraph}{BOM}{\es@scroman {viii}}{section*.14}%
+\contentsline {paragraph}{CAN}{\es@scroman {viii}}{section*.15}%
+\contentsline {paragraph}{CDHS}{\es@scroman {viii}}{section*.16}%
+\contentsline {paragraph}{CMRR}{\es@scroman {viii}}{section*.17}%
+\contentsline {paragraph}{DMA}{\es@scroman {viii}}{section*.18}%
+\contentsline {paragraph}{DSP}{\es@scroman {viii}}{section*.19}%
+\contentsline {paragraph}{DTB}{\es@scroman {viii}}{section*.20}%
+\contentsline {paragraph}{EMI}{\es@scroman {viii}}{section*.21}%
+\contentsline {paragraph}{ESD}{\es@scroman {viii}}{section*.22}%
+\contentsline {paragraph}{ESA}{\es@scroman {viii}}{section*.23}%
+\contentsline {paragraph}{ETSIT}{\es@scroman {viii}}{section*.24}%
+\contentsline {paragraph}{FIFO}{\es@scroman {viii}}{section*.25}%
+\contentsline {paragraph}{FMC}{\es@scroman {ix}}{section*.26}%
+\contentsline {paragraph}{FPGA}{\es@scroman {ix}}{section*.27}%
+\contentsline {paragraph}{FSM}{\es@scroman {ix}}{section*.28}%
+\contentsline {paragraph}{FSBL}{\es@scroman {ix}}{section*.29}%
+\contentsline {paragraph}{HDL}{\es@scroman {ix}}{section*.30}%
+\contentsline {paragraph}{INTC}{\es@scroman {ix}}{section*.31}%
+\contentsline {paragraph}{ISR}{\es@scroman {ix}}{section*.32}%
+\contentsline {paragraph}{LEO}{\es@scroman {ix}}{section*.33}%
+\contentsline {paragraph}{LINCE}{\es@scroman {ix}}{section*.34}%
+\contentsline {paragraph}{LVDS}{\es@scroman {ix}}{section*.35}%
+\contentsline {paragraph}{LUT}{\es@scroman {ix}}{section*.36}%
+\contentsline {paragraph}{MMIO}{\es@scroman {ix}}{section*.37}%
+\contentsline {paragraph}{MPSoC}{\es@scroman {ix}}{section*.38}%
+\contentsline {paragraph}{NCO}{\es@scroman {ix}}{section*.39}%
+\contentsline {paragraph}{OBC}{\es@scroman {ix}}{section*.40}%
+\contentsline {paragraph}{PCB}{\es@scroman {ix}}{section*.41}%
+\contentsline {paragraph}{PL}{\es@scroman {ix}}{section*.42}%
+\contentsline {paragraph}{PMUFW}{\es@scroman {ix}}{section*.43}%
+\contentsline {paragraph}{PS}{\es@scroman {ix}}{section*.44}%
+\contentsline {paragraph}{PWM}{\es@scroman {ix}}{section*.45}%
+\contentsline {paragraph}{RTOS}{\es@scroman {ix}}{section*.46}%
+\contentsline {paragraph}{RTEMS}{\es@scroman {ix}}{section*.47}%
+\contentsline {paragraph}{SMD}{\es@scroman {x}}{section*.48}%
+\contentsline {paragraph}{SPI}{\es@scroman {x}}{section*.49}%
+\contentsline {paragraph}{TCL}{\es@scroman {x}}{section*.50}%
+\contentsline {paragraph}{TFM}{\es@scroman {x}}{section*.51}%
+\contentsline {paragraph}{TVS}{\es@scroman {x}}{section*.52}%
+\contentsline {paragraph}{UART}{\es@scroman {x}}{section*.53}%
+\contentsline {paragraph}{UPM}{\es@scroman {x}}{section*.54}%
+\contentsline {paragraph}{VHDL}{\es@scroman {x}}{section*.55}%
+\contentsline {paragraph}{XSA}{\es@scroman {x}}{section*.56}%
+\contentsline {chapter}{\numberline {1}Introducción y objetivos}{1}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Introducción y motivación}{1}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Metodología}{1}{section.1.2}%
+\contentsline {section}{\numberline {1.3}Objetivos}{2}{section.1.3}%
+\contentsline {chapter}{\numberline {2}Marco teórico}{4}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Proyecto LINCE}{4}{section.2.1}%
+\contentsline {section}{\numberline {2.2}MPSoC Zynq UltraScale+ ZCU102}{4}{section.2.2}%
+\contentsline {section}{\numberline {2.3}Vivado y Vitis (Xilinx): PS y PL}{5}{section.2.3}%
+\contentsline {subsection}{\numberline {2.3.1}Vivado Design Suite}{5}{subsection.2.3.1}%
+\contentsline {subsection}{\numberline {2.3.2}Vitis Unified Software Platform}{5}{subsection.2.3.2}%
+\contentsline {section}{\numberline {2.4}RTEMS}{6}{section.2.4}%
+\contentsline {section}{\numberline {2.5}Comunicaciones serie}{6}{section.2.5}%
+\contentsline {subsection}{\numberline {2.5.1}RS485}{6}{subsection.2.5.1}%
+\contentsline {subsection}{\numberline {2.5.2}RS422}{7}{subsection.2.5.2}%
+\contentsline {subsection}{\numberline {2.5.3}SpaceWire}{7}{subsection.2.5.3}%
+\contentsline {subsection}{\numberline {2.5.4}CAN}{7}{subsection.2.5.4}%
+\contentsline {chapter}{\numberline {3}Desarrollo}{9}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Preparación del entorno de desarrollo}{9}{section.3.1}%
+\contentsline {subsection}{\numberline {3.1.1}Instalación de Vivado y Vitis}{9}{subsection.3.1.1}%
+\contentsline {subsection}{\numberline {3.1.2}Instalación de RTEMS}{9}{subsection.3.1.2}%
+\contentsline {subsection}{\numberline {3.1.3}Flujo de desarrollo completo}{9}{subsection.3.1.3}%
+\contentsline {section}{\numberline {3.2}Diseño del transceptor serie configurable (PL)}{11}{section.3.2}%
+\contentsline {subsection}{\numberline {3.2.1}Transmisor}{11}{subsection.3.2.1}%
+\contentsline {subsection}{\numberline {3.2.2}Receptor}{11}{subsection.3.2.2}%
+\contentsline {subsubsection}{Decisión de diseño: verificación de start-bit a mitad de período}{11}{section*.59}%
+\contentsline {subsection}{\numberline {3.2.3}Oscilador controlado numéricamente (NCO)}{12}{subsection.3.2.3}%
+\contentsline {subsection}{\numberline {3.2.4}Shift-register}{12}{subsection.3.2.4}%
+\contentsline {subsection}{\numberline {3.2.5}FIFO}{12}{subsection.3.2.5}%
+\contentsline {subsection}{\numberline {3.2.6}Bloque Zynq UltraScale+ MPSoC}{12}{subsection.3.2.6}%
+\contentsline {section}{\numberline {3.3}Herramientas para facilitar el desarrollo del transceptor (PL)}{13}{section.3.3}%
+\contentsline {subsection}{\numberline {3.3.1}Generación de transceivers con TCL}{13}{subsection.3.3.1}%
+\contentsline {subsection}{\numberline {3.3.2}Generación de proyecto con TCL}{13}{subsection.3.3.2}%
+\contentsline {section}{\numberline {3.4}Generación del binario en Vitis (PS)}{13}{section.3.4}%
+\contentsline {section}{\numberline {3.5}Diseño del driver serie en RTEMS (PS)}{13}{section.3.5}%
+\contentsline {subsection}{\numberline {3.5.1}Motivación y contexto}{13}{subsection.3.5.1}%
+\contentsline {subsection}{\numberline {3.5.2}Interfaz hardware: mapa de registros}{14}{subsection.3.5.2}%
+\contentsline {subsection}{\numberline {3.5.3}Arquitectura software}{14}{subsection.3.5.3}%
+\contentsline {subsection}{\numberline {3.5.4}Descubrimiento dinámico del hardware}{14}{subsection.3.5.4}%
+\contentsline {subsection}{\numberline {3.5.5}Modelo de interrupciones: ISR maestra y tareas worker}{15}{subsection.3.5.5}%
+\contentsline {subsection}{\numberline {3.5.6}Inicialización y configuración del hardware}{15}{subsection.3.5.6}%
+\contentsline {subsection}{\numberline {3.5.7}API pública}{15}{subsection.3.5.7}%
+\contentsline {subsection}{\numberline {3.5.8}Decisiones de diseño destacadas}{16}{subsection.3.5.8}%
+\contentsline {section}{\numberline {3.6}Diseño hardware}{16}{section.3.6}%
+\contentsline {subsection}{\numberline {3.6.1}Diseño de la placa de comunicación serie (diseño propio)}{16}{subsection.3.6.1}%
+\contentsline {subsubsection}{Topología RS485: bus compartido configurable por jumper}{17}{section*.63}%
+\contentsline {subsubsection}{Selector de conector Micro-D para RS485}{17}{section*.64}%
+\contentsline {subsubsection}{Topología RS422: master/slave configurable por jumper}{17}{section*.65}%
+\contentsline {subsection}{\numberline {3.6.2}Diseño de la placa CDHS}{18}{subsection.3.6.2}%
+\contentsline {subsubsection}{Decisión de nivel de tensión: 1,8 V}{18}{section*.68}%
+\contentsline {subsubsection}{Subsistema CAN}{18}{section*.69}%
+\contentsline {subsubsection}{Subsistema RS422/RS485}{19}{section*.71}%
+\contentsline {paragraph}{Decisión de diseño: cortocircuito DE--RE.}{19}{section*.72}%
+\contentsline {subsubsection}{Subsistema PWM (calentadores)}{19}{section*.75}%
+\contentsline {subsubsection}{Subsistema ADC (termistores)}{20}{section*.76}%
+\contentsline {subsubsection}{Alimentación}{20}{section*.77}%
+\contentsline {subsubsection}{Conectores externos}{20}{section*.78}%
+\contentsline {subsection}{\numberline {3.6.3}Diseño de la placa AOCS}{20}{subsection.3.6.3}%
+\contentsline {subsubsection}{Canales RS422/RS485}{21}{section*.81}%
+\contentsline {subsubsection}{Canales SpaceWire}{21}{section*.82}%
+\contentsline {subsubsection}{Control de motores (MOT-PWM)}{21}{section*.84}%
+\contentsline {subsubsection}{Alimentación}{21}{section*.85}%
+\contentsline {subsection}{\numberline {3.6.4}Fabricación}{21}{subsection.3.6.4}%
+\contentsline {section}{\numberline {3.7}Desarrollo de herramientas de testing}{22}{section.3.7}%
+\contentsline {subsection}{\numberline {3.7.1}Aplicación de testing del driver serie en RTEMS}{22}{subsection.3.7.1}%
+\contentsline {subsubsection}{Configuración del sistema RTEMS --- \texttt {init.c}}{22}{section*.89}%
+\contentsline {subsubsection}{Aplicación de testing --- \texttt {main.c}}{23}{section*.90}%
+\contentsline {subsection}{\numberline {3.7.2}Aplicación de testing de las placas CDHS y AOCS}{23}{subsection.3.7.2}%
+\contentsline {subsubsection}{Ampliación en PL para soportar interfaces adicionales CDHS}{23}{section*.91}%
+\contentsline {subsubsection}{Ampliación para soportar interfaces adicionales AOCS}{24}{section*.92}%
+\contentsline {subsection}{\numberline {3.7.3}Validación de hardware: arneses y equipamiento}{24}{subsection.3.7.3}%
+\contentsline {subsubsection}{Arnés para verificar comunicaciones RS422}{24}{section*.93}%
+\contentsline {subsubsection}{Arnés para verificar comunicaciones RS485}{24}{section*.94}%
+\contentsline {subsubsection}{Arnés para verificar comunicaciones CAN}{24}{section*.95}%
+\contentsline {subsubsection}{Equipo de laboratorio utilizado}{24}{section*.96}%
+\contentsline {chapter}{\numberline {4}Resultados}{25}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Montaje del sistema}{25}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Validación de comunicaciones serie RS422/RS485}{25}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}CDHS --- 3 transceptores}{26}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}AOCS --- 5 transceptores}{26}{subsection.4.2.2}%
+\contentsline {subsection}{\numberline {4.2.3}Prueba con 13 transceptores simultáneos}{27}{subsection.4.2.3}%
+\contentsline {section}{\numberline {4.3}Validación del bus CAN}{27}{section.4.3}%
+\contentsline {section}{\numberline {4.4}Validación del ADC SPI (termistores CDHS)}{28}{section.4.4}%
+\contentsline {section}{\numberline {4.5}Validación PWM (calentadores CDHS y puentes en H AOCS)}{29}{section.4.5}%
+\contentsline {chapter}{\numberline {5}Conclusiones y líneas futuras}{30}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Conclusiones}{30}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Líneas futuras}{30}{section.5.2}%
+\contentsline {chapter}{Bibliograf\'{\i }a}{32}{chapter*.107}%
+\contentsline {chapter}{Anexo 1: Mapas de señales y tabla NCO}{33}{chapter*.108}%
+\contentsline {chapter}{Anexo A: Aspectos éticos, económicos, sociales y ambientales}{38}{chapter*.116}%
+\contentsline {chapter}{Anexo B: Presupuesto económico}{40}{chapter*.117}%

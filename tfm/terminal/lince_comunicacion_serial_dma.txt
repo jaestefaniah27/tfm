@@ -1,0 +1,89 @@
+f
+MMU_MAP: aarch64_mmu_set_translation_table_entries rc=0
+MMU_MAP: return from mmu_map_pl_axi_early()
+
+=== ZCU102 PCB - 14 drivers RS485/RS422 (bus de campo) ===
+[TRANSCEIVER DEBUG] HW: 14 canales | UART base: 0xA0000000 | stride: 0x1000
+[TRANSCEIVER DEBUG] DMA global init OK | MM2S IRQ=121  S2MM IRQ=122 (compartidas, 14ch)
+Detectados 14 canales
+
+[TRANSCEIVER DEBUG] UART 0 OK | cfg=0xA0000000 | dma=0xA0010000 | tx=0x1124c0 rx_dma=0x104140
+[TRANSCEIVER DEBUG] UART 1 OK | cfg=0xA0001000 | dma=0xA0011000 | tx=0x1134c0 rx_dma=0x104180
+[TRANSCEIVER DEBUG] UART 2 OK | cfg=0xA0002000 | dma=0xA0012000 | tx=0x1144c0 rx_dma=0x1041c0
+[TRANSCEIVER DEBUG] UART 3 OK | cfg=0xA0003000 | dma=0xA0013000 | tx=0x1154c0 rx_dma=0x104200
+[TRANSCEIVER DEBUG] UART 4 OK | cfg=0xA0004000 | dma=0xA0014000 | tx=0x1164c0 rx_dma=0x104240
+[TRANSCEIVER DEBUG] UART 5 OK | cfg=0xA0005000 | dma=0xA0015000 | tx=0x1174c0 rx_dma=0x104280
+[TRANSCEIVER DEBUG] UART 6 OK | cfg=0xA0006000 | dma=0xA0016000 | tx=0x1184c0 rx_dma=0x1042c0
+[TRANSCEIVER DEBUG] UART 7 OK | cfg=0xA0007000 | dma=0xA0017000 | tx=0x1194c0 rx_dma=0x104300
+[TRANSCEIVER DEBUG] UART 8 OK | cfg=0xA0008000 | dma=0xA0018000 | tx=0x11a4c0 rx_dma=0x104340
+[TRANSCEIVER DEBUG] UART 9 OK | cfg=0xA0009000 | dma=0xA0019000 | tx=0x11b4c0 rx_dma=0x104380
+[TRANSCEIVER DEBUG] UART 10 OK | cfg=0xA000A000 | dma=0xA001A000 | tx=0x11c4c0 rx_dma=0x1043c0
+[TRANSCEIVER DEBUG] UART 11 OK | cfg=0xA000B000 | dma=0xA001B000 | tx=0x11d4c0 rx_dma=0x104400
+[TRANSCEIVER DEBUG] UART 12 OK | cfg=0xA000C000 | dma=0xA001C000 | tx=0x11e4c0 rx_dma=0x104440
+[TRANSCEIVER DEBUG] UART 13 OK | cfg=0xA000D000 | dma=0xA001D000 | tx=0x11f4c0 rx_dma=0x104480
+14 canales inicializados (115200 8N1)
+
+##################################################################
+##  TEST PCB - bus de campo maestro/esclavo (14 canales)
+##  ZCU102 = controlador. Sensores y actuadores responden.
+##################################################################
+
+=== Bus A (RS485 multidrop) | maestro CH0 | esclavos: CH1 CH2 CH3 CH4 CH5 CH6 ===
+  [multidrop] el maestro emite, todos los esclavos deben oirlo:
+      CH1  oyo al maestro [OK]
+      CH2  oyo al maestro [OK]
+      CH3  oyo al maestro [OK]
+      CH4  oyo al maestro [OK]
+      CH5  oyo al maestro [OK]
+      CH6  oyo al maestro [OK]
+      -> 6/6 esclavos oyeron al maestro  [PASS]
+    [PASS] PING           CH0->CH1  PONG
+    [PASS] LEER SENSOR    CH0->CH1  sensor=0x1010
+    [PASS] ESCRIBIR ACT   CH0->CH1  setpoint=0x21 ACK
+    [PASS] PING           CH0->CH2  PONG
+    [PASS] LEER SENSOR    CH0->CH2  sensor=0x1020
+    [PASS] ESCRIBIR ACT   CH0->CH2  setpoint=0x22 ACK
+    [PASS] PING           CH0->CH3  PONG
+    [PASS] LEER SENSOR    CH0->CH3  sensor=0x1030
+    [PASS] ESCRIBIR ACT   CH0->CH3  setpoint=0x23 ACK
+    [PASS] PING           CH0->CH4  PONG
+    [PASS] LEER SENSOR    CH0->CH4  sensor=0x1040
+    [PASS] ESCRIBIR ACT   CH0->CH4  setpoint=0x24 ACK
+    [PASS] PING           CH0->CH5  PONG
+    [PASS] LEER SENSOR    CH0->CH5  sensor=0x1050
+    [PASS] ESCRIBIR ACT   CH0->CH5  setpoint=0x25 ACK
+    [PASS] PING           CH0->CH6  PONG
+    [PASS] LEER SENSOR    CH0->CH6  sensor=0x1060
+    [PASS] ESCRIBIR ACT   CH0->CH6  setpoint=0x26 ACK
+
+=== Bus B (RS422 m/s) | maestro CH7 | esclavos: CH8 CH9 CH10 ===
+  [multidrop] el maestro emite, todos los esclavos deben oirlo:
+      CH8  oyo al maestro [OK]
+      CH9  oyo al maestro [OK]
+      CH10 oyo al maestro [OK]
+      -> 3/3 esclavos oyeron al maestro  [PASS]
+    [PASS] PING           CH7->CH8  PONG
+    [PASS] LEER SENSOR    CH7->CH8  sensor=0x1081
+    [PASS] ESCRIBIR ACT   CH7->CH8  setpoint=0x28 ACK
+    [PASS] PING           CH7->CH9  PONG
+    [PASS] LEER SENSOR    CH7->CH9  sensor=0x1091
+    [PASS] ESCRIBIR ACT   CH7->CH9  setpoint=0x29 ACK
+    [PASS] PING           CH7->CH10  PONG
+    [PASS] LEER SENSOR    CH7->CH10  sensor=0x10A1
+    [PASS] ESCRIBIR ACT   CH7->CH10  setpoint=0x2A ACK
+
+=== Bus C (RS422 m/s) | maestro CH11 | esclavos: CH12 CH13 ===
+  [multidrop] el maestro emite, todos los esclavos deben oirlo:
+      CH12 oyo al maestro [OK]
+      CH13 oyo al maestro [OK]
+      -> 2/2 esclavos oyeron al maestro  [PASS]
+    [PASS] PING           CH11->CH12  PONG
+    [PASS] LEER SENSOR    CH11->CH12  sensor=0x10C2
+    [PASS] ESCRIBIR ACT   CH11->CH12  setpoint=0x2C ACK
+    [PASS] PING           CH11->CH13  PONG
+    [PASS] LEER SENSOR    CH11->CH13  sensor=0x10D2
+    [PASS] ESCRIBIR ACT   CH11->CH13  setpoint=0x2D ACK
+
+==============================================================
+  >>> TEST PCB SUPERADO <<<  (36/36 comprobaciones)
+==============================================================

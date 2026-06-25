@@ -1,0 +1,850 @@
+% ===========================================================================
+% CAPÍTULO 3: DESARROLLO
+% ===========================================================================
+
+\section{Preparación del entorno de desarrollo}
+
+Para llevar a cabo la implementación propuesta en este Trabajo de Fin de Máster, fue
+necesario establecer un entorno de desarrollo robusto que permitiera el codiseño
+hardware-software (PS-PL) sobre la plataforma Zynq UltraScale+ MPSoC. A continuación, se
+detalla la metodología seguida para la configuración de las herramientas de síntesis, la
+compilación del sistema operativo en tiempo real (RTEMS) y la validación del flujo de trabajo
+completo. El entorno de desarrollo principal se desplegó sobre una máquina virtual con una
+distribución Linux (Ubuntu/Debian). En este sistema se instalaron las dependencias necesarias
+para la compilación cruzada, incluyendo paquetes esenciales de desarrollo de C/C++,
+Python 3 y herramientas de control de versiones.
+
+\subsection{Instalación de Vivado y Vitis}
+
+Para el desarrollo de la lógica programable (PL) y la generación de imágenes de arranque, se
+utilizaron las herramientas oficiales de AMD Xilinx: Vivado Design Suite y Vitis Unified
+Software Platform. Vivado se empleó para el diseño a nivel de hardware y la generación del
+\textit{bitstream}, mientras que Vitis se utilizó para empaquetar los binarios y generar la imagen de
+arranque (BOOT.bin).
+
+\subsection{Instalación de RTEMS}
+
+En lugar de utilizar binarios precompilados, se optó por compilar el sistema operativo RTEMS
+(versión 7) desde cero, garantizando el control total sobre la configuración del núcleo. La
+compilación se realizó utilizando la herramienta RTEMS Source Builder (RSB). Se generó un
+\textit{toolchain} cruzado específico para la arquitectura AArch64. Se configuró y compiló el Board
+Support Package (BSP) correspondiente a la plataforma ZynqMP (\texttt{zynqmp\_apu}),
+habilitando explícitamente el soporte para multiprocesamiento simétrico (SMP).
+
+Para validar el entorno recién compilado, se ejecutaron pruebas preliminares utilizando el
+emulador QEMU (\texttt{qemu-system-aarch64}) configurado con la máquina
+\texttt{xlnx-zcu102}. Se verificó la correcta ejecución de ejemplos básicos como
+\texttt{hello.exe} y pruebas de rendimiento computacional como el \textit{benchmark} Dhrystone.
+
+\subsection{Flujo de desarrollo completo}
+
+Una vez preparadas todas las herramientas de desarrollo, se probó a realizar un desarrollo
+completo de principio a fin implementando un ejemplo sencillo: una puerta AND. Para ello, se
+siguieron los siguientes pasos.
+
+\textbf{Parte Vivado.} Se creó un proyecto nuevo en Vivado llamado \texttt{and\_gate\_ps\_p}, y se
+diseñó la puerta AND en VHDL:
+
+\begin{lstlisting}[language=VHDL, caption={AND\_GATE.vhd --- ejemplo de puerta AND en VHDL}]
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+entity AND_GATE is
+    Port ( A_B_IN : in  STD_LOGIC_VECTOR (1 downto 0);
+           Z_OUT  : out STD_LOGIC);
+end AND_GATE;
+
+architecture Behavioral of AND_GATE is
+begin
+    Z_OUT <= A_B_IN(1) and A_B_IN(0);
+end Behavioral;
+\end{lstlisting}
+
+Después se creó un \textit{Block Design}, se añadió el bloque Zynq UltraScale+ MPSoC IP y se
+configuró automáticamente usando \textit{Block Automation} de Vivado. Se añadió el fichero VHDL
+del paso anterior al \textit{Block Design}. Se añadieron dos AXI GPIO IPs al \textit{block design} para
+comunicar el PS con la PL, y se conectaron los bloques entre sí, utilizando \textit{Automate
+Connection} de Vivado para todas las conexiones faltantes.
+
+Después se creó un \textit{Wrapper} del \textit{Block Design} para que Vivado pudiera sintetizarlo
+correctamente. En la pestaña \textit{Address Editor} pueden verse las direcciones de los registros
+para acceder a la parte PL desde el PS. Por último, se generó el \textit{BitStream} y se exportó el
+hardware como .xsa.
+
+\textbf{Generación de la imagen de arranque (Vitis).} Se siguieron los siguientes pasos para
+empaquetar el hardware generado en Vivado en un binario que el MPSoC pudiera ejecutar:
+se creó un nuevo componente en Vitis de tipo \textit{Platform}, utilizando como base el .xsa
+generado; se compiló el FSBL usando el ejemplo \textit{Zynq MP FSBL}; y se generó el archivo
+\texttt{BOOT.bin} mediante el generador de imágenes de Vitis con la estructura de componentes
+estándar (FSBL, PMUFW, bitstream de la PL, BL31, U-Boot y DTB).
+
+\textbf{Parte RTEMS.} Una vez generado el archivo de arranque, se desarrolló un software de
+ejemplo que interactuaba con los puertos GPIO conectados por AXI, excitando todas las
+combinaciones posibles de la puerta AND en la PL y leyendo su salida. Fue necesario añadir
+un archivo de mapeado de memoria para que el sistema operativo reconociera las direcciones
+correspondientes a la PL, y un \texttt{wscript} para la compilación.
+
+Para facilitar el desarrollo rápido en la parte de RTEMS, se desarrolló un script que compila
+la imagen de RTEMS, generando \texttt{rtems.img}. Para evitar quitar y poner la tarjeta SD
+constantemente, se desarrolló un script en Python que es capaz de subir la imagen de RTEMS
+a la tarjeta SD mediante una conexión USB.
+
+Una vez verificado que esta metodología de desarrollo funcionaba correctamente, se
+estableció como el proceso estándar a seguir para los próximos desarrollos.
+
+% ---------------------------------------------------------------------------
+\section{Diseño del transceptor serie configurable (PL)}
+% ---------------------------------------------------------------------------
+
+El transceptor serie se diseñó para ser altamente configurable y adaptable a cualquier
+dispositivo. Los parámetros configurables son:
+
+\begin{itemize}
+    \item Baudrate (desde 50 hasta 4.000.000 baudios).
+    \item Número de \textit{stop bits} (1, 1,5 o 2).
+    \item Paridad (par, impar, marca, espacio o deshabilitada).
+    \item Orden de los bits (LSB o MSB).
+    \item Número de bits de datos (entre 5 y 9).
+\end{itemize}
+
+\subsection{Transmisor}
+
+El siguiente diagrama FSM resume el comportamiento del transmisor. Debido a su tamaño, se
+ha dividido en tres partes para su legibilidad.
+
+\begin{figure}[H]
+    \centering
+    \fbox{\parbox{0.85\textwidth}{\centering \textit{[Figura pendiente: Diagrama FSM del transmisor (tres partes)]}\vspace{0.5cm}}}
+    \caption{Diagrama FSM del transmisor serie.}
+    \label{fig:fsm_tx}
+\end{figure}
+
+Durante las pruebas sobre la placa CDHS se detectó que en las primeras recepciones aparecían
+ocasionalmente caracteres corruptos. Como primera hipótesis se consideró que la señal DE
+podría estar conmutando demasiado rápido al paso de transmisión a recepción, haciendo que
+el transceptor físico no tuviera tiempo de establecerse. Para corregirlo, se añadieron dos
+estados adicionales en la FSM del transmisor que introducen un retardo de microsegundos
+entre la desactivación del último bit y la desactivación de DE. Sin embargo, esto no resolvió
+el problema, descartando la hipótesis inicial.
+
+\subsection{Receptor}
+
+El siguiente diagrama FSM resume el comportamiento del receptor.
+
+\begin{figure}[H]
+    \centering
+    \fbox{\parbox{0.85\textwidth}{\centering \textit{[Figura pendiente: Diagrama FSM del receptor serie]}\vspace{0.5cm}}}
+    \caption{Diagrama FSM del receptor serie.}
+    \label{fig:fsm_rx}
+\end{figure}
+
+\subsubsection{Decisión de diseño: verificación de start-bit a mitad de período}
+
+Tras descartar el flanco de DE como causa de los caracteres corruptos, el análisis se centró
+en el receptor. El protocolo serie comienza con un \textbf{start-bit}: la línea, normalmente en
+reposo en nivel alto, cae a nivel bajo para señalizar el inicio de una trama. El receptor detecta
+este flanco descendente y arranca la máquina de estados de recepción.
+
+El problema era que pulsos de ruido breves en la línea generaban flancos descendentes
+espurios que el receptor interpretaba como \textit{start-bits} válidos, capturando una trama de
+basura y enviando un carácter corrupto al \textit{buffer}.
+
+La solución se implementó directamente en la FSM: en el estado de recepción del
+\textit{start-bit}, una vez transcurrido el \textbf{primer medio período de bit}, se vuelve a muestrear la
+línea antes de continuar. Si la línea ha vuelto a nivel alto, el pulso era ruido y la FSM regresa
+al estado IDLE sin capturar nada. Solo si la línea sigue en bajo al llegar a la mitad del bit se
+considera un \textit{start-bit} legítimo y se procede con la recepción del resto de la trama.
+
+Esta técnica ---verificación a mitad de \textit{start-bit}--- es una práctica estándar de robustez en
+receptores UART. Su implementación en la FSM VHDL eliminó por completo la aparición de
+caracteres corruptos en las pruebas posteriores.
+
+\subsection{Oscilador controlado numéricamente (NCO)}
+
+Este oscilador sirve para generar una señal de \textit{enable} a un baudrate seleccionado. Hay 54
+valores de velocidad seleccionables almacenados en una tabla de verdad. Para poder generar
+frecuencias que no son divisibles exactamente de la frecuencia de reloj de la FPGA, se utiliza
+este circuito que corrige periódicamente el desfase generado por esta imprecisión, logrando
+replicar un amplio número de frecuencias con muy poco error.
+
+El circuito consiste en un sumador acumulador: para cada frecuencia seleccionada, se tiene
+calculado un incremento concreto que depende del número de bits del sumador. Cuantos más
+bits tenga este sumador, mejor precisión se consigue. En esta implementación se han
+utilizado 32 bits. El incremento se suma y acumula en cada período de reloj; cuando el
+sumador se desborda, se utiliza el bit de \textit{carry\_out} como \textit{tick} del NCO. Este \textit{tick} se genera
+a la frecuencia deseada, y el mecanismo de acumulación garantiza que el error promedio sea
+inferior al de un divisor entero simple. La tabla de frecuencias soportadas y su error medido
+se recoge en el Anexo~1.
+
+\begin{figure}[H]
+    \centering
+    \fbox{\parbox{0.85\textwidth}{\centering \textit{[Figura pendiente: Diagrama del circuito NCO de 32 bits]}\vspace{0.5cm}}}
+    \caption{Circuito del oscilador controlado numéricamente (NCO).}
+    \label{fig:nco}
+\end{figure}
+
+\subsection{Shift-register}
+
+El registro de desplazamiento está diseñado para poder almacenar datos tanto si la
+configuración es LSB-\textit{first} como MSB-\textit{first}, de modo que una vez recibido el mensaje la
+palabra en la salida siempre es la correcta independientemente del modo configurado.
+
+\subsection{FIFO}
+
+La FIFO es un bloque IP con 9 bits de datos (para poder almacenar mensajes de 9 bits) y
+512 de profundidad, que permite almacenar temporalmente varios mensajes y habilitarlos
+para su lectura posterior por el PS.
+
+\subsection{Bloque Zynq UltraScale+ MPSoC}
+
+Para que el proyecto en Vivado funcione correctamente, es importante aplicar el \textit{preset} al
+bloque IP Zynq UltraScale+ antes de añadir el resto de elementos, ya que se aplican
+configuraciones de relojes y alimentación cruciales para el correcto funcionamiento de la PL.
+
+% ---------------------------------------------------------------------------
+\section{Herramientas para facilitar el desarrollo del transceptor (PL)}
+% ---------------------------------------------------------------------------
+
+\subsection{Generación de transceivers con TCL}
+
+Se desarrolló un script de TCL que permite generar y conectar automáticamente un número
+deseado de transceptores en el \textit{Block Design} de Vivado. Para que funcione correctamente, es
+necesario tener las fuentes .vhd del transceptor en el proyecto, el \textit{Block Design} creado, y el
+bloque IP Zynq UltraScale+ MPSoC importado y configurado previamente; a partir de ahí, el
+script se encarga de añadir y conectar el resto de los bloques necesarios.
+
+\subsection{Generación de proyecto con TCL}
+
+También se desarrolló otro script de TCL (\texttt{regenerate\_all.tcl}) que regenera el proyecto
+entero de Vivado con un número determinado de transceptores, partiendo desde cero. Esto
+permite reproducir exactamente cualquier configuración sin necesidad de guardar el proyecto
+de Vivado completo en el repositorio.
+
+% ---------------------------------------------------------------------------
+\section{Generación del binario en Vitis (PS)}
+% ---------------------------------------------------------------------------
+
+Una vez diseñada la lógica hardware en Vivado y exportado el hardware, se siguieron los
+pasos establecidos previamente para generar el binario BOOT.bin.
+
+El proceso manual de exportación del XSA, creación de la plataforma Vitis, compilación del
+FSBL y ensamblado del BOOT.BIN con \texttt{bootgen} resultó tedioso de repetir en cada
+iteración del diseño. Para automatizarlo, se desarrolló el script \texttt{generate\_boot.sh}
+(disponible en \texttt{tfm/04\_tools/}), un \textit{wizard} interactivo en Bash que encadena todos
+estos pasos de forma desatendida. El script ofrece tres puntos de entrada según el estado en
+que se encuentre el trabajo: partir del proyecto de Vivado y generar \textit{bitstream} desde cero,
+partir de un proyecto con \textit{bitstream} ya generado y solo exportar el XSA, o partir
+directamente de un XSA ya exportado. A partir de ahí invoca Vitis en modo script mediante
+su API Python para crear la plataforma y compilar el FSBL, y llama a \texttt{bootgen} para
+ensamblar el BOOT.BIN final con los componentes de arranque precompilados (PMUFW,
+BL31, U-Boot, DTB). Esto redujo el tiempo de iteración hardware $\rightarrow$ imagen de varios
+minutos de clics a una sola ejecución de terminal.
+
+% ---------------------------------------------------------------------------
+\section{Diseño del driver serie en RTEMS (PS)}
+% ---------------------------------------------------------------------------
+
+\subsection{Motivación y contexto}
+
+El subsistema de comunicaciones del OBC requiere gestionar simultáneamente múltiples
+interfaces serie físicas (RS422 y RS485) desde una aplicación de tiempo real ejecutada sobre
+RTEMS. El bloque hardware \texttt{CONFIGURABLE\_SERIAL\_TOP}, implementado en VHDL en
+la lógica programable (PL), expone cada transceptor a través de un periférico AXI GPIO de
+doble canal, cuya interfaz de bajo nivel es demasiado específica para ser usada directamente
+desde la aplicación. Para abstraer esta complejidad y ofrecer una API uniforme e
+independiente de la dirección física de cada instancia, se desarrollaron los ficheros
+\texttt{transceiver.c} y \texttt{transceiver.h}.
+
+El diseño cubre tres requisitos fundamentales: (1) descubrimiento dinámico del hardware en
+tiempo de arranque, de modo que el mismo binario funcione con cualquier número de
+transceptores instanciados en el \textit{bitstream}; (2) comunicación orientada a interrupciones
+para no bloquear el procesador durante la espera de datos; y (3) una API sencilla que
+permita a la aplicación enviar y recibir datos sin conocer los detalles del mapa de registros.
+
+\subsection{Interfaz hardware: mapa de registros}
+
+Cada instancia del transceptor ocupa una región de 4~KB del espacio de memoria del
+procesador, estructurada como un AXI GPIO de doble canal:
+
+\begin{itemize}
+    \item \textbf{Canal 1 (escritura, PS $\rightarrow$ PL):} contiene el dato de transmisión (bits 8:0),
+    los bits de control de protocolo (SEND, ERROR\_OK, DATA\_READ) y los campos de
+    configuración: tasa de baudios (6 bits), bits de parada (2 bits), paridad (3 bits), bits de
+    datos (3 bits), orden de bits y modo SLO.
+
+    \item \textbf{Canal 2 (lectura, PL $\rightarrow$ PS):} contiene el byte recibido (bits 8:0) y las
+    banderas de estado: RX\_EMPTY, RX\_FULL, PARITY\_ERROR, FRAME\_ERROR y TX\_RDY.
+\end{itemize}
+
+Adicionalmente, un bloque de información del sistema situado en la dirección fija
+\texttt{0xA0020000} expone en tiempo de ejecución el número de transceptores instanciados, el
+\textit{stride} de memoria entre instancias y la dirección base de la primera de ellas. Más allá del
+último transceptor se aloja el controlador de interrupciones AXI INTC, compartido por todas
+las instancias.
+
+\subsection{Arquitectura software}
+
+La librería se organiza en torno a dos estructuras de datos centrales:
+
+\textbf{\texttt{Transceiver\_Config\_t}} agrupa los parámetros de configuración del protocolo: tasa de
+baudios, número de bits de datos (5 a 9), paridad (par, impar, \textit{mark}, \textit{space} o ninguna),
+bits de parada (1, 1,5 o 2), orden de bits (LSB o MSB \textit{first}) y modo de emisión lenta (SLO,
+que reduce las emisiones electromagnéticas). Todos los valores se expresan mediante macros
+simbólicas definidas en \texttt{transceiver.h}, que corresponden directamente a los valores
+codificados en la LUT del NCO hardware.
+
+\textbf{\texttt{Transceiver}} es el objeto \textit{handle} que representa una instancia concreta del
+transceptor en ejecución. Contiene el mapa de direcciones calculado dinámicamente
+(\texttt{base\_addr}, \texttt{intc\_base} y los \textit{offsets} derivados), las máscaras de interrupción
+individuales de RX y TX, y el estado software: un \textit{buffer} circular de recepción y uno de
+transmisión (ambos de 4096 bytes por defecto, asignados dinámicamente), los
+identificadores de las primitivas RTEMS asociadas (tarea \textit{worker}, \textit{mutex} de RX y \textit{mutex} de
+TX) y el \textit{callback} de usuario para notificación de datos recibidos.
+
+\subsection{Descubrimiento dinámico del hardware}
+
+La función \texttt{Transceiver\_Hardware\_Discover()} lee el bloque de información del sistema al
+arranque y extrae el número de instancias presentes, el \textit{stride} de memoria y la dirección
+base. Con estos tres valores se calcula automáticamente la dirección del INTC compartido:
+
+\begin{center}
+\texttt{g\_intc\_addr = g\_hw\_base + (g\_hw\_count $\times$ g\_hw\_stride)}
+\end{center}
+
+Este mecanismo permite que el mismo binario RTEMS funcione sin modificación con cualquier
+número de transceptores (hasta el máximo soportado de 14), cubriendo configuraciones que
+van desde un único canal hasta la instalación completa. La alternativa de \textit{hardcodear} las
+direcciones habría requerido recompilar la aplicación para cada variante del \textit{bitstream}.
+
+\subsection{Modelo de interrupciones: ISR maestra y tareas worker}
+
+El diseño de la gestión de interrupciones adopta el patrón \textit{deferred interrupt processing}
+recomendado para RTEMS. Se instala una única ISR en el vector 121 (\texttt{Master\_ISR}) que
+atiende a todos los transceptores a través del AXI INTC compartido. La ISR funciona del
+siguiente modo:
+
+\begin{enumerate}
+    \item Lee el registro de interrupciones pendientes (INTC\_ISR).
+    \item Para cada transceptor con interrupción RX activa: reconoce la interrupción
+    (INTC\_IAR), deshabilita temporalmente la línea (INTC\_CIE) y envía el evento
+    \texttt{RTEMS\_EVENT\_0} a la tarea \textit{worker} correspondiente.
+    \item Para cada transceptor con interrupción TX activa: extrae el siguiente byte del
+    \textit{buffer} circular de transmisión, lo escribe en el registro de control pulsando
+    \texttt{BIT\_TX\_SEND}, y limpia la interrupción. Si el \textit{buffer} ha quedado vacío, marca
+    \texttt{tx\_busy = false}.
+\end{enumerate}
+
+Cada instancia \texttt{Transceiver} tiene asociada una tarea RTEMS dedicada
+(\texttt{Rx\_Worker\_Task}) que se bloquea esperando el evento. Al recibirlo, vacía el FIFO
+hardware byte a byte hacia el \textit{buffer} circular de recepción, pulsando \texttt{BIT\_DATA\_READ}
+para confirmar la lectura de cada byte al hardware. El acceso al \textit{buffer} se protege con un
+semáforo binario de prioridad para evitar condiciones de carrera. Tras drenar el FIFO, la
+\textit{worker} re-habilita la interrupción (INTC\_SIE) e invoca el \textit{callback} de usuario si está
+registrado.
+
+La separación entre la ISR (que solo despierta la tarea) y la \textit{worker} (que realiza el trabajo
+real) garantiza que el tiempo de latencia en contexto de interrupción sea mínimo y que el
+procesamiento se ejecute con las prioridades del planificador RTEMS.
+
+\subsection{Inicialización y configuración del hardware}
+
+\texttt{Transceiver\_Init()} realiza la puesta en marcha completa de una instancia: calcula la
+dirección base y la dirección del INTC, asigna las máscaras de interrupción individuales (bit
+$2 \cdot id$ para RX y bit $2 \cdot id + 1$ para TX dentro del registro de 32 bits del INTC),
+asigna dinámicamente los \textit{buffers} circulares, crea el semáforo y la tarea \textit{worker} con
+\texttt{rtems\_semaphore\_create} y \texttt{rtems\_task\_create}, escribe la configuración de
+protocolo en el hardware y lanza la tarea \textit{worker}.
+
+La función \texttt{Transceiver\_Global\_INIT()} orquesta la inicialización completa del sistema:
+primero llama a \texttt{Transceiver\_Hardware\_Discover()} para poblar las variables globales, y a
+continuación a \texttt{Transceiver\_Global\_INTC\_Init()}, que habilita el modo maestro del INTC
+(registro MER) e instala la \texttt{Master\_ISR}.
+
+\subsection{API pública}
+
+La interfaz expuesta al código de aplicación se reduce a cinco funciones:
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{ll}
+        \hline
+        \textbf{Función} & \textbf{Descripción} \\
+        \hline
+        \texttt{Transceiver\_Global\_INIT()} & Descubrimiento hardware e inicialización del INTC. \\
+        \texttt{Transceiver\_Init(dev, id, cfg)} & Inicializa la instancia \texttt{dev} con el id y configuración. \\
+        \texttt{Transceiver\_SetRxCallback(dev, cb, arg)} & Registra \textit{callback} de recepción. \\
+        \texttt{Transceiver\_Read(dev, buf, maxlen)} & Extrae hasta \texttt{maxlen} bytes del buffer RX. \\
+        \texttt{Transceiver\_SendString(dev, s)} & Encola la cadena \texttt{s} y arranca la transmisión. \\
+        \hline
+    \end{tabular}
+    \caption{API pública del driver serie.}
+    \label{tab:api}
+\end{table}
+
+\subsection{Decisiones de diseño destacadas}
+
+\textbf{Buffer circular frente a copia directa en ISR.} Dado que RTEMS no permite operaciones de
+copia de longitud arbitraria en contexto de interrupción sin afectar la latencia del sistema, se
+optó por \textit{buffers} circulares gestionados desde la tarea \textit{worker}. El tamaño de 4096 bytes
+proporciona margen suficiente para ráfagas de datos a las tasas más altas soportadas (hasta
+4~Mbaudios).
+
+\textbf{Transmisión dirigida por interrupción.} El primer byte de cada cadena a transmitir se escribe
+directamente desde \texttt{Transceiver\_SendString()} para arrancar el hardware; los bytes
+siguientes son enviados sucesivamente por la \texttt{Master\_ISR} al recibir la interrupción
+TX\_RDY, sin necesidad de que la tarea de aplicación permanezca bloqueada durante la
+transmisión.
+
+\textbf{Compatibilidad multi-instancia mediante tabla global.} El array \texttt{g\_instances[]} permite
+a la \texttt{Master\_ISR} localizar en $O(1)$ el objeto \texttt{Transceiver} asociado a cada par de bits de
+interrupción, evitando búsquedas costosas en contexto de ISR.
+
+\textbf{Modo SLO.} El bit \texttt{BIT\_SLO} del registro de control activa en el hardware VHDL una
+rampa de subida más lenta en las señales de salida, reduciendo el contenido espectral de alta
+frecuencia y mejorando la compatibilidad electromagnética en entornos con restricciones EMI.
+
+% ---------------------------------------------------------------------------
+\section{Diseño hardware}
+% ---------------------------------------------------------------------------
+
+Una vez completado el firmware del transceptor serie, se desarrolló el hardware de prueba
+necesario para validar el sistema en condiciones reales. El plan inicial era diseñar una única
+PCB propia para testear múltiples líneas serie. Posteriormente, el proyecto LINCE requirió
+dos tarjetas adicionales con especificaciones impuestas por Indra ---la placa CDHS y la placa
+AOCS--- para que Sener pudiera validar su firmware sobre la ZCU102. Los esquemáticos
+completos, BOMs y archivos de fabricación de las tres placas están disponibles en el
+repositorio del proyecto bajo \texttt{HARDWARE/}.
+
+\subsection{Diseño de la placa de comunicación serie (diseño propio)}
+
+El objetivo de esta placa es poder ejercitar simultáneamente los 14 transceptores del IP core,
+replicando las topologías de bus reales que se encontrarán en el satélite: RS485 multipunto
+con múltiples nodos en el mismo cable, y RS422 en configuración \textit{master/slave} con cruce de
+TX y RX. A diferencia de las placas CDHS y AOCS, cuyas especificaciones vinieron dictadas
+por Indra, esta placa fue diseñada con total libertad para maximizar la flexibilidad de los
+ensayos en laboratorio.
+
+La arquitectura general de la placa divide los 14 canales en dos grupos conectados al FMC:
+
+\begin{itemize}
+    \item \textbf{7 drivers RS485 (RS0--RS6)} conectados a un bus diferencial común mediante
+    \textit{jumpers}, formando una topología multipunto configurable.
+    \item \textbf{7 drivers RS422 (RS7--RS13)} organizados en dos buses \textit{master/slave}
+    independientes (BUS 1: 1 \textit{master} + 3 \textit{slaves}; BUS 2: 1 \textit{master} + 2 \textit{slaves}), con la línea
+    TX cruzada con RX para emular la conexión real punto a punto RS422.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\parbox{0.85\textwidth}{\centering \textit{[Figura pendiente: arquitectura general de la placa --- 7 drivers RS485, conector FMC, 7 drivers RS422]}\vspace{0.5cm}}}
+    \caption{Arquitectura general de la placa de comunicación serie.}
+    \label{fig:placa_serial_top}
+\end{figure}
+
+\subsubsection{Topología RS485: bus compartido configurable por jumper}
+
+La decisión de diseño más relevante de esta placa es el mecanismo de bus compartido RS485
+sin necesidad de recablear. Cada driver RS485 tiene un conector Dupont de 3 pines
+(A+, B$-$, GND) que actúa a la vez como punto de conexión hacia el exterior y como punto de
+interconexión entre drivers adyacentes. Colocando un \textit{jumper} entre dos conectores
+consecutivos, las líneas A y B de ambos drivers quedan físicamente unidas, formando un
+segmento de bus RS485 compartido. Retirando el \textit{jumper}, el driver queda independiente y
+puede conectarse a un periférico externo de forma individual.
+
+Este mecanismo permite configurar por hardware cualquier partición de los 7 drivers RS485
+en uno o varios buses, sin modificar el firmware ni el cableado exterior.
+
+\subsubsection{Selector de conector Micro-D para RS485}
+
+Los conectores de mayor densidad (Micro-D) de la placa son compartidos entre el Driver 0 y
+el Driver 6 mediante un \textit{jumper} de selección de hardware. Dependiendo de la posición del
+\textit{jumper}, los conectores Micro-D quedan asignados a uno u otro driver, lo que permite usar
+un único tipo de conector con cableado de satélite sin duplicar el número de conectores en
+la placa.
+
+\subsubsection{Topología RS422: master/slave configurable por jumper}
+
+Para RS422, cada driver \textit{slave} dispone de un conector con las líneas TX cruzadas a RX
+(TX-Y+/TX-Z$-$ conectadas a RX del bus), replicando la conexión estándar punto a punto
+RS422 donde el receptor del esclavo escucha las transmisiones del \textit{master}. Al igual que en
+RS485, un \textit{jumper} determina si el driver se une al bus común o permanece independiente.
+
+El esquemático completo (12 hojas) y la BOM están disponibles en
+\texttt{HARDWARE/lince\_comunicacion\_serial/} del repositorio del proyecto.
+
+% ----- CDHS -----
+\subsection{Diseño de la placa CDHS}
+
+La placa LINCE3 CDHS BreakoutBox es una tarjeta de interconexión entre la ZCU102
+(conectada por FMC) y los periféricos del subsistema de gestión de datos y calentadores del
+satélite. Sus especificaciones fueron definidas por Indra: 6 conectores D-Sub-9 (J1--J6),
+interfaces CAN redundante, tres canales RS422/RS485, cuatro líneas PWM para calentadores
+y un ADC para termistores.
+
+\begin{figure}[H]
+    \centering
+    \fbox{\parbox{0.85\textwidth}{\centering \textit{[Figura pendiente: diagrama jerárquico CDHS --- bloque CAN (J1), RS (J2--J4), PWM (J5), ADC/THERM (J6)]}\vspace{0.5cm}}}
+    \caption{Diagrama de bloques de la placa CDHS.}
+    \label{fig:cdhs_top}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\parbox{0.85\textwidth}{\centering \textit{[Figura pendiente: render 3D de la PCB CDHS]}\vspace{0.5cm}}}
+    \caption{Render 3D de la placa CDHS.}
+    \label{fig:cdhs_3d}
+\end{figure}
+
+\subsubsection{Decisión de nivel de tensión: 1,8 V}
+
+Todos los bancos de pines del conector FMC HPC utilizados por esta placa operan a 1,8~V.
+Se buscaron deliberadamente componentes con VIO nativo a 1,8~V para evitar etapas de
+adaptación de nivel adicionales entre el MPSoC y los transceptores. Esta decisión simplifica
+el diseño y reduce el número de componentes activos en la cadena de señal.
+
+\subsubsection{Subsistema CAN}
+
+El bus CAN implementa topología redundante con dos instancias independientes: CAN
+Nominal (CAN\_NOM) y CAN Redundante (CAN\_RED). Se seleccionó el transceptor
+\textbf{TCAN1044AVDRQ1} de Texas Instruments por su compatibilidad nativa con VIO de 1,8~V,
+grado automotriz y baja corriente en modo \textit{standby}. Ambos canales convergen en el
+conector J1.
+
+Las resistencias de terminación siguen el esquema \textit{split termination} recomendado en las
+notas de aplicación del estándar CAN (ISO 11898-2). En lugar de una única resistencia de
+120~$\Omega$ entre CANH y CANL, se emplean \textbf{dos resistencias de 60~$\Omega$ en serie} con un
+\textbf{condensador de 4,7~nF} conectado desde el punto medio al plano de masa. Cada una de
+las dos resistencias de 60~$\Omega$ está controlada por un \textit{jumper} independiente, lo que
+permite habilitar o deshabilitar la terminación sin modificar el circuito. La resistencia
+equivalente sigue siendo 120~$\Omega$ cuando ambos \textit{jumpers} están colocados, y el
+condensador de derivación crea un camino de baja impedancia para las interferencias de
+modo común de alta frecuencia hacia masa, mejorando el comportamiento EMC del bus.
+
+Las líneas CANH y CANL de cada canal incorporan diodos de protección ESD
+\textbf{ESDCAN24-2BLY}, específicamente diseñados para buses CAN, que clampean transitorios
+por encima de su tensión de ruptura sin introducir una capacitancia parásita significativa.
+
+\begin{figure}[H]
+    \centering
+    \fbox{\parbox{0.85\textwidth}{\centering \textit{[Figura pendiente: esquemático CAN.SchDoc --- transceptores TCAN1044 con terminación \textit{split} y diodos ESD]}\vspace{0.5cm}}}
+    \caption{Subsistema CAN de la placa CDHS.}
+    \label{fig:cdhs_can}
+\end{figure}
+
+\subsubsection{Subsistema RS422/RS485}
+
+Se disponen tres canales serie idénticos e independientes (RS1, RS2, RS3), cada uno con el
+transceptor \textbf{THVD1424RGTR}. Este integrado fue elegido porque soporta VIO de 1,8~V,
+incorpora resistencias de terminación internas conmutables y permite seleccionar entre modo
+\textit{Half-Duplex} y \textit{Full-Duplex} sin cambiar el hardware. La configuración se expone mediante
+\textit{jumpers} físicos de 2 pines: \textbf{H/F} (conmuta entre \textit{Half-Duplex} y \textit{Full-Duplex}), \textbf{SLR}
+(habilita control de \textit{slew rate}), \textbf{TERM\_TX / TERM\_RX} (conectan las resistencias de
+terminación internas). Los tres canales salen por los conectores J2, J3 y J4.
+
+Tanto las líneas RX como las TX de cada canal llevan un par de diodos TVS
+\textbf{SM712-02HTG} conectados entre las líneas diferenciales y el plano de masa.
+
+\paragraph{Decisión de diseño: cortocircuito DE--RE.}
+El THVD1424 expone dos pines de control independientes: \textbf{DE} (\textit{Driver Enable}, activo en
+alto) habilita el transmisor, y \textbf{RE} (\textit{Receiver Enable}, activo en bajo) habilita el receptor.
+En el esquemático, ambos pines están conectados a la misma señal de control procedente del
+MPSoC, de modo que una única línea digital controla simultáneamente transmisor y receptor
+de forma complementaria (tabla~\ref{tab:de_re}).
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{ccc}
+        \hline
+        \textbf{Señal DE/RE} & \textbf{Transmisor (DE)} & \textbf{Receptor (RE activo bajo)} \\
+        \hline
+        1 (alto) & Habilitado & Deshabilitado \\
+        0 (bajo) & Deshabilitado & Habilitado \\
+        \hline
+    \end{tabular}
+    \caption{Control complementario DE/RE en el THVD1424.}
+    \label{tab:de_re}
+\end{table}
+
+Esta decisión responde a dos motivos. Por un lado, el equipo de Indra comunicó que en la
+arquitectura del satélite los esclavos solo transmiten bajo demanda del OBC, por lo que no
+existe un escenario real en el que un nodo deba transmitir y recibir simultáneamente. Por
+otro lado, en modo \textit{Half-Duplex} las líneas TX y RX comparten físicamente el mismo par
+diferencial A/B; si el receptor permaneciera activo durante la transmisión, el nodo escucharía
+su propio eco.
+
+\begin{figure}[H]
+    \centering
+    \fbox{\parbox{0.85\textwidth}{\centering \textit{[Figura pendiente: RS.SchDoc --- circuito completo de un canal RS con THVD1424RGTR y diodos TVS]}\vspace{0.5cm}}}
+    \caption{Canal RS de la placa CDHS con THVD1424RGTR.}
+    \label{fig:cdhs_rs}
+\end{figure}
+
+\subsubsection{Subsistema PWM (calentadores)}
+
+Cuatro señales PWM de 1,8~V procedentes del FMC se elevan a 3,3~V mediante el adaptador
+de niveles \textbf{TXU0104PWR} para excitar los circuitos de control de calentadores externos.
+Las cuatro líneas adaptadas salen por J5.
+
+Para la validación de esta interfaz se diseñó un bloque VHDL autónomo,
+\texttt{PWMx4\_auto\_test}, sintetizado en la PL junto al resto del diseño de Vivado. El bloque
+genera cuatro señales PWM independientes con \textit{duty cycle} del 50\% a partir del reloj de
+100~MHz de la FPGA: canal 0 a 10~kHz, canal 1 a 5~kHz, canal 2 a 1~kHz y canal 3 a
+100~Hz. Al ser completamente autónomo no requiere ningún driver ni intervención del PS, lo
+que permitió verificar el subsistema PWM de la placa con el mismo BOOT.BIN utilizado para
+las pruebas serie.
+
+\subsubsection{Subsistema ADC (termistores)}
+
+Cuatro entradas analógicas de termistores (CH0--CH3) se digitalizan con el ADC SAR de
+12 bits \textbf{ADS7950QDBTRQ1}, comunicado al procesador por SPI a 1,8~V. La circuitería
+analógica opera a 3,3~V; ambos carriles (+VBD a 1,8~V y +VA a 3,3~V) son independientes
+para evitar acoplos entre el dominio digital y el analógico \cite{ti2018ads7950}. Los
+termistores se conectan por J6.
+
+\subsubsection{Alimentación}
+
+El conector FMC suministra 12~V, 3,3~V y el carril VADJ a 1,8~V. El convertidor conmutado
+\textbf{R-78E5.0-1.0} genera los 5~V necesarios para la etapa de potencia de los transceptores
+RS y CAN a partir de los 12~V del FMC. Se eligió este módulo DC/DC por su integración en
+un \textit{footprint} reducido de 3 pines (equivalente a un regulador lineal) y su eficiencia $\geq
+96\%$, evitando la disipación térmica que tendría un LDO con ese diferencial de tensión.
+
+\subsubsection{Conectores externos}
+
+Los seis puertos D-Sub-9 (J1--J6) son de tipo macho o hembra según la convención de uso.
+Los escudos metálicos de todos los conectores están conectados al plano de GND para
+mantener la continuidad de apantallamiento EMI con los cables blindados.
+
+El mapa completo de señales entre la placa CDHS y el conector FMC se encuentra en el
+Anexo~1 de este documento. El esquemático completo y la BOM están disponibles en
+\texttt{HARDWARE/CDHS/}.
+
+% ----- AOCS -----
+\subsection{Diseño de la placa AOCS}
+
+La placa LINCE3 AOCS BreakoutBox es la tarjeta de interconexión para el subsistema de
+control de actitud y órbita del satélite. Al igual que la CDHS, conecta la ZCU102 mediante
+FMC y expone las interfaces al exterior a través de 8 conectores D-Sub-9 (J1--J8).
+
+\begin{figure}[H]
+    \centering
+    \fbox{\parbox{0.85\textwidth}{\centering \textit{[Figura pendiente: diagrama jerárquico AOCS --- bloques RS (J1, J3--J5, J8), MOT-PWM (J2), SpaceWire (J6, J7)]}\vspace{0.5cm}}}
+    \caption{Diagrama de bloques de la placa AOCS.}
+    \label{fig:aocs_top}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\parbox{0.85\textwidth}{\centering \textit{[Figura pendiente: render 3D de la PCB AOCS]}\vspace{0.5cm}}}
+    \caption{Render 3D de la placa AOCS.}
+    \label{fig:aocs_3d}
+\end{figure}
+
+\subsubsection{Canales RS422/RS485}
+
+La placa incorpora 5 canales serie (RS1, RS3, RS4, RS5, RS8) con exactamente el mismo
+diseño de transceptor THVD1424RGTR descrito en la sección de la placa CDHS, incluyendo
+el cortocircuito DE--RE y los \textit{jumpers} de configuración H/F, SLR y terminación.
+
+\subsubsection{Canales SpaceWire}
+
+Se implementan dos enlaces SpaceWire \textit{full-duplex} independientes (SPW1 y SPW2) mediante
+señalización diferencial LVDS, sin transceptor activo adicional, ya que el estándar SpaceWire
+opera directamente a niveles LVDS compatibles con los bancos del FMC. Los pares
+diferenciales ---cuatro por enlace: DIN, SIN, SOUT y DOUT--- se han trazado en la PCB con
+técnicas de igualación de longitud (\textit{length matching}) para minimizar el \textit{skew} entre el par
+de datos y el par de \textit{strobe}, y con impedancia característica controlada de 100~$\Omega$
+diferencial.
+
+\begin{figure}[H]
+    \centering
+    \fbox{\parbox{0.85\textwidth}{\centering \textit{[Figura pendiente: esquemático SpaceWire --- cuatro pares diferenciales y su conexión al FMC]}\vspace{0.5cm}}}
+    \caption{Subsistema SpaceWire de la placa AOCS.}
+    \label{fig:aocs_spw}
+\end{figure}
+
+\subsubsection{Control de motores (MOT-PWM)}
+
+Seis señales PWM de 1,8~V procedentes del FMC se elevan al nivel de tensión requerido por
+los puentes en H externos mediante un adaptador de niveles. Las señales se agrupan en tres
+pares (X, Y, Z para los tres ejes del satélite), con dos líneas por eje para controlar la
+dirección de giro del motor. Salen por J2. La alimentación de potencia de los motores se
+conecta mediante dos bornes banana independientes de la alimentación de la placa.
+
+\subsubsection{Alimentación}
+
+Misma arquitectura que la placa CDHS: 12~V del FMC, convertidor DC/DC para los 5~V de
+potencia, y VADJ 1,8~V para los transceptores.
+
+El mapa completo de señales entre la placa AOCS y el conector FMC se encuentra en el
+Anexo~1. El esquemático completo y la BOM están disponibles en \texttt{HARDWARE/AOCS/}.
+
+% ----- FABRICACIÓN -----
+\subsection{Fabricación}
+
+Una vez validados los esquemáticos y completado el rutado de las PCBs, se encargaron las
+placas con stencil a \textbf{PCBWay}, y los componentes a \textbf{Mouser} y \textbf{DigiKey} según
+disponibilidad. El proceso de montaje en el laboratorio siguió los pasos habituales de
+soldadura por reflujo SMD:
+
+\begin{enumerate}
+    \item \textbf{Aplicación de pasta de soldadura.} Se fijó la placa a la mesa con placas de
+    idéntico grosor alrededor y cinta de pintor. Se colocó el stencil alineado y se extendió
+    la pasta con espátula.
+    \item \textbf{Colocación de componentes.} Con pinzas de punta fina, se colocaron los
+    componentes SMD sobre la pasta. Se montaron dos placas en paralelo para optimizar el
+    tiempo de proceso.
+    \item \textbf{Reflujo.} Las placas se introdujeron en el horno de reflujo del laboratorio
+    seleccionando el perfil de temperatura adecuado para la pasta de soldadura utilizada.
+\end{enumerate}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\parbox{0.85\textwidth}{\centering \textit{[Figura pendiente: foto del proceso de fabricación --- aplicación de pasta con stencil]}\vspace{0.5cm}}}
+    \caption{Aplicación de pasta de soldadura con stencil.}
+    \label{fig:fab_pasta}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\parbox{0.85\textwidth}{\centering \textit{[Figura pendiente: foto de la placa CDHS soldada (cara superior)]}\vspace{0.5cm}}}
+    \caption{Placa CDHS tras el proceso de soldadura.}
+    \label{fig:cdhs_soldada}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\parbox{0.85\textwidth}{\centering \textit{[Figura pendiente: foto de la placa AOCS soldada (cara superior)]}\vspace{0.5cm}}}
+    \caption{Placa AOCS tras el proceso de soldadura.}
+    \label{fig:aocs_soldada}
+\end{figure}
+
+% ---------------------------------------------------------------------------
+\section{Desarrollo de herramientas de testing}
+% ---------------------------------------------------------------------------
+
+\subsection{Aplicación de testing del driver serie en RTEMS}
+
+La aplicación de testing del driver serie está estructurada en tres archivos:
+
+\begin{itemize}
+    \item \texttt{init.c}: configuración del sistema RTEMS mediante macros de
+    \texttt{confdefs.h}.
+    \item \texttt{transceiver.c} + \texttt{transceiver.h}: driver del transceptor serie sobre AXI GPIO.
+    \item \texttt{main.c}: aplicación de testing que usa la API del driver.
+\end{itemize}
+
+\subsubsection{Configuración del sistema RTEMS --- \texttt{init.c}}
+
+\texttt{init.c} es el fichero de configuración estática de RTEMS. No contiene lógica de
+aplicación; define el entorno de ejecución mediante macros que \texttt{<rtems/confdefs.h>}
+convierte en estructuras de datos internas del kernel:
+
+\begin{lstlisting}[caption={Configuración estática de RTEMS en init.c}]
+CONFIGURE_APPLICATION_NEEDS_CLOCK_DRIVER    // rtems_task_wake_after()
+CONFIGURE_APPLICATION_NEEDS_CONSOLE_DRIVER // stdin/stdout (printf, fgets)
+CONFIGURE_MICROSECONDS_PER_TICK 10000       // Tick = 10 ms (100 Hz)
+CONFIGURE_UNLIMITED_OBJECTS                 // Sin limite de tareas/semaforos
+CONFIGURE_UNIFIED_WORK_AREAS               // Un unico pool de memoria
+CONFIGURE_INIT_TASK_STACK_SIZE (64 KB)    // Stack grande para Init
+\end{lstlisting}
+
+\subsubsection{Aplicación de testing --- \texttt{main.c}}
+
+La aplicación tiene tres secciones claramente separadas:
+
+\textbf{Callback de recepción \texttt{on\_rx\_data()}.} Se registra en el driver y se invoca desde la
+tarea \textit{worker} cuando llegan datos. Implementa un ensamblador de líneas por canal: por cada
+byte recibido, acumula hasta encontrar un carácter de fin de línea (\verb|\n| o \verb|\r|),
+momento en el que imprime la línea completa con el formato
+\texttt{[RX UART 02]: mensaje}. Hay un \texttt{AppLineBuffer} (1024 bytes) por cada uno de los
+14 canales, declarados estáticamente en el array \texttt{rx\_lines[MAX\_TRANSCEIVERS]}, para
+evitar mezclar caracteres de UARTs distintas en la misma línea de consola.
+
+\textbf{Tarea de consola TX \texttt{Tx\_Console\_Task()}.} Es una tarea RTEMS independiente
+(prioridad 100, baja) que bloquea en \texttt{fgets(stdin)} esperando comandos del usuario por
+la consola USB. El protocolo de comandos es:
+
+\begin{lstlisting}[caption={Protocolo de comandos de la aplicación de testing}]
+<ID> <MENSAJE>     -> Envia MENSAJE por la UART numero ID
+ALL <MENSAJE>      -> Envia MENSAJE por TODAS las UARTs
+<ID> SLO ON        -> Reconfigura UART ID con Slew Rate limitado
+<ID> SLO OFF       -> Reconfigura UART ID con Slew Rate normal
+ALL SLO ON/OFF     -> Aplica configuracion SLO a todas las UARTs
+\end{lstlisting}
+
+Los comandos SLO re-ejecutan \texttt{Transceiver\_Init()} con una configuración distinta, lo que
+permite reconfigurar el hardware en caliente sin reiniciar el sistema.
+
+\textbf{Función \texttt{Init()} --- punto de entrada RTEMS.} RTEMS la llama al arrancar en lugar
+de \texttt{main()}. La secuencia de inicialización es:
+
+\begin{enumerate}
+    \item \texttt{mmu\_map\_pl\_axi\_early()}: mapea en la MMU la región del PL para acceso \textit{bare-metal}.
+    \item \texttt{Transceiver\_Global\_INIT()}: descubre el hardware e instala la ISR maestra.
+    \item Bucle de inicialización: \texttt{Transceiver\_Init()}, \texttt{Transceiver\_SetRxCallback()} y
+    \texttt{Transceiver\_SendString("UART N Lista.\textbackslash r\textbackslash n")} para cada UART.
+    \item Creación y lanzamiento de \texttt{Tx\_Console\_Task}.
+    \item \texttt{rtems\_task\_delete(RTEMS\_SELF)}: la tarea Init se elimina a sí misma; el
+    kernel queda con las \textit{worker tasks} + la tarea de consola.
+\end{enumerate}
+
+\subsection{Aplicación de testing de las placas CDHS y AOCS}
+
+\subsubsection{Ampliación en PL para soportar interfaces adicionales CDHS}
+
+Para poder probar la funcionalidad de la placa CDHS, fue necesario añadir soporte firmware
+que controlara las líneas adicionales a RS422 y RS485. La configuración del entorno fue la
+siguiente: se preparó el hardware en la PL para probar las líneas de RS422/RS485, SPI, CAN
+y PWM creando un proyecto en Vivado con el script TCL \texttt{regenerate\_all} con 3
+transceptores serie, y añadiendo el bloque de control PWM. Además se configuró el PS para
+conectar SPI y CAN con el exterior activando las líneas de SPI 0, CAN 0 y CAN 1 como
+interfaces externas hacia el conector FMC.
+
+Para controlar las líneas de PWM se instanció el bloque \texttt{PWMx4\_auto\_test}, que genera
+desde la PL cuatro señales PWM a 10~kHz, 5~kHz, 1~kHz y 100~Hz con \textit{duty cycle} del
+50\%, sin necesidad de ningún driver en el PS. Se utilizó el mismo BOOT.bin para todas las
+pruebas de CDHS.
+
+Para probar el ADC ADS7950 de la placa CDHS, se desarrolló una pequeña aplicación de
+lectura SPI sobre RTEMS. Dado que el BSP de RTEMS 7 para ZCU102 no incluía en ese
+momento un driver SPI de alto nivel, se accedió directamente al controlador SPI Cadence
+integrado en el PS mediante mapeado de registros en memoria (MMIO), siguiendo el mapa de
+registros descrito en el Manual de Referencia Técnico del Zynq UltraScale+
+\cite{xilinx2023ug1085}. El protocolo de comunicación con el ADC ---formato de trama de
+16 bits, selección de canal en \textit{Manual Mode} y gestión de la latencia de conversión--- se
+implementó conforme al \textit{datasheet} del ADS7950 \cite{ti2018ads7950}.
+
+Para probar el CAN, se utilizó una aplicación desarrollada por Diego Ramos, compañero en
+el laboratorio B105 y en el proyecto LINCE. En su aplicación, se configuran las líneas de CAN
+y se establecen tests que comprueban que la conexión por CAN funciona correctamente.
+
+\subsubsection{Ampliación para soportar interfaces adicionales AOCS}
+
+Para probar la placa AOCS, se generó un proyecto de Vivado con \texttt{regenerate\_all} con
+5 transceptores, añadiendo un bloque VHDL para controlar los puentes en H por PWM
+(\texttt{Motor\_H\_bridge\_test.vhd}). Este bloque genera 3 PWMs y los enruta por la línea 1 o
+línea 2 de cada motor en función de la dirección deseada. Para estas pruebas, se fijó un
+tiempo para cada dirección de manera que durante unos segundos el PWM fuera en un
+sentido (línea 1 activa, línea 2 a 0) y durante los siguientes segundos en el sentido contrario.
+
+La comunicación por SpaceWire no se llegó a probar por falta de tiempo al adquirir los
+arneses Micro-D9.
+
+\subsection{Validación de hardware: arneses y equipamiento}
+
+\subsubsection{Arnés para verificar comunicaciones RS422}
+
+Arnés a 4 hilos, cruzando las líneas TX-P/N de un driver con las RX-P/N del opuesto.
+
+\subsubsection{Arnés para verificar comunicaciones RS485}
+
+Arnés a 2 hilos, en el que se conectan A+ y B$-$ de un driver con los del otro.
+
+\subsubsection{Arnés para verificar comunicaciones CAN}
+
+Se conectan las líneas CAN\_H y CAN\_L del canal nominal con las del canal redundante.
+
+\subsubsection{Equipo de laboratorio utilizado}
+
+Se utilizó un osciloscopio y una fuente de alimentación de hasta 32~V.
