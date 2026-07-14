@@ -1,0 +1,51 @@
+This is BibTeX, Version 0.99e
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: main.aux
+Reallocating 'name_of_file' (item size: 1) to 6 items.
+The style file: unsrt.bst
+Reallocating 'name_of_file' (item size: 1) to 7 items.
+Database file #1: biblio.bib
+Warning--entry type for "ecss50spw" isn't style-file defined
+--line 48 of file biblio.bib
+You've used 12 entries,
+            1791 wiz_defined-function locations,
+            506 strings with 5080 characters,
+and the built_in function-call counts, 1566 in all, are:
+= -- 136
+> -- 48
+< -- 3
++ -- 24
+- -- 12
+* -- 28
+:= -- 274
+add.period$ -- 36
+call.type$ -- 12
+change.case$ -- 11
+chr.to.int$ -- 0
+cite$ -- 12
+duplicate$ -- 74
+empty$ -- 191
+format.name$ -- 12
+if$ -- 356
+int.to.chr$ -- 0
+int.to.str$ -- 12
+missing$ -- 2
+newline$ -- 63
+num.names$ -- 12
+pop$ -- 56
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 0
+skip$ -- 24
+stack$ -- 0
+substring$ -- 0
+swap$ -- 12
+text.length$ -- 3
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 0
+warning$ -- 0
+while$ -- 12
+width$ -- 14
+write$ -- 126
+(There was 1 warning)

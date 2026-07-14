@@ -1,0 +1,64 @@
+\section{Introducción y motivación}
+
+El diseño de ordenadores de a bordo (OBC) para satélites exige resolver un reto de ingeniería
+que va más allá del procesamiento puro: conseguir que el procesador central se comunique de
+forma determinista y fiable con una familia heterogénea de periféricos ---sensores de actitud,
+actuadores, cargas de pago--- a través de buses serie con especificaciones eléctricas y de
+temporización muy diferentes entre sí. En el marco del proyecto LINCE, el grupo B105
+Electronic Systems Lab de la Universidad Politécnica de Madrid asume la responsabilidad del
+subsistema de comunicaciones del OBC.
+
+El trabajo se desarrolló en el laboratorio B105 en calidad de colaborador en prácticas dentro
+del proyecto LINCE, y la tarea inicial consistió en implementar el soporte de comunicaciones
+serie RS422 y RS485 sobre la plataforma de evaluación Zynq UltraScale+ ZCU102. Esta
+plataforma, basada en un MPSoC que integra en un mismo encapsulado un sistema de
+procesamiento ARM (PS) y una lógica programable tipo FPGA (PL), proporciona la
+flexibilidad necesaria para implementar transceptores serie a medida. Se optó por un diseño
+propio en VHDL en lugar de emplear IPs de terceros, con el objetivo de obtener control total
+sobre el comportamiento del transceptor: parámetros de temporización, gestión de errores y
+adaptación a los requisitos concretos del sistema.
+
+A medida que avanzaba el desarrollo, el alcance del trabajo se fue ampliando: las tareas de
+hardware fueron asumiéndose progresivamente a medida que se demostró capacidad para
+ello. Así, además del diseño del transceptor y su driver software, se asumió también el
+diseño de las tarjetas de circuito impreso necesarias para validar el sistema frente a los
+requisitos del consorcio. La colaboración directa con Sener ---socio tecnológico del proyecto
+LINCE, con reuniones quincenales y comunicación continua por correo--- fue determinante
+tanto para definir esos requisitos como para iterar sobre el diseño. A su vez, Sener traslada
+los requisitos técnicos impuestos por Indra, que lidera el consorcio.
+
+El resultado de todo este trabajo es una plataforma funcional que abarca el codiseño
+hardware-software del subsistema de comunicaciones serie, su integración bajo el sistema
+operativo de tiempo real RTEMS, y la fabricación y validación de dos tarjetas de prueba.
+
+\section{Metodología}
+
+El desarrollo de este trabajo se enmarcó en la dinámica de trabajo colaborativo del proyecto
+LINCE. Se mantuvieron reuniones quincenales con los ingenieros de Sener asignados al
+proyecto, además de comunicación continua por correo para resolver dudas técnicas y
+alinear requisitos. Las tareas se gestionaron mediante Jira, donde cada reunión servía para
+revisar el estado de los ítems abiertos, identificar bloqueos y planificar los próximos hitos.
+Los requisitos de diseño de las PCBs de prueba llegaron a través de Sener, que los traslada
+desde Indra como líder del consorcio.
+
+El trabajo se estructuró en dos fases principales:
+
+\textbf{Fase 1 --- Familiarización y establecimiento del entorno (octubre -- enero):} Los primeros
+meses se dedicaron a establecer las bases del entorno de desarrollo: instalación y
+configuración de Vivado y Vitis, compilación de RTEMS 7 desde código fuente para la
+arquitectura AArch64 mediante el RTEMS Source Builder, y validación del flujo completo
+(síntesis en Vivado $\rightarrow$ empaquetado en Vitis $\rightarrow$ ejecución en RTEMS sobre la ZCU102) con
+un ejemplo funcional de extremo a extremo. Esta fase fue fundamental para comprender la
+arquitectura PS-PL del MPSoC y las particularidades del entorno de compilación cruzada
+para sistemas empotrados.
+
+\textbf{Fase 2 --- Desarrollo e integración (febrero -- junio):} Con el entorno establecido, se abordó
+el desarrollo principal: el transceptor serie en VHDL, el driver para RTEMS, el diseño de las
+PCBs CDHS y AOCS, y las aplicaciones de prueba. Se siguió una metodología iterativa: cada
+módulo se implementaba, se validaba de forma aislada (mediante simulación en Vivado o
+prueba directa sobre la placa) y se integraba en el sistema global antes de avanzar al
+siguiente.
+
+Quedan pendientes para la fase final, antes de la entrega del TFM en septiembre de 2026,
+la fabricación y validación de la PCB de diseño propio y el desarrollo de la aplicación de
+testing exhaustivo de los 14 transceptores en paralelo.
