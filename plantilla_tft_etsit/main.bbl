@@ -1,0 +1,69 @@
+\begin{thebibliography}{10}
+
+\bibitem{indra2026lince}
+{Indra}.
+\newblock Proyecto {LINCE}: Línea de industrialización de cargas de pago y
+  plataformas espaciales.
+\newblock Indra Sistemas S.A., 2026.
+\newblock Recuperado el 12 de junio de 2026.
+
+\bibitem{vita571fmc}
+{VITA Standards Organization}.
+\newblock {VITA 57.1}: {FPGA} {Mezzanine} {Card} ({FMC}) standard.
+\newblock VITA Standards Organization, 2010.
+
+\bibitem{ti2014rs485}
+{Texas Instruments}.
+\newblock The {RS-485} design guide.
+\newblock Application Report SLLA272C, Texas Instruments, 2014.
+
+\bibitem{eia485a}
+{Electronic Industries Alliance (EIA)}.
+\newblock Electrical characteristics of generators and receivers for use in
+  balanced digital multipoint systems.
+\newblock TIA/EIA-485-A, 1998.
+
+\bibitem{ti2018rs422}
+{Texas Instruments}.
+\newblock {RS-422} and {RS-485} standards overview and system configurations.
+\newblock Application Report SLLA070D, Texas Instruments, 2018.
+
+\bibitem{tia422b}
+{Telecommunications Industry Association}.
+\newblock Electrical characteristics of balanced voltage digital interface
+  circuits.
+\newblock TIA/EIA-422-B, 1994.
+
+\bibitem{ecss50spw}
+{European Cooperation for Space Standardization (ECSS)}.
+\newblock Space engineering -- {SpaceWire} -- links, nodes, routers and
+  networks, 2008.
+
+\bibitem{parkes2012spw}
+S.~M. Parkes.
+\newblock {\em {SpaceWire} User's Guide}.
+\newblock STAR-Dundee Ltd., 2012.
+
+\bibitem{iso118981}
+{International Organization for Standardization (ISO)}.
+\newblock Road vehicles --- controller area network ({CAN}) --- part 1: Data
+  link layer and physical signalling.
+\newblock ISO 11898-1:2015, 2015.
+
+\bibitem{esa2015can}
+{Agencia Espacial Europea (ESA)}.
+\newblock {CAN} in space: Implementation guide and application notes.
+\newblock Technical report, TEC-ED \& TEC-SW, ESA, 2015.
+
+\bibitem{ti2018ads7950}
+{Texas Instruments}.
+\newblock {ADS7950/51/52/53} --- 12/10/8-bit, 1-{MSPS}, 4-/8-channel, serial
+  interface, {MicroPower} sampling analog-to-digital converter.
+\newblock Technical Report SLAS605C, Texas Instruments, 2018.
+
+\bibitem{xilinx2023ug1085}
+{AMD/Xilinx}.
+\newblock {\em {Zynq UltraScale+ MPSoC} Technical Reference Manual}.
+\newblock AMD/Xilinx, 2023.
+
+\end{thebibliography}

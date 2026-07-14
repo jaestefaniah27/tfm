@@ -1,0 +1,33 @@
+\section{Conclusiones}
+
+El objetivo principal de este trabajo era desarrollar una plataforma funcional de comunicación
+con periféricos serie sobre el MPSoC Zynq UltraScale+ ZCU102, adaptada a los requisitos
+del proyecto LINCE. A lo largo del desarrollo se han obtenido los siguientes resultados:
+
+El transceptor serie configurable diseñado en VHDL funciona correctamente sobre la lógica
+programable del ZCU102. Soporta los estándares RS422 y RS485 con configuración completa
+de protocolo en tiempo de ejecución, y el NCO de 32 bits implementado garantiza un error de
+baudrate inferior a 20~ppm para la mayoría de las velocidades estándar validadas, desde
+9.600 hasta 4.000.000~baudios.
+
+El driver desarrollado para RTEMS abstrae el hardware de forma efectiva y permite gestionar
+hasta 14 instancias simultáneas del transceptor mediante una arquitectura orientada a
+interrupciones. La separación entre la ISR maestra y las tareas \textit{worker} garantiza tiempos de
+latencia mínimos en la atención de interrupciones, manteniendo el determinismo propio de
+un sistema de tiempo real.
+
+Las dos tarjetas de circuito impreso diseñadas y fabricadas ---la placa CDHS y la placa
+AOCS--- cumplen con las especificaciones impuestas por Indra a través de Sener y han
+permitido validar el sistema de comunicaciones en un entorno hardware real. La fabricación
+se realizó en el propio laboratorio mediante proceso de soldadura por reflujo con stencil.
+
+La validación experimental ha confirmado el correcto funcionamiento de las interfaces RS422,
+RS485 y CAN de la placa CDHS, así como de las interfaces RS422 y RS485 de la placa AOCS.
+En el caso del bus CAN, se comprobó experimentalmente la importancia de las resistencias
+de terminación para la integridad de la señal diferencial. El driver SPI del ADC ADS7950
+produjo lecturas coherentes con la tensión de entrada aplicada, validando la cadena de
+adquisición analógica de la placa CDHS.
+
+En conjunto, el trabajo ha servido como contribución directa al proyecto LINCE,
+proporcionando al laboratorio B105 una base funcional y documentada para el subsistema
+de comunicaciones del ordenador de a bordo del satélite.

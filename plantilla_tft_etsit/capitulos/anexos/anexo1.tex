@@ -1,0 +1,219 @@
+Este anexo recoge el mapa de señales completo entre los conectores FMC de la ZCU102 y las
+placas LINCE Comunicación Serial, CDHS y AOCS, así como la tabla de frecuencias soportadas
+por el NCO del transceptor serie junto con su error medido.
+
+\section*{A1.1 Mapa de señales LINCE Comunicación Serial}
+
+La siguiente tabla recoge el mapeado de los 14 drivers RS-485/RS-422 de la placa LINCE
+Comunicación Serial con el conector FMC HPC0 (P2) de la ZCU102. Cada driver expone las
+señales TX, RX, SLO y DE (esta última ausente en los drivers 7 y 11, que sólo disponen de
+control de dirección hardware).
+
+{\small
+\begin{longtable}{llllll}
+    \hline
+    \textbf{Driver} & \textbf{Señal} & \textbf{Red Interna} & \textbf{Red (FMC HPC0)} & \textbf{Pin FMC (P2)} & \textbf{Pin Zynq} \\
+    \hline
+    \endfirsthead
+    \hline
+    \textbf{Driver} & \textbf{Señal} & \textbf{Red Interna} & \textbf{Red (FMC HPC0)} & \textbf{Pin FMC (P2)} & \textbf{Pin Zynq} \\
+    \hline
+    \endhead
+    \hline
+    \endfoot
+    \hline
+    \caption{Mapa de señales entre la placa LINCE Comunicación Serial y el conector FMC HPC0 (P2) de la ZCU102.}
+    \label{tab:mapa_lince_serial}
+    \endlastfoot
+    Driver0 & TX  & TX0   & FMC\_HPC0\_LA32\_N      & H38 & T11  \\
+    Driver0 & RX  & RX0   & FMC\_HPC0\_LA26\_N      & D27 & K15  \\
+    Driver0 & SLO & SLO0  & FMC\_HPC0\_LA27\_N      & C27 & L10  \\
+    Driver0 & DE  & DE0   & FMC\_HPC0\_LA33\_N      & G37 & V11  \\
+    Driver1 & TX  & TX1   & FMC\_HPC0\_LA33\_P      & G36 & V12  \\
+    Driver1 & RX  & RX1   & FMC\_HPC0\_LA30\_N      & H35 & U6   \\
+    Driver1 & SLO & SLO1  & FMC\_HPC0\_LA32\_P      & H37 & U11  \\
+    Driver1 & DE  & DE1   & FMC\_HPC0\_LA27\_P      & C26 & M10  \\
+    Driver2 & TX  & TX2   & FMC\_HPC0\_LA30\_P      & H34 & V6   \\
+    Driver2 & RX  & RX2   & FMC\_HPC0\_LA26\_P      & D26 & L15  \\
+    Driver2 & SLO & SLO2  & FMC\_HPC0\_LA31\_N      & G34 & V7   \\
+    Driver2 & DE  & DE2   & FMC\_HPC0\_LA31\_P      & G33 & V8   \\
+    Driver3 & TX  & TX3   & FMC\_HPC0\_LA29\_N      & G31 & U8   \\
+    Driver3 & RX  & RX3   & FMC\_HPC0\_LA29\_P      & G30 & U9   \\
+    Driver3 & SLO & SLO3  & FMC\_HPC0\_LA28\_N      & H32 & T6   \\
+    Driver3 & DE  & DE3   & FMC\_HPC0\_LA28\_P      & H31 & T7   \\
+    Driver4 & TX  & TX4   & FMC\_HPC0\_LA14\_P      & C18 & AC7  \\
+    Driver4 & RX  & RX4   & FMC\_HPC0\_LA13\_N      & D18 & AC8  \\
+    Driver4 & SLO & SLO4  & FMC\_HPC0\_LA22\_P      & G24 & M15  \\
+    Driver4 & DE  & DE4   & FMC\_HPC0\_LA19\_N      & H23 & K13  \\
+    Driver5 & TX  & TX5   & FMC\_HPC0\_LA20\_N      & G22 & M13  \\
+    Driver5 & RX  & RX5   & FMC\_HPC0\_LA15\_N      & H20 & Y9   \\
+    Driver5 & SLO & SLO5  & FMC\_HPC0\_LA19\_P      & H22 & L13  \\
+    Driver5 & DE  & DE5   & FMC\_HPC0\_LA20\_P      & G21 & N13  \\
+    Driver6 & TX  & TX6   & FMC\_HPC0\_LA15\_P      & H19 & Y10  \\
+    Driver6 & RX  & RX6   & FMC\_HPC0\_LA13\_P      & D17 & AB8  \\
+    Driver6 & SLO & SLO6  & FMC\_HPC0\_LA16\_N      & G19 & AA12 \\
+    Driver6 & DE  & DE6   & FMC\_HPC0\_LA16\_P      & G18 & Y12  \\
+    Driver7 & TX  & TX7   & FMC\_HPC0\_LA06\_P      & C10 & AC2  \\
+    Driver7 & RX  & RX7   & FMC\_HPC0\_LA01\_CC\_N  & D9  & AC4  \\
+    Driver7 & SLO & SLO7  & FMC\_HPC0\_LA01\_CC\_P  & D8  & AB4  \\
+    Driver8 & TX  & TX8   & FMC\_HPC0\_LA05\_P      & D11 & AB3  \\
+    Driver8 & RX  & RX8   & FMC\_HPC0\_LA05\_N      & D12 & AC3  \\
+    Driver8 & SLO & SLO8  & FMC\_HPC0\_LA06\_N      & C11 & AC1  \\
+    Driver8 & DE  & DE8   & FMC\_HPC0\_LA10\_P      & C14 & W5   \\
+    Driver9 & TX  & TX9   & FMC\_HPC0\_LA02\_P      & H7  & V2   \\
+    Driver9 & RX  & RX9   & FMC\_HPC0\_LA00\_CC\_N  & G7  & Y3   \\
+    Driver9 & SLO & SLO9  & FMC\_HPC0\_LA00\_CC\_P  & G6  & Y4   \\
+    Driver9 & DE  & DE9   & FMC\_HPC0\_LA02\_N      & H8  & V1   \\
+    Driver10 & TX  & TX10  & FMC\_HPC0\_LA09\_P     & D14 & W2   \\
+    Driver10 & RX  & RX10  & FMC\_HPC0\_LA03\_N     & G10 & Y1   \\
+    Driver10 & SLO & SLO10 & FMC\_HPC0\_LA03\_P     & G9  & Y2   \\
+    Driver10 & DE  & DE10  & FMC\_HPC0\_LA04\_P     & H10 & AA2  \\
+    Driver11 & TX  & TX11  & FMC\_HPC0\_LA08\_N     & G13 & V3   \\
+    Driver11 & RX  & RX11  & FMC\_HPC0\_LA08\_P     & G12 & V4   \\
+    Driver11 & SLO & SLO11 & FMC\_HPC0\_LA04\_N     & H11 & AA1  \\
+    Driver12 & TX  & TX12  & FMC\_HPC0\_LA10\_N     & C15 & W4   \\
+    Driver12 & RX  & RX12  & FMC\_HPC0\_LA07\_N     & H14 & U4   \\
+    Driver12 & SLO & SLO12 & FMC\_HPC0\_LA07\_P     & H13 & U5   \\
+    Driver12 & DE  & DE12  & FMC\_HPC0\_LA09\_N     & D15 & W1   \\
+    Driver13 & TX  & TX13  & FMC\_HPC0\_LA11\_N     & H17 & AB5  \\
+    Driver13 & RX  & RX13  & FMC\_HPC0\_LA11\_P     & H16 & AB6  \\
+    Driver13 & SLO & SLO13 & FMC\_HPC0\_LA12\_P     & G15 & W7   \\
+    Driver13 & DE  & DE13  & FMC\_HPC0\_LA12\_N     & G16 & W6   \\
+\end{longtable}
+}
+
+\section*{A1.2 Mapa de señales CDHS}
+
+\begin{table}[H]
+    \centering
+    \small
+    \begin{tabular}{llllll}
+        \hline
+        \textbf{Subsistema} & \textbf{Señal} & \textbf{Red (FMC HPC0)} & \textbf{Pin FMC} & \textbf{Pin Zynq} \\
+        \hline
+        SPI (ADC) & SDO & FMC\_HPC0\_LA02\_N & H8 & V1 \\
+        SPI (ADC) & SDI & FMC\_HPC0\_LA00\_CC\_N & G7 & Y3 \\
+        SPI (ADC) & SCLK & FMC\_HPC0\_LA02\_P & H7 & V2 \\
+        SPI (ADC) & CS\_N & FMC\_HPC0\_LA00\_CC\_P & G6 & Y4 \\
+        CAN (Nominal) & TX\_N & FMC\_HPC0\_LA21\_P & H25 & P12 \\
+        CAN (Nominal) & RX\_N & FMC\_HPC0\_LA22\_P & G24 & M15 \\
+        CAN (Redundante) & TX\_R & FMC\_HPC0\_LA21\_N & H26 & N12 \\
+        CAN (Redundante) & RX\_R & FMC\_HPC0\_LA22\_N & G25 & M14 \\
+        RS1 (Serial 1) & TX & FMC\_HPC0\_LA15\_P & H19 & Y10 \\
+        RS1 (Serial 1) & RX & FMC\_HPC0\_LA11\_N & H17 & AB5 \\
+        RS1 (Serial 1) & DE & FMC\_HPC0\_LA16\_P & G18 & Y12 \\
+        RS2 (Serial 2) & TX & FMC\_HPC0\_LA12\_N & G16 & W6 \\
+        RS2 (Serial 2) & RX & FMC\_HPC0\_LA12\_P & G15 & W7 \\
+        RS2 (Serial 2) & DE & FMC\_HPC0\_LA11\_P & H16 & AB6 \\
+        RS3 (Serial 3) & TX & FMC\_HPC0\_LA07\_N & H14 & U4 \\
+        RS3 (Serial 3) & RX & FMC\_HPC0\_LA07\_P & H13 & U5 \\
+        RS3 (Serial 3) & DE & FMC\_HPC0\_LA08\_N & G13 & V3 \\
+        PWM (Heaters) & IN1 & FMC\_HPC0\_LA04\_N & H11 & AA1 \\
+        PWM (Heaters) & IN2 & FMC\_HPC0\_LA04\_P & H10 & AA2 \\
+        PWM (Heaters) & IN3 & FMC\_HPC0\_LA03\_P & G9 & Y2 \\
+        PWM (Heaters) & IN4 & FMC\_HPC0\_LA03\_N & G10 & Y1 \\
+        \hline
+    \end{tabular}
+    \caption{Mapa de señales entre la placa CDHS y el conector FMC HPC0 de la ZCU102.}
+    \label{tab:mapa_cdhs}
+\end{table}
+
+\section*{A1.3 Mapa de señales AOCS}
+
+\begin{table}[H]
+    \centering
+    \small
+    \begin{tabular}{llllll}
+        \hline
+        \textbf{Subsistema} & \textbf{Señal} & \textbf{Red (FMC HPC0)} & \textbf{Pin FMC} & \textbf{Pin Zynq} \\
+        \hline
+        RS1 (Serial J1) & TX & FMC\_HPC0\_LA20\_N & G22 & M13 \\
+        RS1 (Serial J1) & RX & FMC\_HPC0\_LA20\_P & G21 & N13 \\
+        RS1 (Serial J1) & DE & FMC\_HPC0\_LA19\_P & H22 & L13 \\
+        MOT-PWM (J2) & PWM\_X\_1 & FMC\_HPC0\_LA17\_CC\_N & D21 & N11 \\
+        MOT-PWM (J2) & PWM\_X\_2 & FMC\_HPC0\_LA15\_N & H20 & Y9 \\
+        MOT-PWM (J2) & PWM\_Y\_1 & FMC\_HPC0\_LA16\_N & G19 & AA12 \\
+        MOT-PWM (J2) & PWM\_Y\_2 & FMC\_HPC0\_LA15\_P & H19 & Y10 \\
+        MOT-PWM (J2) & PWM\_Z\_1 & FMC\_HPC0\_LA16\_P & G18 & Y12 \\
+        MOT-PWM (J2) & PWM\_Z\_2 & FMC\_HPC0\_LA13\_N & D18 & AC8 \\
+        RS3 (Serial J3) & TX & FMC\_HPC0\_LA11\_N & H17 & AB5 \\
+        RS3 (Serial J3) & RX & FMC\_HPC0\_LA12\_P & G15 & W7 \\
+        RS3 (Serial J3) & DE & FMC\_HPC0\_LA11\_P & H16 & AB6 \\
+        RS4 (Serial J4) & TX & FMC\_HPC0\_LA09\_P & D14 & W2 \\
+        RS4 (Serial J4) & RX & FMC\_HPC0\_LA08\_N & G13 & V3 \\
+        RS4 (Serial J4) & DE & FMC\_HPC0\_LA07\_N & H14 & U4 \\
+        RS5 (Serial J5) & TX & FMC\_HPC0\_LA07\_P & H13 & U5 \\
+        RS5 (Serial J5) & RX & FMC\_HPC0\_LA05\_P & D11 & AB3 \\
+        RS5 (Serial J5) & DE & FMC\_HPC0\_LA08\_P & G12 & V4 \\
+        SPW1 (J6) & DIN\_P & FMC\_HPC0\_LA02\_P & H7 & V2 \\
+        SPW1 (J6) & DIN\_N & FMC\_HPC0\_LA02\_N & H8 & V1 \\
+        SPW1 (J6) & SIN\_P & FMC\_HPC0\_LA04\_P & H10 & AA2 \\
+        SPW1 (J6) & SIN\_N & FMC\_HPC0\_LA04\_N & H11 & AA1 \\
+        SPW1 (J6) & SOUT\_P & FMC\_HPC0\_LA01\_CC\_P & D8 & AB4 \\
+        SPW1 (J6) & SOUT\_N & FMC\_HPC0\_LA01\_CC\_N & D9 & AC4 \\
+        SPW1 (J6) & DOUT\_P & FMC\_HPC0\_LA00\_CC\_P & G6 & Y4 \\
+        SPW1 (J6) & DOUT\_N & FMC\_HPC0\_LA00\_CC\_N & G7 & Y3 \\
+        SPW2 (J7) & DIN\_P & FMC\_HPC0\_LA21\_P & H25 & P12 \\
+        SPW2 (J7) & DIN\_N & FMC\_HPC0\_LA21\_N & H26 & N12 \\
+        SPW2 (J7) & SIN\_P & FMC\_HPC0\_LA24\_P & H28 & L12 \\
+        SPW2 (J7) & SIN\_N & FMC\_HPC0\_LA24\_N & H29 & K12 \\
+        SPW2 (J7) & SOUT\_P & FMC\_HPC0\_LA28\_P & H31 & T7 \\
+        SPW2 (J7) & SOUT\_N & FMC\_HPC0\_LA28\_N & H32 & T6 \\
+        SPW2 (J7) & DOUT\_P & FMC\_HPC0\_LA30\_P & H34 & V6 \\
+        SPW2 (J7) & DOUT\_N & FMC\_HPC0\_LA30\_N & H35 & U6 \\
+        RS8 (Serial J8) & TX & FMC\_HPC0\_LA22\_N & G25 & M14 \\
+        RS8 (Serial J8) & RX & FMC\_HPC0\_LA19\_N & H23 & K13 \\
+        RS8 (Serial J8) & DE & FMC\_HPC0\_LA22\_P & G24 & M15 \\
+        \hline
+    \end{tabular}
+    \caption{Mapa de señales entre la placa AOCS y el conector FMC HPC0 de la ZCU102.}
+    \label{tab:mapa_aocs}
+\end{table}
+
+\section*{A1.4 Tabla de frecuencias del NCO}
+
+La siguiente tabla recoge las 54 frecuencias de baudrate soportadas por el oscilador
+controlado numéricamente (NCO) de 32 bits del transceptor serie, junto con los valores de
+incremento configurados y el error medido en ppm respecto a la frecuencia nominal.
+
+\begin{table}[H]
+    \centering
+    \small
+    \begin{tabular}{rrrrrr}
+        \hline
+        \textbf{Baud} & \textbf{Half} & \textbf{INC\_ROM} & \textbf{INC\_HALF\_ROM} & \textbf{Medido (Hz)} & \textbf{Error (ppm)} \\
+        \hline
+        9600   & 0 & 412317    & 824634    & 9600,002    & 0,2 \\
+        14400  & 0 & 618475    & 1236951   & 14399,988   & $-$0,8 \\
+        19200  & 0 & 824634    & 1649267   & 19200,012   & 0,6 \\
+        28800  & 0 & 1236951   & 2473901   & 28799,977   & $-$0,8 \\
+        31250  & 0 & 1342177   & 2684355   & 31250,000   & 0,0 \\
+        38400  & 0 & 1649267   & 3298535   & 38400,025   & 0,6 \\
+        56000  & 0 & 2405182   & 4810363   & 55999,978   & $-$0,4 \\
+        57600  & 0 & 2473901   & 4947802   & 57600,037   & 0,6 \\
+        74400  & 0 & 3195456   & 6390911   & 74400,057   & 0,8 \\
+        115200 & 0 & 4947802   & 9895605   & 115200,074  & 0,6 \\
+        128000 & 0 & 5497558   & 10995116  & 128000,000  & 0,0 \\
+        153600 & 0 & 6597070   & 13194140  & 153600,393  & 2,6 \\
+        230400 & 0 & 9895605   & 19791209  & 230398,820  & $-$5,1 \\
+        256000 & 0 & 10995116  & 21990233  & 256000,000  & 0,0 \\
+        312500 & 0 & 13421773  & 26843546  & 312500,000  & 0,0 \\
+        460800 & 0 & 19791209  & 39582419  & 460808,258  & 17,9 \\
+        500000 & 0 & 21474836  & 42949673  & 500000,000  & 0,0 \\
+        576000 & 0 & 24739012  & 49478023  & 576003,686  & 6,4 \\
+        614400 & 0 & 26388279  & 52776558  & 614401,573  & 2,6 \\
+        750000 & 0 & 32212255  & 64424509  & 749990,625  & $-$12,5 \\
+        921600 & 0 & 39582419  & 79164837  & 921616,515  & 17,9 \\
+        1000000 & 0 & 42949673 & 85899346  & 1000000,000 & 0,0 \\
+        1152000 & 0 & 49478023 & 98956046  & 1152007,373 & 6,4 \\
+        1500000 & 0 & 64424509 & 128849019 & 1499925,004 & $-$50,0 \\
+        1843200 & 0 & 79164837 & 158329674 & 1843148,097 & $-$28,2 \\
+        2000000 & 0 & 85899346 & 171798692 & 2000000,000 & 0,0 \\
+        2500000 & 0 & 107374182 & 214748365 & 2500000,000 & 0,0 \\
+        3000000 & 0 & 128849019 & 257698038 & 3000300,030 & 100,0 \\
+        3686400 & 0 & 158329674 & 316659349 & 3685956,506 & $-$120,3 \\
+        \hline
+    \end{tabular}
+    \caption{Tabla NCO: frecuencias de baudrate soportadas y error medido (extracto, modo \textit{full-bit}).}
+    \label{tab:nco}
+\end{table}

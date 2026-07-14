@@ -30,6 +30,8 @@ tfm/
 ├── 00_docs/                  Documentación transversal e informes
 │   ├── informe_benchmark.html        comparativa de las 3 variantes
 │   ├── registro_investigacion_rx.txt bitácora de depuración del RX
+│   ├── pcbs/                         esquemáticos y BOM de las tres placas
+│   ├── logs_terminal/                capturas de consola de las campañas de prueba
 │   └── PS_PL_instructions.md
 │
 ├── 01_ip_serie/              IP VHDL del transceptor serie configurable (común a todo)
@@ -61,6 +63,8 @@ tfm/
 ├── 06_firmware/              FSBL modificado y scripts de generación de BOOT.bin
 └── 07_tools/                 make_img.sh, carga por YMODEM, GUI serie
 ```
+
+Fuera de `tfm/`, en la raíz, está la memoria: `TFM_JORGE_A_E.md`, la plantilla LaTeX de la ETSIT (`plantilla_tft_etsit/`) y las notas de arquitectura del DMA (`plan_arqu_dma.md`).
 
 Cada carpeta relevante tiene su propio `README.md` con el detalle.
 

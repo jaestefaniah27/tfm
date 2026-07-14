@@ -1,0 +1,42 @@
+\section{Líneas futuras}
+
+A partir del trabajo realizado, se identifican las siguientes líneas de continuación:
+
+\textbf{Validación SpaceWire.} La interfaz SpaceWire de la placa AOCS no pudo probarse por falta
+del arnés Micro-D9 adecuado. Completar esta validación es el paso inmediato más relevante,
+ya que SpaceWire es el protocolo de alta velocidad previsto para los enlaces de mayor ancho
+de banda del satélite.
+
+\textbf{Fabricación y validación de la PCB de diseño propio.} La primera placa diseñada, orientada
+a la prueba simultánea de múltiples líneas serie con posibilidad de interconexión en buses
+compartidos, está pendiente de fabricación. Su validación completaría el conjunto de
+hardware de prueba.
+
+\textbf{Aplicación de testing exhaustivo de los 14 transceptores.} El driver soporta hasta 14
+instancias simultáneas pero la aplicación de testing actual no las ejercita todas a la vez de
+forma controlada. Desarrollar una aplicación que pruebe los 14 canales en paralelo, con
+métricas de \textit{throughput} y tasa de errores, permitiría caracterizar completamente el
+rendimiento del sistema.
+
+\textbf{Migración a AXI-Stream con transferencia por DMA.} La arquitectura actual del transceptor
+serie utiliza AXI GPIO como interfaz entre el PS y la PL, lo que implica que la CPU interviene
+en cada byte transferido. Durante el desarrollo se identificó una alternativa
+significativamente más eficiente: reemplazar AXI GPIO por \textbf{AXI-Stream} para el flujo de
+datos entre PS y PL, y añadir un controlador \textbf{DMA} (\textit{Direct Memory Access}) que mueva
+los bloques de datos directamente entre la memoria del procesador y la PL sin intervención
+de la CPU. Esto permitiría que el procesador quede completamente libre durante las
+transferencias, relegando toda la lógica de serialización y control de protocolo a la FPGA.
+Esta migración es factible sin comprometer los recursos disponibles: con 14 transceptores
+instanciados simultáneamente, la utilización de la FPGA se sitúa en torno al 7\% de los
+recursos totales disponibles, dejando margen más que suficiente para absorber la lógica
+adicional del controlador DMA y los FIFOs AXI-Stream en la PL.
+
+\textbf{Integración con el stack de software de vuelo de Sener.} El driver y las PCBs han sido
+diseñados con los requisitos de Indra/Sener como guía. El siguiente paso natural es la
+integración del driver en el stack de software de vuelo de Sener y la realización de pruebas
+de validación conjuntas en entorno \textit{Hardware-in-the-Loop}.
+
+\textbf{Soporte de protocolos adicionales.} La arquitectura modular del transceptor VHDL facilita
+la incorporación de nuevos modos de operación. Una extensión interesante sería añadir
+soporte nativo del protocolo MIL-STD-1553, ampliamente utilizado en sistemas espaciales de
+mayor herencia.
