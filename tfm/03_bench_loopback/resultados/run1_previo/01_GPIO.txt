@@ -1,0 +1,110 @@
+[TRANSCEIVER DEBUG] Detectados: 14 | Base: 0xA0000000 | INT: 0xA000E000
+[TRANSCEIVER DEBUG]   - Transceptor 0: 0xA0000000
+[TRANSCEIVER DEBUG]   - Transceptor 1: 0xA0001000
+[TRANSCEIVER DEBUG]   - Transceptor 2: 0xA0002000
+[TRANSCEIVER DEBUG]   - Transceptor 3: 0xA0003000
+[TRANSCEIVER DEBUG]   - Transceptor 4: 0xA0004000
+[TRANSCEIVER DEBUG]   - Transceptor 5: 0xA0005000
+[TRANSCEIVER DEBUG]   - Transceptor 6: 0xA0006000
+[TRANSCEIVER DEBUG]   - Transceptor 7: 0xA0007000
+[TRANSCEIVER DEBUG]   - Transceptor 8: 0xA0008000
+[TRANSCEIVER DEBUG]   - Transceptor 9: 0xA0009000
+[TRANSCEIVER DEBUG]   - Transceptor 10: 0xA000A000
+[TRANSCEIVER DEBUG]   - Transceptor 11: 0xA000B000
+[TRANSCEIVER DEBUG]   - Transceptor 12: 0xA000C000
+[TRANSCEIVER DEBUG]   - Transceptor 13: 0xA000D000
+
+=== BENCHMARK DE TRANSPORTE: GPIO ===
+Reloj del sistema: 99990008 Hz
+BENCH,variant,test,metric,unit,value,note
+BENCH,GPIO,footprint,static_bytes,B,0,buffers en .bss
+BENCH,GPIO,footprint,heap_bytes,B,114688,buffers con malloc
+BENCH,GPIO,footprint,total_bytes,B,114688,
+BENCH,GPIO,footprint,irq_lines,count,1,lineas PL->PS
+BENCH,GPIO,footprint,isr_count,count,1,
+BENCH,GPIO,footprint,task_count,count,14,tareas del driver
+BENCH,GPIO,footprint,sem_count,count,28,semaforos del driver
+BENCH,GPIO,footprint,tx_blocking,bool,0,Send espera a la TX fisica
+BENCH,GPIO,footprint,tx_concurrent,bool,1,varios canales TX a la vez
+BENCH,GPIO,footprint,channels,count,14,
+BENCH,GPIO,T0_selftest,channels,count,14,esperados 14
+BENCH,GPIO,T0_selftest,tx_datapath,bool,1,el driver mueve bytes al HW
+BENCH,GPIO,T0_selftest,rx_link,bool,1,lazo CH0->CH1 cerrado
+BENCH,GPIO,T0_selftest,bytes_rx,count,8,de 8 enviados
+[BENCH] Autodiagnostico OK: 14 canales, lazo CH0->CH1 cerrado.
+BENCH,GPIO,T1_latency,avg,us,4607,frame de 11 B
+BENCH,GPIO,T1_latency,p50,us,4609,
+BENCH,GPIO,T1_latency,p95,us,4611,
+BENCH,GPIO,T1_latency,max,us,4611,
+BENCH,GPIO,T1_latency,timeouts,count,0,
+BENCH,GPIO,T2_throughput_1ch,throughput,B/s,3471,115200 8N1: techo 11520
+BENCH,GPIO,T2_throughput_1ch,elapsed,us,294977,por bloque de 1024 B
+BENCH,GPIO,T2_throughput_1ch,reps_ok,count,5,
+BENCH,GPIO,T2_throughput_1ch,bytes_ok,count,5120,
+BENCH,GPIO,T2_throughput_1ch,bytes_total,count,5120,
+BENCH,GPIO,T3_tx_concurrent,throughput,B/s,10411,3 maestros en paralelo
+BENCH,GPIO,T3_tx_concurrent,elapsed,us,147526,hasta el ultimo byte
+BENCH,GPIO,T3_tx_concurrent,bytes_ok,count,1536,
+BENCH,GPIO,T3_tx_concurrent,bytes_total,count,1536,
+BENCH,GPIO,T3_tx_concurrent,bytes_rx,count,1536,
+BENCH,GPIO,T4_rx_multidrop,throughput,B/s,20838,6 receptores simultaneos
+BENCH,GPIO,T4_rx_multidrop,elapsed,us,73711,
+BENCH,GPIO,T4_rx_multidrop,listeners_ok,count,6,de 6
+BENCH,GPIO,T4_rx_multidrop,bytes_ok,count,1536,
+BENCH,GPIO,T4_rx_multidrop,bytes_total,count,1536,
+BENCH,GPIO,T5_overrun,bytes_sent,count,8192,ring SW = 4096 B
+BENCH,GPIO,T5_overrun,bytes_rx,count,24576,aceptados por el ring
+BENCH,GPIO,T5_overrun,bytes_lost,count,16252,descartados por overrun
+BENCH,GPIO,T5_overrun,bytes_drained,count,4096,
+BENCH,GPIO,T5_overrun,tx_fail,count,4,envios rechazados por cola TX llena
+BENCH,GPIO,T6_baud_sweep,throughput,B/s,3471,115200
+BENCH,GPIO,T6_baud_sweep,bytes_ok,count,1024,115200
+BENCH,GPIO,T6_baud_sweep,bytes_rx,count,1024,115200
+BENCH,GPIO,T6_baud_sweep,bytes_total,count,1024,115200
+BENCH,GPIO,T6_baud_sweep,irq_per_kb,count,7167,115200
+BENCH,GPIO,T6_baud_sweep,errors,count,0,115200
+BENCH,GPIO,T6_baud_sweep,throughput,B/s,4087,230400
+BENCH,GPIO,T6_baud_sweep,bytes_ok,count,1024,230400
+BENCH,GPIO,T6_baud_sweep,bytes_rx,count,1024,230400
+BENCH,GPIO,T6_baud_sweep,bytes_total,count,1024,230400
+BENCH,GPIO,T6_baud_sweep,irq_per_kb,count,7167,230400
+BENCH,GPIO,T6_baud_sweep,errors,count,0,230400
+BENCH,GPIO,T6_baud_sweep,throughput,B/s,4485,460800
+BENCH,GPIO,T6_baud_sweep,bytes_ok,count,1024,460800
+BENCH,GPIO,T6_baud_sweep,bytes_rx,count,1024,460800
+BENCH,GPIO,T6_baud_sweep,bytes_total,count,1024,460800
+BENCH,GPIO,T6_baud_sweep,irq_per_kb,count,7167,460800
+BENCH,GPIO,T6_baud_sweep,errors,count,0,460800
+BENCH,GPIO,T6_baud_sweep,throughput,B/s,4714,921600
+BENCH,GPIO,T6_baud_sweep,bytes_ok,count,1024,921600
+BENCH,GPIO,T6_baud_sweep,bytes_rx,count,1024,921600
+BENCH,GPIO,T6_baud_sweep,bytes_total,count,1024,921600
+BENCH,GPIO,T6_baud_sweep,irq_per_kb,count,7167,921600
+BENCH,GPIO,T6_baud_sweep,errors,count,0,921600
+BENCH,GPIO,T6_baud_sweep,throughput,B/s,4733,1M
+BENCH,GPIO,T6_baud_sweep,bytes_ok,count,1024,1M
+BENCH,GPIO,T6_baud_sweep,bytes_rx,count,1024,1M
+BENCH,GPIO,T6_baud_sweep,bytes_total,count,1024,1M
+BENCH,GPIO,T6_baud_sweep,irq_per_kb,count,7167,1M
+BENCH,GPIO,T6_baud_sweep,errors,count,0,1M
+BENCH,GPIO,T6_baud_sweep,throughput,B/s,4848,2M
+BENCH,GPIO,T6_baud_sweep,bytes_ok,count,1024,2M
+BENCH,GPIO,T6_baud_sweep,bytes_rx,count,1024,2M
+BENCH,GPIO,T6_baud_sweep,bytes_total,count,1024,2M
+BENCH,GPIO,T6_baud_sweep,irq_per_kb,count,7167,2M
+BENCH,GPIO,T6_baud_sweep,errors,count,0,2M
+BENCH,GPIO,T6_baud_sweep,throughput,B/s,4907,4M
+BENCH,GPIO,T6_baud_sweep,bytes_ok,count,1024,4M
+BENCH,GPIO,T6_baud_sweep,bytes_rx,count,1024,4M
+BENCH,GPIO,T6_baud_sweep,bytes_total,count,1024,4M
+BENCH,GPIO,T6_baud_sweep,irq_per_kb,count,7167,4M
+BENCH,GPIO,T6_baud_sweep,errors,count,0,4M
+BENCH,GPIO,T7_error_recovery,rejected,count,3,de 3 frames corruptos
+BENCH,GPIO,T7_error_recovery,recovered,bool,1,PING valido tras el error
+BENCH,GPIO,efficiency,irq_tx,count,1084,
+BENCH,GPIO,efficiency,irq_rx,count,6504,
+BENCH,GPIO,efficiency,bytes_tx,count,1084,
+BENCH,GPIO,efficiency,bytes_rx,count,6504,
+BENCH,GPIO,efficiency,irq_per_kb,count,1024,IRQs por KB transferido
+BENCH,GPIO,efficiency,errors,count,0,
+=== FIN DEL BENCHMARK: GPIO ===

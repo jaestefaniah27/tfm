@@ -1,0 +1,1033 @@
+================================================================================
+REGISTRO DE INVESTIGACION — MCDMA: T2 recibe 514 de 1024 bytes
+Proyecto: bench_loopback / 03_MCDMA  (serial_bridge, ZCU102 XCZU9EG, RTEMS 7)
+Ultima actualizacion: 2026-07-10
+================================================================================
+
+Documento de trabajo. Registra lo COMPROBADO y lo DESCARTADO, con la evidencia
+concreta de cada cosa. Varias hipotesis intermedias resultaron falsas; se dejan
+escritas a proposito, junto con el dato que las mato, para no volver a recorrer
+el mismo camino.
+
+
+================================================================================
+1. EL SINTOMA
+================================================================================
+
+Test T2_throughput_1ch: CH0 transmite un bloque de 1024 bytes; CH1 (mismo bus,
+via loopback interno en la PL) debe recibirlo. Se repite 5 veces.
+
+    T2_throughput_1ch,reps_full,count,0      <- de 5
+    T2_throughput_1ch,bytes_ok,count,2570    <- 5 x 514
+    T2_throughput_1ch,bytes_total,count,5120
+
+CH1 recibe EXACTAMENTE 514 bytes por repeticion, y despues nada, hasta que la
+siguiente repeticion hace flush y vuelve a empezar. 2570 = 5 x 514 exacto.
+
+Propiedades del 514 (todas confirmadas en placa):
+
+  a) Es DETERMINISTA. Identico en las 5 repeticiones.
+  b) NO depende del baudrate. En T6_baud_sweep, de 115200 a 4 Mbps, el
+     throughput escala correctamente (11.396 -> 324.085 B/s) pero bytes_ok es
+     514 en los SIETE puntos. Un recuento fijo e independiente del tiempo
+     descarta condiciones de carrera y desbordamientos por velocidad.
+  c) Afecta por IGUAL a los 6 canales del bus (CH1..CH6). No hay "canal sano".
+  d) Los otros tests NO fallan:
+       - T3_tx_concurrent: 3 maestros x 512 B  -> 1536/1536 integro
+       - T4_rx_multidrop:  6 receptores x 256 B -> 1536/1536 integro
+     Todo Send de 512 bytes o menos llega entero. Solo falla el de 1024.
+
+
+================================================================================
+2. LO QUE SI SE ARREGLO (confirmado en placa)
+================================================================================
+
+2.1 CONCURRENCIA DE TX  [ARREGLADO — verificado]
+--------------------------------------------------------------------------------
+Sintoma: T3 "3 maestros en paralelo" daba 11.464 B/s, identico al throughput de
+UN solo canal (11.395 B/s en T2). No habia concurrencia ninguna.
+
+Causa: Transceiver_Send tomaba el mutex del MM2S y no lo soltaba hasta el EOAF,
+es decir hasta que la UART habia terminado de transmitir fisicamente (~45 ms
+para 512 B a 115200). Durante todo ese tiempo ningun otro canal podia empezar.
+El monopolio era anterior al troceo; no lo introdujo el troceo.
+
+Arreglo (transceiver.c):
+  - El mutex del MM2S se retiene SOLO mientras la DMA vuelca el trozo a la FIFO
+    del canal (microsegundos). Se espera al MM2S IOC, que MM2S_ISR senaliza con
+    un semaforo nuevo, g_tx_dma_sem.
+  - La espera larga (salida fisica por la UART) se hace FUERA del mutex, sobre
+    un semaforo por canal, g_tx_eof_sem[ch].
+  - EOAF_ISR pasa a leer la mascara sticky de TXISR_TX_DONE y despertar solo a
+    los canales que han terminado. Antes hacia un unico release sobre un
+    semaforo global, apoyandose en que el TX estaba serializado.
+
+Resultado en placa:
+    T3_tx_concurrent  11.464 B/s -> 34.142 B/s   (x3, el triple exacto)
+    elapsed          133.976 us  -> 44.988 us    (lo que tarda un canal solo)
+    integridad       1536/1536 (intacta)
+
+Coste: sem_count sube de 3 a 3 + N_CH = 17. irq_per_kb sube de 2 a 3.
+
+
+2.2 TROCEO DE TX  [ARREGLADO — verificado]
+--------------------------------------------------------------------------------
+Sintoma: T2 daba elapsed = 45.104 us para 1024 bytes. A 115200 8N1 esos bytes
+tardan 88,9 ms. El transmisor solo estaba emitiendo la mitad.
+
+Causa: TX_DMA_ROUTER (VHDL) NO implementa contrapresion. Declara
+`s_axis_tready <= '1'` como valor por defecto y escribe en la FIFO del canal sin
+consultar su senal `full`. Peor: TX_WORKER calcula `full` pero era una senal
+interna que no salia del modulo; nadie la leia.
+El MCDMA vuelca los 1026 bytes del frame a la frecuencia del bus mientras la
+UART los saca a 115200. La FIFO absorbe 512 + 2 (registros de salida FWFT) y el
+resto se pierde en silencio: sin bit de error, sin interrupcion.
+El comentario del codigo C prometia "por trozos si es mayor que la FIFO, gracias
+al backpressure de tready". Ese backpressure nunca existio.
+
+Arreglo A — software (transceiver.c/.h), NO requiere resintesis:
+  - TX_FIFO_PAYLOAD = TX_CHUNK_MAX = 512 (los 2 bytes de cabecera los consume el
+    router y no ocupan FIFO).
+  - Transceiver_Send trocea el mensaje y llama a tx_send_chunk por trozo. Cada
+    trozo espera su EOAF (la UART ya lo saco por el cable) antes de encolar el
+    siguiente, asi que la FIFO esta garantizadamente vacia. No puede desbordar.
+
+Arreglo B — hardware (VHDL), PENDIENTE DE SINTETIZAR:
+  - TX_WORKER expone `fifo_full`.
+  - BRIDGE_TX_TOP recoge los 14 y selecciona el del canal que indica TX_ID.
+  - TX_DMA_ROUTER: `s_axis_tready <= not fifo_full`, y solo escribe y decrementa
+    el contador de longitud cuando hay hueco.
+  Verificado con xvhdl (0 errores). Es defensa en profundidad: el troceo SW
+  depende de que el driver acierte con la capacidad; la contrapresion hace que
+  el HW sea correcto aunque alguien se equivoque de numero.
+
+Resultado en placa: elapsed 45.104 -> 89.449 us (el tiempo real de linea de
+1024 bytes). El transmisor ya emite el bloque entero. El throughput "baja" de
+11.395 a 5.746 B/s porque el denominador es ahora el tiempo real y el numerador
+sigue siendo 514: la metrica ha dejado de mentir.
+
+
+2.3 ANILLO DE DESCRIPTORES DE RX  [MEJORA — no era la causa]
+--------------------------------------------------------------------------------
+Se paso de 1 BD por canal a un anillo de RX_BD_COUNT = 4, encadenados
+circularmente, y la ISR recorre todos los BDs con COMPLETE (una IRQ puede cubrir
+varios paquetes). DMA_RX_DMA_SIZE bajo de 2048 a 1024 para no disparar el .bss.
+Motivo original: con un solo BD, rearmar obligaba a escribir TDESC con la misma
+direccion que ya tenia CDESC, y para el PG288 eso es una cola vacia.
+NO cambio el sintoma (sigue 514). Se deja porque la ISR queda mas robusta.
+El contador irq_sin_bd=0 demuestra que el motor nunca dejo de captar
+descriptores, asi que esta teoria era falsa desde el principio.
+
+
+================================================================================
+3. HIPOTESIS DESCARTADAS (con la evidencia que las mato)
+================================================================================
+
+D1. "El DRAIN no reconoce el timeout cuando entra por prog_full"
+    Se arreglo: rx_timeout_ok se emite en las dos ramas, y no se arranca el
+    drenado con la FIFO vacia. Sintetizado (WNS 4.721 / WHS 0.010, 14199 LUTs).
+    MATADA POR: el sintoma no cambio. Ademas los volcados de CH1 y CH2 salen
+    identicos byte a byte, con ch_err=0 en ambos.
+
+D2. "El MCDMA deja de captar descriptores tras 2 paquetes"
+    MATADA POR: irq_sin_bd = 0. Ninguna interrupcion encuentra un BD sin cerrar.
+    Y rx_pkts = 52 en CH1, exactamente igual que en CH2.
+
+D3. "514 = 2 x 257, o sea dos paquetes de drenado con prog_full=256"
+    Coincidencia aritmetica construida a posteriori. Se uso como pista durante
+    tres iteraciones.
+    MATADA POR: la instrumentacion muestra que en T0/T1 los paquetes miden 16
+    bytes, y en T2 hay UN paquete de 514. Nunca hubo dos de 257.
+
+D4. "El TDEST de RX reparte mal los bytes entre canales"
+    MATADA POR: el censo [HW] bytes por canal da 1:514 2:514 3:514 4:514 5:514
+    6:514 y 0 en los ocho canales fuera del bus. Reparto perfecto. Y en
+    simulacion, 0 bytes mal encaminados con 6 canales concurrentes.
+
+D5. "El ring SW o Transceiver_Read pierden bytes"
+    MATADA POR: leidos=514, en_ring=0, ring_drop=0. El ring sirve absolutamente
+    todo lo que recibe. Codigo de Read revisado y correcto (rx_buf_size=4096,
+    MAX_ACC=2048, RX_TIMEOUT_US = 3 s, no hay truncado).
+
+D6. "wait_rx agota su timeout antes de tiempo"
+    MATADA POR: RX_TIMEOUT_US = 3.000.000. El elapsed que reporta T2 no es
+    cuando se rindio, es el instante en que llego el ULTIMO byte; despues el
+    bucle sigue esperando los 3 s completos.
+
+D7. "Transceiver_Send trunca la longitud"
+    MATADA POR: DMA_TX_BUF_SIZE = 4096 > 1024. Y MSG_LEN del router es de 12
+    bits, asi que 1024 cabe. El header se compone bien (0x400 -> hdr0=ch<<4|4,
+    hdr1=0).
+
+D8. "El prog_full sigue en 508 en el bitstream de la placa"
+    El .xci de serial_bridge SI tiene 508 (sin parchear, OJO al resintetizar).
+    Pero el de bench_loopback/03_MCDMA tiene 256, y el netlist generado dice
+    PROG_FULL_THRESH_ASSERT_VAL = 256. El bitstream (17:57) es posterior al .xci
+    (16:48). El log de sintesis solo menciona fifo_rx.
+    MATADA POR: el umbral efectivo en placa es 256.
+
+D9. "El IP common_fifo_rx (umbral 509) es el que se usa"
+    MATADA POR: no esta en .srcs del proyecto; es un residuo del proyecto
+    serial_bridge. Solo fifo_rx se sintetiza. Nadie lo instancia en VHDL.
+
+D10. "La placa arranca un BOOT.bin viejo, anterior a los arreglos de PL"
+    MATADA POR: md5 verificado sobre la SD montada (/dev/sdb1):
+        BOOT.bin  9e2766c3a9dc18ad64b5f9ae69ac6d54  (coincide con out/03_MCDMA)
+        rtems.img 072bd0fe9461b4b810c4233b01b53716  (coincide)
+    La placa lleva el hardware y el software correctos.
+
+D11. "El TLAST se pierde entre BRIDGE_RX_TOP y el MCDMA"
+    El VHDL propaga TLAST y TDEST hasta el puerto (BRIDGE_TOP, BRIDGE_AND_SERIALs).
+    El block design mapea TDEST y TLAST en m_axis y lo conecta a
+    axi_mcdma_0/S_AXIS_S2MM. El convertidor de anchura dw_s2mm (8->32) tiene
+    HAS_TLAST=1 y TDEST_WIDTH=4.
+    MATADA ADEMAS POR: si se perdiera un TLAST, los bytes se ACUMULARIAN en el
+    mismo descriptor, no se perderian. Y faltan 510 bytes de verdad.
+
+D12. "El DRAIN se bloquea con TREADY bajo y las otras FIFOs desbordan"
+    Reproducido en simulacion, PERO con un banco mal dimensionado: escribia un
+    byte cada 40 ciclos (0,4 us) cuando a 115200 un byte tarda 86,8 us. 217x mas
+    rapido que la realidad.
+    MATADA POR: aritmetica + simulacion a ritmo real. Con prog_full=256 quedan
+    256 huecos; para desbordar un canal harian falta 256 x 86,8 us = 22,2 ms de
+    bloqueo continuo. Ninguna ISR tarda eso.
+    NOTA UTIL: con el umbral original de 508 el margen es de solo 4 bytes, es
+    decir 347 us. Ahi si bastaria un bloqueo de cientos de us. Bajar el
+    prog_full de 508 a 256 no es cosmetico: pasa de 347 us a 22 ms de tolerancia.
+
+
+================================================================================
+4. INSTRUMENTACION AÑADIDA (transceiver.c)
+================================================================================
+
+Contadores por canal, volcados por Transceiver_BenchDumpRx:
+
+    rx_pkts       paquetes RX (BDs con COMPLETE) entregados por el HW
+    hw_bytes      bytes que el HW dice haber entregado
+    leidos        bytes servidos por Transceiver_Read
+    en_ring       bytes pendientes en rx_count
+    ring_drop     descartados por ring SW lleno
+    irq_sin_bd    IRQs que encuentran el BD sin cerrar
+    len[]         longitud de los 12 primeros paquetes
+    [HW] censo de hw_bytes de los 14 canales
+
+Transceiver_BenchDbgReset() los pone a cero; T2 lo llama antes de la primera
+repeticion, para que midan SOLO ese bloque de 1024 bytes y no arrastren T0/T1.
+Esto fue decisivo: sin el reset, los 1322 bytes acumulados admitian dos lecturas
+incompatibles.
+
+
+================================================================================
+5. EL DATO DECISIVO (placa, con el reset de contadores)
+================================================================================
+
+    CH1 (el que se lee):
+        rx_pkts=1  hw_bytes=514  leidos=514  en_ring=0  ring_drop=0  irq_sin_bd=0
+        len[]=514
+    CH2 (mismo bus, nadie lo lee):
+        rx_pkts=1  hw_bytes=514  leidos=0    en_ring=1322 ring_drop=0 irq_sin_bd=0
+        len[]=514
+    [HW] bytes por canal: 0:0 1:514 2:514 3:514 4:514 5:514 6:514 7..13:0
+
+Lectura:
+  - UN SOLO PAQUETE de 514 bytes, en los 3 segundos enteros de T2.
+  - El hardware entrega 514 y no vuelve a entregar nada.
+  - El software de RX (ISR, ring, Read) sirve todo lo que recibe. Inocente.
+  - 510 bytes se pierden DE VERDAD, antes de llegar al MCDMA.
+  - Los 6 canales del bus se comportan igual. No hay canal privilegiado.
+
+En T0/T1 (antes del reset) los paquetes son de 16 bytes: rafagas cortas con
+silencios, el drenado se dispara por timeout y todo llega bien. Por eso T3 y T4
+salen integros.
+
+514 = 512 + 2 = capacidad de la FIFO de RX (512 posiciones + 2 registros de
+salida en modo FWFT). Es la FIFO llena, vaciada de una vez.
+
+
+================================================================================
+6. SIMULACIONES (Vivado xsim, hardware REAL: netlist del IP fifo_rx, umbral 256)
+================================================================================
+
+Ficheros en bench_loopback/common/. Todas con glbl y -L unisims_ver.
+
+S1. tb_rx_drain_burst.vhd
+    Alcance: BRIDGE_RX_FIFO_DRAIN + 1 fifo_rx real. N_CH=1.
+    Estimulo: rafaga continua de 1024 B, 1 byte/40 ciclos. tready fijo a '1'.
+    RESULTADO: 4 paquetes (263, 263, 263, 235). 1024 escritos, 1024 salidos,
+               0 perdidos. La FIFO nunca se llena.
+    CONCLUYE: el DRAIN y la FIFO, en aislamiento, son correctos. prog_full
+              dispara a tiempo, TLAST cierra cada paquete.
+
+S2. tb_rx_top_burst.vhd
+    Alcance: BRIDGE_RX_TOP completo (DEMUX + barrido RD_ID) + 14 fifo_rx reales.
+    Estimulo: solo CH1, 1024 B continuos. timeout_in=0 (unica via: prog_full).
+    RESULTADO: 3 paquetes, tdest=1 siempre, 789 salidos, 0 perdidos, 0 tdest malo.
+               (los 235 restantes se quedan bajo el umbral, esperando timeout:
+               correcto, no es un fallo)
+    CONCLUYE: DEMUX, barrido de RD_ID y TDEST correctos.
+
+S3. tb_rx_top_multi.vhd
+    Alcance: igual que S2 pero escribiendo en CH1..CH6 a la vez (como el bus).
+    Truco: cada canal escribe bytes cuyo VALOR es su numero de canal, asi
+    cualquier byte con tdest != dato delata un desvio.
+    RESULTADO: 1024 escritos por canal, 0 perdidos, 18 paquetes, 0 bytes mal
+               encaminados.
+    CONCLUYE: el puente de RX es correcto tambien con 6 canales concurrentes.
+
+S4. tb_rx_top_bp.vhd   (banco MAL DIMENSIONADO — ver D12)
+    Alcance: S3 + modelo de contrapresion: tready baja 4000 ciclos (40 us) tras
+    cada TLAST, imitando el rearmado del BD.
+    Estimulo: 1 byte cada 40 ciclos = 0,4 us/byte. 217x MAS RAPIDO que 115200.
+    RESULTADO: las 6 FIFOs se llenan; perdidos 31..282 por canal.
+    ADVERTENCIA: este "fallo" es un ARTEFACTO del ritmo de escritura irreal.
+                 No reproduce el bug de la placa. Se conserva como leccion.
+
+S5. tb_rx_top_real.vhd
+    Alcance: igual que S4 pero WR_GAP = 8681 ciclos = 86,8 us = 115200 baudios.
+    RESULTADO: CH1..CH6 escritos=1024, perdidos=0, 18 paquetes, 0 mal encaminados.
+               Ninguna FIFO llega a llenarse.
+    CONCLUYE: a velocidad real, con 6 canales y con contrapresion del MCDMA, la
+              cadena FIFO -> DEMUX -> DRAIN -> AXI-Stream NO pierde un solo byte.
+
+S6. tb_serial_rx_burst.vhd   [EL BANCO DECISIVO]
+    Alcance: CAMINO COMPLETO de un canal, tal como esta en la placa:
+             CONFIGURABLE_SERIAL (con su fifo_rx real dentro, ERROR_OK='1' igual
+             que en BRIDGE_AND_SERIALs) + BRIDGE_RX_TOP real leyendolo
+             (prog_full + Timeout + handshake Timeout_ok).
+    Estimulo: 1024 bytes SEGUIDOS por la linea serie, 8N1, baud_sel=29 (115200),
+              sin huecos entre tramas. 89 ms de tiempo simulado.
+    Mide por separado: pulsos de Fifo_write, ciclos con Full, beats del AXIS.
+    RESULTADO:
+        paquete #1 cerrado tras  257 bytes (acumulado)
+        paquete #2 cerrado tras  514 bytes
+        paquete #3 cerrado tras  771 bytes
+        paquete #4 cerrado tras 1024 bytes
+        bytes enviados por la linea : 1024
+        bytes escritos en la FIFO   : 1024
+        ciclos con FIFO llena       : 0
+        bytes salidos por AXI-Stream: 1024
+    CONCLUYE:
+      (a) CONFIGURABLE_SERIAL escribe los 1024 bytes. El receptor esta sano.
+      (b) La FIFO NUNCA se llena a 115200 (full_hits=0). El bug de wr_en sin
+          puerta con `full` existe (ver 8.5) pero no llega a dispararse aqui.
+      (c) El deadlock de ERROR_OK ya estaba corregido: el borrado es SINCRONO,
+          dentro de la rama de reloj. Documentado en RX_CONFIGURABLE_SERIAL.vhd
+          lineas 119-123. Esta en el bitstream de la placa. NO es la causa.
+      (d) DATO CLAVE: el acumulado del paquete #2 es EXACTAMENTE 514.
+
+S7. tb_dw_s2mm_tlast.vhd
+    Alcance: system_mcdma_dw_s2mm_0 (netlist del IP, axis_dwidth_converter 8->32).
+    Estimulo: 4 paquetes de PKT_LEN bytes con TLAST en el ultimo byte. Se corre
+              con PKT_LEN=257 (lo que emite el puente hoy) y con 256 (multiplo
+              de 4), para probar la hipotesis del beat parcial sin resintetizar.
+    Monitor: cuenta bytes por TKEEP en el lado de 32 bits.
+    RESULTADO:
+        PKT_LEN=257: 4 paquetes entran, 4 salen. 1028 B entran, 1028 B salen.
+                     ultimo beat con tkeep=1. tdest malo=0.
+        PKT_LEN=256: 4 paquetes entran, 4 salen. 1024 B entran, 1024 B salen.
+                     ultimo beat con tkeep=4. tdest malo=0.
+    CONCLUYE: el dw_s2mm respeta TODOS los TLAST y no pierde un solo byte, con
+              longitud multiplo de 4 y sin serlo. El lado MAESTRO tiene TKEEP=1
+              (solo el esclavo lo tiene a 0), asi que el beat parcial se expresa
+              perfectamente. HIPOTESIS DEL BEAT PARCIAL: FALSA.
+    IMPLICACION PRACTICA: cambiar prog_full a 255 (paquetes de 256) NO habria
+              arreglado nada. Se ahorro una resintesis + BOOT.bin + prueba.
+    AVISO: las dos primeras versiones de este banco daban 2056 B de salida
+           contra 1028 de entrada, y luego un paquete espurio de 1 byte por
+           paquete. Ambos eran fallos del EMISOR del testbench (mantenia tvalid
+           un ciclo de mas tras el handshake y tras el ultimo byte), no del DUT.
+           Solo la tercera version es valida. Si se reutiliza este banco, revisar
+           el handshake antes de acusar a nadie.
+
+Comando tipo:
+    source /tools/Xilinx/2025.1/Vivado/settings64.sh
+    xvhdl -work work <sources> <tb>
+    xvlog -work work $XILINX_VIVADO/data/verilog/src/glbl.v
+    xelab -L unisims_ver -L secureip work.<tb> work.glbl -s simN
+    xsim simN -R
+
+
+================================================================================
+7. ESTADO ACTUAL Y SIGUIENTE PASO
+================================================================================
+
+Exonerado con evidencia (placa + simulacion):
+    - fifo_rx y su umbral prog_full (256 efectivo en placa)
+    - BRIDGE_RX_FIFO_DRAIN
+    - BRIDGE_RX_FIFO_DEMUX y el barrido de RD_ID
+    - BRIDGE_RX_TOP / BRIDGE_TOP / BRIDGE_AND_SERIALs (TLAST y TDEST)
+    - block design: m_axis -> dw_s2mm -> S_AXIS_S2MM
+    - MCDMA: anillo de BDs, captacion de descriptores (irq_sin_bd=0)
+    - ISR S2MM, ring SW, Transceiver_Read
+    - el bitstream y la imagen grabados en la SD (md5 verificado)
+
+    - CONFIGURABLE_SERIAL: el receptor de la UART y su escritura en fifo_rx (S6)
+    - el deadlock de ERROR_OK: ya corregido, presente en el bitstream (S6c)
+
+TODA la PL, desde la linea serie hasta el puerto m_axis del puente, esta
+verificada con el hardware real y el estimulo a velocidad real. No pierde un
+solo byte.
+
+
+HIPOTESIS VIVA: EL TLAST NO SE RESPETA ENTRE EL PUENTE Y EL MCDMA
+--------------------------------------------------------------------------------
+La simulacion S6 cierra los paquetes en los acumulados 257, 514, 771 y 1024.
+La placa entrega UN descriptor con hw_bytes=514 y rx_pkts=1.
+
+    514 = 257 + 257 = paquetes #1 y #2 del banco, JUNTOS.
+
+Es decir: el TLAST del paquete #1 no cierra el descriptor. El BD sigue
+acumulando y lo cierra el TLAST del #2. Como DMA_RX_DMA_SIZE=1024 > 514, no es
+un corte por longitud de buffer: es un TLAST que llega y no surte efecto, o que
+se pierde.
+
+Los 510 bytes que faltan (paquetes #3 y #4) no se pierden en la FIFO
+(full_hits=0 en S6): se quedan aguas abajo del puente, o el motor deja de
+aceptarlos tras cerrar ese BD anomalo.
+
+NOTA: esta hipotesis ya se habia formulado y descartado (D11), pero se descarto
+con un argumento equivocado ("si se perdiera un TLAST los bytes se acumularian,
+no se perderian"). Lo cierto es que AMBAS cosas ocurren: 514 bytes acumulados en
+un BD, y 510 que nunca llegan. Ahora la hipotesis tiene ademas una prediccion
+numerica que ACIERTA (514 = frontera del paquete #2 en simulacion), en vez de
+una descomposicion construida a posteriori.
+
+DESCARTADO TAMBIEN (S7): el convertidor de anchura dw_s2mm. Respeta todos los
+TLAST, con longitud multiplo de 4 y sin serlo. La sospecha del beat parcial era
+falsa: el lado maestro tiene TKEEP=1.
+
+
+*** CAUSA RAIZ LOCALIZADA (2026-07-13): DEADLOCK DEL ANILLO DE BDs EN S2MM ***
+--------------------------------------------------------------------------------
+Volcado de los punteros del motor MCDMA para el canal mudo (CH1):
+
+    CDESC = 0x0010C3C0    TDESC = 0x0010C3C0    <- IGUALES
+    base anillo = 0x0010C300  (BD0=C300, BD1=C340, BD2=C380, BD3=C3C0)
+    los 4 BDs con CMPLT=0, ndesc encadenado circular correcto.
+
+Para el MCDMA, CDESC == TDESC significa COLA VACIA: el motor ha llegado al tail
+y se detiene. Como al detenerse ya no genera IRQs, la ISR (que solo corre por
+IOC) no vuelve a ejecutarse para reescribir TDESC y reanimarlo. Deadlock cerrado:
+el motor espera a la ISR, la ISR espera al motor.
+
+Origen: rx_bd_publish ponia TDESC = &bd[head-1], anclado al indice `head` del
+SOFTWARE. Cuando el stream hace una pausa y CDESC alcanza ese TDESC, quedan
+pegados. El punto exacto varia porque `head` NO se reinicia entre tests
+(BenchDbgReset no lo toca), asi que arrastra el estado de T0/T1.
+
+Esto EXPLICA de forma unificada:
+  - rx_pkts=1: el motor entrega UN paquete por canal y se planta.
+  - hw_bytes = lo acumulado en ese unico paquete: 514 a baja velocidad,
+    1024 (tope del buffer) a 4 Mbps.
+  - irq_sin_bd=0 y anillo intacto: la ISR recorre bien; el motor no entrega mas.
+  - Por que T3/T4 pasan: bloques cortos, el motor no llega a agotar la cola.
+
+CONFIRMA ADEMAS que el bug NO estaba en la PL (toda verificada en S1-S7), sino en
+la PROGRAMACION del MCDMA por el driver.
+
+DERRIBA la propiedad (b) del sintoma: el 514 SI dependia del baudrate una vez
+quitados los bits SOF|EOF preescritos del control del BD. Con ctrl=0x400 (solo
+longitud), a 4 Mbps llegan los 1024 completos; de 115200 a 2M sigue en 514. La
+propiedad "514 independiente del baudrate" era cierta con el codigo viejo, ya no.
+
+ARREGLO EN PRUEBA (rtems.img 849afad5, solo software, sin resintesis):
+  rx_bd_publish ancla TDESC al CDESC REAL del motor (leido del registro), no al
+  head del software: TDESC = BD inmediatamente anterior a CDESC en el circulo.
+  Deja RX_BD_COUNT-1 descriptores libres por delante y NUNCA coincide con CDESC.
+  Si el motor se detuvo, la IRQ del ultimo BD completado aun corre la ISR, que
+  reescribe un TDESC nuevo (!= al viejo) y lo reanima.
+  Criterio de exito: reps_full=5, bytes_ok=5120, rx_pkts ~4-5 por bloque.
+
+Tambien aplicado (rtems.img 9019b694 -> fee1d14e -> 849afad5): quitar
+BD_CTRL_SOF|BD_CTRL_EOF del ctrl de los BD de RX (0xC0000400 -> 0x00000400). En
+S2MM esos bits son de ESTADO, los pone el motor; preescribirlos interferia (a 4M
+ya arreglo la entrega). Los BD de TX si los llevan y ahi son correctos.
+
+
+NOTA PENDIENTE (no bloqueante): quedan piezas del conteo que no cuadran del todo
+en el trace byte-a-byte (p.ej. head=0 con rx_pkts=1, explicable si el BD
+consumido fue bd[3] con head dando la vuelta 3->0, dado el estado heredado). No
+se han reconstruido al detalle a proposito, para no fabricar otra teoria a
+medida. El deadlock CDESC==TDESC es un HECHO leido del hardware, no una deduccion.
+
+
+*** ACTUALIZACION 2026-07-13 (tarde): EL ARREGLO TDESC NO RESOLVIO EL 514 ***
+--------------------------------------------------------------------------------
+Con rtems.img 849afad5 (anclaje TDESC a CDESC), el volcado muestra que el
+deadlock CDESC==TDESC SE ARREGLO: ahora CDESC=BD3, TDESC=BD2, separados. El
+motor ya no esta atascado por cola vacia. PERO el sintoma PERSISTE identico:
+rx_pkts=1, hw_bytes=514, reps_full=0.
+
+CONCLUSION: el deadlock del anillo era un bug REAL (y el arreglo se queda), pero
+NO era la causa del 514. El motor tiene cola por delante y aun asi solo recibe
+UN paquete. Por tanto el stream que le llega se corta en 514 -> el problema esta
+AGUAS ARRIBA del motor.
+
+PATRON NUEVO Y CLAVE (T6 baud sweep, con el ctrl fix aplicado):
+    115200..2M : bytes_ok = 514   (se corta)
+    4M         : bytes_ok = 1024  (COMPLETO)
+    "rapido funciona, lento falla", con conteo FIJO de 514.
+Esto DESCARTA desbordamiento de FIFO por exceso de entrada (a mas velocidad
+desbordaria MAS, no menos). Apunta a TIMING, no a volumen.
+Ademas DERRIBA la propiedad (b) original del sintoma: el 514 SI depende del
+baudrate una vez quitados los SOF|EOF. Antes (con SOF|EOF) era 514 en todos.
+
+EXPERIMENTO TX_CHUNK (rtems.img 12424db4): se bajo TX_CHUNK_MAX de 512 a 300
+para ver si el corte estaba ligado al tamano del trozo de TX (hipotesis: el hueco
+entre trozos vs el timeout del DRAIN). RESULTADO: bytes_ok SIGUE 514, no bajo a
+~300. -> El TROCEO DE TX NO ES LA CAUSA. TX_CHUNK_MAX revertido a 512.
+514 = 512 + 2 = capacidad de la FIFO de RX (512 + 2 FWFT), fijo, no ligado al TX.
+
+ESTADO REAL: la causa del 514 SIGUE SIN LOCALIZAR. Descartado (con datos):
+todo el camino PL en simulacion (S1-S7), el ring de BDs, el deadlock TDESC, los
+bits SOF|EOF, el troceo de TX, el software de lectura (ring/Read). El patron
+rapido-OK/lento-falla es la mejor pista viva y apunta a una interaccion temporal
+entre el DRAIN (timeout de 8.5 bit-periods, que ESCALA con el baudrate) y la
+contrapresion real del MCDMA al arranque de cada bloque -- interaccion que NINGUNA
+simulacion ha cubierto junta (S5 modelaba contrapresion pero no el arranque real).
+
+
+*** DISCRIMINADOR A vs B RESUELTO (2026-07-13, tarde): CANDIDATO A REFUTADO,
+    B CONFIRMADO Y LOCALIZADO — contadores del propio motor MCDMA ***
+--------------------------------------------------------------------------------
+Experimento (solo software, sin resintesis, rtems.img recompilado): se amplio
+Transceiver_BenchDumpRx para leer, por canal S2MM, dos registros del PROPIO
+motor que el driver nunca usaba, del mapa oficial xmcdma_hw.h (mcdma_v1_12):
+    PKTCNT  (offset ch*0x40 + 0x1C, = 0x5C) : paquetes que CRUZARON el puerto
+                                              S_AXIS_S2MM hacia el motor.
+    PKTDROP (offset ch*0x40 + 0x18, = 0x58) : paquetes que el motor DESCARTO por
+                                              no tener BD servible.
+Ambos son acumuladores de HW; se captura una linea base en BenchDbgReset (antes
+de la rep 0 de T2) y se reporta el DELTA, asi mide SOLO el bloque de 1024 B.
+
+RESULTADO EN PLACA (T2, CH1, el canal que enmudece), consola.txt 2026-07-13:
+    rx_pkts=1  hw_bytes=514  leidos=514
+    [MOTOR] PKTCNT=52 (delta=1)  PKTDROP=0 (delta=0)  canal 2
+    [MOTOR] DIR_ERR=0x0  CPKTDROP=0x0  CHOBS1=0x7E (solo el canal mudo; resto 0)
+    CDESC=0x0010C300  TDESC=0x0010C2C0  (separados, anillo intacto, BDs libres)
+Identico en CH2 (canal sano no leido): PKTCNT delta=1, PKTDROP delta=0.
+
+LECTURA (contador en placa que distingue A de su alternativa, seccion 9):
+  - PKTCNT delta=1  -> por el puerto de entrada del motor cruzo UN SOLO paquete
+    (de 514 B) en todo el bloque de 1024 B. NO cruzaron 4.
+  - PKTDROP delta=0 -> el motor NO tiro ningun paquete por falta de BD. Y tenia
+    cola libre por delante (CDESC != TDESC).
+
+  => CANDIDATO A REFUTADO. Si el motor o la cadencia de rearme de BDs del driver
+     perdieran los paquetes de cola, PKTDROP seria > 0. Es 0. Si el motor los
+     recibiera todos y el driver los contara mal, PKTCNT seria ~4. Es 1. El motor
+     es INOCENTE y su contador refleja exactamente lo que entro por su puerto.
+
+  => CANDIDATO B CONFIRMADO Y LOCALIZADO. Cruzo UN paquete de 514 B y el puente
+     enmudecio el resto del bloque (3 s). Los 510 B que faltan NUNCA llegaron al
+     motor: no cruzaron m_axis -> dw_s2mm -> S_AXIS_S2MM. La perdida esta AGUAS
+     ARRIBA del motor, en el DRAIN de la PL emitiendo al AXI-Stream bajo la
+     contrapresion REAL del MCDMA. Es el unico punto que S1-S7 nunca cubrieron
+     juntos: S5 modelaba contrapresion pero no el ritmo de arranque real; S6
+     tenia m_axis_tready fijo a '1' (por eso en S6 el DRAIN emitia los 4 paquetes).
+
+REENCUADRE: el motor recibio UN paquete de 514, NO dos de 257. El DRAIN volco la
+FIFO (512+2 FWFT) como un unico paquete con UN TLAST y se paro. Esto reorienta la
+sospecha dentro de BRIDGE_RX_FIFO_DRAIN.vhd (dos mecanismos concretos a probar en
+S8, sin darlos aun por buenos):
+  (i)  linea 125  `m_axis_tlast <= rx_fifo_empty`: TLAST atado a FIFO-vacia. Bajo
+       contrapresion, si la FIFO se vacia un instante a mitad de bloque (el DRAIN
+       lee a reloj de bus, mas rapido que la linea a 86,8 us/byte), cierra el
+       paquete antes de tiempo y VUELVE A Idle.
+  (ii) reentrada a Drain para la cola: desde Idle, rx_id avanza y hace barrido
+       round-robin; CH1 solo vuelve a drenar por prog_full (necesita 256 mas) o
+       por timeout (rx_timeout_in con FIFO no vacia). Si el ack rx_timeout_ok
+       (pulso, lineas 106/113) se pierde en una carrera, la cola nunca drena.
+
+SIGUIENTE PASO (S8, sim a ritmo real — instrumento (b) de la seccion 9):
+  Partir de S6 (tb_serial_rx_burst: CONFIGURABLE_SERIAL + BRIDGE_RX_TOP a 115200
+  real, 1024 B) y sustituir m_axis_tready fijo por la contrapresion del MCDMA.
+  Dos variantes de sink, de menor a mayor fidelidad:
+    S8a: modelo de tready parametrizado (baja tready una ventana tras cada TLAST,
+         emulando cierre de BD + latencia de ISR/rearme), barrido de la ventana.
+         Riesgo: repetir el error de S4 (estimulo comodo). Hay que justificar la
+         ventana con la latencia real de la ISR, no ajustarla para que "de 514".
+    S8b (definitivo): instanciar el NETLIST REAL de axi_mcdma_0 como sink S2MM,
+         con su BD/SG programado como en la placa. Elimina toda conjetura sobre
+         tready. Mas pesado (requiere el netlist y armar los BDs en el tb).
+  Criterio: si S8 reproduce 514-y-mudo, iterar el fix del DRAIN en sim antes de
+  resintetizar. Si NINGUNA contrapresion fisicamente plausible lo reproduce, B
+  tambien seria falso y habria que ir al netlist de axi_mcdma (S8b) directamente.
+
+NOTA: MCDMA_CH_SR_IRQ_MASK solo atiende IOC|ERR; el bit IRQ_PKTDROP (0x10) ni se
+habilita ni se limpia. Hoy un drop del motor seria invisible por IRQ; por eso el
+dump lee PKTDROP directamente. En esta corrida PKTDROP=0 lo hace irrelevante.
+
+
+*** S8a (2026-07-13): EL DRAIN QUEDA EXONERADO — su reentrada es CORRECTA bajo
+    TODA contrapresion modelada. El mudo esta en el SUMIDERO (MCDMA), no en el
+    puente. Corrige la refutacion de A ***
+--------------------------------------------------------------------------------
+Banco: bench_loopback/common/tb_serial_rx_bp.vhd (S8a).
+  Camino real CONFIGURABLE_SERIAL (imports/src, CON Timeout_ok) + BRIDGE_RX_TOP +
+  fifo_rx netlist a prog_full=256, entrada serie 115200 real, 1024 B. Sustituye
+  el m_axis_tready fijo de S6 por un modelo de contrapresion del MCDMA:
+    BP_START_NS : ventana de tready=0 al arranque (llena la FIFO).
+    BP_BD_NS    : ventana de tready=0 tras CADA TLAST (cierre de BD + ISR).
+  Script: serial_bridge/hardware/scripts/run_sim_s8a.tcl
+          (vivado -mode batch ... -tclargs <BP_START_NS> <BP_BD_NS>)
+
+RESULTADOS:
+  BP_START=46ms, BP_BD=0 : paquetes 515/772/1010, bytes_axis=1010, full_hits=
+      129520. El DRAIN REENTRA (3 paquetes). Los 14 B perdidos son DESBORDE de la
+      FIFO (deuda 8.5, wr_en sin puerta full): la ventana de 46ms es un ARTEFACTO
+      (en S6 el board tenia full_hits=0). No reproduce el 514-y-mudo.
+  BP_START=0, BP_BD = 100us / 500us / 2ms : SIEMPRE 4 paquetes (257,514,771,1024),
+      bytes_axis=1024, full_hits=0. Identico a S6. La contrapresion por-TLAST, a
+      cualquier magnitud, NO rompe la reentrada del DRAIN.
+
+CONCLUSION: ninguna contrapresion sobre m_axis_tready fisicamente plausible
+reproduce "un paquete y silencio". El DRAIN reentra y drena SIEMPRE. Queda
+EXONERADO. El candidato B en su forma "el DRAIN deja de emitir" es FALSO.
+
+CORRECCION IMPORTANTE a la refutacion de A: PKTCNT=1 / PKTDROP=0 es consistente
+con DOS cosas, no una:
+  (B) el puente deja de emitir            -> S8a lo DESCARTA (siempre reentra).
+  (A') el MOTOR deja de aceptar (tready=0 permanente) tras el paquete #1 -> unica
+       superviviente. Si el motor no vuelve a asertar tready, solo cruza 1 paquete
+       (PKTCNT=1) y no descarta nada (PKTDROP=0, descartar exige aceptar-y-tirar).
+       El DRAIN (correcto) se queda bloqueado y la FIFO SIN PUERTA (deuda 8.5)
+       tira la cola en SILENCIO -> se explican los 510 B perdidos y el 514=512+2.
+
+Por que 514 y no 257 de primer paquete: en placa la FIFO llega a 512 antes del
+primer drenado (tready bajo al arranque), luego cruza UN paquete de 514, luego
+tready se queda bajo -> mudo + desborde. Es un perfil de tready anomalo del
+MCDMA real (acepta 1 paquete y deja de aceptar), imposible de reproducir con
+tready modelado a mano; solo el netlist real lo mostraria.
+
+DUMP EN REPOSO (post-timeout) NO diagnostica el instante del stall: CSR=0 (motor
+NO halted, NO idle, sigue armado esperando en CDESC=BD3), CH_SR=0x00010100 (sin
+IOC pendiente ni ERROR; bits 8/16 son contadores de IRQThreshold), DIR_ERR=0, los
+4 BDs con CMPLT=0 (el que se completo ya fue reciclado). Todo limpio en reposo:
+el fallo es TRANSITORIO y no deja bandera. Por eso hace falta observarlo en vivo.
+
+SIGUIENTES PASOS (de mas barato a definitivo):
+  1. [BARATO, SW, placa] Bajar DMA_RX_DMA_SIZE de 1024 a 256 (< 514). Cada BD se
+     cierra por BUFFER LLENO a los 256, no por TLAST. Discrimina:
+       - si el motor AVANZA de BD (rx_pkts sube, bytes_ok sube) -> el problema era
+         que no re-fetchea BD tras un cierre por TLAST; hay pista de programacion.
+       - si sigue clavado en 514/1-paquete -> el motor deja de aceptar pase lo que
+         pase tras el primer cierre. Refuerza ir al netlist.
+  2. [DEFINITIVO] S8b: instanciar el netlist REAL de axi_mcdma_0 como sumidero
+     S2MM (BD/SG programados como en placa) y ver si solo cruza 1 paquete. Elimina
+     toda conjetura sobre tready.
+  3. [DEFENSA EN PROFUNDIDAD, independiente de la causa] Poner puerta `full` a la
+     escritura de fifo_rx (deuda 8.5) en CONFIGURABLE_SERIAL: hoy la contrapresion
+     del MCDMA se convierte en perdida SILENCIOSA. Con la puerta, la contrapresion
+     se propagaria hacia atras sin perder bytes (aunque bajaria throughput).
+
+
+*** DIAG256 (2026-07-13): el paso 1 EJECUTADO. rtems.img con DMA_RX_DMA_SIZE=256
+    (revertido despues). El motor SEGMENTA bien; sigue cruzando UN solo paquete ***
+--------------------------------------------------------------------------------
+consola_diag256.txt, T2, canal mudo:
+    rx_pkts=3   len[]=256 256 2   hw_bytes=514
+    PKTCNT delta=1   PKTDROP delta=0
+    T2 reps_full=0  bytes_ok=2570 (5x514).  T3=1536 T4=1536 (intactos).
+
+LECTURA:
+  - rx_pkts subio de 1 a 3 y len[]=256,256,2 (=514): con BD de 256 el motor cierra
+    cada BD por BUFFER LLENO y AVANZA al siguiente. La maquinaria de BDs del motor
+    (fetch, avance, multi-BD por paquete) esta SANA. NO se queda clavado en un BD.
+  - PKTCNT delta SIGUE = 1: cruza UN unico paquete AXI-Stream de 514 (un solo
+    TLAST/EOF). Los 256+256+2 son segmentacion INTERNA de ese paquete por
+    buffer-lleno (RXSOF en BD0, RXEOF en el BD que recibe el TLAST). El tamano de
+    BD no cambia cuantos PAQUETES cruzan: sigue siendo 1.
+  - hw_bytes=514 clavado, independiente del tamano de BD.
+
+SINTESIS DE LOS TRES INSTRUMENTOS (discriminador de motor + S8a + diag256):
+  (1) Solo 1 paquete de 514 cruza el puerto S_AXIS_S2MM; PKTDROP=0.  [discriminador]
+  (2) El DRAIN reentra y drena TODO bajo cualquier contrapresion MODELADA.  [S8a]
+  (3) El motor segmenta y avanza BDs sin problema.  [diag256]
+  => El motor no tira (1) ni se atasca en BDs (3); el DRAIN no tiene bug de
+     reentrada (2). Y sin embargo solo cruza 1 paquete. La unica pieza que sigue
+     sin observarse en vivo es la CONTRAPRESION REAL del axi_mcdma sobre tready
+     acoplada a la FIFO SIN PUERTA (deuda 8.5): si tready real se queda bajo tras
+     el 1er paquete, el DRAIN se bloquea y la FIFO ungated tira la cola en
+     silencio -> 514 y mudo. S8a no lo reproduce porque no modela el tready real.
+
+DOS CAMINOS DE CIERRE:
+  A) [DEFINITIVO, diagnostico] S8b: netlist real de axi_mcdma_0 como sumidero
+     -> observa el tready real y confirma/descarta el bloqueo tras 1 paquete.
+  B) [DESCARTADO como ARREGLO] Deuda 8.5 (gatear fifo_rx con `full`): NO arregla
+     nada. La linea serie no para (el emisor remoto sigue transmitiendo), asi que
+     gatear la escritura solo MUEVE el punto de perdida, no lo evita. Sigue siendo
+     util como diagnostico/robustez, pero no cierra T2. Hay que atacar la RAIZ (A).
+
+*** DIAG bd8 (2026-07-13): PROFUNDIDAD DE COLA DESCARTADA. El motor para tras 1
+    paquete AUNQUE tenga 7 BDs libres ***
+--------------------------------------------------------------------------------
+rtems.img con RX_BD_COUNT=8 (revertido a 4 despues). consola_bd8.txt, T2 canal mudo:
+    rx_pkts=1  hw_bytes=514  PKTCNT delta=1  PKTDROP=0
+    los 8 BDs con CMPLT=0 en reposo.
+IDENTICO a RX_BD_COUNT=4. Con 7 descriptores libres por delante y CDESC lejos de
+TDESC, el motor SIGUE aceptando UN solo paquete. DESCARTA definitivamente:
+  - cadencia de rearme de la ISR (hay cola de sobra sin necesidad de rearmar),
+  - "quedarse sin BDs" / CDESC alcanza TDESC (imposible con 7 libres).
+El motor tiene BDs, no da error, no descarta, y aun asi solo acepta 1 paquete.
+
+BALANCE DE EXPERIMENTOS BARATOS (todos EJECUTADOS, todos descartan una via):
+  discriminador PKTCNT/PKTDROP : motor no descarta; cruza 1 paquete.
+  S8a (tready modelado)         : el DRAIN reentra siempre; su logica es correcta.
+  diag256 (BD<514)             : el motor segmenta y avanza BDs bien.
+  bd8 (cola profunda)          : la profundidad de cola no ayuda.
+CONVERGENCIA: motor sano (no tira, segmenta, tiene cola), DRAIN sano (reentra).
+Y sin embargo SOLO 1 paquete de 514 cruza. La unica pieza NO observada en vivo es
+el tready REAL del axi_mcdma (con store-and-forward S2MM activado, c_include_s2mm_sf
+=1), que baja tready mientras vuelca el paquete a DDR y cuyo micro-timing S8a no
+puede reproducir. Los experimentos SW baratos estan AGOTADOS. Toca S8b (netlist
+real) como unico instrumento restante para la raiz.
+
+ESTADO S8b (empezado): escrito el modelo de memoria AXI4 esclava
+(bench_loopback/common/axi4_slave_mem.vhd) para servir M_AXI_SG (fetch/writeback
+de BDs) y M_AXI_S2MM (datos). Falta: maestro AXI-Lite que replique la
+programacion S2MM del driver, anillo de BDs precargado, y el top que una
+axi_mcdma_0 + memoria + dw_s2mm + BRIDGE_RX_TOP + CONFIGURABLE_SERIAL. Puertos del
+IP ya extraidos del stub (S_AXI_LITE 12b, M_AXI_SG/M_AXI_S2MM 32b, S_AXIS_S2MM 32b
+con tkeep/tlast/tdest, 14 introut). RIESGO: un bug del propio banco puede
+disfrazarse de hallazgo (como paso en S4/S7); validar cada pieza aislada primero.
+
+
+================================================================================
+11. WORKFLOW: EL RESET JTAG DEJABA EL A53 EN "Reset Catch" (2026-07-13)
+================================================================================
+El jtag_reset.sh (rst -srst; exit) a veces deja Cortex-A53 #0 en "Reset Catch":
+el core queda HALTED en el vector de reset y la placa NO arranca (ni manda serie).
+Sintoma: flash_rtems agota los 75s de autoboot sin recibir un solo byte, y
+`targets` muestra "Cortex-A53 #0 (Reset Catch)".
+ARREGLO: tras `rst -srst`, seleccionar el A53 #0 y hacer `con` (resume) antes de
+desconectar. Script: scratchpad/jtag_reset_con.sh (o añadir el `con` a
+common/jtag_reset.sh). Con eso la BootROM reanuda y la placa arranca normal.
+Ademas: lanzar el listener de flash_rtems con run_in_background del harness (no
+setsid/nohup, que resultaba intermitente), y disparar el reset acto seguido para
+no agotar la ventana de 75s.
+
+================================================================================
+10. WORKFLOW AUTOMATIZADO (2026-07-13) — reflash sin tocar la placa
+================================================================================
+
+Ya NO hace falta mover la tarjeta SD ni pulsar el boton fisico de CPU reset.
+La ZCU102 tiene DOS USB conectados:
+  - CP2108 Quad UART (10c4:ea71) -> /dev/ttyUSB0..3. ttyUSB0 = consola PS.
+  - FTDI FT232H "Digilent JTAG-SMT2NC" (0403:6014) -> el JTAG.
+
+RESET POR JTAG (equivale al boton de CPU reset):
+    bench_loopback/common/jtag_reset.sh
+  Hace: pkill hw_server previos (el cable JTAG es de acceso EXCLUSIVO; varios
+  hw_server lo cuelgan) -> xsdb connect -> targets PSU -> rst -srst. El srst del
+  PSU reinicia el PS, la BootROM recarga BOOT.bin de la SD y arranca U-Boot.
+
+FLASH COMPLETO + CAPTURA:
+    python3 bench_loopback/common/flash_rtems.py \
+        --img /home/mpsocv2/quick-start/app/serial_bridge/rtems.img \
+        --out bench_loopback/out/03_MCDMA/consola.txt \
+        [--end "=== FIN DEL BENCHMARK"] [--timeout 200] [--no-reset]
+  Flujo: reset JTAG en PARALELO (Popen) + escucha serie -> interrumpe autoboot
+  con un espacio -> loady 0x800000 -> sb --ymodem -> fatwrite mmc 0:1 rtems.img
+  -> bootm -> captura consola a --out hasta el patron --end o timeout.
+  Solo cambia rtems.img; el BOOT.bin de la SD NO se toca.
+
+GOTCHAS APRENDIDOS (importantes para no perder tiempo):
+  - /usr/bin/xsct NO es el System Debugger: es una utilidad de brillo de pantalla
+    (libXrandr, "temperature ~6500"). El bueno es
+    /tools/Xilinx/2025.1/Vitis/bin/xsdb (o xsct), con settings64.sh sourced.
+  - `jtag targets` / `targets` en xsdb devuelven la lista como VALOR de retorno;
+    hay que `puts [jtag targets]` o mirar el retorno, no esperan que se impriman
+    solos. Por eso parecian vacios al principio (el JTAG SIEMPRE funciono).
+  - Permisos del FTDI OK (crw-rw-rw-), reglas udev de Digilent instaladas.
+  - Cada reset deja un hw_server vivo que bloquea el cable -> jtag_reset.sh los
+    mata antes. Si tienes Vivado hw_manager abierto sobre la placa, cierralo.
+  - El boot es LENTO (~18s: timeouts SATA, escaneo USB). El autoboot ("Hit any
+    key to stop autoboot: 2 1 0", bootdelay ~2s) aparece tarde -> ventana de
+    espera de 75s en flash_rtems. El reset se lanza en PARALELO al serial, si no
+    la ventana de autoboot ya ha pasado cuando el connect de xsdb termina.
+  - Lanzar flash_rtems con setsid/nohup y -u; leer el log por sondeo (tail -f en
+    pipe se caia). NO lanzar dos flash_rtems a la vez (compiten por ttyUSB0).
+  - sb/sz (lrzsz) y pyserial ya instalados.
+
+VERIFICADO funcionando de punta a punta el 2026-07-13: reset -> autoboot ->
+YMODEM (85 KB, "Transfer complete") -> bootm -> captura del benchmark completo.
+
+
+ESTADO: TODA LA PL ESTA VERIFICADA. LA CAUSA DEL 514 SIGUE ABIERTA.
+
+Camino de RX, de la linea serie al MCDMA, verificado con hardware real y
+estimulo a velocidad real:
+
+    linea serie
+      -> CONFIGURABLE_SERIAL (RX + fifo_rx)          S6: 1024/1024, full_hits=0
+      -> BRIDGE_RX_FIFO_DEMUX + RD_ID                S2, S3: 0 perdidos, 0 tdest malo
+      -> BRIDGE_RX_FIFO_DRAIN                        S1: 4 paquetes, 0 perdidos
+      -> m_axis del puente                           S5: 0 perdidos con 6 canales
+      -> dw_s2mm (8->32)                             S7: 4 paquetes, 0 perdidos
+      -> axi_mcdma_0/S_AXIS_S2MM                     <-- NO SIMULADO
+
+Y sin embargo la placa entrega rx_pkts=1, hw_bytes=514, y faltan 510 bytes.
+
+QUEDAN SOLO DOS CANDIDATOS:
+
+  A) El propio IP axi_mcdma_0 y su configuracion (.xci), o la programacion que
+     el driver hace de el. Nada de esto se ha simulado ni auditado.
+     Pista concreta a revisar antes que nada, en transceiver.c (rx_bd_arm /
+     init): el BD de RX se escribe con
+         bd->ctrl = BD_CTRL_SOF | BD_CTRL_EOF | DMA_RX_DMA_SIZE;   (0xC0000400)
+     En el PG288, para S2MM los bits SOF/EOF son de ESTADO (los pone el motor al
+     recibir el paquete), NO de control. El campo de control es solo la longitud
+     del buffer. Escribir 0xC0000000 en la parte alta del control de un BD de RX
+     es, como minimo, sospechoso. Verificar contra el PG288 y contra el driver
+     XMcDma de referencia (XMcdma_BdSetLength no toca esos bits).
+
+  B) El modulo de loopback de la PL (system_mcdma_bench_loopback_0_0), que cierra
+     TD->RD. Verificado por simulacion propia en su dia (16/16), pero nunca junto
+     al resto en una rafaga larga. Menos probable: T3 y T4 pasan por el mismo
+     lazo y salen integros.
+
+SIGUIENTE PASO RECOMENDADO (barato, sin resintesis):
+    1. Volcar en la ISR el sts COMPLETO de los 4 BDs del anillo de CH1 (no solo
+       el de bd_head), con sus campos SOF/EOF/COMPLETE y longitud. Si aparecen
+       BDs con EOF puesto y longitud 257 que la ISR no ha contado, el fallo esta
+       en el recorrido del anillo, no en el motor.
+    2. Probar bd->ctrl = DMA_RX_DMA_SIZE (sin SOF|EOF) y ver si cambia algo.
+       Es un cambio de una linea, solo software, sin tocar el bitstream.
+
+
+================================================================================
+8. DEUDAS PENDIENTES
+================================================================================
+
+  1. serial_bridge/hardware/fifo_rx/fifo_rx.xci sigue con
+     Full_Threshold_Assert_Value = 508. La copia de bench_loopback tiene 256.
+     Si alguien resintetiza serial_bridge, el margen cae de 22 ms a 347 us.
+     PROPAGAR el 256.
+
+  2. Los arreglos de contrapresion en TX (TX_DMA_ROUTER / TX_WORKER /
+     BRIDGE_TX_TOP) estan escritos y verificados con xvhdl, pero SIN SINTETIZAR.
+     No son necesarios ahora (el troceo SW los suple), pero hacen el HW correcto
+     por si mismo.
+
+  3. DMA14 no recibe en ningun bus ([SCAN] = "nadie" en A, B y C). Aplazado a
+     proposito. S2MM armado (RS=1, LENGTH=1, Halted=0, Idle=0), irq_rx=0, BD
+     verificado en el block design.
+
+  4. T5_overrun reporta errors=24576. No es fallo del transporte: son bytes
+     descartados por rings llenos (6 esclavos x 4096). Ya explicado en el informe.
+
+  5. CONFIGURABLE_SERIAL.vhd:218 escribe en fifo_rx SIN comprobar `full`:
+         din => Fifo_in, wr_en => Fifo_write, full => Full   -- Full sale al
+         puerto pero nadie lo usa para frenar la escritura
+     Es el MISMO bug que TX_DMA_ROUTER tenia en TX. A 115200 no llega a
+     dispararse (S6: full_hits=0), pero si se dispara la perdida es SILENCIOSA:
+     ni bit de error ni interrupcion. A baudrates altos o con el prog_full en
+     508 el margen se estrecha mucho. Merece arreglarse o, como minimo, contarse.
+
+  6. En BRIDGE_AND_SERIALs.vhd:343-345, PAR_ERROR y FRAME_ERROR van a `open` y
+     ERROR_OK esta atado a '1'. Los errores de trama y paridad no se observan ni
+     se reportan a nadie. El transceiver no puede distinguir "linea limpia" de
+     "linea con errores que se estan ignorando".
+
+
+================================================================================
+9. NOTA METODOLOGICA
+================================================================================
+
+Cuatro hipotesis consecutivas encajaban con los numeros disponibles en cada
+momento y las cuatro eran falsas (D1, D2, D3, D12). El patron del error fue
+siempre el mismo: construir una descomposicion aritmetica a medida (514 = 2x257)
+o un mecanismo plausible, y despues buscar confirmacion en vez de refutacion.
+
+Lo que si funciono, en una sola corrida cada vez:
+  - Contar en la ISR (rx_pkts, hw_bytes, leidos, en_ring, ring_drop, irq_sin_bd).
+  - Poner los contadores a cero justo antes del test, para no mezclar tests.
+  - Verificar el md5 de lo que hay REALMENTE en la SD.
+  - Simular con el ritmo de estimulo REAL, no uno comodo para el simulador.
+
+Ninguna teoria sobre HW se da por buena sin (a) un contador en placa que la
+distinga de su alternativa, o (b) una simulacion con el hardware real y el
+estimulo a velocidad real.
+================================================================================
+
+*** RESOLUCIÓN FINAL (2026-07-13): DEADLOCK DEL STORE-AND-FORWARD S2MM ***
+--------------------------------------------------------------------------------
+Tras descartar todas las demás vías, el problema resultó ser una interacción letal
+entre el modo Store-and-Forward del MCDMA S2MM y la máquina de estados del DRAIN.
+
+1. El MCDMA S2MM (axi_mcdma_0) estaba configurado con Store-and-Forward (S&F)
+   activado (`c_include_s2mm_sf=1`), lo cual significa que el motor DMA almacena
+   el paquete AXI-Stream en una memoria interna antes de volcarlo a la DDR.
+2. Esta memoria interna tiene un límite físico (típicamente 512 bytes). Según el
+   manual de Xilinx (PG288): "Si el tamaño del paquete es mayor que el tamaño de
+   la memoria S2MM, el motor S2MM se bloqueará o descartará el paquete si no
+   recibe un TLAST".
+3. El `BRIDGE_RX_FIFO_DRAIN` estaba diseñado (intencionadamente) para enviar un
+   bloque como un SOLO paquete gigante, retrasando la emisión de `m_axis_tlast <= '1'`
+   hasta que se cumpliera un timeout.
+4. DEADLOCK: 
+   - El MCDMA admitía los primeros 512 bytes en su memoria interna, más 2 bytes en
+     los registros del bus de conversión (dw_s2mm), totalizando 514 bytes.
+   - Llegado a su capacidad, el MCDMA bajaba `TREADY = 0` esperando el `TLAST`.
+   - El DRAIN se quedaba bloqueado (con `TVALID = 1` y el byte 515 en `data_reg`)
+     esperando a que el MCDMA lo aceptara (`TREADY = 1`), por lo que nunca evaluaba
+     la rama de timeout.
+   - La línea serie seguía recibiendo los 1024 bytes, desbordando la FIFO. Como
+     la línea no se quedaba en silencio, el timeout de RX nunca se disparaba.
+   - El `TLAST` nunca llegaba al MCDMA, y el MCDMA nunca bajaba el paquete a la
+     RAM para liberar espacio.
+
+El síntoma "1 paquete y 514 bytes recibidos" no era que el MCDMA recibiera un
+paquete y luego decidiera descartar el resto, era que NUNCA completó el PRIMER
+paquete debido al límite de la memoria Store-and-Forward.
+
+ARREGLO:
+Se modificó `BRIDGE_RX_FIFO_DRAIN.vhd` para que emita un `TLAST = '1'` en el
+instante en que la FIFO (`fifo_rx`) se queda vacía tras un vaciado parcial
+(ej. tras descargar los 256 bytes de un `prog_full`). Esto cierra el paquete 
+inmediatamente:
+- El MCDMA recibe paquetes de un tamaño máximo de 256 bytes (menor a los 512 de
+  su S&F buffer), lo que le permite pasarlos sin bloqueo a la memoria DDR.
+- El driver recibe los datos en varios descriptores (e.g., 256+256+256...), algo
+  que ya manejaba de forma natural.
+- Se reparó también una violación grave del protocolo AXI-Stream que ocurría
+  en la rama `else` del DRAIN, donde `TVALID` se forzaba a '0' aunque hubiera
+  datos válidos retenidos.
+
+================================================================================
+
+================================================================================
+*** CAUSA RAIZ CONFIRMADA Y ARREGLADA (2026-07-13, noche) ***
+================================================================================
+
+CONFIRMACION DOCUMENTAL de la hipotesis S&F (ya no es conjetura):
+    system_mcdma_axi_mcdma_0_0.xci :  c_include_s2mm_sf = 1
+El S2MM acumula el paquete AXI-Stream ENTERO en su buffer interno (512 B) antes de
+volcarlo a DDR. Un paquete MAS LARGO que ese buffer lo bloquea para siempre: baja
+tready esperando un TLAST que no puede llegar, porque para que llegue habria que
+aceptar mas bytes, y no caben. Deadlock.
+
+POR QUE EL BITSTREAM DE LA PLACA (bit 17:44 -> BOOT.bin 18:01 -> consola 18:04)
+LO DISPARABA: el DRAIN se habia rediseñado (14:21) a "UN paquete por MENSAJE",
+reteniendo el TLAST hasta el timeout. Con 1024 B eso es un paquete de 1024 > 512.
+    -> el motor traga 512 (su buffer) + 2 que quedan en los registros de dw_s2mm
+    -> hw_bytes = 514 = 512 + 2   <-- el numero magico, explicado exactamente
+    -> PKTCNT=1 (cruzo 1 paquete... que nunca se cerro), PKTDROP=0 (no descarta:
+       simplemente deja de aceptar), CSR sin error, BDs limpios. TODO encaja.
+    -> a 4 Mbps salia 1024 porque el bloque entero entra antes de que el bloqueo
+       importe; T3/T4 pasaban porque sus mensajes son <= 512 B.
+
+El "rediseño a un paquete por mensaje" fue precisamente lo que CAUSO el fallo que
+intentaba arreglar. La version anterior (TLAST al vaciarse la FIFO) era correcta.
+
+ARREGLO (BRIDGE_RX_FIFO_DRAIN.vhd, re-sintetizado):
+  1. TLAST al vaciarse la FIFO -> paquetes de ~256 B, MUY por debajo del buffer S&F.
+  2. MAX_PKT = 256 (generic): corta el paquete por longitud pase lo que pase. La
+     invariante "paquete < buffer S&F" deja de depender de que el DRAIN gane
+     siempre la carrera a la linea serie. Defensa estructural, no de timing.
+  3. TLAST CONGELADO (last_reg/lvld_reg): antes m_axis_tlast era COMBINACIONAL
+     sobre rx_fifo_empty con TVALID ya alto. Si llegaba un byte por la linea
+     durante un stall de TREADY, el TLAST ya presentado se CAIA a 0. Eso es
+     (a) violacion de AXI-Stream (TLAST no puede cambiar con TVALID=1 y TREADY=0)
+     y (b) reabria el paquete -> de vuelta al paquete gigante y al deadlock.
+     Ahora la decision se congela en cuanto el byte se ofrece.
+
+VERIFICACION EN SIMULACION (S8a, camino real a 115200, con 500 us de contrapresion
+tras CADA TLAST):
+    paquete #1..#4 cerrados en 256/512/768/1024 (acumulado) -> 4 paquetes de 256
+    bytes enviados 1024 | escritos en FIFO 1024 | salidos por AXI-Stream 1024
+    ciclos con FIFO llena: 0
+Con el DRAIN anterior este mismo banco daba 1 paquete y silencio.
+
+================================================================================
+*** TRAMPA DE BUILD DESCUBIERTA (2026-07-13, noche): EL BITSTREAM NO LLEVABA EL
+    RTL. TODOS LOS EXPERIMENTOS DE PL DESDE EL 9-JUL CORRIERON HW IDENTICO ***
+================================================================================
+
+HECHO: BRIDGE_AND_SERIALs es un MODULE REFERENCE del block design. Vivado lo
+sintetiza FUERA DE CONTEXTO y CACHEA su checkpoint:
+
+    serial_bridge.runs/system_mcdma_BRIDGE_AND_SERIALs_0_0_synth_1/*.dcp
+    -> fechado 9-jul 15:12, CLAVADO.
+
+En la sintesis del top, el log dice:
+    INFO: [Synth 8-6157] synthesizing module 'system_mcdma_BRIDGE_AND_SERIALs_0_0'
+          [... /realtime/system_mcdma_BRIDGE_AND_SERIALs_0_0_stub.v:6]
+                                                              ^^^^ STUB
+Es decir: el top lo trata como CAJA NEGRA y coge el .dcp viejo. Tocar
+BRIDGE_RX_FIFO_DRAIN.vhd (o cualquier RTL bajo BRIDGE_AND_SERIALs) y relanzar
+synth_1 + impl_1 NO cambia el bitstream. Falla EN SILENCIO: la sintesis termina
+"OK", cierra timing, y escribe un .bit... con el RTL del 9 de julio.
+
+SINTOMA DELATOR QUE SE PASO POR ALTO: tras re-sintetizar, el md5 del BOOT.bin
+salia IDENTICO al anterior. Dos bitstreams distintos no pueden dar el mismo md5.
+Se noto y no se persiguio.
+
+CONSECUENCIA GRAVE — HAY QUE RELEER TODO EL REGISTRO CON ESTO EN LA MANO:
+Todos los experimentos de PL desde el 9-jul se ejecutaron sobre EL MISMO hardware.
+Cada vez que se concluyo "el sintoma no cambia, luego esa no era la causa", lo que
+en realidad pasaba es que el HW NO HABIA CAMBIADO. Quedan SIN VALOR probatorio, y
+habria que rehacerlos si se quieren dar por buenos:
+  - D1 (arreglo del timeout del DRAIN por prog_full) "no cambio el sintoma"
+  - el rediseño a "un paquete por mensaje" (14:21) — NUNCA llego a la placa
+  - cualquier otra conclusion basada en "resintetice y sigue igual"
+SIGUEN VALIDOS los experimentos de SOFTWARE (diag256, bd8, PKTCNT/PKTDROP, TDESC)
+y los de SIMULACION (S1-S8a), que no dependen del bitstream de la placa.
+
+En particular, la "RESOLUCION FINAL" (deadlock del store-and-forward) NO esta
+confirmada en placa: el 514 lo produjo el DRAIN del 9-jul, no el de "un paquete por
+mensaje" al que se le echaba la culpa. La hipotesis S&F sigue siendo la mejor
+(c_include_s2mm_sf=1 esta verificado en el .xci, y 512+2 encaja exacto), pero su
+PRIMERA prueba real en placa es el bitstream que se construye ahora.
+
+ARREGLO DEL BUILD (common/rebuild_mcdma_drain.tcl):
+    open_bd_design [get_files system_mcdma.bd]
+    update_module_reference system_mcdma_BRIDGE_AND_SERIALs_0_0   # relee el RTL
+    save_bd_design
+    reset_run <ese>_synth_1   (update_module_reference suele borrarlo ya)
+    reset_run synth_1  -> launch synth_1 + impl_1
+COMPROBACION OBLIGATORIA antes de creerse un bitstream nuevo:
+  a) que el synth log diga "synthesizing module 'BRIDGE_RX_FIFO_DRAIN'" (y NO que
+     coja el _stub.v de BRIDGE_AND_SERIALs), y
+  b) que el md5 del BOOT.bin CAMBIE.
+
+================================================================================
+*** RESUELTO Y VERIFICADO EN PLACA (2026-07-14) ***
+================================================================================
+
+Con el module_ref REFRESCADO (o sea, con el RTL de verdad dentro del bitstream:
+md5 del BOOT.bin 9e2766c3 -> f7c2b717, y el synth log del OOC diciendo
+"synthesizing module 'BRIDGE_RX_FIFO_DRAIN'"), la corrida en placa da:
+
+    T2_throughput_1ch  reps_full = 5 de 5      (antes 0)
+    T2_throughput_1ch  bytes_ok  = 5120/5120   (antes 2570 = 5 x 514)
+    T6_baud_sweep      bytes_ok  = 1024/1024 en los SIETE puntos (115200..4M)
+                                              (antes 514 en todos menos 4M)
+    T3_tx_concurrent   1536/1536   (sin regresion)
+    T4_rx_multidrop    1536/1536   (sin regresion)
+    T0_selftest        OK, lazo CH0->CH1 cerrado
+
+El 514 ha desaparecido. La hipotesis del store-and-forward queda CONFIRMADA en
+placa: limitando el paquete AXI-Stream a 256 B (< 512 del buffer S&F del S2MM) el
+motor ya no se bloquea y entrega el bloque entero.
+
+PENDIENTE (no funcional): persistir el BOOT.bin en la SD. El bitstream se cargo por
+JTAG (--fpga), que NO sobrevive a un power cycle. El intento de escribirlo por
+YMODEM desde U-Boot FALLA: 28 MB a 115200 acaban en "Retry Count Exceeded /
+Transfer incomplete". La SD NO queda corrupta (el fatwrite ni se ejecuta), pero
+sigue con el BOOT.bin viejo. Vias: (a) montar la SD en el PC y copiarlo [elegida],
+(b) BITSTREAM.GENERAL.COMPRESS para bajar el tamaño, (c) subir el baudrate de
+U-Boot para la transferencia.
+
+MEJORA DE HERRAMIENTAS (common/):
+  - flash_rtems.py: nueva opcion --fpga <bit>, que reconfigura la PL por JTAG con
+    la placa parada en el prompt de U-Boot. Permite probar un bitstream nuevo en
+    ~3 min sin reescribir la SD. NO es persistente.
+  - flash_rtems.py: el timeout del `sb` era fijo (600 s) y cortaba las
+    transferencias grandes; ahora es proporcional al tamaño del fichero.
+  - jtag_reset.sh: tras `rst -srst` hace `con` sobre el Cortex-A53 #0, para que el
+    core no se quede en "Reset Catch" y la placa arranque siempre.
+  - rebuild_mcdma_drain.tcl: resintesis CORRECTA (con update_module_reference).
+  - OJO con `pkill -f hw_server`: el patron casa con la propia linea de comandos del
+    shell que lo lanza y se MATA A SI MISMO. Usar `pkill -f "[h]w_server"`.

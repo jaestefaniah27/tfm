@@ -1,0 +1,10 @@
+//arch = zynqmp; split = false; format = BIN
+the_ROM_image:
+{
+	[bootloader, destination_cpu = a53-0]/home/mpsocv2/quick-start/app/serial_bridge/hardware/scripts/vitis_ws/fsbl_dma_irq_concat/build/fsbl_dma_irq_concat.elf
+	[pmufw_image]/home/mpsocv2/quick-start/app/serial_bridge/hardware/scripts/boot_components/pmufw.elf
+	[destination_device = pl]/home/mpsocv2/quick-start/app/bench_loopback/03_MCDMA/hardware/serial_bridge.runs/impl_1/system_mcdma_wrapper.bit
+	[destination_cpu = a53-0, exception_level = el-3]/home/mpsocv2/quick-start/app/serial_bridge/hardware/scripts/boot_components/bl31.elf
+	[destination_cpu = a53-0, exception_level = el-2]/home/mpsocv2/quick-start/app/serial_bridge/hardware/scripts/boot_components/u-boot.elf
+	[load = 0x100000, destination_cpu = a53-0]/home/mpsocv2/quick-start/app/serial_bridge/hardware/scripts/boot_components/system.dtb
+}

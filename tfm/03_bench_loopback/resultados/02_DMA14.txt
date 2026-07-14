@@ -1,0 +1,119 @@
+[TRANSCEIVER DEBUG] HW: 14 canales | UART base: 0xA0000000 | stride: 0x1000
+[TRANSCEIVER DEBUG] DMA global init OK | MM2S IRQ=121  S2MM IRQ=122 (compartidas, 14ch)
+[TRANSCEIVER DEBUG] UART 0 OK | cfg=0xA0000000 | dma=0xA0010000 | tx=0x11a680 rx_dma=0x10c300
+[TRANSCEIVER DEBUG] UART 1 OK | cfg=0xA0001000 | dma=0xA0011000 | tx=0x11b680 rx_dma=0x10c340
+[TRANSCEIVER DEBUG] UART 2 OK | cfg=0xA0002000 | dma=0xA0012000 | tx=0x11c680 rx_dma=0x10c380
+[TRANSCEIVER DEBUG] UART 3 OK | cfg=0xA0003000 | dma=0xA0013000 | tx=0x11d680 rx_dma=0x10c3c0
+[TRANSCEIVER DEBUG] UART 4 OK | cfg=0xA0004000 | dma=0xA0014000 | tx=0x11e680 rx_dma=0x10c400
+[TRANSCEIVER DEBUG] UART 5 OK | cfg=0xA0005000 | dma=0xA0015000 | tx=0x11f680 rx_dma=0x10c440
+[TRANSCEIVER DEBUG] UART 6 OK | cfg=0xA0006000 | dma=0xA0016000 | tx=0x120680 rx_dma=0x10c480
+[TRANSCEIVER DEBUG] UART 7 OK | cfg=0xA0007000 | dma=0xA0017000 | tx=0x121680 rx_dma=0x10c4c0
+[TRANSCEIVER DEBUG] UART 8 OK | cfg=0xA0008000 | dma=0xA0018000 | tx=0x122680 rx_dma=0x10c500
+[TRANSCEIVER DEBUG] UART 9 OK | cfg=0xA0009000 | dma=0xA0019000 | tx=0x123680 rx_dma=0x10c540
+[TRANSCEIVER DEBUG] UART 10 OK | cfg=0xA000A000 | dma=0xA001A000 | tx=0x124680 rx_dma=0x10c580
+[TRANSCEIVER DEBUG] UART 11 OK | cfg=0xA000B000 | dma=0xA001B000 | tx=0x125680 rx_dma=0x10c5c0
+[TRANSCEIVER DEBUG] UART 12 OK | cfg=0xA000C000 | dma=0xA001C000 | tx=0x126680 rx_dma=0x10c600
+[TRANSCEIVER DEBUG] UART 13 OK | cfg=0xA000D000 | dma=0xA001D000 | tx=0x127680 rx_dma=0x10c640
+
+=== BENCHMARK DE TRANSPORTE: DMA14 ===
+Reloj del sistema: 99990008 Hz
+BENCH,variant,test,metric,unit,value,note
+BENCH,DMA14,footprint,static_bytes,B,115584,buffers en .bss
+BENCH,DMA14,footprint,heap_bytes,B,0,buffers con malloc
+BENCH,DMA14,footprint,total_bytes,B,115584,
+BENCH,DMA14,footprint,irq_lines,count,2,lineas PL->PS
+BENCH,DMA14,footprint,isr_count,count,2,
+BENCH,DMA14,footprint,task_count,count,1,tareas del driver
+BENCH,DMA14,footprint,sem_count,count,15,semaforos del driver
+BENCH,DMA14,footprint,tx_blocking,bool,0,Send espera a la TX fisica
+BENCH,DMA14,footprint,tx_concurrent,bool,1,varios canales TX a la vez
+BENCH,DMA14,footprint,channels,count,14,
+BENCH,DMA14,T0_selftest,channels,count,14,esperados 14
+BENCH,DMA14,T0_selftest,tx_datapath,bool,1,el driver mueve bytes al HW
+BENCH,DMA14,T0_selftest,rx_link,bool,0,lazo CH0->CH1 cerrado
+BENCH,DMA14,T0_selftest,bytes_rx,count,0,de 8 enviados
+
+[BENCH] AVISO: no hay lazo TX->RX (recibidos 0 de 8 bytes).
+        Con el bitstream de loopback esto NO deberia pasar. Estado del
+        receptor del canal 1 para distinguir 'no armado' de 'no llega nada':
+
+[DUMP] CH1 S2MM base=0xA0011000
+       DMACR =0x00015003  RS=1 IOC_EN=1 ERR_EN=1
+       DMASR =0x00000000  Halted=0 Idle=0 IOC_Irq=0 Err_Irq=0
+       DA    =0x0010C340  LENGTH=1  (0 = receptor NO armado)
+       s2mm_isr_total=0  ch_isr=0  ch_err=0
+
+        Sin loopback en la PL, conecta la PCB o puentea TD[0] (T11) con
+        RD[1] (U6): ambos son LVCMOS18 y el puente directo es seguro.
+
+[BENCH] Continuando sin lazo: las cifras de T1..T7 no son comparables.
+BENCH,DMA14,T1_latency,samples,count,0,sin recepcion
+BENCH,DMA14,T1_latency,timeouts,count,50,
+BENCH,DMA14,T2_throughput_1ch,throughput,B/s,0,no llego ningun byte
+BENCH,DMA14,T3_tx_concurrent,throughput,B/s,0,3 maestros en paralelo
+BENCH,DMA14,T3_tx_concurrent,elapsed,us,0,hasta el ultimo byte
+BENCH,DMA14,T3_tx_concurrent,bytes_ok,count,0,
+BENCH,DMA14,T3_tx_concurrent,bytes_total,count,1536,
+BENCH,DMA14,T3_tx_concurrent,bytes_rx,count,0,
+BENCH,DMA14,T4_rx_multidrop,throughput,B/s,0,6 receptores simultaneos
+BENCH,DMA14,T4_rx_multidrop,elapsed,us,0,
+BENCH,DMA14,T4_rx_multidrop,listeners_ok,count,0,de 6
+BENCH,DMA14,T4_rx_multidrop,bytes_ok,count,0,
+BENCH,DMA14,T4_rx_multidrop,bytes_rx,count,0,
+BENCH,DMA14,T4_rx_multidrop,bytes_total,count,1536,
+BENCH,DMA14,T5_overrun,bytes_sent,count,8192,ring SW = 4096 B
+BENCH,DMA14,T5_overrun,bytes_rx,count,0,aceptados por el ring
+BENCH,DMA14,T5_overrun,bytes_lost,count,0,descartados por overrun
+BENCH,DMA14,T5_overrun,bytes_drained,count,0,
+BENCH,DMA14,T5_overrun,tx_fail,count,0,envios rechazados por cola TX llena
+BENCH,DMA14,T6_baud_sweep,throughput,B/s,0,115200
+BENCH,DMA14,T6_baud_sweep,bytes_ok,count,0,115200
+BENCH,DMA14,T6_baud_sweep,bytes_rx,count,0,115200
+BENCH,DMA14,T6_baud_sweep,bytes_total,count,1024,115200
+BENCH,DMA14,T6_baud_sweep,irq_per_kb,count,0,115200
+BENCH,DMA14,T6_baud_sweep,errors,count,0,115200
+BENCH,DMA14,T6_baud_sweep,throughput,B/s,0,230400
+BENCH,DMA14,T6_baud_sweep,bytes_ok,count,0,230400
+BENCH,DMA14,T6_baud_sweep,bytes_rx,count,0,230400
+BENCH,DMA14,T6_baud_sweep,bytes_total,count,1024,230400
+BENCH,DMA14,T6_baud_sweep,irq_per_kb,count,0,230400
+BENCH,DMA14,T6_baud_sweep,errors,count,0,230400
+BENCH,DMA14,T6_baud_sweep,throughput,B/s,0,460800
+BENCH,DMA14,T6_baud_sweep,bytes_ok,count,0,460800
+BENCH,DMA14,T6_baud_sweep,bytes_rx,count,0,460800
+BENCH,DMA14,T6_baud_sweep,bytes_total,count,1024,460800
+BENCH,DMA14,T6_baud_sweep,irq_per_kb,count,0,460800
+BENCH,DMA14,T6_baud_sweep,errors,count,0,460800
+BENCH,DMA14,T6_baud_sweep,throughput,B/s,0,921600
+BENCH,DMA14,T6_baud_sweep,bytes_ok,count,0,921600
+BENCH,DMA14,T6_baud_sweep,bytes_rx,count,0,921600
+BENCH,DMA14,T6_baud_sweep,bytes_total,count,1024,921600
+BENCH,DMA14,T6_baud_sweep,irq_per_kb,count,0,921600
+BENCH,DMA14,T6_baud_sweep,errors,count,0,921600
+BENCH,DMA14,T6_baud_sweep,throughput,B/s,0,1M
+BENCH,DMA14,T6_baud_sweep,bytes_ok,count,0,1M
+BENCH,DMA14,T6_baud_sweep,bytes_rx,count,0,1M
+BENCH,DMA14,T6_baud_sweep,bytes_total,count,1024,1M
+BENCH,DMA14,T6_baud_sweep,irq_per_kb,count,0,1M
+BENCH,DMA14,T6_baud_sweep,errors,count,0,1M
+BENCH,DMA14,T6_baud_sweep,throughput,B/s,0,2M
+BENCH,DMA14,T6_baud_sweep,bytes_ok,count,0,2M
+BENCH,DMA14,T6_baud_sweep,bytes_rx,count,0,2M
+BENCH,DMA14,T6_baud_sweep,bytes_total,count,1024,2M
+BENCH,DMA14,T6_baud_sweep,irq_per_kb,count,0,2M
+BENCH,DMA14,T6_baud_sweep,errors,count,0,2M
+BENCH,DMA14,T6_baud_sweep,throughput,B/s,0,4M
+BENCH,DMA14,T6_baud_sweep,bytes_ok,count,0,4M
+BENCH,DMA14,T6_baud_sweep,bytes_rx,count,0,4M
+BENCH,DMA14,T6_baud_sweep,bytes_total,count,1024,4M
+BENCH,DMA14,T6_baud_sweep,irq_per_kb,count,0,4M
+BENCH,DMA14,T6_baud_sweep,errors,count,0,4M
+BENCH,DMA14,T7_error_recovery,rejected,count,3,de 3 frames corruptos
+BENCH,DMA14,T7_error_recovery,recovered,bool,0,PING valido tras el error
+BENCH,DMA14,efficiency,irq_tx,count,85,
+BENCH,DMA14,efficiency,irq_rx,count,0,
+BENCH,DMA14,efficiency,bytes_tx,count,23132,
+BENCH,DMA14,efficiency,bytes_rx,count,0,
+BENCH,DMA14,efficiency,irq_per_kb,count,3,IRQs por KB transferido
+BENCH,DMA14,efficiency,errors,count,0,
+=== FIN DEL BENCHMARK: DMA14 ===

@@ -1,0 +1,404 @@
+<title>Comparativa de transportes PS↔PL — GPIO vs AXI-DMA vs MCDMA</title>
+<style>
+  :root {
+    --bg: #f7f8fa;  --panel: #ffffff;  --ink: #10141a;
+    --muted: #5b6472;  --line: #dde1e8;  --track: #eceff4;
+    --warn-bg: #fff8e6; --warn-line: #eda100;
+    --c-gpio: #2a78d6;  --c-dma14: #1baf7a;  --c-mcdma: #eda100;
+    --mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+    --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #12151a;  --panel: #191d24;  --ink: #eef1f5;
+      --muted: #9aa4b2;  --line: #2b313a;  --track: #232830;
+      --warn-bg: #241f10; --warn-line: #c98500;
+      --c-gpio: #3987e5;  --c-dma14: #199e70;  --c-mcdma: #c98500;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #12151a;  --panel: #191d24;  --ink: #eef1f5;
+    --muted: #9aa4b2;  --line: #2b313a;  --track: #232830;
+    --warn-bg: #241f10; --warn-line: #c98500;
+    --c-gpio: #3987e5;  --c-dma14: #199e70;  --c-mcdma: #c98500;
+  }
+  :root[data-theme="light"] {
+    --bg: #f7f8fa;  --panel: #ffffff;  --ink: #10141a;
+    --muted: #5b6472;  --line: #dde1e8;  --track: #eceff4;
+    --warn-bg: #fff8e6; --warn-line: #eda100;
+    --c-gpio: #2a78d6;  --c-dma14: #1baf7a;  --c-mcdma: #eda100;
+  }
+
+  body { background: var(--bg); color: var(--ink); font-family: var(--sans);
+         line-height: 1.6; margin: 0; padding: 3rem 1.5rem 6rem; -webkit-font-smoothing: antialiased; }
+  main { max-width: 70rem; margin: 0 auto; display: flex; flex-direction: column; gap: 3.5rem; }
+  h1 { font-size: clamp(1.7rem, 3.4vw, 2.5rem); line-height: 1.15; letter-spacing: -0.02em;
+       margin: 0 0 .75rem; text-wrap: balance; font-weight: 640; }
+  h2 { font-size: 1.05rem; letter-spacing: -0.01em; margin: 0; font-weight: 620; }
+  h3 { font-size: .95rem; margin: 1rem 0 0; font-weight: 620; }
+  p { margin: 0; max-width: 68ch; }
+  .lede { color: var(--muted); font-size: 1.05rem; }
+  .eyebrow { font-family: var(--mono); font-size: .7rem; letter-spacing: .13em;
+              text-transform: uppercase; color: var(--muted); margin-bottom: 1rem; }
+  section { display: flex; flex-direction: column; gap: 1rem; }
+  section > p { color: var(--muted); }
+
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: 1rem; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-top: 3px solid var(--accent);
+           border-radius: 6px; padding: 1.25rem; display: flex; flex-direction: column; gap: .6rem; }
+  .card-head { display: flex; justify-content: space-between; align-items: center; gap: .5rem; }
+  .card-sub { color: var(--muted); font-size: .82rem; line-height: 1.45; }
+  .card dl { margin: 0; display: flex; flex-direction: column; gap: .35rem; }
+  .card dl div { display: flex; justify-content: space-between; align-items: baseline;
+                  border-top: 1px solid var(--line); padding-top: .35rem; }
+  .card dt { color: var(--muted); font-size: .8rem; }
+  .card dd { margin: 0; font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: .95rem; }
+
+  .badge { font-size: .68rem; font-family: var(--mono); padding: .15rem .45rem; border-radius: 3px;
+            border: 1px solid var(--line); color: var(--muted); white-space: nowrap; }
+  .badge-ok { color: #0ca30c; border-color: #0ca30c; }
+  .badge-bad { color: #d03b3b; border-color: #d03b3b; }
+
+  .charts { display: grid; grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr)); gap: 1.5rem; }
+  .chart { margin: 0; background: var(--panel); border: 1px solid var(--line); border-radius: 6px;
+            padding: 1.25rem; display: flex; flex-direction: column; gap: .8rem; }
+  .chart figcaption { display: flex; flex-direction: column; gap: .2rem; }
+  .chart figcaption h3 { margin: 0; }
+  .chart figcaption p { color: var(--muted); font-size: .78rem; line-height: 1.4; }
+  .bar-row { display: grid; grid-template-columns: 4.2rem 1fr auto; align-items: center; gap: .7rem; }
+  .bar-label { font-family: var(--mono); font-size: .78rem; color: var(--muted); }
+  .bar-track { background: var(--track); border-radius: 3px; height: 9px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 0 3px 3px 0; }
+  .bar-value { font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: .82rem; }
+  .bar-detail { color: var(--muted); font-size: .72rem; margin-left: .4rem; }
+
+  .scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); }
+  table { border-collapse: collapse; width: 100%; font-size: .85rem; }
+  th, td { padding: .6rem .85rem; text-align: right; white-space: nowrap; }
+  thead th { font-size: .72rem; text-transform: uppercase; letter-spacing: .06em;
+              color: var(--muted); font-weight: 600; border-bottom: 1px solid var(--line); }
+  tbody th { text-align: left; font-weight: 600; }
+  tbody td { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+  tbody tr + tr th, tbody tr + tr td { border-top: 1px solid var(--line); }
+  .dot { display: inline-block; width: .55rem; height: .55rem; border-radius: 50%; margin-right: .5rem; }
+
+  .note { background: var(--panel); border: 1px solid var(--line); border-left: 3px solid var(--muted);
+           border-radius: 6px; padding: 1rem 1.25rem; color: var(--muted); font-size: .88rem; max-width: none; }
+  .note strong { color: var(--ink); font-weight: 600; }
+  .note-warn { background: var(--warn-bg); border-left-color: var(--warn-line); }
+  code { font-family: var(--mono); font-size: .85em; background: var(--track);
+          padding: .1em .35em; border-radius: 3px; }
+  footer { color: var(--muted); font-size: .78rem; border-top: 1px solid var(--line); padding-top: 1.5rem; }
+</style>
+
+<main>
+  <header>
+    <p class="eyebrow">ZCU102 · XCZU9EG · RTEMS 7 · 14 canales serie · loopback en la PL</p>
+    <h1>Tres formas de mover bytes entre el PS y la PL</h1>
+    <p class="lede">El mismo transceiver de 14 canales, el mismo <code>bench_main.c</code>,
+    el mismo bus cerrado dentro de la FPGA. Solo cambia el transporte.</p>
+  </header>
+
+  <section>
+    <div class="cards">
+      <article class="card" style="--accent:var(--c-gpio)">
+        <div class="card-head"><h2>GPIO</h2><span class="badge badge-ok">lazo RX cerrado</span></div>
+        <p class="card-sub">AXI-GPIO + AXI-INTC, un byte por acceso a registro</p>
+        <dl>
+          <div><dt>LUTs</dt><dd>6 434</dd></div>
+          <div><dt>RAM del driver</dt><dd>112 KB</dd></div>
+          <div><dt>IRQ por KB</dt>
+               <dd>1 250</dd></div>
+          <div><dt>Latencia media</dt><dd>4 606 µs</dd></div>
+        </dl>
+      </article>
+      <article class="card" style="--accent:var(--c-dma14)">
+        <div class="card-head"><h2>DMA14</h2><span class="badge badge-bad">sin lazo RX</span></div>
+        <p class="card-sub">14 × AXI-DMA simple (PG021), IRQs OR-coalescidas</p>
+        <dl>
+          <div><dt>LUTs</dt><dd>40 217</dd></div>
+          <div><dt>RAM del driver</dt><dd>112 KB</dd></div>
+          <div><dt>IRQ por KB (solo TX)</dt>
+               <dd>3</dd></div>
+          <div><dt>Latencia media</dt><dd>—</dd></div>
+        </dl>
+      </article>
+      <article class="card" style="--accent:var(--c-mcdma)">
+        <div class="card-head"><h2>MCDMA</h2><span class="badge badge-ok">lazo RX cerrado</span></div>
+        <p class="card-sub">AXI-MCDMA scatter-gather (PG288), 1 canal TX / 14 RX</p>
+        <dl>
+          <div><dt>LUTs</dt><dd>14 191</dd></div>
+          <div><dt>RAM del driver</dt><dd>88 KB</dd></div>
+          <div><dt>IRQ por KB</dt>
+               <dd>3</dd></div>
+          <div><dt>Latencia media</dt><dd>1 530 µs</dd></div>
+        </dl>
+      </article>
+    </div>
+  <p class="note note-warn"><strong>Datos incompletos en DMA14.</strong>
+    Su autodiagnóstico no encontró lazo de recepción, así que todo lo que dependa de recibir bytes
+    (throughput, multidrop, overrun, recuperación) sale a cero. Ese cero <em>no</em> mide el
+    transporte. Lo que sí es válido en DMA14: el coste de hardware, el footprint de memoria,
+    y las interrupciones de transmisión.</p>
+  </section>
+
+  <section>
+    <h2>Coste de hardware</h2>
+    <p>Los tres diseños están implementados sobre el mismo dispositivo, así que las cifras salen
+    directamente de sus informes de Vivado y son comparables sin más.</p>
+    <div class="charts">
+    <figure class="chart">
+      <figcaption><h3>LUTs de lógica</h3><p>Menos es mejor. Porcentaje sobre las 274 080 del XCZU9EG.</p></figcaption>
+      <div class="bar-row">
+        <div class="bar-label">GPIO</div>
+        <div class="bar-track"><div class="bar-fill" style="width:16.0%;background:var(--c-gpio)"></div></div>
+        <div class="bar-value">6 434<span class="bar-detail">  2.35%</span></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">DMA14</div>
+        <div class="bar-track"><div class="bar-fill" style="width:100.0%;background:var(--c-dma14)"></div></div>
+        <div class="bar-value">40 217<span class="bar-detail">  14.67%</span></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">MCDMA</div>
+        <div class="bar-track"><div class="bar-fill" style="width:35.3%;background:var(--c-mcdma)"></div></div>
+        <div class="bar-value">14 191<span class="bar-detail">  5.18%</span></div>
+      </div>
+    </figure>
+    <figure class="chart">
+      <figcaption><h3>Registros (flip-flops)</h3><p>Sobre 548 160 disponibles.</p></figcaption>
+      <div class="bar-row">
+        <div class="bar-label">GPIO</div>
+        <div class="bar-track"><div class="bar-fill" style="width:14.3%;background:var(--c-gpio)"></div></div>
+        <div class="bar-value">7 726<span class="bar-detail">  1.41%</span></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">DMA14</div>
+        <div class="bar-track"><div class="bar-fill" style="width:100.0%;background:var(--c-dma14)"></div></div>
+        <div class="bar-value">53 943<span class="bar-detail">  9.84%</span></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">MCDMA</div>
+        <div class="bar-track"><div class="bar-fill" style="width:30.5%;background:var(--c-mcdma)"></div></div>
+        <div class="bar-value">16 438<span class="bar-detail">  3.00%</span></div>
+      </div>
+    </figure>
+    <figure class="chart">
+      <figcaption><h3>Bloques de RAM</h3><p>Sobre 912 tiles.</p></figcaption>
+      <div class="bar-row">
+        <div class="bar-label">GPIO</div>
+        <div class="bar-track"><div class="bar-fill" style="width:20.0%;background:var(--c-gpio)"></div></div>
+        <div class="bar-value">7<span class="bar-detail">  0.77%</span></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">DMA14</div>
+        <div class="bar-track"><div class="bar-fill" style="width:100.0%;background:var(--c-dma14)"></div></div>
+        <div class="bar-value">35<span class="bar-detail">  3.84%</span></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">MCDMA</div>
+        <div class="bar-track"><div class="bar-fill" style="width:51.4%;background:var(--c-mcdma)"></div></div>
+        <div class="bar-value">18<span class="bar-detail">  1.97%</span></div>
+      </div>
+    </figure>
+    </div>
+    <div class="scroll"><table>
+      <thead><tr><th scope="col" style="text-align:left">Variante</th><th scope="col">LUTs</th><th scope="col">Registros</th><th scope="col">BRAM</th><th scope="col">CARRY8</th><th scope="col">Potencia</th><th scope="col">WNS</th><th scope="col">LUTs/canal</th></tr></thead>
+      <tbody>
+        <tr><th scope="row"><span class="dot" style="background:var(--c-gpio)"></span>GPIO</th><td>6 434</td><td>7 726</td><td>7</td><td>145</td><td>3.52 W</td><td>4.69 ns</td><td>460</td></tr>
+        <tr><th scope="row"><span class="dot" style="background:var(--c-dma14)"></span>DMA14</th><td>40 217</td><td>53 943</td><td>35</td><td>397</td><td>3.86 W</td><td>4.05 ns</td><td>2 873</td></tr>
+        <tr><th scope="row"><span class="dot" style="background:var(--c-mcdma)"></span>MCDMA</th><td>14 191</td><td>16 438</td><td>18</td><td>271</td><td>3.62 W</td><td>5.14 ns</td><td>1 014</td></tr>
+      </tbody>
+    </table></div>
+    <p class="note"><strong>Cómo leerlo.</strong> El banco de 14 AXI-DMA cuesta 2,8 veces más lógica
+    que el MCDMA para el mismo número de canales, porque replica catorce motores completos en vez de
+    compartir uno multicanal. El GPIO es el más pequeño con diferencia, pero ese ahorro de lógica lo
+    paga la CPU: mueve un byte por acceso a registro. El WNS positivo en las tres indica que ninguna
+    cierra timing al límite.</p>
+  </section>
+
+  <section>
+    <h2>Coste de software</h2>
+    <p>Tamaño del driver compilado (<code>aarch64-rtems7-size</code> sobre <code>transceiver.o</code>)
+    y recursos que reserva en tiempo de ejecución.</p>
+    <div class="scroll"><table>
+      <thead><tr><th scope="col" style="text-align:left">Variante</th><th scope="col">Código (.text)</th><th scope="col">Estático (.bss)</th><th scope="col">RAM total del driver</th><th scope="col">Líneas de IRQ</th><th scope="col">Tareas RTEMS</th><th scope="col">Semáforos</th></tr></thead>
+      <tbody>
+        <tr><th scope="row"><span class="dot" style="background:var(--c-gpio)"></span>GPIO</th><td>3 099 B</td><td>192 B</td><td>114 688</td><td>1</td><td>14</td><td>28</td></tr>
+        <tr><th scope="row"><span class="dot" style="background:var(--c-dma14)"></span>DMA14</th><td>3 036 B</td><td>115 968 B</td><td>115 584</td><td>2</td><td>1</td><td>15</td></tr>
+        <tr><th scope="row"><span class="dot" style="background:var(--c-mcdma)"></span>MCDMA</th><td>3 884 B</td><td>91 586 B</td><td>91 074</td><td>3</td><td>1</td><td>3</td></tr>
+      </tbody>
+    </table></div>
+    <p class="note"><strong>El .bss engaña.</strong> GPIO casi no tiene memoria estática porque pide
+    sus catorce buffers con <code>malloc</code> — la RAM total es lo que hay que comparar. A cambio
+    necesita una tarea de recepción por canal y dos semáforos por canal, mientras que las dos
+    variantes con DMA se apañan con una sola tarea de despacho.</p>
+  </section>
+
+  <section>
+    <h2>Rendimiento medido en placa</h2>
+    <p>Mismo <code>bench_main.c</code> en las tres, ejecutado sobre la ZCU102 con los buses cerrados
+    por un módulo de loopback dentro de la PL. El cronómetro siempre para en el receptor.</p>
+    <div class="charts">
+    <figure class="chart">
+      <figcaption><h3>Interrupciones por kilobyte</h3><p>Menos es mejor: cada IRQ es una expropiación de la CPU. Ojo: en las variantes sin lazo de recepción la cifra solo recoge las IRQ de transmisión, así que sale artificialmente baja y no es comparable.</p></figcaption>
+      <div class="bar-row">
+        <div class="bar-label">GPIO</div>
+        <div class="bar-track"><div class="bar-fill" style="width:100.0%;background:var(--c-gpio)"></div></div>
+        <div class="bar-value">1 250<span class="bar-detail"></span></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">DMA14</div>
+        <div class="bar-track"><div class="bar-fill" style="width:0.2%;background:var(--c-dma14)"></div></div>
+        <div class="bar-value">3<span class="bar-detail"></span></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">MCDMA</div>
+        <div class="bar-track"><div class="bar-fill" style="width:0.2%;background:var(--c-mcdma)"></div></div>
+        <div class="bar-value">3<span class="bar-detail"></span></div>
+      </div>
+    </figure>
+    <figure class="chart">
+      <figcaption><h3>Latencia media de un frame (µs)</h3><p>Menos es mejor. Se excluye DMA14: sin lazo de recepción.</p></figcaption>
+      <div class="bar-row">
+        <div class="bar-label">GPIO</div>
+        <div class="bar-track"><div class="bar-fill" style="width:100.0%;background:var(--c-gpio)"></div></div>
+        <div class="bar-value">4 606<span class="bar-detail"></span></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">MCDMA</div>
+        <div class="bar-track"><div class="bar-fill" style="width:33.2%;background:var(--c-mcdma)"></div></div>
+        <div class="bar-value">1 530<span class="bar-detail"></span></div>
+      </div>
+    </figure>
+    <figure class="chart">
+      <figcaption><h3>Throughput de un canal (B/s)</h3><p>Techo físico a 115200 8N1: 11 520 B/s. Se excluye DMA14: sin lazo de recepción.</p></figcaption>
+      <div class="bar-row">
+        <div class="bar-label">GPIO</div>
+        <div class="bar-track"><div class="bar-fill" style="width:30.5%;background:var(--c-gpio)"></div></div>
+        <div class="bar-value">3 471<span class="bar-detail"></span></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">MCDMA</div>
+        <div class="bar-track"><div class="bar-fill" style="width:100.0%;background:var(--c-mcdma)"></div></div>
+        <div class="bar-value">11 461<span class="bar-detail"></span></div>
+      </div>
+    </figure>
+    </div>
+<h3>Latencia de un frame de 11 bytes (µs)</h3><p>Desde justo antes de <code>Send</code> hasta que el receptor tiene el frame completo. 50 muestras.</p>    <div class="scroll"><table>
+      <thead><tr><th scope="col" style="text-align:left">Variante</th><th scope="col">media</th><th scope="col">p50</th><th scope="col">p95</th><th scope="col">máx</th><th scope="col">timeouts</th></tr></thead>
+      <tbody>
+        <tr><th scope="row"><span class="dot" style="background:var(--c-gpio)"></span>GPIO</th><td>4 606</td><td>4 608</td><td>4 611</td><td>4 611</td><td>0</td></tr>
+        <tr><th scope="row"><span class="dot" style="background:var(--c-dma14)"></span>DMA14</th><td>—</td><td>—</td><td>—</td><td>—</td><td>50</td></tr>
+        <tr><th scope="row"><span class="dot" style="background:var(--c-mcdma)"></span>MCDMA</th><td>1 530</td><td>1 529</td><td>1 535</td><td>1 535</td><td>0</td></tr>
+      </tbody>
+    </table></div>
+<h3>Throughput (B/s)</h3><p>A 115200 8N1 el techo físico de un canal es 11 520 B/s. El cronómetro para en el receptor, nunca al retornar de <code>Send</code>.</p>    <div class="scroll"><table>
+      <thead><tr><th scope="col" style="text-align:left">Variante</th><th scope="col">1 canal</th><th scope="col">3 maestros a la vez</th><th scope="col">6 receptores multidrop</th><th scope="col">repeticiones sin pérdidas</th></tr></thead>
+      <tbody>
+        <tr><th scope="row"><span class="dot" style="background:var(--c-gpio)"></span>GPIO</th><td>3 471</td><td>10 411</td><td>20 838</td><td>5</td></tr>
+        <tr><th scope="row"><span class="dot" style="background:var(--c-dma14)"></span>DMA14</th><td>0</td><td>0</td><td>0</td><td>—</td></tr>
+        <tr><th scope="row"><span class="dot" style="background:var(--c-mcdma)"></span>MCDMA</th><td>11 461</td><td>34 303</td><td>68 504</td><td>5</td></tr>
+      </tbody>
+    </table></div>
+<h3>Coste en interrupciones</h3><p>Cuántas veces se interrumpe la CPU por cada kilobyte movido, acumulado sobre toda la sesión. Es la métrica que explica casi todas las demás.</p>    <div class="scroll"><table>
+      <thead><tr><th scope="col" style="text-align:left">Variante</th><th scope="col">IRQ/KB</th><th scope="col">IRQ TX</th><th scope="col">IRQ RX</th><th scope="col">bytes TX</th><th scope="col">bytes RX</th><th scope="col">bytes descartados<br>(ring lleno)</th></tr></thead>
+      <tbody>
+        <tr><th scope="row"><span class="dot" style="background:var(--c-gpio)"></span>GPIO</th><td>1 250</td><td>22 161</td><td>129 382</td><td>22 161</td><td>101 890</td><td>27 496</td></tr>
+        <tr><th scope="row"><span class="dot" style="background:var(--c-dma14)"></span>DMA14</th><td>3</td><td>85</td><td>0</td><td>23 132</td><td>0</td><td>0</td></tr>
+        <tr><th scope="row"><span class="dot" style="background:var(--c-mcdma)"></span>MCDMA</th><td>3</td><td>194</td><td>192</td><td>23 132</td><td>101 472</td><td>33 736</td></tr>
+      </tbody>
+    </table></div>
+<h3>Robustez</h3><p>Tres frames corruptos seguidos de un PING válido, y 8 KB enviados sin consumir un ring de 4 KB.</p>    <div class="scroll"><table>
+      <thead><tr><th scope="col" style="text-align:left">Variante</th><th scope="col">frames corruptos rechazados</th><th scope="col">se recupera tras el error</th><th scope="col">bytes aceptados en overrun</th><th scope="col">bytes perdidos</th></tr></thead>
+      <tbody>
+        <tr><th scope="row"><span class="dot" style="background:var(--c-gpio)"></span>GPIO</th><td>3 / 3</td><td>sí</td><td>24 576</td><td>16 246</td></tr>
+        <tr><th scope="row"><span class="dot" style="background:var(--c-dma14)"></span>DMA14</th><td>3 / 3</td><td>no</td><td>0</td><td>0</td></tr>
+        <tr><th scope="row"><span class="dot" style="background:var(--c-mcdma)"></span>MCDMA</th><td>3 / 3</td><td>sí</td><td>24 576</td><td>24 576</td></tr>
+      </tbody>
+    </table></div>
+<h3>Barrido de velocidad — throughput (B/s)</h3><p>Se reprograman los 14 UARTs y se mide un bloque de 1 KB en cada punto.</p>    <div class="scroll"><table>
+      <thead><tr><th scope="col" style="text-align:left">Variante</th><th scope="col">115200</th><th scope="col">230400</th><th scope="col">460800</th><th scope="col">921600</th><th scope="col">1M</th><th scope="col">2M</th><th scope="col">4M</th></tr></thead>
+      <tbody>
+        <tr><th scope="row"><span class="dot" style="background:var(--c-gpio)"></span>GPIO</th><td>3 471</td><td>4 087</td><td>4 485</td><td>4 714</td><td>4 733</td><td>4 848</td><td>4 907</td></tr>
+        <tr><th scope="row"><span class="dot" style="background:var(--c-dma14)"></span>DMA14</th><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+        <tr><th scope="row"><span class="dot" style="background:var(--c-mcdma)"></span>MCDMA</th><td>11 458</td><td>22 789</td><td>45 104</td><td>88 298</td><td>96 186</td><td>183 053</td><td>344 781</td></tr>
+      </tbody>
+    </table></div>
+    <p class="note"><strong>Lo que dicen estos números.</strong>
+    GPIO paga <em>una interrupción por byte en cada sentido</em>: mueve datos, pero a costa de
+    expropiar la CPU 1250 veces por kilobyte, y su throughput se estanca en torno a 4,9 KB/s por
+    mucho que se suba el baudrate — el cuello de botella es el manejo de interrupciones, no la línea.
+    MCDMA alcanza el techo físico de la línea (11 461 B/s de los 11 520 teóricos a 115200 8N1) con
+    <em>3 interrupciones por kilobyte</em>, unas 400 veces menos que GPIO, y con una latencia tres
+    veces menor. Atiende además los seis receptores del multidrop a la vez sin perder un byte.</p>
+    <p class="note"><strong>La última columna no son fallos.</strong> Cuenta un byte cada vez que un
+    dato llega bien pero <em>no cabe en el ring de software porque nadie lo ha leído</em>. La mayor
+    parte viene de <code>T5</code>, un test diseñado para desbordar: manda 8 KB sin vaciar los rings y
+    los seis esclavos del bus los reciben en paralelo, así que se aceptan 6 × 4096 bytes y se descarta
+    el resto. El resto de descartes son de los canales que nadie lee en <code>T2</code> y <code>T6</code>:
+    al ser un bus multidrop, todos reciben cada bloque. <strong>Los errores de transporte propiamente
+    dichos son cero</strong> en las tres variantes: ni un bit de error del DMA, ni un timeout
+    (<code>T6</code> reporta <code>errors=0</code> en los siete baudios).</p>
+    <p class="note"><strong>Por eso el número del MCDMA sube al arreglar el fallo</strong> (24 576 →
+    33 736): antes la recepción se bloqueaba a los 514 bytes, así que llegaba menos dato a los rings y
+    se descartaba menos. Ahora el transporte entrega todo (<code>bytes RX</code> pasa de 73 912 a
+    101 472) y, por tanto, sobra más en los rings que nadie vacía. El contador creció porque el
+    transporte mejoró.</p>
+  </section>
+
+  <section>
+    <h2>Fallo resuelto: la recepción del MCDMA se cortaba en 514 bytes</h2>
+
+    <p class="note"><strong>Resuelto y verificado en placa (14-jul-2026).</strong> Durante días,
+    <code>T2</code> recibía <strong>514 bytes de 1024</strong> y el canal enmudecía
+    (<code>reps_full</code> = 0). Ahora pasa <strong>5 de 5 repeticiones, 5120/5120 bytes</strong>, y el
+    barrido de velocidad entrega 1024/1024 en los siete puntos, de 115&nbsp;200 a 4&nbsp;M. Las cifras
+    de esta página son las de esa corrida, arrancando desde la SD.</p>
+
+    <h3>La causa: el store-and-forward del S2MM</h3>
+    <p>El <code>axi_mcdma</code> está configurado con <code>c_include_s2mm_sf=1</code>: el motor de
+    recepción acumula el paquete AXI-Stream <em>entero</em> en un buffer interno de 512 bytes antes de
+    volcarlo a la DDR. El módulo de drenado de la PL emitía el bloque como <strong>un solo paquete</strong>
+    de 1024 bytes, así que el motor tragaba 512 (su buffer), más 2 que quedaban atrapados en los
+    registros del convertidor de anchura, y <strong>bajaba TREADY para siempre</strong> esperando un
+    <code>TLAST</code> que no podía llegar: para llegar habría que aceptar más bytes, y ya no caben.</p>
+    <p>De ahí el número mágico — <strong>514 = 512 + 2</strong> — y de ahí que no fuera una pérdida de
+    bytes sino un <em>bloqueo</em>: el motor no descartaba nada (<code>PKTDROP=0</code>), simplemente
+    dejaba de aceptar. Los tests <code>T3</code> y <code>T4</code> pasaban porque sus mensajes son de
+    512 bytes o menos y caben en el buffer.</p>
+    <p>El arreglo está en <code>BRIDGE_RX_FIFO_DRAIN.vhd</code>: el paquete se cierra al vaciarse la
+    FIFO y, sobre todo, hay un tope duro de <strong>256 bytes por paquete</strong>, muy por debajo del
+    buffer del motor. El tope por longitud es deliberado: convierte «paquete &lt; buffer» en una
+    invariante estructural, en vez de depender de que el drenado gane siempre la carrera a la línea
+    serie.</p>
+
+    <p class="note note-warn"><strong>La trampa que escondió el fallo durante días.</strong>
+    <code>BRIDGE_AND_SERIALs</code> es un <em>module reference</em> del diseño de bloques: Vivado lo
+    sintetiza fuera de contexto y <strong>cachea su checkpoint</strong>. La síntesis del top lo tomaba
+    como caja negra y reutilizaba un <code>.dcp</code> congelado desde el 9 de julio, así que
+    <strong>ningún cambio de RTL de la recepción llegó nunca a la placa</strong>: cada resíntesis
+    terminaba «OK», cerraba <em>timing</em> y escribía un bitstream… con el RTL viejo. Por eso el 514
+    salía idéntico corrida tras corrida, y cada conclusión del tipo «lo cambié y el síntoma no varía,
+    luego no era eso» era en realidad «el hardware no cambió». La señal delatora estuvo siempre a la
+    vista: el md5 del <code>BOOT.bin</code> no cambiaba tras sintetizar, y eso es imposible con dos
+    bitstreams distintos. Hay que refrescar el module reference
+    (<code>update_module_reference</code>) y <strong>comprobar que el md5 cambia</strong>.</p>
+  </section>
+
+  <section>
+    <h2>Anomalías abiertas</h2>
+
+    <h3>DMA14: no se cierra el lazo de recepción</h3>
+    <p>Ningún canal recibe en ninguno de los tres buses, pese a que el S2MM queda armado
+    (<code>RS=1</code>, <code>Halted=0</code>) y el loopback está conectado en el diseño de bloques.
+    Las cifras de rendimiento de esta variante quedan por tanto incompletas; sus datos de hardware y
+    de memoria sí son válidos.</p>
+  </section>
+
+  <footer>
+    Hardware: informes <code>impl_1/*_utilization_placed.rpt</code> de los tres proyectos Vivado.
+    Software: <code>bench_main.c</code>, idéntico byte a byte en las tres variantes.
+    Generado por <code>bench/report.py</code>.
+  </footer>
+</main>

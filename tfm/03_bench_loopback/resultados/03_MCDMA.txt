@@ -1,0 +1,127 @@
+bootm 0x800000
+## Booting kernel from Legacy Image at 00800000 ...
+   Image Name:   RTEMS
+   Created:      2026-07-14   8:10:52 UTC
+   Image Type:   AArch64 RTEMS Kernel Image (gzip compressed)
+   Data Size:    85625 Bytes = 83.6 KiB
+   Load Address: 00010000
+   Entry Point:  00010000
+   Verifying Checksum ... OK
+   Uncompressing Kernel Image to 10000
+## Transferring control to RTEMS (at address 00010000) ...
+MMU_MAP: mmu_map_pl_axi_early() called -> begin=0xa0000000 end=0xa0ffffff
+MMU_MAP: aarch64_mmu_set_translation_table_entries rc=0
+MMU_MAP: return from mmu_map_pl_axi_early()
+[TRANSCEIVER DEBUG] MCDMA global init OK | MM2S IRQ=121  S2MM IRQ=122  EOAF IRQ=123 | 14 canales RX
+[TRANSCEIVER] MCDMA init OK: 14 canales TX/RX
+[TRANSCEIVER DEBUG] UART 0 OK | cfg=0xA0000000 | sw_ring=0x10d320
+[TRANSCEIVER DEBUG] UART 1 OK | cfg=0xA0000004 | sw_ring=0x10e320
+[TRANSCEIVER DEBUG] UART 2 OK | cfg=0xA0000008 | sw_ring=0x10f320
+[TRANSCEIVER DEBUG] UART 3 OK | cfg=0xA000000C | sw_ring=0x110320
+[TRANSCEIVER DEBUG] UART 4 OK | cfg=0xA0000010 | sw_ring=0x111320
+[TRANSCEIVER DEBUG] UART 5 OK | cfg=0xA0000014 | sw_ring=0x112320
+[TRANSCEIVER DEBUG] UART 6 OK | cfg=0xA0000018 | sw_ring=0x113320
+[TRANSCEIVER DEBUG] UART 7 OK | cfg=0xA000001C | sw_ring=0x114320
+[TRANSCEIVER DEBUG] UART 8 OK | cfg=0xA0000020 | sw_ring=0x115320
+[TRANSCEIVER DEBUG] UART 9 OK | cfg=0xA0000024 | sw_ring=0x116320
+[TRANSCEIVER DEBUG] UART 10 OK | cfg=0xA0000028 | sw_ring=0x117320
+[TRANSCEIVER DEBUG] UART 11 OK | cfg=0xA000002C | sw_ring=0x118320
+[TRANSCEIVER DEBUG] UART 12 OK | cfg=0xA0000030 | sw_ring=0x119320
+[TRANSCEIVER DEBUG] UART 13 OK | cfg=0xA0000034 | sw_ring=0x11a320
+
+=== BENCHMARK DE TRANSPORTE: MCDMA ===
+Reloj del sistema: 99990008 Hz
+BENCH,variant,test,metric,unit,value,note
+BENCH,MCDMA,footprint,static_bytes,B,122434,buffers en .bss
+BENCH,MCDMA,footprint,heap_bytes,B,0,buffers con malloc
+BENCH,MCDMA,footprint,total_bytes,B,122434,
+BENCH,MCDMA,footprint,irq_lines,count,3,lineas PL->PS
+BENCH,MCDMA,footprint,isr_count,count,3,
+BENCH,MCDMA,footprint,task_count,count,1,tareas del driver
+BENCH,MCDMA,footprint,sem_count,count,17,semaforos del driver
+BENCH,MCDMA,footprint,tx_blocking,bool,1,Send espera a la TX fisica
+BENCH,MCDMA,footprint,tx_concurrent,bool,0,varios canales TX a la vez
+BENCH,MCDMA,footprint,channels,count,14,
+BENCH,MCDMA,T0_selftest,channels,count,14,esperados 14
+BENCH,MCDMA,T0_selftest,tx_datapath,bool,1,el driver mueve bytes al HW
+BENCH,MCDMA,T0_selftest,rx_link,bool,1,lazo CH0->CH1 cerrado
+BENCH,MCDMA,T0_selftest,bytes_rx,count,8,de 8 enviados
+[BENCH] Autodiagnostico OK: 14 canales, lazo CH0->CH1 cerrado.
+BENCH,MCDMA,T1_latency,avg,us,1530,frame de 11 B
+BENCH,MCDMA,T1_latency,p50,us,1529,
+BENCH,MCDMA,T1_latency,p95,us,1535,
+BENCH,MCDMA,T1_latency,max,us,1535,
+BENCH,MCDMA,T1_latency,timeouts,count,0,
+BENCH,MCDMA,T2_throughput_1ch,throughput,B/s,11461,115200 8N1: techo 11520
+BENCH,MCDMA,T2_throughput_1ch,elapsed,us,89346,por bloque de 1024 B
+BENCH,MCDMA,T2_throughput_1ch,reps_full,count,5,repeticiones sin perdidas, de 5
+BENCH,MCDMA,T2_throughput_1ch,bytes_ok,count,5120,
+BENCH,MCDMA,T2_throughput_1ch,bytes_rx,count,5120,
+BENCH,MCDMA,T2_throughput_1ch,bytes_total,count,5120,
+BENCH,MCDMA,T3_tx_concurrent,throughput,B/s,34303,3 maestros en paralelo
+BENCH,MCDMA,T3_tx_concurrent,elapsed,us,44777,hasta el ultimo byte
+BENCH,MCDMA,T3_tx_concurrent,bytes_ok,count,1536,
+BENCH,MCDMA,T3_tx_concurrent,bytes_total,count,1536,
+BENCH,MCDMA,T3_tx_concurrent,bytes_rx,count,1536,
+BENCH,MCDMA,T4_rx_multidrop,throughput,B/s,68504,6 receptores simultaneos
+BENCH,MCDMA,T4_rx_multidrop,elapsed,us,22422,
+BENCH,MCDMA,T4_rx_multidrop,listeners_ok,count,6,de 6
+BENCH,MCDMA,T4_rx_multidrop,bytes_ok,count,1536,
+BENCH,MCDMA,T4_rx_multidrop,bytes_rx,count,1536,
+BENCH,MCDMA,T4_rx_multidrop,bytes_total,count,1536,
+BENCH,MCDMA,T5_overrun,bytes_sent,count,8192,ring SW = 4096 B
+BENCH,MCDMA,T5_overrun,bytes_rx,count,24576,aceptados por el ring
+BENCH,MCDMA,T5_overrun,bytes_lost,count,24576,descartados por overrun
+BENCH,MCDMA,T5_overrun,bytes_drained,count,4096,
+BENCH,MCDMA,T5_overrun,tx_fail,count,0,envios rechazados por cola TX llena
+BENCH,MCDMA,T6_baud_sweep,throughput,B/s,11458,115200
+BENCH,MCDMA,T6_baud_sweep,bytes_ok,count,1024,115200
+BENCH,MCDMA,T6_baud_sweep,bytes_rx,count,1024,115200
+BENCH,MCDMA,T6_baud_sweep,bytes_total,count,1024,115200
+BENCH,MCDMA,T6_baud_sweep,irq_per_kb,count,8,115200
+BENCH,MCDMA,T6_baud_sweep,errors,count,0,115200
+BENCH,MCDMA,T6_baud_sweep,throughput,B/s,22789,230400
+BENCH,MCDMA,T6_baud_sweep,bytes_ok,count,1024,230400
+BENCH,MCDMA,T6_baud_sweep,bytes_rx,count,1024,230400
+BENCH,MCDMA,T6_baud_sweep,bytes_total,count,1024,230400
+BENCH,MCDMA,T6_baud_sweep,irq_per_kb,count,10,230400
+BENCH,MCDMA,T6_baud_sweep,errors,count,0,230400
+BENCH,MCDMA,T6_baud_sweep,throughput,B/s,45104,460800
+BENCH,MCDMA,T6_baud_sweep,bytes_ok,count,1024,460800
+BENCH,MCDMA,T6_baud_sweep,bytes_rx,count,1024,460800
+BENCH,MCDMA,T6_baud_sweep,bytes_total,count,1024,460800
+BENCH,MCDMA,T6_baud_sweep,irq_per_kb,count,10,460800
+BENCH,MCDMA,T6_baud_sweep,errors,count,0,460800
+BENCH,MCDMA,T6_baud_sweep,throughput,B/s,88298,921600
+BENCH,MCDMA,T6_baud_sweep,bytes_ok,count,1024,921600
+BENCH,MCDMA,T6_baud_sweep,bytes_rx,count,1024,921600
+BENCH,MCDMA,T6_baud_sweep,bytes_total,count,1024,921600
+BENCH,MCDMA,T6_baud_sweep,irq_per_kb,count,10,921600
+BENCH,MCDMA,T6_baud_sweep,errors,count,0,921600
+BENCH,MCDMA,T6_baud_sweep,throughput,B/s,96186,1M
+BENCH,MCDMA,T6_baud_sweep,bytes_ok,count,1024,1M
+BENCH,MCDMA,T6_baud_sweep,bytes_rx,count,1024,1M
+BENCH,MCDMA,T6_baud_sweep,bytes_total,count,1024,1M
+BENCH,MCDMA,T6_baud_sweep,irq_per_kb,count,10,1M
+BENCH,MCDMA,T6_baud_sweep,errors,count,0,1M
+BENCH,MCDMA,T6_baud_sweep,throughput,B/s,183053,2M
+BENCH,MCDMA,T6_baud_sweep,bytes_ok,count,1024,2M
+BENCH,MCDMA,T6_baud_sweep,bytes_rx,count,1024,2M
+BENCH,MCDMA,T6_baud_sweep,bytes_total,count,1024,2M
+BENCH,MCDMA,T6_baud_sweep,irq_per_kb,count,10,2M
+BENCH,MCDMA,T6_baud_sweep,errors,count,0,2M
+BENCH,MCDMA,T6_baud_sweep,throughput,B/s,344781,4M
+BENCH,MCDMA,T6_baud_sweep,bytes_ok,count,1024,4M
+BENCH,MCDMA,T6_baud_sweep,bytes_rx,count,1024,4M
+BENCH,MCDMA,T6_baud_sweep,bytes_total,count,1024,4M
+BENCH,MCDMA,T6_baud_sweep,irq_per_kb,count,11,4M
+BENCH,MCDMA,T6_baud_sweep,errors,count,0,4M
+BENCH,MCDMA,T7_error_recovery,rejected,count,3,de 3 frames corruptos
+BENCH,MCDMA,T7_error_recovery,recovered,bool,1,PING valido tras el error
+BENCH,MCDMA,efficiency,irq_tx,count,194,
+BENCH,MCDMA,efficiency,irq_rx,count,192,
+BENCH,MCDMA,efficiency,bytes_tx,count,23132,
+BENCH,MCDMA,efficiency,bytes_rx,count,101472,
+BENCH,MCDMA,efficiency,irq_per_kb,count,3,IRQs por KB transferido
+BENCH,MCDMA,efficiency,errors,count,33736,
+=== FIN DEL BENCHMARK: MCDMA ===
