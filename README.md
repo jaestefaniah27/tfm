@@ -1,217 +1,121 @@
-# TFM — Sistema CDHS/AOCS sobre Zynq UltraScale+ MPSoC (ZCU102)
+# TFM — Transceptores serie configurables en FPGA y transporte PS↔PL sobre Zynq UltraScale+ (ZCU102)
 
-Repositorio del Trabajo Fin de Máster. Contiene el diseño hardware (FPGA/PL), el firmware de arranque y las aplicaciones de software (RTEMS) de un sistema CDHS (*Command and Data Handling System*) y AOCS (*Attitude and Orbit Control System*) sobre la plataforma **Xilinx Zynq UltraScale+ MPSoC ZCU102**.
+Repositorio del Trabajo Fin de Máster. El sistema implementa **14 UART configurables en la PL** de una Xilinx ZCU102 y los explota desde **RTEMS 7** en el PS.
 
-## Plataforma objetivo
+La pregunta que vertebra el trabajo es **cómo mover los datos entre el PS y esos 14 UART**. Se implementaron y midieron tres arquitecturas de transporte distintas sobre el *mismo* IP serie y el *mismo* software de aplicación:
+
+| Variante | Transporte PS↔PL | Estado |
+|---|---|---|
+| **A — GPIO** | AXI-Lite / AXI-GPIO, un registro por canal, byte a byte por interrupción | Funciona; muy costosa en CPU |
+| **B — DMA14** | 14× AXI-DMA (PG021), un DMA por canal, AXI-Stream | Funciona en TX; recursos elevados |
+| **C — MCDMA + puente** | 1× AXI-MCDMA (PG288) + puente VHDL que multiplexa 14 canales | **Solución final** |
+
+El banco de pruebas (`03_bench_loopback/`) ejecuta el mismo `bench_main.c` sobre las tres, con un módulo de *loopback* insertado en la PL para poder medir sin la PCB. (Las tres copias del programa difieren en cuatro líneas; el porqué está en [SOFTWARE.md](tfm/03_bench_loopback/SOFTWARE.md).)
+
+## Plataforma
 
 | Elemento | Detalle |
 |---|---|
 | Placa | Xilinx ZCU102 (`xczu9eg-ffvb1156-2-e`) |
-| RTOS | RTEMS 7 (`aarch64-rtems7`) |
-| Herramientas HW | Vivado 2025.1 + Vitis 2025.1 |
-| Boot | SD Card → BOOT.bin (FSBL + Bitstream + U-Boot) + `rtems.img` |
+| RTOS | RTEMS 7 (`aarch64-rtems7`), build con Waf |
+| Herramientas | Vivado 2025.1 + Vitis 2025.1 |
+| Arranque | SD FAT32 → `BOOT.bin` (FSBL + bitstream + U-Boot) + `rtems.img` |
 
 ---
 
-## Estructura del repositorio
+## Estructura
 
 ```
 tfm/
-├── 01_hardware/
-│   ├── vivado_cdhs/              # Diseño Vivado del subsistema CDHS
-│   ├── vivado_aocs/              # Diseño Vivado del subsistema AOCS
-│   └── ip_transceiver_serie/     # IP VHDL del transceptor serie configurable
+├── 00_docs/                  Documentación transversal e informes
+│   ├── informe_benchmark.html        comparativa de las 3 variantes
+│   ├── registro_investigacion_rx.txt bitácora de depuración del RX
+│   └── PS_PL_instructions.md
 │
-├── 02_firmware/
-│   ├── boot_scripts/             # Scripts Python para generar BOOT.bin
-│   └── fsbl_cdhs/                # FSBL modificado (First Stage Boot Loader)
+├── 01_ip_serie/              IP VHDL del transceptor serie configurable (común a todo)
+│   ├── vhdl/                     CONFIGURABLE_SERIAL, TX/RX, NCO, ShiftRegister,
+│   │                             MULTI_SERIAL_CORE, SERIAL_CHANNEL_IP, UART_AXIS_TOP
+│   ├── testbench/                testbenches del canal y del RX
+│   ├── constraints/              XDC de la ZCU102
+│   └── scripts/                  empaquetado del IP y generación de N transceptores
 │
-├── 03_software_rtems/
-│   ├── configurable_transceiver_inter/  # BSP definitivo del transceptor (con hardware/)
-│   ├── test_cdhs/                       # App completa CDHS (CAN + SPI + RS-422)
-│   ├── test_2_cdhs_setup/               # Setup CDHS v2 (con scripts Vivado integrados)
-│   ├── spi_test/                        # Test SPI con ADC ADS7950
-│   └── examples/
-│       ├── and_gate/                    # Ejemplo básico PS-PL (AND gate via AXI GPIO)
-│       └── serial_example_1/            # Ejemplo comunicación serie
+├── 02_transporte/            LAS TRES VARIANTES (el núcleo del TFM)
+│   ├── a_gpio/                   AXI-GPIO          → hardware/ + software/
+│   ├── b_dma14/                  14× AXI-DMA       → hardware/ + software/
+│   └── c_mcdma_bridge/           MCDMA + puente    → hardware/ + software/ + entrega_sd_pcb/
 │
-└── 04_tools/                            # Scripts de desarrollo compartidos
-    ├── make_img.sh                      # Compilar app RTEMS y generar rtems.img
-    ├── automate_ymodem_update.py        # Cargar rtems.img (y BOOT.bin) en la SD vía YMODEM
-    └── serial_gui.py                    # GUI Python para monitorizar el puerto serie
+├── 03_bench_loopback/        Banco de pruebas comparativo
+│   ├── rtl/                      loopback en la PL (bus wired-AND) + su testbench
+│   ├── scripts/                  parcheo del block design, build y flasheo
+│   ├── resultados/               consolas capturadas de cada variante
+│   ├── SOFTWARE.md               dónde vive bench_main.c y cómo compilarlo
+│   └── imagenes_sd/              BOOT.bin + rtems.img listos para la SD
+│
+├── 04_aplicaciones_cdhs_aocs/  Línea previa: CDHS/AOCS (CAN, SPI, RS-422, puente en H)
+├── 05_firmware/              FSBL modificado y scripts de generación de BOOT.bin
+└── 06_tools/                 make_img.sh, carga por YMODEM, GUI serie
 ```
+
+Cada carpeta relevante tiene su propio `README.md` con el detalle.
+
+### Por qué esta estructura
+
+El IP serie (`01_ip_serie`) es el mismo en las tres variantes, y el programa de pruebas (`bench_main.c`) también. **Lo único que cambia entre variantes es el transporte**: el bloque de la PL que conecta los UART al PS, y el driver `transceiver.c/h` que lo maneja. Por eso el árbol separa lo común (01) de lo que se compara (02) y de lo que lo mide (03), en vez de guardar tres copias completas del proyecto.
 
 ---
 
-## Descripción de cada sección
+## Resultados del benchmark
 
-### `01_hardware/` — Diseño Hardware (PL / FPGA)
+Medidos con el loopback en la PL, 14 canales, 115200 8N1. Ver [03_bench_loopback/README.md](tfm/03_bench_loopback/README.md) para la interpretación completa y las salvedades.
 
-#### `vivado_cdhs/`
-Diseño Vivado para el subsistema CDHS. Incluye instancias del IP de transceptor serie configurable conectadas al PS vía AXI, junto con periféricos CAN y SPI del PS.
+| Métrica | GPIO | MCDMA |
+|---|---|---|
+| Latencia ida y vuelta (frame de 11 B) | 4606 µs | **1530 µs** |
+| Throughput 1 canal (techo de línea 11520 B/s) | 3471 B/s (30 %) | **11461 B/s (99 %)** |
+| Interrupciones por KB transferido | 1250 | **3** |
 
-- `src/` — Fuentes VHDL: transceptor configurable (TX, RX, NCO, ShiftRegister, TOP), constraints ZCU102.
-- `scripts/` — Scripts TCL para regenerar el Block Design desde cero (`new_rebuild_all.tcl`, `new_generate_transceivers.tcl`).
+El salto decisivo es `irq_per_kb`: la variante GPIO interrumpe al PS **una vez por byte** en recepción, lo que satura la CPU y limita el throughput a un tercio del techo de línea. El MCDMA transfiere paquetes completos por DMA y baja a 3 IRQ/KB, con lo que la línea serie pasa a ser el único cuello de botella.
 
-#### `vivado_aocs/`
-Diseño Vivado para el subsistema AOCS. Añade sobre el CDHS el bloque `Motor_H_Bridge_test.vhd` para control de actuadores.
-
-- `src/` — Fuentes VHDL (misma base que CDHS + H-Bridge), constraints ZCU102.
-- `scripts/` — Scripts TCL para regenerar el diseño.
-
-#### `ip_transceiver_serie/`
-IP VHDL del transceptor serie configurable. Es el bloque fundamental del sistema: implementa un UART parametrizable instanciable múltiples veces en la PL.
-
-- `vhdl/` — Fuentes del IP: `CONFIGURABLE_SERIAL.vhd`, `TX_CONFIGURABLE_SERIAL.vhd`, `RX_CONFIGURABLE_SERIAL.vhd`, `NCO.vhd`, `ShiftRegister.vhd`, `CONFIGURABLE_SERIAL_TOP.vhd`, `RS232top.vhd`.
-- `testbench/` — Testbenches de simulación: `tb_CONFIGURABLE_SERIAL_TOP.vhd`, `tb_NCO.vhd`, `tb_RS232_TX.vhd`.
-- `scripts/` — Scripts TCL para instanciar transcriptores (`generate_transceivers.tcl`, `add_transceiver.tcl`), constraints de pines (`zcu102_constraints.xdc`, `ZCU102_RD_J3_6.xdc`).
-
-> Para regenerar el proyecto Vivado completo:
-> ```tcl
-> # Desde la consola TCL de Vivado:
-> source scripts/rebuild_all.tcl
-> ```
+> La variante DMA14 se midió con un bitstream cuyo lazo de loopback no quedó cerrado, así que sus cifras de recepción **no son comparables** y salen a cero en `resultados/02_DMA14.txt`. Lo aprovechable de ese run es la transmisión (3 IRQ/KB, igual que MCDMA).
 
 ---
 
-### `02_firmware/` — Firmware de arranque
-
-#### `boot_scripts/`
-Scripts Python para generar el `BOOT.bin` con distintas configuraciones de hardware (CAN+PWM+RS, H-Bridge, AOCS, etc.). Cada `setup_*.py` corresponde a una plataforma Vitis diferente.
-
-- `generate_boot.sh` — Script shell de apoyo para el flujo de generación.
-
-#### `fsbl_cdhs/`
-Código fuente del FSBL (*First Stage Boot Loader*) de Xilinx, versión `fsbl_full_cdhs_with_rx_patch`. Esta es la versión más completa usada en el TFM, que incluye el parche para la inicialización correcta del receptor serie.
-
-- `src/` — Fuentes C del FSBL: `xfsbl_main.c`, `xfsbl_hooks.c` (punto de entrada para personalización), `xfsbl_initialization.c`, `psu_init.c/h` (init específica del board), y todos los módulos estándar de Xilinx.
-
-> Los archivos `psu_init.c/h` son generados por Vivado al exportar el XSA. Si se regenera el diseño HW, deben actualizarse desde Vitis.
-
----
-
-### `03_software_rtems/` — Aplicaciones RTEMS
-
-Todas las aplicaciones usan **Waf** como sistema de build y el framework `rtems_waf` (submódulo Git, no incluido en este repo). El script `make_img.sh` de `04_tools/` automatiza la compilación y generación de la imagen U-Boot.
-
-> **Dependencias comunes** (no incluidas en este repo):
-> ```bash
-> git submodule update --init --recursive   # clona rtems_waf y device-tree-xlnx
-> export RTEMS_PREFIX=$HOME/quick-start/rtems/7
-> ../../04_tools/make_img.sh                # desde el directorio de la app
-> ```
-
-#### `configurable_transceiver_inter/`
-**BSP definitivo del transceptor serie configurable**. Contiene el driver `transceiver.c/h`, la aplicación principal con lógica RX/TX (`main.c`), la GUI serie (`serial_gui.py`) y la carpeta `hardware/` con el diseño Vivado completo (VHDL + scripts TCL para regenerar el proyecto con múltiples instancias de transceptor).
-
-#### `test_cdhs/`
-**Aplicación principal del CDHS**. Prueba de integración completa que ejercita:
-- Múltiples transceptores RS-422/RS-232 vía PL (driver `transceiver.c/h`).
-- Bus CAN (CAN0 y CAN1) vía PS.
-- Bus SPI vía PS.
-
-Incluye:
-- `hardware/` — Diseño Vivado con src VHDL y scripts TCL.
-- `scripts/` — Scripts auxiliares de Vivado.
-- `DIAGNOSTICO_BOOT.md` — Guía de diagnóstico si el boot falla.
-- `visor_zcu102.html` — Visor web de señales para debug.
-
-#### `test_2_cdhs_setup/`
-Setup alternativo del CDHS v2. Incluye scripts TCL para recrear el proyecto Vivado directamente desde la raíz (`recreate_test_vivado.tcl`, `build_project_auto.tcl`).
-
-#### `spi_test/`
-Prueba del bus SPI con el ADC **ADS7950** de Texas Instruments.
-- `ads7950.c/h` — Driver del ADC.
-- `main.c` — Aplicación de prueba de adquisición.
-
-#### `examples/and_gate/`
-Ejemplo básico de integración PS-PL mediante AXI GPIO. Implementa una puerta AND en la PL y la controla desde software para verificar la tabla de verdad. Ver `02_firmware/PS_PL_instructions.md` para las instrucciones detalladas.
-
-#### `examples/serial_example_1/`
-Ejemplo mínimo de comunicación serie desde RTEMS.
-
----
-
-### `04_tools/` — Scripts de desarrollo compartidos
-
-Estos scripts son herramientas de apoyo al flujo de desarrollo. Son comunes a todas las aplicaciones RTEMS y están centralizados aquí para evitar duplicidades.
-
-#### `make_img.sh`
-Compila la aplicación RTEMS con Waf y genera el archivo `rtems.img` listo para cargar en la SD.
-
-Detecta automáticamente el nombre de la aplicación a partir del directorio en el que se ejecuta, por lo que funciona para cualquier app sin modificarlo.
-
-```bash
-# Uso (desde el directorio de cualquier app RTEMS):
-export RTEMS_PREFIX=$HOME/quick-start/rtems/7   # si no está en el PATH
-cd tfm/03_software_rtems/test_cdhs
-../../04_tools/make_img.sh
-# → genera rtems.img en el directorio actual
-```
-
-El script:
-1. Localiza el toolchain `aarch64-rtems7-*` en `RTEMS_PREFIX`.
-2. Inicializa submódulos (`rtems_waf`) si no existen.
-3. Ejecuta `./waf` (y `./waf configure` automáticamente si es la primera vez).
-4. Convierte el `.exe` a binario plano con `objcopy`, lo comprime con gzip y genera la imagen U-Boot con `mkimage`.
-
-#### `automate_ymodem_update.py`
-Carga `rtems.img` en la tarjeta SD de la ZCU102 **sin sacar la SD del equipo**, enviándola por el puerto serie USB mediante el protocolo YMODEM y comandos de U-Boot.
-
-```bash
-# Uso básico (solo actualiza rtems.img):
-python3 04_tools/automate_ymodem_update.py
-
-# También actualizar el BOOT.bin (solo si cambió el hardware):
-python3 04_tools/automate_ymodem_update.py --boot ./BOOT.bin
-```
-
-El script:
-1. Abre el puerto serie (`/dev/ttyUSB0` a 115200), interrumpe el autoboot de U-Boot y manda `mmcinit`.
-2. Envía el fichero por YMODEM (`sb`, paquete `lrzsz`) a la dirección de carga `loady`.
-3. Escribe en la partición FAT de la SD con `fatwrite`.
-4. Opcionalmente intenta un reset automático por JTAG vía XSDB antes de pedirte que pulses el botón físico.
-
-> Requiere: `python3`, `pyserial`, `lrzsz` (`apt install lrzsz`).
-
-#### `serial_gui.py`
-GUI Python para monitorizar y enviar datos por el puerto serie USB de la ZCU102. Útil para visualizar en tiempo real la salida de los transcriptores durante el desarrollo, sin necesitar un terminal externo.
-
-```bash
-python3 04_tools/serial_gui.py
-```
-
----
-
-## Flujo de trabajo general
+## Flujo de trabajo
 
 ```
-1. Generar HW (Vivado)
-   └─ source tfm/01_hardware/vivado_cdhs/scripts/new_rebuild_all.tcl
-       └─ Genera: design_wrapper.bit + design_wrapper.xsa
+1. Hardware (Vivado)
+   cd tfm/02_transporte/c_mcdma_bridge/hardware
+   vivado -mode batch -source scripts/build_mcdma_bridge.tcl   → .bit + .xsa
 
-2. Generar BOOT.bin (Vitis + Python)
-   └─ python tfm/02_firmware/boot_scripts/setup_full_cdhs_with_rx_patch.py
-       └─ Entrada: .xsa + fsbl.elf + bitstream + u-boot.elf
-       └─ Salida:  BOOT.bin
+2. BOOT.bin (Vitis)
+   scripts/generate_boot.sh                                    → BOOT.bin
 
-3. Compilar app RTEMS
-   └─ cd tfm/03_software_rtems/test_cdhs
-      ../../04_tools/make_img.sh
-       └─ Salida: rtems.img
+3. Aplicación RTEMS
+   cd tfm/02_transporte/c_mcdma_bridge/software
+   export RTEMS_PREFIX=$HOME/quick-start/rtems/7
+   ../../../06_tools/make_img.sh                               → rtems.img
 
-4. Cargar en SD Card (sin sacar la SD)
-   └─ python tfm/04_tools/automate_ymodem_update.py [--boot ./BOOT.bin]
-       └─ Envía rtems.img por YMODEM a U-Boot y escribe en FAT
+4. Carga en la SD sin sacarla de la placa (YMODEM sobre U-Boot)
+   python3 tfm/06_tools/automate_ymodem_update.py [--boot ./BOOT.bin]
 
 5. Monitorizar
-   └─ python tfm/04_tools/serial_gui.py  (o minicom/putty a 115200 8N1)
+   python3 tfm/06_tools/serial_gui.py    (o minicom, 115200 8N1)
 ```
 
----
+Para reproducir solo el benchmark no hace falta compilar nada: en `03_bench_loopback/imagenes_sd/` están las tres imágenes listas para copiar a la SD.
+
+## Dependencias no versionadas
+
+```bash
+git submodule update --init --recursive   # rtems_waf, device-tree-xlnx
+export RTEMS_PREFIX=$HOME/quick-start/rtems/7
+```
+
+Los proyectos de Vivado (`.xpr`, `.runs`, `.cache`) **no** están en el repo: se regeneran desde los scripts TCL de cada variante.
 
 ## Referencias
 
-- [Xilinx ZCU102 Evaluation Board User Guide (UG1182)](https://www.xilinx.com/support/documentation/boards_and_kits/zcu102/ug1182-zcu102-eval-bd.pdf)
+- [ZCU102 Evaluation Board User Guide (UG1182)](https://docs.xilinx.com/v/u/en-US/ug1182-zcu102-eval-bd)
+- [AXI DMA v7.1 (PG021)](https://docs.xilinx.com/r/en-US/pg021_axi_dma)
+- [AXI MCDMA v1.1 (PG288)](https://docs.xilinx.com/r/en-US/pg288-axi-mcdma)
 - [RTEMS Project](https://www.rtems.org/)
-- [Vivado Design Suite User Guide](https://docs.xilinx.com/r/en-US/ug895-vivado-system-level-design-entry)

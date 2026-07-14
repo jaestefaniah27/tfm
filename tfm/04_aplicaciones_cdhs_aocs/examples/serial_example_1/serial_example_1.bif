@@ -1,0 +1,10 @@
+//arch = zynqmp; split = false; format = BIN
+the_ROM_image:
+{
+	[bootloader, destination_cpu = a53-0]/home/mpsocv2/edt_zcu102/zynqmp_fsbl_serie_example_1/build/zynqmp_fsbl_serie_example_1.elf
+	[pmufw_image]/home/mpsocv2/Descargas/pmufw.elf
+	[destination_device = pl]/home/mpsocv2/USB-TTL-UART_EXAMPLE_PROJECT/USB-TTL-UART_EXAMPLE_PROJECT.runs/impl_1/design_1_wrapper.bit
+	[destination_cpu = a53-0, exception_level = el-3]/home/mpsocv2/Descargas/bl31.elf
+	[destination_cpu = a53-0, exception_level = el-2]/home/mpsocv2/Descargas/u-boot.elf
+	[load = 0x100000, destination_cpu = a53-0]/home/mpsocv2/Descargas/system.dtb
+}

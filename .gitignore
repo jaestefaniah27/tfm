@@ -8,6 +8,12 @@
 *.o
 *.a
 
+# Excepción: imágenes de SD que sí se versionan (entregables reproducibles del TFM)
+!tfm/03_bench_loopback/imagenes_sd/**/BOOT.bin
+!tfm/03_bench_loopback/imagenes_sd/**/rtems.img
+!tfm/02_transporte/c_mcdma_bridge/entrega_sd_pcb/BOOT.bin
+!tfm/02_transporte/c_mcdma_bridge/entrega_sd_pcb/rtems.img
+
 # Carpetas de build
 build/
 _ide/
