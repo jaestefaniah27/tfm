@@ -23,7 +23,7 @@ Junto a él van:
 export RTEMS_PREFIX=$HOME/quick-start/rtems/7
 cd tfm/02_transporte/c_mcdma_bridge/software
 cp bench/* .                       # el wscript coge todos los *.c del directorio
-../../../06_tools/make_img.sh      # → rtems.img
+../../../07_tools/make_img.sh      # → rtems.img
 ```
 
 Ojo: el `wscript` compila **todos** los `.c` de la carpeta, así que no puede haber a la vez
