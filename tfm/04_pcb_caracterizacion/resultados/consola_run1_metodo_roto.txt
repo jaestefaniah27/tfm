@@ -1,0 +1,1537 @@
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+PCB,T4_velocidad,bytes_ok,count,0,4M busB(RS422) SLO=OFF
+PCB,T4_velocidad,bytes_rx,count,0,4M busB(RS422) SLO=OFF
+PCB,T4_velocidad,ber,ppm,1000000,4M busB(RS422) SLO=OFF
+  bus B(RS422)           4M      SLO=OFF  ok=   0/1024  BER=1000000 ppm
+PCB,T4_velocidad,baud_max_sin_errores,bps,0,busB(RS422) SLO=OFF
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+PCB,T4_velocidad,bytes_ok,count,0,9600 busC(RS422) SLO=OFF
+PCB,T4_velocidad,bytes_rx,count,0,9600 busC(RS422) SLO=OFF
+PCB,T4_velocidad,ber,ppm,1000000,9600 busC(RS422) SLO=OFF
+  bus C(RS422)           9600    SLO=OFF  ok=   0/1024  BER=1000000 ppm
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+PCB,T4_velocidad,bytes_ok,count,0,115200 busC(RS422) SLO=OFF
+PCB,T4_velocidad,bytes_rx,count,0,115200 busC(RS422) SLO=OFF
+PCB,T4_velocidad,ber,ppm,1000000,115200 busC(RS422) SLO=OFF
+  bus C(RS422)           115200  SLO=OFF  ok=   0/1024  BER=1000000 ppm
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+PCB,T4_velocidad,bytes_ok,count,0,460800 busC(RS422) SLO=OFF
+PCB,T4_velocidad,bytes_rx,count,0,460800 busC(RS422) SLO=OFF
+PCB,T4_velocidad,ber,ppm,1000000,460800 busC(RS422) SLO=OFF
+  bus C(RS422)           460800  SLO=OFF  ok=   0/1024  BER=1000000 ppm
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+PCB,T4_velocidad,bytes_ok,count,0,921600 busC(RS422) SLO=OFF
+PCB,T4_velocidad,bytes_rx,count,0,921600 busC(RS422) SLO=OFF
+PCB,T4_velocidad,ber,ppm,1000000,921600 busC(RS422) SLO=OFF
+  bus C(RS422)           921600  SLO=OFF  ok=   0/1024  BER=1000000 ppm
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+Zynq MP First Stage Boot Loader 
+Release 2025.1   Jul  8 2026  -  09:27:55
+NOTICE:  BL31: Non secure code at 0x8000000
+NOTICE:  BL31: v2.12.0(release):v1.1-15211-gdd3512287-dirty
+NOTICE:  BL31: Built : 07:04:54, Apr 24 2025
+
+
+U-Boot 2025.01-ga09d2660433d (May 16 2025 - 14:46:32 +0000)
+
+CPU:   ZynqMP
+Silicon: v3
+Chip:  zu9eg
+Model: ZynqMP ZCU102 Rev1.0
+Board: Xilinx ZynqMP
+DRAM:  
+2 GiB (effective 4 GiB)
+Xilinx I2C Legacy format at nvmem0:
+ Board name:	zcu102
+ Board rev:	1.0
+ Board SN:	881492232444-12860
+ Ethernet mac:	00:0a:35:1d:74:28
+EL Level:	EL2
+Secure Boot:	not authenticated, not encrypted
+Core:  77 devices, 29 uclasses, devicetree: board
+NAND:  0 MiB
+MMC:   mmc@ff170000: 0
+Loading Environment from FAT... *** Warning - some problems detected reading environment; recovered successfully
+OK
+In:    serial
+Out:   serial,vidconsole
+Err:   serial,vidconsole
+Net:   
+ZYNQ GEM: ff0e0000, mdio bus ff0e0000, phyaddr 12, interface rgmii-id
+eth0: ethernet@ff0e0000
+[?25h
+scanning bus for devices...
+SATA link 0 timeout.
+SATA link 1 timeout.
+AHCI 0001.0301 32 slots 2 ports 6 Gbps 0x3 impl SATA mode
+flags: 64bit ncq pm clo only pmp fbss pio slum part ccc apst 
+starting USB...
+Bus usb@fe200000: Register 2000440 NbrPorts 2
+Starting the controller
+USB XHCI 1.00
+scanning bus usb@fe200000 for devices... 
+1 USB Device(s) found
+       scanning usb for storage devices... 0 Storage Device(s) found
+Hit any key to stop autoboot:  2  1  0 
+switch to partitions #0, OK
+mmc0 is current device
+91512 bytes read in 19 ms (4.6 MiB/s)
+## Booting kernel from Legacy Image at 00800000 ...
+   Image Name:   RTEMS
+   Created:      2026-07-14  12:38:18 UTC
+   Image Type:   AArch64 RTEMS Kernel Image (gzip compressed)
+   Data Size:    91448 Bytes = 89.3 KiB
+   Load Address: 00010000
+   Entry Point:  00010000
+   Verifying Checksum ... OK
+   Uncompressing Kernel Image to 10000
+## Transferring control to RTEMS (at address 00010000) ...
+MMU_MAP: mmu_map_pl_axi_early() called -> begin=0xa0000000 end=0xa0ffffff
+MMU_MAP: aarch64_mmu_set_translation_table_entries rc=0
+MMU_MAP: return from mmu_map_pl_axi_early()
+[TRANSCEIVER DEBUG] MCDMA global init OK | MM2S IRQ=121  S2MM IRQ=122  EOAF IRQ=123 | 14 canales RX
+[TRANSCEIVER] MCDMA init OK: 14 canales TX/RX
+[TRANSCEIVER DEBUG] UART 0 OK | cfg=0xA0000000 | sw_ring=0x1054a0
+[TRANSCEIVER DEBUG] UART 1 OK | cfg=0xA0000004 | sw_ring=0x1064a0
+[TRANSCEIVER DEBUG] UART 2 OK | cfg=0xA0000008 | sw_ring=0x1074a0
+[TRANSCEIVER DEBUG] UART 3 OK | cfg=0xA000000C | sw_ring=0x1084a0
+[TRANSCEIVER DEBUG] UART 4 OK | cfg=0xA0000010 | sw_ring=0x1094a0
+[TRANSCEIVER DEBUG] UART 5 OK | cfg=0xA0000014 | sw_ring=0x10a4a0
+[TRANSCEIVER DEBUG] UART 6 OK | cfg=0xA0000018 | sw_ring=0x10b4a0
+[TRANSCEIVER DEBUG] UART 7 OK | cfg=0xA000001C | sw_ring=0x10c4a0
+[TRANSCEIVER DEBUG] UART 8 OK | cfg=0xA0000020 | sw_ring=0x10d4a0
+[TRANSCEIVER DEBUG] UART 9 OK | cfg=0xA0000024 | sw_ring=0x10e4a0
+[TRANSCEIVER DEBUG] UART 10 OK | cfg=0xA0000028 | sw_ring=0x10f4a0
+[TRANSCEIVER DEBUG] UART 11 OK | cfg=0xA000002C | sw_ring=0x1104a0
+[TRANSCEIVER DEBUG] UART 12 OK | cfg=0xA0000030 | sw_ring=0x1114a0
+[TRANSCEIVER DEBUG] UART 13 OK | cfg=0xA0000034 | sw_ring=0x1124a0
+
+########################################################
+#  CARACTERIZACION ELECTRICA DE LA PCB — variante MCDMA #
+########################################################
+canales detectados: 14
+Requiere el bitstream SIN loopback: las lineas van a los pines fisicos.
+Si todos los canales salen mudos, es que esta cargado el bitstream de loopback.
+
+PCB,test,metric,unit,value,note
+
+=== T1 — Reposo (fail-safe / polarización) ===
+PCB,T1_reposo,bytes_espurios,count,0,CH0
+PCB,T1_reposo,bytes_espurios,count,0,CH1
+PCB,T1_reposo,bytes_espurios,count,0,CH2
+PCB,T1_reposo,bytes_espurios,count,0,CH3
+PCB,T1_reposo,bytes_espurios,count,0,CH4
+PCB,T1_reposo,bytes_espurios,count,0,CH5
+PCB,T1_reposo,bytes_espurios,count,0,CH6
+PCB,T1_reposo,bytes_espurios,count,0,CH7
+PCB,T1_reposo,bytes_espurios,count,0,CH8
+PCB,T1_reposo,bytes_espurios,count,0,CH9
+PCB,T1_reposo,bytes_espurios,count,0,CH10
+PCB,T1_reposo,bytes_espurios,count,0,CH11
+PCB,T1_reposo,bytes_espurios,count,0,CH12
+PCB,T1_reposo,bytes_espurios,count,0,CH13
+PCB,T1_reposo,total_espurios,count,0,lineas en reposo, fail-safe OK
+    [OK] ningun byte espurio en 14 canales
+
+=== T2 — Matriz de conectividad (quién oye a quién) ===
+
+      dst→   0   1   2   3   4   5   6   7   8   9  10  11  12  13
+  src  0:   ·   #   #   #   #   #   .   .   .   .   .   .   .   .
+  src  1:   #   ·   #   #   #   #   .   .   .   .   .   .   .   .
+  src  2:   #   #   ·   #   #   #   .   .   .   .   .   .   .   .
+  src  3:   #   #   #   ·   #   #   .   .   .   .   .   .   .   .
+  src  4:   #   #   #   #   ·   #   .   .   .   .   .   .   .   .
+  src  5:   #   #   #   #   #   ·   .   .   .   .   .   .   .   .
+  src  6:   .   .   .   .   .   .   ·   .   .   .   .   .   .   .
+  src  7:   .   .   .   .   .   .   .   ·   #   #   #   .   .   .
+  src  8:   .   .   .   .   .   .   .   #   ·   .   .   .   .   .
+  src  9:   .   .   .   .   .   .   .   #   .   ·   .   .   .   .
+  src 10:   .   .   .   .   .   .   .   #   .   .   ·   .   .   .
+  src 11:   .   .   .   .   .   .   .   .   .   .   .   ·   #   #
+  src 12:   .   .   .   .   .   .   .   .   .   .   .   #   ·   .
+  src 13:   .   .   .   .   .   .   .   .   .   .   .   #   .   ·
+  (# = las 32 B íntegras · n = n bytes correctos · . = no oye · · = sí mismo)
+PCB,T2_matriz,bytes_ok,count,32,CH0->CH1
+PCB,T2_matriz,bytes_ok,count,32,CH0->CH2
+PCB,T2_matriz,bytes_ok,count,32,CH0->CH3
+PCB,T2_matriz,bytes_ok,count,32,CH0->CH4
+PCB,T2_matriz,bytes_ok,count,32,CH0->CH5
+PCB,T2_matriz,bytes_ok,count,32,CH1->CH0
+PCB,T2_matriz,bytes_ok,count,32,CH1->CH2
+PCB,T2_matriz,bytes_ok,count,32,CH1->CH3
+PCB,T2_matriz,bytes_ok,count,32,CH1->CH4
+PCB,T2_matriz,bytes_ok,count,32,CH1->CH5
+PCB,T2_matriz,bytes_ok,count,32,CH2->CH0
+PCB,T2_matriz,bytes_ok,count,32,CH2->CH1
+PCB,T2_matriz,bytes_ok,count,32,CH2->CH3
+PCB,T2_matriz,bytes_ok,count,32,CH2->CH4
+PCB,T2_matriz,bytes_ok,count,32,CH2->CH5
+PCB,T2_matriz,bytes_ok,count,32,CH3->CH0
+PCB,T2_matriz,bytes_ok,count,32,CH3->CH1
+PCB,T2_matriz,bytes_ok,count,32,CH3->CH2
+PCB,T2_matriz,bytes_ok,count,32,CH3->CH4
+PCB,T2_matriz,bytes_ok,count,32,CH3->CH5
+PCB,T2_matriz,bytes_ok,count,32,CH4->CH0
+PCB,T2_matriz,bytes_ok,count,32,CH4->CH1
+PCB,T2_matriz,bytes_ok,count,32,CH4->CH2
+PCB,T2_matriz,bytes_ok,count,32,CH4->CH3
+PCB,T2_matriz,bytes_ok,count,32,CH4->CH5
+PCB,T2_matriz,bytes_ok,count,32,CH5->CH0
+PCB,T2_matriz,bytes_ok,count,32,CH5->CH1
+PCB,T2_matriz,bytes_ok,count,32,CH5->CH2
+PCB,T2_matriz,bytes_ok,count,32,CH5->CH3
+PCB,T2_matriz,bytes_ok,count,32,CH5->CH4
+PCB,T2_matriz,bytes_ok,count,32,CH7->CH8
+PCB,T2_matriz,bytes_ok,count,32,CH7->CH9
+PCB,T2_matriz,bytes_ok,count,32,CH7->CH10
+PCB,T2_matriz,bytes_ok,count,32,CH8->CH7
+PCB,T2_matriz,bytes_ok,count,32,CH9->CH7
+PCB,T2_matriz,bytes_ok,count,32,CH10->CH7
+PCB,T2_matriz,bytes_ok,count,32,CH11->CH12
+PCB,T2_matriz,bytes_ok,count,32,CH11->CH13
+PCB,T2_matriz,bytes_ok,count,32,CH12->CH11
+PCB,T2_matriz,bytes_ok,count,32,CH13->CH11
+PCB,T2_matriz,enlaces_ok,count,40,de los esperados por los jumpers
+PCB,T2_matriz,enlaces_esperados,count,60,
+PCB,T2_matriz,enlaces_faltan,count,20,esperados que no se oyen: cableado o driver muerto
+PCB,T2_matriz,enlaces_extra,count,0,no esperados que se oyen: cruce entre buses
+PCB,T2_matriz,canal_mudo,bool,1,CH6
+  [FALLO] CH6 no lo oye NADIE: driver o pista de TX/DE
+PCB,T2_matriz,canal_sordo,bool,1,CH6
+  [FALLO] CH6 no oye a NADIE: receptor o pista de RX
+
+=== T3 — Integridad multidrop del bus A ===
+PCB,T3_multidrop,esclavos_integros,count,5,9600
+PCB,T3_multidrop,esclavos_parciales,count,0,9600
+  9600   : 5/6 esclavos íntegros, 0 parciales
+PCB,T3_multidrop,esclavos_integros,count,5,115200
+PCB,T3_multidrop,esclavos_parciales,count,0,115200
+  115200 : 5/6 esclavos íntegros, 0 parciales
+PCB,T3_multidrop,esclavos_integros,count,5,460800
+PCB,T3_multidrop,esclavos_parciales,count,0,460800
+  460800 : 5/6 esclavos íntegros, 0 parciales
+PCB,T3_multidrop,esclavos_integros,count,0,921600
+PCB,T3_multidrop,esclavos_parciales,count,5,921600
+  921600 : 0/6 esclavos íntegros, 5 parciales
+PCB,T3_multidrop,esclavos_integros,count,0,1M
+PCB,T3_multidrop,esclavos_parciales,count,5,1M
+  1M     : 0/6 esclavos íntegros, 5 parciales
+PCB,T3_multidrop,esclavos_integros,count,0,2M
+PCB,T3_multidrop,esclavos_parciales,count,0,2M
+  2M     : 0/6 esclavos íntegros, 0 parciales
+PCB,T3_multidrop,esclavos_integros,count,0,3M
+PCB,T3_multidrop,esclavos_parciales,count,0,3M
+  3M     : 0/6 esclavos íntegros, 0 parciales
+PCB,T3_multidrop,esclavos_integros,count,0,4M
+PCB,T3_multidrop,esclavos_parciales,count,0,4M
+  4M     : 0/6 esclavos íntegros, 0 parciales
+
+=== T4 — Velocidad máxima por bus (SLO OFF) ===
+PCB,T4_velocidad,bytes_ok,count,1024,9600 busA(RS485-multidrop) SLO=OFF
+PCB,T4_velocidad,bytes_rx,count,1024,9600 busA(RS485-multidrop) SLO=OFF
+PCB,T4_velocidad,ber,ppm,0,9600 busA(RS485-multidrop) SLO=OFF
+  bus A(RS485-multidrop) 9600    SLO=OFF  ok=1024/1024  BER=0 ppm
+PCB,T4_velocidad,bytes_ok,count,1024,115200 busA(RS485-multidrop) SLO=OFF
+PCB,T4_velocidad,bytes_rx,count,1024,115200 busA(RS485-multidrop) SLO=OFF
+PCB,T4_velocidad,ber,ppm,0,115200 busA(RS485-multidrop) SLO=OFF
+  bus A(RS485-multidrop) 115200  SLO=OFF  ok=1024/1024  BER=0 ppm
+PCB,T4_velocidad,bytes_ok,count,1024,460800 busA(RS485-multidrop) SLO=OFF
+PCB,T4_velocidad,bytes_rx,count,1024,460800 busA(RS485-multidrop) SLO=OFF
+PCB,T4_velocidad,ber,ppm,0,460800 busA(RS485-multidrop) SLO=OFF
+  bus A(RS485-multidrop) 460800  SLO=OFF  ok=1024/1024  BER=0 ppm
+PCB,T4_velocidad,bytes_ok,count,1008,921600 busA(RS485-multidrop) SLO=OFF
+PCB,T4_velocidad,bytes_rx,count,1024,921600 busA(RS485-multidrop) SLO=OFF
+PCB,T4_velocidad,ber,ppm,15625,921600 busA(RS485-multidrop) SLO=OFF
+  bus A(RS485-multidrop) 921600  SLO=OFF  ok=1008/1024  BER=15625 ppm
+PCB,T4_velocidad,bytes_ok,count,554,1M busA(RS485-multidrop) SLO=OFF
+PCB,T4_velocidad,bytes_rx,count,1019,1M busA(RS485-multidrop) SLO=OFF
+PCB,T4_velocidad,ber,ppm,458984,1M busA(RS485-multidrop) SLO=OFF
+  bus A(RS485-multidrop) 1M      SLO=OFF  ok= 554/1024  BER=458984 ppm
+PCB,T4_velocidad,bytes_ok,count,0,2M busA(RS485-multidrop) SLO=OFF
+PCB,T4_velocidad,bytes_rx,count,464,2M busA(RS485-multidrop) SLO=OFF
+PCB,T4_velocidad,ber,ppm,1000000,2M busA(RS485-multidrop) SLO=OFF
+  bus A(RS485-multidrop) 2M      SLO=OFF  ok=   0/1024  BER=1000000 ppm
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+PCB,T4_velocidad,bytes_ok,count,0,3M busA(RS485-multidrop) SLO=OFF
+PCB,T4_velocidad,bytes_rx,count,21,3M busA(RS485-multidrop) SLO=OFF
+PCB,T4_velocidad,ber,ppm,1000000,3M busA(RS485-multidrop) SLO=OFF
+  bus A(RS485-multidrop) 3M      SLO=OFF  ok=   0/1024  BER=1000000 ppm
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+PCB,T4_velocidad,bytes_ok,count,0,4M busA(RS485-multidrop) SLO=OFF
+PCB,T4_velocidad,bytes_rx,count,0,4M busA(RS485-multidrop) SLO=OFF
+PCB,T4_velocidad,ber,ppm,1000000,4M busA(RS485-multidrop) SLO=OFF
+  bus A(RS485-multidrop) 4M      SLO=OFF  ok=   0/1024  BER=1000000 ppm
+PCB,T4_velocidad,baud_max_sin_errores,bps,460800,busA(RS485-multidrop) SLO=OFF
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+PCB,T4_velocidad,bytes_ok,count,0,9600 busB(RS422) SLO=OFF
+PCB,T4_velocidad,bytes_rx,count,0,9600 busB(RS422) SLO=OFF
+PCB,T4_velocidad,ber,ppm,1000000,9600 busB(RS422) SLO=OFF
+  bus B(RS422)           9600    SLO=OFF  ok=   0/1024  BER=1000000 ppm
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+PCB,T4_velocidad,bytes_ok,count,0,115200 busB(RS422) SLO=OFF
+PCB,T4_velocidad,bytes_rx,count,0,115200 busB(RS422) SLO=OFF
+PCB,T4_velocidad,ber,ppm,1000000,115200 busB(RS422) SLO=OFF
+  bus B(RS422)           115200  SLO=OFF  ok=   0/1024  BER=1000000 ppm
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+PCB,T4_velocidad,bytes_ok,count,0,460800 busB(RS422) SLO=OFF
+PCB,T4_velocidad,bytes_rx,count,0,460800 busB(RS422) SLO=OFF
+PCB,T4_velocidad,ber,ppm,1000000,460800 busB(RS422) SLO=OFF
+  bus B(RS422)           460800  SLO=OFF  ok=   0/1024  BER=1000000 ppm
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+PCB,T4_velocidad,bytes_ok,count,0,921600 busB(RS422) SLO=OFF
+PCB,T4_velocidad,bytes_rx,count,0,921600 busB(RS422) SLO=OFF
+PCB,T4_velocidad,ber,ppm,1000000,921600 busB(RS422) SLO=OFF
+  bus B(RS422)           921600  SLO=OFF  ok=   0/1024  BER=1000000 ppm
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+PCB,T4_velocidad,bytes_ok,count,0,1M busB(RS422) SLO=OFF
+PCB,T4_velocidad,bytes_rx,count,0,1M busB(RS422) SLO=OFF
+PCB,T4_velocidad,ber,ppm,1000000,1M busB(RS422) SLO=OFF
+  bus B(RS422)           1M      SLO=OFF  ok=   0/1024  BER=1000000 ppm
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+PCB,T4_velocidad,bytes_ok,count,0,2M busB(RS422) SLO=OFF
+PCB,T4_velocidad,bytes_rx,count,0,2M busB(RS422) SLO=OFF
+PCB,T4_velocidad,ber,ppm,1000000,2M busB(RS422) SLO=OFF
+  bus B(RS422)           2M      SLO=OFF  ok=   0/1024  BER=1000000 ppm
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+PCB,T4_velocidad,bytes_ok,count,0,3M busB(RS422) SLO=OFF
+PCB,T4_velocidad,bytes_rx,count,0,3M busB(RS422) SLO=OFF
+PCB,T4_velocidad,ber,ppm,1000000,3M busB(RS422) SLO=OFF
+  bus B(RS422)           3M      SLO=OFF  ok=   0/1024  BER=1000000 ppm
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+PCB,T4_velocidad,bytes_ok,count,0,4M busB(RS422) SLO=OFF
+PCB,T4_velocidad,bytes_rx,count,0,4M busB(RS422) SLO=OFF
+PCB,T4_velocidad,ber,ppm,1000000,4M busB(RS422) SLO=OFF
+  bus B(RS422)           4M      SLO=OFF  ok=   0/1024  BER=1000000 ppm
+PCB,T4_velocidad,baud_max_sin_errores,bps,0,busB(RS422) SLO=OFF
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+PCB,T4_velocidad,bytes_ok,count,0,9600 busC(RS422) SLO=OFF
+PCB,T4_velocidad,bytes_rx,count,0,9600 busC(RS422) SLO=OFF
+PCB,T4_velocidad,ber,ppm,1000000,9600 busC(RS422) SLO=OFF
+  bus C(RS422)           9600    SLO=OFF  ok=   0/1024  BER=1000000 ppm
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+PCB,T4_velocidad,bytes_ok,count,0,115200 busC(RS422) SLO=OFF
+PCB,T4_velocidad,bytes_rx,count,0,115200 busC(RS422) SLO=OFF
+PCB,T4_velocidad,ber,ppm,1000000,115200 busC(RS422) SLO=OFF
+  bus C(RS422)           115200  SLO=OFF  ok=   0/1024  BER=1000000 ppm
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+PCB,T4_velocidad,bytes_ok,count,0,460800 busC(RS422) SLO=OFF
+PCB,T4_velocidad,bytes_rx,count,0,460800 busC(RS422) SLO=OFF
+PCB,T4_velocidad,ber,ppm,1000000,460800 busC(RS422) SLO=OFF
+  bus C(RS422)           460800  SLO=OFF  ok=   0/1024  BER=1000000 ppm
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+PCB,T4_velocidad,bytes_ok,count,0,921600 busC(RS422) SLO=OFF
+PCB,T4_velocidad,bytes_rx,count,0,921600 busC(RS422) SLO=OFF
+PCB,T4_velocidad,ber,ppm,1000000,921600 busC(RS422) SLO=OFF
+  bus C(RS422)           921600  SLO=OFF  ok=   0/1024  BER=1000000 ppm
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+PCB,T4_velocidad,bytes_ok,count,0,1M busC(RS422) SLO=OFF
+PCB,T4_velocidad,bytes_rx,count,0,1M busC(RS422) SLO=OFF
+PCB,T4_velocidad,ber,ppm,1000000,1M busC(RS422) SLO=OFF
+  bus C(RS422)           1M      SLO=OFF  ok=   0/1024  BER=1000000 ppm
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+PCB,T4_velocidad,bytes_ok,count,0,2M busC(RS422) SLO=OFF
+PCB,T4_velocidad,bytes_rx,count,0,2M busC(RS422) SLO=OFF
+PCB,T4_velocidad,ber,ppm,1000000,2M busC(RS422) SLO=OFF
+  bus C(RS422)           2M      SLO=OFF  ok=   0/1024  BER=1000000 ppm
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+PCB,T4_velocidad,bytes_ok,count,0,3M busC(RS422) SLO=OFF
+PCB,T4_velocidad,bytes_rx,count,0,3M busC(RS422) SLO=OFF
+PCB,T4_velocidad,ber,ppm,1000000,3M busC(RS422) SLO=OFF
+  bus C(RS422)           3M      SLO=OFF  ok=   0/1024  BER=1000000 ppm
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+PCB,T4_velocidad,bytes_ok,count,0,4M busC(RS422) SLO=OFF
+PCB,T4_velocidad,bytes_rx,count,0,4M busC(RS422) SLO=OFF
+PCB,T4_velocidad,ber,ppm,1000000,4M busC(RS422) SLO=OFF
+  bus C(RS422)           4M      SLO=OFF  ok=   0/1024  BER=1000000 ppm
+PCB,T4_velocidad,baud_max_sin_errores,bps,0,busC(RS422) SLO=OFF
+
+=== T5 — Limitador de slew (SLO) ===
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+PCB,T5_slo,bytes_ok,count,0,9600 busA(RS485-multidrop) SLO=ON
+PCB,T5_slo,bytes_rx,count,0,9600 busA(RS485-multidrop) SLO=ON
+PCB,T5_slo,ber,ppm,1000000,9600 busA(RS485-multidrop) SLO=ON
+  bus A(RS485-multidrop) 9600    SLO=ON   ok=   0/1024  BER=1000000 ppm
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+PCB,T5_slo,bytes_ok,count,0,115200 busA(RS485-multidrop) SLO=ON
+PCB,T5_slo,bytes_rx,count,0,115200 busA(RS485-multidrop) SLO=ON
+PCB,T5_slo,ber,ppm,1000000,115200 busA(RS485-multidrop) SLO=ON
+  bus A(RS485-multidrop) 115200  SLO=ON   ok=   0/1024  BER=1000000 ppm
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+PCB,T5_slo,bytes_ok,count,0,460800 busA(RS485-multidrop) SLO=ON
+PCB,T5_slo,bytes_rx,count,0,460800 busA(RS485-multidrop) SLO=ON
+PCB,T5_slo,ber,ppm,1000000,460800 busA(RS485-multidrop) SLO=ON
+  bus A(RS485-multidrop) 460800  SLO=ON   ok=   0/1024  BER=1000000 ppm
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+PCB,T5_slo,bytes_ok,count,0,921600 busA(RS485-multidrop) SLO=ON
+PCB,T5_slo,bytes_rx,count,0,921600 busA(RS485-multidrop) SLO=ON
+PCB,T5_slo,ber,ppm,1000000,921600 busA(RS485-multidrop) SLO=ON
+  bus A(RS485-multidrop) 921600  SLO=ON   ok=   0/1024  BER=1000000 ppm
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+PCB,T5_slo,bytes_ok,count,0,1M busA(RS485-multidrop) SLO=ON
+PCB,T5_slo,bytes_rx,count,0,1M busA(RS485-multidrop) SLO=ON
+PCB,T5_slo,ber,ppm,1000000,1M busA(RS485-multidrop) SLO=ON
+  bus A(RS485-multidrop) 1M      SLO=ON   ok=   0/1024  BER=1000000 ppm
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+PCB,T5_slo,bytes_ok,count,0,2M busA(RS485-multidrop) SLO=ON
+PCB,T5_slo,bytes_rx,count,0,2M busA(RS485-multidrop) SLO=ON
+PCB,T5_slo,ber,ppm,1000000,2M busA(RS485-multidrop) SLO=ON
+  bus A(RS485-multidrop) 2M      SLO=ON   ok=   0/1024  BER=1000000 ppm
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+PCB,T5_slo,bytes_ok,count,0,3M busA(RS485-multidrop) SLO=ON
+PCB,T5_slo,bytes_rx,count,0,3M busA(RS485-multidrop) SLO=ON
+PCB,T5_slo,ber,ppm,1000000,3M busA(RS485-multidrop) SLO=ON
+  bus A(RS485-multidrop) 3M      SLO=ON   ok=   0/1024  BER=1000000 ppm
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+PCB,T5_slo,bytes_ok,count,0,4M busA(RS485-multidrop) SLO=ON
+PCB,T5_slo,bytes_rx,count,0,4M busA(RS485-multidrop) SLO=ON
+PCB,T5_slo,ber,ppm,1000000,4M busA(RS485-multidrop) SLO=ON
+  bus A(RS485-multidrop) 4M      SLO=ON   ok=   0/1024  BER=1000000 ppm
+PCB,T5_slo,baud_max_sin_errores,bps,0,busA(RS485-multidrop) SLO=ON
+PCB,T5_slo,baud_max_con_slo,bps,0,busA(RS485-multidrop) SLO_OFF=460800 bps
+  bus A(RS485-multidrop)  máx sin SLO =   460800 bps   |   con SLO =        0 bps
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+PCB,T5_slo,bytes_ok,count,0,9600 busB(RS422) SLO=ON
+PCB,T5_slo,bytes_rx,count,0,9600 busB(RS422) SLO=ON
+PCB,T5_slo,ber,ppm,1000000,9600 busB(RS422) SLO=ON
+  bus B(RS422)           9600    SLO=ON   ok=   0/1024  BER=1000000 ppm
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+PCB,T5_slo,bytes_ok,count,0,115200 busB(RS422) SLO=ON
+PCB,T5_slo,bytes_rx,count,0,115200 busB(RS422) SLO=ON
+PCB,T5_slo,ber,ppm,1000000,115200 busB(RS422) SLO=ON
+  bus B(RS422)           115200  SLO=ON   ok=   0/1024  BER=1000000 ppm
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+PCB,T5_slo,bytes_ok,count,0,460800 busB(RS422) SLO=ON
+PCB,T5_slo,bytes_rx,count,0,460800 busB(RS422) SLO=ON
+PCB,T5_slo,ber,ppm,1000000,460800 busB(RS422) SLO=ON
+  bus B(RS422)           460800  SLO=ON   ok=   0/1024  BER=1000000 ppm
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+PCB,T5_slo,bytes_ok,count,0,921600 busB(RS422) SLO=ON
+PCB,T5_slo,bytes_rx,count,0,921600 busB(RS422) SLO=ON
+PCB,T5_slo,ber,ppm,1000000,921600 busB(RS422) SLO=ON
+  bus B(RS422)           921600  SLO=ON   ok=   0/1024  BER=1000000 ppm
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+PCB,T5_slo,bytes_ok,count,0,1M busB(RS422) SLO=ON
+PCB,T5_slo,bytes_rx,count,0,1M busB(RS422) SLO=ON
+PCB,T5_slo,ber,ppm,1000000,1M busB(RS422) SLO=ON
+  bus B(RS422)           1M      SLO=ON   ok=   0/1024  BER=1000000 ppm
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+PCB,T5_slo,bytes_ok,count,0,2M busB(RS422) SLO=ON
+PCB,T5_slo,bytes_rx,count,0,2M busB(RS422) SLO=ON
+PCB,T5_slo,ber,ppm,1000000,2M busB(RS422) SLO=ON
+  bus B(RS422)           2M      SLO=ON   ok=   0/1024  BER=1000000 ppm
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+PCB,T5_slo,bytes_ok,count,0,3M busB(RS422) SLO=ON
+PCB,T5_slo,bytes_rx,count,0,3M busB(RS422) SLO=ON
+PCB,T5_slo,ber,ppm,1000000,3M busB(RS422) SLO=ON
+  bus B(RS422)           3M      SLO=ON   ok=   0/1024  BER=1000000 ppm
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+PCB,T5_slo,bytes_ok,count,0,4M busB(RS422) SLO=ON
+PCB,T5_slo,bytes_rx,count,0,4M busB(RS422) SLO=ON
+PCB,T5_slo,ber,ppm,1000000,4M busB(RS422) SLO=ON
+  bus B(RS422)           4M      SLO=ON   ok=   0/1024  BER=1000000 ppm
+PCB,T5_slo,baud_max_sin_errores,bps,0,busB(RS422) SLO=ON
+PCB,T5_slo,baud_max_con_slo,bps,0,busB(RS422) SLO_OFF=0 bps
+  bus B(RS422)            máx sin SLO =        0 bps   |   con SLO =        0 bps
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+PCB,T5_slo,bytes_ok,count,0,9600 busC(RS422) SLO=ON
+PCB,T5_slo,bytes_rx,count,0,9600 busC(RS422) SLO=ON
+PCB,T5_slo,ber,ppm,1000000,9600 busC(RS422) SLO=ON
+  bus C(RS422)           9600    SLO=ON   ok=   0/1024  BER=1000000 ppm
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+PCB,T5_slo,bytes_ok,count,0,115200 busC(RS422) SLO=ON
+PCB,T5_slo,bytes_rx,count,0,115200 busC(RS422) SLO=ON
+PCB,T5_slo,ber,ppm,1000000,115200 busC(RS422) SLO=ON
+  bus C(RS422)           115200  SLO=ON   ok=   0/1024  BER=1000000 ppm
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+PCB,T5_slo,bytes_ok,count,0,460800 busC(RS422) SLO=ON
+PCB,T5_slo,bytes_rx,count,0,460800 busC(RS422) SLO=ON
+PCB,T5_slo,ber,ppm,1000000,460800 busC(RS422) SLO=ON
+  bus C(RS422)           460800  SLO=ON   ok=   0/1024  BER=1000000 ppm
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+PCB,T5_slo,bytes_ok,count,0,921600 busC(RS422) SLO=ON
+PCB,T5_slo,bytes_rx,count,0,921600 busC(RS422) SLO=ON
+PCB,T5_slo,ber,ppm,1000000,921600 busC(RS422) SLO=ON
+  bus C(RS422)           921600  SLO=ON   ok=   0/1024  BER=1000000 ppm
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+PCB,T5_slo,bytes_ok,count,0,1M busC(RS422) SLO=ON
+PCB,T5_slo,bytes_rx,count,0,1M busC(RS422) SLO=ON
+PCB,T5_slo,ber,ppm,1000000,1M busC(RS422) SLO=ON
+  bus C(RS422)           1M      SLO=ON   ok=   0/1024  BER=1000000 ppm
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+PCB,T5_slo,bytes_ok,count,0,2M busC(RS422) SLO=ON
+PCB,T5_slo,bytes_rx,count,0,2M busC(RS422) SLO=ON
+PCB,T5_slo,ber,ppm,1000000,2M busC(RS422) SLO=ON
+  bus C(RS422)           2M      SLO=ON   ok=   0/1024  BER=1000000 ppm
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+PCB,T5_slo,bytes_ok,count,0,3M busC(RS422) SLO=ON
+PCB,T5_slo,bytes_rx,count,0,3M busC(RS422) SLO=ON
+PCB,T5_slo,ber,ppm,1000000,3M busC(RS422) SLO=ON
+  bus C(RS422)           3M      SLO=ON   ok=   0/1024  BER=1000000 ppm
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+PCB,T5_slo,bytes_ok,count,0,4M busC(RS422) SLO=ON
+PCB,T5_slo,bytes_rx,count,0,4M busC(RS422) SLO=ON
+PCB,T5_slo,ber,ppm,1000000,4M busC(RS422) SLO=ON
+  bus C(RS422)           4M      SLO=ON   ok=   0/1024  BER=1000000 ppm
+PCB,T5_slo,baud_max_sin_errores,bps,0,busC(RS422) SLO=ON
+PCB,T5_slo,baud_max_con_slo,bps,0,busC(RS422) SLO_OFF=0 bps
+  bus C(RS422)            máx sin SLO =        0 bps   |   con SLO =        0 bps
+
+=== T6 — Vuelta del bus / guard time del DE (bus A) ===
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+PCB,T6_turnaround,respuestas_integras,count,0,guard=0us
+  guard     0 µs → 0/8 respuestas íntegras
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+PCB,T6_turnaround,respuestas_integras,count,0,guard=10us
+  guard    10 µs → 0/8 respuestas íntegras
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+PCB,T6_turnaround,respuestas_integras,count,0,guard=25us
+  guard    25 µs → 0/8 respuestas íntegras
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+PCB,T6_turnaround,respuestas_integras,count,0,guard=50us
+  guard    50 µs → 0/8 respuestas íntegras
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+PCB,T6_turnaround,respuestas_integras,count,0,guard=100us
+  guard   100 µs → 0/8 respuestas íntegras
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+PCB,T6_turnaround,respuestas_integras,count,0,guard=250us
+  guard   250 µs → 0/8 respuestas íntegras
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+PCB,T6_turnaround,respuestas_integras,count,0,guard=500us
+  guard   500 µs → 0/8 respuestas íntegras
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+PCB,T6_turnaround,respuestas_integras,count,0,guard=1000us
+  guard  1000 µs → 0/8 respuestas íntegras
+PCB,T6_turnaround,guard_minimo,us,0,NINGUN guard dio 8/8: revisar DE o cableado del bus A
+  [FALLO] ningún guard time consiguió respuesta íntegra
+
+=== T7 — Diafonía entre buses ===
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+PCB,T7_diafonia,total_fuga,count,0,ráfaga de 128 B a 460800 bps en bus A
+    [OK] buses aislados: 0 bytes de fuga
+
+=== T8 — Colisión y recuperación (bus A) ===
+[TRANSCEIVER DEBUG] TX timeout CH1: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH2: MM2S IOC no llego. CSR=0x00000001
+PCB,T8_colision,bytes_oidos,count,0,el maestro escucha la colision
+PCB,T8_colision,trama_corrupta,bool,1,colision detectada, como debe ser
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+PCB,T8_colision,recuperado,bool,0,el bus NO se recupera: driver enganchado
+  colisión: trama corrupta (esperado) | recuperación: FALLO
+
+=== T9 — Estabilidad sostenida (tráfico continuo) ===
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH0: MM2S IOC no llego. CSR=0x00000001
+PCB,T9_estabilidad,tramas,count,84,busA(RS485-multidrop) a 460800 bps, 10 s
+PCB,T9_estabilidad,bytes_ok,count,0,busA(RS485-multidrop) a 460800 bps, 10 s
+PCB,T9_estabilidad,bytes_total,count,5376,busA(RS485-multidrop) a 460800 bps, 10 s
+PCB,T9_estabilidad,ber,ppm,1000000,busA(RS485-multidrop) a 460800 bps, 10 s
+PCB,T9_estabilidad,errores_hw,count,824,busA(RS485-multidrop) a 460800 bps, 10 s
+  bus A(RS485-multidrop)   460800 bps: 84 tramas, BER=1000000 ppm, errores HW=824
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH7: MM2S IOC no llego. CSR=0x00000001
+PCB,T9_estabilidad,tramas,count,77,busB(RS422) a 115200 bps, 10 s
+PCB,T9_estabilidad,bytes_ok,count,0,busB(RS422) a 115200 bps, 10 s
+PCB,T9_estabilidad,bytes_total,count,4928,busB(RS422) a 115200 bps, 10 s
+PCB,T9_estabilidad,ber,ppm,1000000,busB(RS422) a 115200 bps, 10 s
+PCB,T9_estabilidad,errores_hw,count,901,busB(RS422) a 115200 bps, 10 s
+  bus B(RS422)             115200 bps: 77 tramas, BER=1000000 ppm, errores HW=901
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+[TRANSCEIVER DEBUG] TX timeout CH11: MM2S IOC no llego. CSR=0x00000001
+PCB,T9_estabilidad,tramas,count,77,busC(RS422) a 115200 bps, 10 s
+PCB,T9_estabilidad,bytes_ok,count,0,busC(RS422) a 115200 bps, 10 s
+PCB,T9_estabilidad,bytes_total,count,4928,busC(RS422) a 115200 bps, 10 s
+PCB,T9_estabilidad,ber,ppm,1000000,busC(RS422) a 115200 bps, 10 s
+PCB,T9_estabilidad,errores_hw,count,978,busC(RS422) a 115200 bps, 10 s
+  bus C(RS422)             115200 bps: 77 tramas, BER=1000000 ppm, errores HW=978
+
+=== FIN DE LA CARACTERIZACION DE LA PCB ===

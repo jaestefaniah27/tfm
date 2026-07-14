@@ -51,9 +51,15 @@ tfm/
 │   ├── SOFTWARE.md               dónde vive bench_main.c y cómo compilarlo
 │   └── imagenes_sd/              BOOT.bin + rtems.img listos para la SD
 │
-├── 04_aplicaciones_cdhs_aocs/  Línea previa: CDHS/AOCS (CAN, SPI, RS-422, puente en H)
-├── 05_firmware/              FSBL modificado y scripts de generación de BOOT.bin
-└── 06_tools/                 make_img.sh, carga por YMODEM, GUI serie
+├── 04_pcb_caracterizacion/   Caracterización eléctrica de la PCB (bitstream SIN loopback)
+│   ├── software/                 app RTEMS: 9 tests sobre los drivers y el cobre
+│   ├── hardware/                 reimplementación del bitstream limpio + BOOT.bin
+│   ├── imagen_sd/                BOOT.bin + rtems.img listos para la SD
+│   └── resultados/               consolas y CSV de las medidas
+│
+├── 05_aplicaciones_cdhs_aocs/  Línea previa: CDHS/AOCS (CAN, SPI, RS-422, puente en H)
+├── 06_firmware/              FSBL modificado y scripts de generación de BOOT.bin
+└── 07_tools/                 make_img.sh, carga por YMODEM, GUI serie
 ```
 
 Cada carpeta relevante tiene su propio `README.md` con el detalle.
@@ -93,16 +99,24 @@ El salto decisivo es `irq_per_kb`: la variante GPIO interrumpe al PS **una vez p
 3. Aplicación RTEMS
    cd tfm/02_transporte/c_mcdma_bridge/software
    export RTEMS_PREFIX=$HOME/quick-start/rtems/7
-   ../../../06_tools/make_img.sh                               → rtems.img
+   ../../../07_tools/make_img.sh                               → rtems.img
 
 4. Carga en la SD sin sacarla de la placa (YMODEM sobre U-Boot)
-   python3 tfm/06_tools/automate_ymodem_update.py [--boot ./BOOT.bin]
+   python3 tfm/07_tools/automate_ymodem_update.py [--boot ./BOOT.bin]
 
 5. Monitorizar
-   python3 tfm/06_tools/serial_gui.py    (o minicom, 115200 8N1)
+   python3 tfm/07_tools/serial_gui.py    (o minicom, 115200 8N1)
 ```
 
-Para reproducir solo el benchmark no hace falta compilar nada: en `03_bench_loopback/imagenes_sd/` están las tres imágenes listas para copiar a la SD.
+Para reproducir solo el benchmark no hace falta compilar nada: en `03_bench_loopback/imagenes_sd/` están las tres imágenes listas para copiar a la SD. Lo mismo para la caracterización de la PCB, en `04_pcb_caracterizacion/imagen_sd/` — pero **son bitstreams distintos**: el del benchmark lleva el loopback dentro de la PL, el de la PCB no.
+
+---
+
+## Caracterización de la PCB
+
+Medida la placa de verdad (14 transceptores RS-485/RS-422), con los nueve tests de [04_pcb_caracterizacion](tfm/04_pcb_caracterizacion/README.md): polarización de reposo, mapa de conectividad real, integridad del multidrop, velocidad máxima por bus, efecto del limitador de slew, guard time del DE, diafonía, colisión y estabilidad.
+
+El resultado que cambia las cosas: **el bit SLO está invertido respecto al chip transceptor**. Con el valor por defecto (`SLO=0`), que es en realidad el modo *slew-limitado*, el bus A multidrop topa en 460 kbps y los RS-422 en 1 Mbps. Poniendo ese bit a 1, los tres buses van limpios a **4 Mbps**. Detalle y salvedades en [RESULTADOS.md](tfm/04_pcb_caracterizacion/RESULTADOS.md).
 
 ## Dependencias no versionadas
 
