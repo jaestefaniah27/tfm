@@ -1,0 +1,177 @@
+% ===========================================================================
+% CAPÍTULO 2 — MARCO TEÓRICO: el transporte de datos entre el PS y la PL
+% ===========================================================================
+
+\section{Transporte de datos entre el PS y la PL} \label{sec:teoria_transporte}
+
+Implementar los transceptores serie en la lógica programable resuelve la mitad del
+problema: la serialización de los bits. Queda la otra mitad, que es la que realmente
+determina el rendimiento del sistema completo: \textbf{por dónde y a qué coste viajan los
+bytes entre la memoria del procesador y esos transceptores}. El MPSoC ofrece varios
+caminos para ello, y la elección entre ellos no es un detalle de implementación, sino una
+decisión de arquitectura con consecuencias directas sobre la carga de CPU, la latencia y
+la ocupación de la FPGA.
+
+Esta sección describe los mecanismos disponibles. Su aplicación concreta ---las tres
+arquitecturas implementadas y comparadas en este trabajo--- se desarrolla en la
+sección~\ref{sec:transporte_desarrollo}.
+
+\subsection{AXI: los tres perfiles del bus}
+
+La comunicación entre el PS y la PL del Zynq UltraScale+ se realiza a través de puertos que
+implementan el estándar AMBA AXI4 de ARM \cite{arm2011axi4}. El estándar define tres
+perfiles, y la diferencia entre ellos es exactamente la que separa las tres arquitecturas
+comparadas en este trabajo:
+
+\begin{itemize}
+    \item \textbf{AXI4-Lite.} Perfil reducido, orientado a la lectura y escritura de
+    \textit{registros} individuales. Cada transacción mueve una palabra y requiere que el
+    procesador ejecute una instrucción de carga o almacenamiento. Es el bus natural para
+    configurar periféricos, y es el que emplea el IP AXI GPIO.
+
+    \item \textbf{AXI4 \textit{full} (\textit{memory-mapped}).} Perfil completo, con soporte
+    de ráfagas (\textit{bursts}) de hasta 256 transferencias por transacción. Es el bus que
+    utilizan los maestros de la PL para acceder a la DDR del PS a través de los puertos
+    de alto rendimiento (HP), sin pasar por la CPU.
+
+    \item \textbf{AXI4-Stream.} Perfil sin direcciones: un flujo continuo de datos con
+    señales de \textit{handshake} (\texttt{TVALID}/\texttt{TREADY}), marca de fin de paquete
+    (\texttt{TLAST}) y, opcionalmente, un identificador de destino (\texttt{TDEST}). Es el
+    perfil idóneo para conectar un periférico que produce o consume bytes en secuencia,
+    como un UART, pero no puede hablar directamente con la memoria: necesita un intermediario
+    que traduzca el flujo en accesos con dirección.
+\end{itemize}
+
+Ese intermediario es el controlador de acceso directo a memoria.
+
+\subsection{El coste oculto: la interrupción por byte}
+
+Un UART entrega un byte cada vez que completa la recepción de un carácter. Si la única vía
+para llevarlo a la memoria es que el procesador lo lea de un registro, el hardware debe
+avisar de que ese byte está disponible, y el único mecanismo de aviso asíncrono es la
+interrupción. La consecuencia es directa: \textbf{una interrupción por cada byte recibido}.
+
+El coste de una interrupción no es el de leer el registro. Es el de la conmutación de
+contexto completa: salvar el estado del procesador, entrar en la rutina de servicio,
+identificar la fuente, atenderla, reconocerla en el controlador de interrupciones y
+restaurar el contexto. En un Cortex-A53 este coste se cuenta en cientos de ciclos, a lo que
+en un RTOS hay que sumar la posible planificación de una tarea diferida. Frente a los
+$\sim$87~$\mu$s que tarda en llegar un byte a 115\,200 baudios, el margen parece amplio; pero
+con catorce canales activos en paralelo, la CPU pasa a estar sometida a una tasa de
+interrupción proporcional al producto del número de canales por la tasa de símbolo, y el
+sistema deja de tener tiempo para hacer nada más. El fenómeno es conocido en redes de alta
+velocidad como \textit{interrupt livelock} \cite{mogul1997livelock}: a partir de cierta tasa
+de llegada, todo el tiempo de CPU se consume en atender interrupciones y el trabajo útil
+tiende a cero.
+
+Este es el argumento cuantitativo que motiva todo el trabajo de este capítulo, y la métrica
+\textbf{interrupciones por kilobyte transferido} (IRQ/KB) que se utiliza sistemáticamente en
+la comparativa del capítulo de resultados.
+
+\subsection{Acceso directo a memoria (DMA)}
+
+Un controlador DMA es un maestro de bus que transfiere bloques de datos entre la memoria y un
+periférico \textbf{sin intervención de la CPU}. El procesador se limita a programar la
+transferencia (dirección de origen o destino y longitud) y a recibir una única interrupción
+cuando el bloque completo ha terminado. La tasa de interrupción deja de depender del número
+de bytes y pasa a depender del número de \textit{paquetes}, lo que en la práctica supone una
+reducción de dos a tres órdenes de magnitud.
+
+En el ecosistema de Xilinx, dos IP cubren este papel.
+
+\subsubsection{AXI DMA (PG021)}
+
+El IP \texttt{axi\_dma} \cite{xilinx2022pg021} traduce entre AXI4-Stream y AXI4
+\textit{memory-mapped} en dos canales independientes:
+
+\begin{itemize}
+    \item \textbf{MM2S} (\textit{Memory-Mapped to Stream}): lee de la memoria y emite un flujo
+    AXI-Stream hacia el periférico. Es el camino de transmisión.
+    \item \textbf{S2MM} (\textit{Stream to Memory-Mapped}): recibe un flujo del periférico y lo
+    escribe en memoria. Es el camino de recepción; el fin de paquete lo marca la señal
+    \texttt{TLAST} del \textit{stream}.
+\end{itemize}
+
+Cada canal admite dos modos de funcionamiento. En modo \textbf{directo} (\textit{simple DMA})
+el procesador escribe la dirección del \textit{buffer} y la longitud en sendos registros, y el
+motor ejecuta una sola transferencia. En modo \textbf{\textit{scatter-gather}} (SG) el
+procesador construye en memoria una lista enlazada de \textit{descriptores de buffer} (BD),
+cada uno con la dirección, la longitud y los bits de control del bloque, y el DMA la recorre
+autónomamente. El modo SG permite encadenar transferencias sin que la CPU intervenga entre
+ellas, a costa de que el propio DMA lea y escriba los descriptores en memoria.
+
+La limitación de este IP es que \textbf{sirve a un único \textit{stream}}. Para $N$ periféricos
+hacen falta $N$ instancias, con el consiguiente coste de lógica y, sobre todo, de líneas de
+interrupción.
+
+\subsubsection{AXI MCDMA (PG288)}
+
+El IP \texttt{axi\_mcdma} \cite{xilinx2022pg288} es la respuesta a esa limitación: un
+controlador \textbf{multicanal} que multiplexa hasta 16 canales lógicos sobre un único motor y
+un único puerto hacia la memoria. Cada canal tiene su propio juego de registros, su propio
+anillo de descriptores y su propio \textit{buffer} en la DDR, pero comparten el hardware de
+transferencia.
+
+La pieza clave que hace esto posible es la señal \textbf{\texttt{TDEST}} del AXI-Stream. En
+recepción, el MCDMA demultiplexa el flujo entrante según el valor de \texttt{TDEST} de cada
+paquete y lo deposita en el \textit{buffer} del canal correspondiente; en transmisión,
+etiqueta cada paquete con el \texttt{TDEST} del canal que lo originó. La lógica de la PL es la
+responsable de generar ese identificador correctamente ---y, como se verá en la
+sección~\ref{sec:transporte_depuracion}, olvidarse de propagarlo tiene el efecto silencioso
+de que todo el tráfico de recepción acabe atribuido al canal cero.
+
+El MCDMA opera siempre en modo \textit{scatter-gather} y ofrece, además, dos opciones de
+configuración con impacto directo en el diseño de la PL:
+
+\begin{itemize}
+    \item \textbf{\textit{Store-and-forward}} (\texttt{c\_include\_s2mm\_sf}): el motor de
+    recepción acumula el paquete AXI-Stream \textit{completo} en un \textit{buffer} interno
+    antes de volcarlo a la memoria. Impone un límite máximo al tamaño del paquete que la PL
+    puede emitir.
+    \item \textbf{Interrupción por canal} (\texttt{c\_enable\_multi\_intr}): expone una línea de
+    interrupción independiente por canal. Desactivada, la lógica de interrupción por canal
+    queda inerte.
+\end{itemize}
+
+Ambas opciones condicionan el diseño de la lógica que alimenta al MCDMA y fueron origen de las
+iteraciones de depuración que se relatan en la sección~\ref{sec:transporte_depuracion}.
+
+\subsection{Interrupciones de la PL hacia el PS}
+
+La lógica programable dispone de un número limitado de líneas de interrupción hacia el
+controlador de interrupciones genérico (GIC) del PS. En el Zynq UltraScale+, los puertos
+\texttt{pl\_ps\_irq0} y \texttt{pl\_ps\_irq1} ofrecen \textbf{ocho líneas cada uno}
+\cite{xilinx2023ug1085}, mapeadas a interrupciones compartidas del GIC (SPI 89--96 y
+104--111, que corresponden a los vectores 121--128 y 136--143 en la numeración de RTEMS).
+
+Ocho líneas es un recurso escaso cuando se pretende dar servicio a catorce canales con dos
+sentidos cada uno. Hay tres formas de resolverlo, y las tres aparecen en este trabajo:
+
+\begin{enumerate}
+    \item \textbf{Concentrar en un controlador de interrupciones en la PL} (AXI INTC): un IP
+    intermedio agrega $N$ fuentes en una sola línea y expone un registro de estado que la ISR
+    lee para saber quién ha interrumpido. Es la solución de la variante GPIO.
+    \item \textbf{Reducir por OR en la propia lógica}: combinar las $N$ señales en una sola con
+    una puerta OR y dejar que el software escanee los registros de estado. Es lo que se hizo
+    para agregar los catorce \texttt{introut} del MCDMA en una única línea.
+    \item \textbf{Diseñar un bloque de notificación propio}: un registro \textit{sticky} en la
+    PL que engancha los eventos de los $N$ canales, los expone por AXI-Lite y genera una única
+    interrupción de nivel. Es el bloque \texttt{TX\_ISR\_EOF\_HANDLER} descrito en la
+    sección~\ref{sec:variante_mcdma}.
+\end{enumerate}
+
+\subsection{Coherencia de caché}
+
+Cuando el que escribe en la memoria es un maestro de la PL y no la CPU, aparece un problema
+que con AXI-Lite no existía: la \textbf{coherencia de caché}. Si el DMA escribe un
+\textit{buffer} de recepción en la DDR mientras la CPU tiene esa región cacheada, la CPU puede
+leer datos obsoletos. Y a la inversa: si la CPU prepara un \textit{buffer} de transmisión que
+queda retenido en la caché de escritura diferida, el DMA leerá de la DDR un contenido que
+todavía no se ha actualizado.
+
+Las soluciones habituales son dos: acceder a la memoria de la PL a través de un puerto
+coherente (HPC, con \textit{snooping} de la CCI) o, más sencillo en un sistema empotrado sin
+sistema operativo completo, \textbf{marcar las regiones de \textit{buffers} DMA como no
+cacheables} en la tabla de páginas de la MMU e invalidar o volcar explícitamente las líneas de
+caché antes y después de cada transferencia. Esta segunda es la vía adoptada, mediante un
+mapeo explícito de la MMU en el arranque de RTEMS (\texttt{mmu\_pl\_map.c}).

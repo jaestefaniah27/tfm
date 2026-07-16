@@ -1,9 +1,24 @@
 \section{Introducción y motivación}
 
-El diseño de ordenadores de a bordo (OBC) para satélites exige resolver un reto de ingeniería
-que va más allá del procesamiento puro: conseguir que el procesador central se comunique de
-forma determinista y fiable con una familia heterogénea de periféricos ---sensores de actitud,
-actuadores, cargas de pago--- a través de buses serie con especificaciones eléctricas y de
+El sector espacial atraviesa un cambio de paradigma que se conoce como \textbf{NewSpace}: frente
+al modelo clásico de misiones únicas, de plazos de una década y presupuestos de cientos de
+millones, se impone el de constelaciones de satélites pequeños, fabricados en serie, con ciclos
+de desarrollo de meses y costes dos órdenes de magnitud menores. Ese cambio no es solo
+económico, sino técnico, y afecta directamente a cómo se diseña la electrónica de a bordo. La
+vía tradicional ---componentes cualificados para espacio, endurecidos frente a radiación y con
+herencia de vuelo demostrada--- es incompatible con esos plazos y esos costes: el catálogo de
+piezas cualificadas es reducido, caro y va tecnológicamente por detrás. El enfoque NewSpace
+acepta por ello el uso de \textbf{componentes comerciales} (COTS, \textit{commercial off-the-shelf}),
+trasladando la fiabilidad desde la pieza individual hacia la arquitectura del sistema: redundancia,
+detección de errores y capacidad de recuperación en vuelo. Esta filosofía es la que enmarca todas
+las decisiones de diseño de este trabajo, y explica que la plataforma de partida sea un MPSoC
+comercial y que los componentes de las tarjetas diseñadas sean de grado industrial o automotriz
+y no de grado espacial.
+
+Dentro de ese marco, el diseño de ordenadores de a bordo (OBC) para satélites exige resolver un
+reto de ingeniería que va más allá del procesamiento puro: conseguir que el procesador central se
+comunique de forma determinista y fiable con una familia heterogénea de periféricos ---sensores de
+actitud, actuadores, cargas de pago--- a través de buses serie con especificaciones eléctricas y de
 temporización muy diferentes entre sí. En el marco del proyecto LINCE, el grupo B105
 Electronic Systems Lab de la Universidad Politécnica de Madrid asume la responsabilidad del
 subsistema de comunicaciones del OBC.
@@ -18,30 +33,45 @@ propio en VHDL en lugar de emplear IPs de terceros, con el objetivo de obtener c
 sobre el comportamiento del transceptor: parámetros de temporización, gestión de errores y
 adaptación a los requisitos concretos del sistema.
 
-A medida que avanzaba el desarrollo, el alcance del trabajo se fue ampliando: las tareas de
-hardware fueron asumiéndose progresivamente a medida que se demostró capacidad para
-ello. Así, además del diseño del transceptor y su driver software, se asumió también el
-diseño de las tarjetas de circuito impreso necesarias para validar el sistema frente a los
-requisitos del consorcio. La colaboración directa con Sener ---socio tecnológico del proyecto
-LINCE, con reuniones quincenales y comunicación continua por correo--- fue determinante
-tanto para definir esos requisitos como para iterar sobre el diseño. A su vez, Sener traslada
-los requisitos técnicos impuestos por Indra, que lidera el consorcio.
+El alcance del trabajo, sin embargo, no se mantuvo en ese encargo inicial, y la forma en que se
+amplió merece ser explicada porque condiciona la estructura de esta memoria. Una vez operativo
+el transceptor en la lógica programable, validarlo exigía ejercitar sus catorce canales sobre
+buses reales, y la plataforma de evaluación no ofrece ese hardware. Se abordó entonces, por
+iniciativa propia y sin que mediara encargo, el \textbf{diseño de una tarjeta de expansión propia}
+que reprodujera las topologías RS-485 multipunto y RS-422 punto a punto sobre las que el sistema
+tendría que operar en vuelo. El resultado de esa tarjeta fue lo que llevó al consorcio a asignar
+al autor el diseño de las \textbf{dos tarjetas oficiales del proyecto} ---la placa CDHS, de gestión
+de datos y control térmico, y la placa AOCS, de control de actitud y órbita---, con las que Sener
+debía validar su propio firmware sobre la ZCU102. El trabajo pasó así de ser exclusivamente de
+codiseño hardware-software a incluir también el diseño electrónico, la selección de componentes y
+la fabricación de tres tarjetas de circuito impreso.
+
+Esa ampliación fue posible porque la colaboración con Sener ---socio tecnológico del proyecto
+LINCE--- fue continua y no puntual: el trabajo se integró en su ciclo de \textit{sprints}, con
+reuniones periódicas de revisión y planificación que permitían reasignar tareas conforme
+avanzaba el proyecto. A su vez, Sener traslada los requisitos técnicos impuestos por Indra, que
+lidera el consorcio.
 
 El resultado de todo este trabajo es una plataforma funcional que abarca el codiseño
 hardware-software del subsistema de comunicaciones serie, su integración bajo el sistema
-operativo de tiempo real RTEMS, y la fabricación y validación de dos tarjetas de prueba.
+operativo de tiempo real RTEMS, y la fabricación y validación de las tres tarjetas de
+prueba: las dos oficiales del proyecto (CDHS y AOCS) y la de comunicación serie de diseño
+propio, caracterizada eléctricamente sobre sus catorce transceptores.
 
 \section{Metodología}
 
 El desarrollo de este trabajo se enmarcó en la dinámica de trabajo colaborativo del proyecto
-LINCE. Se mantuvieron reuniones quincenales con los ingenieros de Sener asignados al
-proyecto, además de comunicación continua por correo para resolver dudas técnicas y
-alinear requisitos. Las tareas se gestionaron mediante Jira, donde cada reunión servía para
-revisar el estado de los ítems abiertos, identificar bloqueos y planificar los próximos hitos.
-Los requisitos de diseño de las PCBs de prueba llegaron a través de Sener, que los traslada
-desde Indra como líder del consorcio.
+LINCE, que sigue una \textbf{metodología ágil}. El trabajo se organizó en \textit{sprints}, con
+reuniones quincenales de revisión y planificación con los ingenieros de Sener asignados al
+proyecto ---donde se demostraba el incremento alcanzado, se identificaban bloqueos y se
+comprometía el alcance del siguiente ciclo---, además de comunicación continua por correo para
+resolver dudas técnicas y alinear requisitos. Las tareas se gestionaron mediante Jira como
+tablero común. Esta cadencia es la que explica que el alcance del trabajo pudiera reajustarse
+sobre la marcha, incorporando el diseño de las tarjetas CDHS y AOCS a mitad de desarrollo. Los
+requisitos de diseño de las PCBs de prueba llegaron a través de Sener, que los traslada desde
+Indra como líder del consorcio.
 
-El trabajo se estructuró en dos fases principales:
+El trabajo se estructuró en tres fases principales:
 
 \textbf{Fase 1 --- Familiarización y establecimiento del entorno (octubre -- enero):} Los primeros
 meses se dedicaron a establecer las bases del entorno de desarrollo: instalación y
@@ -59,6 +89,32 @@ módulo se implementaba, se validaba de forma aislada (mediante simulación en V
 prueba directa sobre la placa) y se integraba en el sistema global antes de avanzar al
 siguiente.
 
-Quedan pendientes para la fase final, antes de la entrega del TFM en septiembre de 2026,
-la fabricación y validación de la PCB de diseño propio y el desarrollo de la aplicación de
-testing exhaustivo de los 14 transceptores en paralelo.
+\textbf{Fase 3 --- Estudio del transporte y caracterización (junio -- julio):} La validación con los
+catorce canales activos reveló que el factor limitante del sistema no era el transceptor sino el
+transporte de datos entre el PS y la PL, lo que reorientó la fase final del trabajo: se
+implementaron y compararon las tres arquitecturas de transporte (AXI GPIO, catorce AXI DMA y AXI
+MCDMA con puente VHDL) sobre un banco de pruebas común, y se fabricó y caracterizó eléctricamente
+la placa de comunicación serie de diseño propio mediante una campaña de nueve tests sobre sus
+catorce transceptores.
+
+Dos principios atraviesan todo el desarrollo y conviene enunciarlos aquí, porque explican
+decisiones que aparecerán repetidamente a lo largo de la memoria.
+
+El primero es la \textbf{verificación como parte del diseño, no como fase posterior}. Ningún bloque
+de la lógica programable se integró en el sistema sin haber pasado antes su propio
+\textit{testbench} en simulación, y el sistema completo se validó en placa mediante baterías de
+pruebas automatizadas que actuaban como test de regresión. Este principio no es retórico: el
+código de \textit{testbench} escrito en el trabajo (4.551 líneas) es prácticamente equivalente en
+volumen al código VHDL sintetizable que verifica (4.710 líneas). Fue además determinante en el
+punto más difícil del proyecto ---la depuración del bus AXI contra el motor de DMA---, donde la
+ausencia de observabilidad desde el software hizo de la simulación la única vía de diagnóstico.
+
+El segundo es la \textbf{automatización y la reproducibilidad del flujo}. Un ciclo de iteración en
+esta plataforma atraviesa síntesis en Vivado, empaquetado en Vitis, compilación cruzada de RTEMS
+y generación de la imagen de arranque; hecho a mano es lento y, sobre todo, propenso a errores
+silenciosos. Se invirtió por ello un esfuerzo deliberado en construir herramientas propias
+---\textit{scripts} TCL que regeneran el diseño de bloques completo desde cero, \textit{scripts} de
+compilación y despliegue de la imagen de arranque, utilidades de instrumentación--- de modo que
+cualquier resultado de esta memoria pueda reproducirse desde el repositorio con un único comando.
+El peso de esa decisión es medible: las herramientas de automatización suponen el 40\,\% de las
+líneas de código escritas en el trabajo, más que ninguna otra categoría.

@@ -4,7 +4,11 @@
 
 \paragraph{ADC} \textit{Analog-to-Digital Converter} --- Convertidor analógico-digital.
 
+\paragraph{AMBA} \textit{Advanced Microcontroller Bus Architecture} --- Familia de estándares de interconexión de ARM.
+
 \paragraph{AXI} \textit{Advanced eXtensible Interface} --- Bus de interconexión de alto rendimiento del estándar ARM AMBA.
+
+\paragraph{BD} \textit{Buffer Descriptor} --- Descriptor de \textit{buffer}: estructura en memoria que define una transferencia de DMA en modo \textit{scatter-gather}.
 
 \paragraph{BRAM} \textit{Block RAM} --- Bloque de memoria RAM integrado en la FPGA.
 
@@ -17,6 +21,8 @@
 \paragraph{CDHS} \textit{Command and Data Handling System} --- Subsistema de gestión de datos y telecomandos.
 
 \paragraph{CMRR} \textit{Common Mode Rejection Ratio} --- Razón de rechazo al modo común.
+
+\paragraph{DDR} \textit{Double Data Rate} --- Memoria dinámica principal del sistema de procesamiento.
 
 \paragraph{DMA} \textit{Direct Memory Access} --- Acceso directo a memoria sin intervención de la CPU.
 
@@ -42,9 +48,13 @@
 
 \paragraph{FSBL} \textit{First Stage Boot Loader} --- Cargador de arranque de primera etapa.
 
+\paragraph{GIC} \textit{Generic Interrupt Controller} --- Controlador de interrupciones del procesador ARM.
+
 \paragraph{HDL} \textit{Hardware Description Language} --- Lenguaje de descripción de hardware.
 
-\paragraph{INTC} \textit{Interrupt Controller} --- Controlador de interrupciones.
+\paragraph{INTC} \textit{Interrupt Controller} --- Controlador de interrupciones (IP de la lógica programable).
+
+\paragraph{IRQ} \textit{Interrupt Request} --- Petición de interrupción.
 
 \paragraph{ISR} \textit{Interrupt Service Routine} --- Rutina de servicio de interrupción.
 
@@ -56,7 +66,13 @@
 
 \paragraph{LUT} \textit{Look-Up Table} --- Tabla de búsqueda, bloque básico de una FPGA.
 
+\paragraph{MCDMA} \textit{Multichannel Direct Memory Access} --- Controlador de DMA multicanal de Xilinx (IP \texttt{axi\_mcdma}, PG288).
+
 \paragraph{MMIO} \textit{Memory-Mapped I/O} --- Entrada/salida con mapeado en memoria.
+
+\paragraph{MM2S} \textit{Memory-Mapped to Stream} --- Canal de un DMA que lee de memoria y produce un flujo AXI-Stream (camino de transmisión).
+
+\paragraph{MMU} \textit{Memory Management Unit} --- Unidad de gestión de memoria; define, entre otras cosas, qué regiones son cacheables.
 
 \paragraph{MPSoC} \textit{Multiprocessor System-on-Chip} --- Sistema multiprocesador en chip.
 
@@ -78,6 +94,10 @@
 
 \paragraph{RTEMS} \textit{Real-Time Executive for Multiprocessor Systems} --- RTOS de código abierto para sistemas empotrados.
 
+\paragraph{S2MM} \textit{Stream to Memory-Mapped} --- Canal de un DMA que consume un flujo AXI-Stream y lo escribe en memoria (camino de recepción).
+
+\paragraph{SG} \textit{Scatter-Gather} --- Modo de operación de un DMA en el que las transferencias se describen mediante una lista enlazada de descriptores en memoria.
+
 \paragraph{SMD} \textit{Surface Mount Device} --- Componente de montaje superficial.
 
 \paragraph{SPI} \textit{Serial Peripheral Interface} --- Interfaz serie para periféricos.
@@ -93,5 +113,7 @@
 \paragraph{UPM} Universidad Politécnica de Madrid.
 
 \paragraph{VHDL} \textit{Very High Speed Integrated Circuit Hardware Description Language} --- Lenguaje de descripción de hardware.
+
+\paragraph{WNS} \textit{Worst Negative Slack} --- Peor margen de temporización de un diseño implementado; positivo indica que se cumplen las restricciones.
 
 \paragraph{XSA} \textit{Xilinx Support Archive} --- Archivo de especificación hardware exportado por Vivado para Vitis.

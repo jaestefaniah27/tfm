@@ -1,4 +1,4 @@
-# 04 — Línea previa: aplicaciones CDHS / AOCS
+# 05 — Línea previa: aplicaciones CDHS / AOCS
 
 Trabajo anterior a la comparativa de transporte, conservado porque es donde nació el IP serie y donde se validó la integración PS-PL completa. Usa el transceptor con transporte **AXI-GPIO** (equivalente a la variante A).
 

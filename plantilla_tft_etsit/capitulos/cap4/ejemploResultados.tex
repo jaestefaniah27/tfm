@@ -1,7 +1,9 @@
 En este capítulo se recogen los resultados de la validación hardware del sistema completo.
-Las pruebas se realizaron con la placa CDHS y la placa AOCS conectadas a la ZCU102
-mediante FMC. La placa de comunicación serie de diseño propio queda pendiente de
-fabricación y sus resultados se incorporarán antes de la entrega final.
+Las primeras secciones cubren las pruebas realizadas con la placa CDHS y la placa AOCS
+conectadas a la ZCU102 mediante FMC. A continuación, la sección~\ref{sec:resultados_benchmark}
+compara las tres arquitecturas de transporte entre el PS y la PL, y la
+sección~\ref{sec:resultados_pcb} recoge la caracterización eléctrica de la placa de comunicación
+serie de diseño propio, ya fabricada y validada sobre sus catorce transceptores.
 
 \section{Montaje del sistema}
 
@@ -67,7 +69,7 @@ Tx -> UART 2: OK
 
 \begin{figure}[H]
     \centering
-    \fbox{\parbox{0.85\textwidth}{\centering \textit{[Figura pendiente: captura completa del terminal \texttt{cdhs\_testing\_rs} disponible en \texttt{tfm/terminal/}]}\vspace{0.5cm}}}
+    \fbox{\parbox{0.85\textwidth}{\centering \textit{[Figura pendiente: captura completa del terminal \texttt{cdhs\_testing\_rs} disponible en \texttt{tfm/00\_docs/logs\_terminal/}]}\vspace{0.5cm}}}
     \caption{Captura completa del terminal de pruebas RS en la placa CDHS.}
     \label{fig:cdhs_rs_terminal}
 \end{figure}
@@ -90,7 +92,7 @@ CMD> 0 HOLA  ->  [RX UART 01]: HOLA
 
 \begin{figure}[H]
     \centering
-    \fbox{\parbox{0.85\textwidth}{\centering \textit{[Figura pendiente: captura completa del terminal \texttt{aocs\_testing\_rs} disponible en \texttt{tfm/terminal/}]}\vspace{0.5cm}}}
+    \fbox{\parbox{0.85\textwidth}{\centering \textit{[Figura pendiente: captura completa del terminal \texttt{aocs\_testing\_rs} disponible en \texttt{tfm/00\_docs/logs\_terminal/}]}\vspace{0.5cm}}}
     \caption{Captura completa del terminal de pruebas RS en la placa AOCS.}
     \label{fig:aocs_rs_terminal}
 \end{figure}
@@ -101,9 +103,9 @@ Para verificar el correcto funcionamiento del driver con un número elevado de i
 cargó un \textit{bitstream} con 13 transceptores instanciados, conectando los canales adicionales a
 los pines externos del conector J3 de la ZCU102. El sistema arrancó y operó correctamente
 con todos los canales, confirmando que la arquitectura de ISR maestra con tareas \textit{worker}
-individuales escala sin problemas hasta el número máximo de instancias soportado. La
-prueba con los 14 transceptores sobre la placa de comunicación serie de diseño propio queda
-pendiente de fabricación.
+individuales escala sin problemas hasta el número máximo de instancias soportado. La prueba
+con los 14 transceptores sobre la placa de comunicación serie de diseño propio se aborda en la
+sección~\ref{sec:resultados_pcb}, ya con la placa fabricada.
 
 \section{Validación del bus CAN}
 
@@ -180,7 +182,7 @@ estables bajos durante todo el ensayo, correspondientes a las entradas no excita
 
 \begin{figure}[H]
     \centering
-    \fbox{\parbox{0.85\textwidth}{\centering \textit{[Figura pendiente: captura completa del terminal \texttt{cdhs\_testing\_adc.txt} disponible en \texttt{tfm/terminal/}]}\vspace{0.5cm}}}
+    \fbox{\parbox{0.85\textwidth}{\centering \textit{[Figura pendiente: captura completa del terminal \texttt{cdhs\_testing\_adc.txt} disponible en \texttt{tfm/00\_docs/logs\_terminal/}]}\vspace{0.5cm}}}
     \caption{Captura completa del terminal de lectura ADC (placa CDHS).}
     \label{fig:cdhs_adc_terminal}
 \end{figure}

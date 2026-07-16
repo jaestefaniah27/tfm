@@ -120,7 +120,7 @@ Para reproducir solo el benchmark no hace falta compilar nada: en `03_bench_loop
 
 Medida la placa de verdad (14 transceptores RS-485/RS-422), con los nueve tests de [04_pcb_caracterizacion](tfm/04_pcb_caracterizacion/README.md): polarización de reposo, mapa de conectividad real, integridad del multidrop, velocidad máxima por bus, efecto del limitador de slew, guard time del DE, diafonía, colisión y estabilidad.
 
-El resultado que cambia las cosas: **el bit SLO está invertido respecto al chip transceptor**. Con el valor por defecto (`SLO=0`), que es en realidad el modo *slew-limitado*, el bus A multidrop topa en 460 kbps y los RS-422 en 1 Mbps. Poniendo ese bit a 1, los tres buses van limpios a **4 Mbps**. Detalle y salvedades en [RESULTADOS.md](tfm/04_pcb_caracterizacion/RESULTADOS.md).
+El resultado que cambia las cosas: **la placa venía con el limitador de slew de los transceptores activado**. El pin `SLO` del LTC2865 es un *Slow Mode Enable* activo a nivel bajo (0 = capado a 250 kbps; 1 = 20 Mbps), y el valor por defecto del driver era 0 —pese a que la macro se llama `TRANSCEIVER_SLO_OFF`—. Con él, el bus A multidrop topa en 460 kbps y los RS-422 en 1 Mbps. Poniendo ese bit a 1, los tres buses van limpios a **4 Mbps**. Detalle y salvedades en [RESULTADOS.md](tfm/04_pcb_caracterizacion/RESULTADOS.md).
 
 ## Dependencias no versionadas
 

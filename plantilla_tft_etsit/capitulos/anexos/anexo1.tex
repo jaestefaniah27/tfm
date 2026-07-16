@@ -217,3 +217,50 @@ incremento configurados y el error medido en ppm respecto a la frecuencia nomina
     \caption{Tabla NCO: frecuencias de baudrate soportadas y error medido (extracto, modo \textit{full-bit}).}
     \label{tab:nco}
 \end{table}
+
+\section*{A1.5 Volumen y distribución del código desarrollado}
+
+Se recoge aquí el recuento de líneas de código de autoría propia escritas en el trabajo, desglosado
+por lenguaje y por función. El criterio de recuento es restrictivo: se excluye todo el código
+generado automáticamente por las herramientas (los IPs de Xilinx, los ficheros que Vivado produce al
+empaquetar un IP o al sintetizar un diseño de bloques), el código de terceros incorporado al
+proyecto (el sistema de compilación \texttt{waf} de RTEMS, el árbol de dispositivos de Xilinx) y las
+copias de un mismo fichero replicadas entre las distintas variantes del proyecto, de las que se
+contabiliza únicamente la versión final.
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{llrr}
+        \hline
+        \textbf{Lenguaje} & \textbf{Función} & \textbf{Líneas} & \textbf{Peso} \\
+        \hline
+        TCL   & Automatización del flujo de Vivado          & 5.338  & 26,4\,\% \\
+        VHDL  & RTL sintetizable (transceptor, puente)      & 4.710  & 23,3\,\% \\
+        VHDL  & \textit{Testbenches} de simulación          & 4.551  & 22,5\,\% \\
+        C     & Driver RTEMS y aplicaciones de prueba       & 2.617  & 13,0\,\% \\
+        Python& Utilidades de instrumentación y GUI         & 1.525  & 7,6\,\% \\
+        Bash  & Compilación y despliegue de imágenes        & 1.231  & 6,1\,\% \\
+        XDC   & \textit{Constraints} de la FPGA             & 216    & 1,1\,\% \\
+        \hline
+        \multicolumn{2}{l}{\textbf{Total}} & \textbf{20.188} & \textbf{100\,\%} \\
+        \hline
+    \end{tabular}
+    \caption{Distribución de las líneas de código desarrolladas en el trabajo.}
+    \label{tab:loc}
+\end{table}
+
+La distribución es en sí misma un resultado, y admite dos lecturas que respaldan los principios
+metodológicos enunciados en la sección de metodología.
+
+La primera es que el \textbf{código de verificación pesa prácticamente lo mismo que el código que
+verifica}: 4.551 líneas de \textit{testbench} frente a 4.710 de VHDL sintetizable, una relación de
+0,97:1. Por cada línea de hardware descrita se escribió casi una línea destinada exclusivamente a
+comprobarla en simulación, lo que cuantifica la política de no integrar ningún bloque sin
+verificación previa aislada.
+
+La segunda es que la \textbf{automatización es la mayor partida del trabajo}: TCL, Bash y Python
+suman 8.094 líneas, el 40,1\,\% del total, por encima de cualquier otra categoría y muy por encima
+del código de aplicación. Es la traducción cuantitativa de una decisión deliberada ---invertir por
+adelantado en herramientas que hicieran el flujo reproducible y barato de iterar--- cuyo retorno se
+manifestó en las campañas de depuración, donde regenerar el diseño completo desde cero pasó a ser
+un comando en lugar de una tarde de trabajo manual.

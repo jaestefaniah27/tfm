@@ -1,4 +1,4 @@
-# 05 — Firmware de arranque
+# 06 — Firmware de arranque
 
 ## `fsbl_cdhs/`
 FSBL (*First Stage Boot Loader*) de Xilinx, versión `fsbl_full_cdhs_with_rx_patch`: la más completa usada en el TFM, con el parche de inicialización del receptor serie.

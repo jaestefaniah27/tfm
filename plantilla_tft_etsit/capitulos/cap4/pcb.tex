@@ -1,0 +1,320 @@
+% ===========================================================================
+% CAPÍTULO 4 — RESULTADOS: caracterización eléctrica de la PCB de diseño propio
+% ===========================================================================
+
+\section{Caracterización eléctrica de la PCB de comunicación serie} \label{sec:resultados_pcb}
+
+La comparativa de la sección anterior mide el \textbf{transporte} entre el PS y la PL, y por eso
+puede ejecutarse con el lazo cerrado dentro de la FPGA. Esta sección mide otra cosa distinta: la
+\textbf{placa de diseño propio}. Todo lo que se caracteriza aquí sale por los pines del MPSoC,
+atraviesa los catorce transceptores RS-485/RS-422, recorre el cobre y vuelve.
+
+La campaña se ejecuta sobre el transporte MCDMA, que es la solución final, con un
+\textit{bitstream} \textbf{sin el módulo de \textit{loopback}} ---requisito que no se puede saltar:
+con el \textit{bitstream} del banco de pruebas, los pines de recepción están desconectados de los
+transceptores y la PCB sería sencillamente invisible.
+
+La topología física de la placa, fijada por los \textit{jumpers}, es la siguiente:
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{llll}
+        \hline
+        \textbf{Bus} & \textbf{Tipo} & \textbf{Maestro} & \textbf{Esclavos} \\
+        \hline
+        A & RS-485 multipunto (7 nodos en un bus compartido) & CH0  & CH1--CH6 \\
+        B & RS-422 punto a punto (estrella desde el maestro) & CH7  & CH8--CH10 \\
+        C & RS-422 punto a punto (estrella desde el maestro) & CH11 & CH12--CH13 \\
+        \hline
+    \end{tabular}
+    \caption{Topología de buses de la PCB de comunicación serie.}
+    \label{tab:pcb_topologia}
+\end{table}
+
+Es importante subrayar que \textbf{ningún test da esta topología por supuesta}: el test T2 la mide,
+y el resto se apoya en lo medido. La diferencia entre el bus A y los buses B y C condiciona la
+lectura de todos los resultados: en el multipunto los seis esclavos se oyen entre sí, mientras que
+en los punto a punto los esclavos solo oyen al maestro.
+
+% ---------------------------------------------------------------------------
+\subsection{Los nueve tests}
+% ---------------------------------------------------------------------------
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{p{3.1cm} p{11.4cm}}
+        \hline
+        \textbf{Test} & \textbf{Resultado} \\
+        \hline
+        T1 Reposo & \textbf{0 bytes espurios} en los catorce canales: la polarización de \textit{fail-safe} de la placa funciona y las líneas no flotan. \\
+        T2 Topología & Los tres buses están puenteados como indican los \textit{jumpers} y \textbf{no hay ni un cruce entre buses} (0 enlaces no esperados). \\
+        T3 Multipunto & \textbf{6/6 esclavos} del bus A oyen íntegro al maestro, hasta 460~kbps. \\
+        T4 Velocidad máx. & Bus A: \textbf{460~kbps}. Buses B y C: \textbf{1~Mbps}. Por encima, la tasa de error se dispara. \\
+        T5 Limitador SLO & Con el bit SLO a 1, los tres buses llegan \textbf{limpios a 4~Mbps}. \\
+        T6 Vuelta del bus & \textit{Guard time} mínimo de \textbf{0~$\mu$s}: el control de dirección del transceptor suelta la línea a tiempo y no hace falta guarda en software. \\
+        T7 Diafonía & \textbf{0 bytes de fuga} del bus A hacia los buses B y C. \\
+        T8 Colisión & La trama sale corrupta ---como debe--- y el bus \textbf{se recupera}: el intercambio siguiente es limpio. \\
+        T9 Estabilidad & 10~s de tráfico continuo: bus A a 460~kbps, BER de 147~ppm; buses B y C a 1~Mbps, \textbf{BER de 0}. \\
+        \hline
+    \end{tabular}
+    \caption{Resultado de los nueve tests de caracterización de la PCB.}
+    \label{tab:pcb_resumen}
+\end{table}
+
+El contador de fallos de transmisión de la campaña completa es \textbf{cero}: ningún envío se quedó
+sin salir, de modo que todas las cifras corresponden a bytes que de verdad viajaron por el bus. Esta
+distinción no es una formalidad: confundir «el transporte no llegó a transmitir» con «el bus
+corrompió los bytes» fue precisamente lo que invalidó la primera tanda de medidas, en la que los
+buses B y C aparecían rotos y era mentira.
+
+% ---------------------------------------------------------------------------
+\subsection{El hallazgo principal: el limitador de slew estaba activo por defecto} \label{sec:pcb_slo}
+% ---------------------------------------------------------------------------
+
+El resultado más relevante de toda la caracterización es que \textbf{la placa venía funcionando con
+el limitador de \textit{slew} de los transceptores activado sin que nadie lo supiera}, y que
+desactivarlo multiplica por cuatro la velocidad de los tres buses. La medida, repetida en dos tandas
+independientes, es la de la figura~\ref{fig:pcb_slo}.
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            benchbar,
+            height=6.4cm,
+            width=0.92\textwidth,
+            ylabel={Velocidad máxima sin errores (Mbps)},
+            ymin=0, ymax=5.2,
+            bar width=22pt,
+            symbolic x coords={Bus A, Bus B, Bus C},
+            xtick={Bus A, Bus B, Bus C},
+            nodes near coords={\pgfmathprintnumber[fixed, fixed zerofill, precision=2]{\pgfplotspointmeta}},
+            legend style={at={(0.5,1.04)}, anchor=south, legend columns=2, font=\footnotesize,
+                /tikz/every even column/.append style={column sep=0.5cm}},
+        ]
+        \addplot[fill=cGPIO,  draw=none] coordinates {(Bus A,0.46) (Bus B,1.0) (Bus C,1.0)};
+        \addplot[fill=cMCDMA, draw=none] coordinates {(Bus A,4.0) (Bus B,4.0) (Bus C,4.0)};
+        \legend{Limitador activo (SLO = 0\, por defecto), Limitador desactivado (SLO = 1)}
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Velocidad máxima con tasa de error nula en cada bus de la PCB, según el valor del bit
+    SLO. Más es mejor. El pin \texttt{SLO} del LTC2865 es un habilitador de modo lento activo a nivel
+    bajo: con el valor por defecto (0) el limitador de \textit{slew} está \textit{activo} y capa el
+    driver a 250~kbps nominales, y el bus multipunto topa en 460~kbps. Desactivándolo (1), los tres
+    buses llegan limpios a 4~Mbps.}
+    \label{fig:pcb_slo}
+\end{figure}
+
+El resultado es contraintuitivo si uno se fía del nombre que el software da al bit: la macro
+\texttt{TRANSCEIVER\_SLO\_OFF} vale 0 ---y es el valor por defecto--- y \texttt{TRANSCEIVER\_SLO\_ON}
+vale 1. Poner a 1 lo que se llama «SLO activado» hace que el enlace vaya \textit{más rápido}, cuando
+un limitador de \textit{slew} solo puede costar velocidad: frenar los flancos nunca puede darla.
+
+La explicación no está en la PCB ni en el VHDL, sino en la hoja de características del transceptor.
+El componente empleado es el \textbf{LTC2865} \cite{ltc2865}, y su pin \texttt{SLO} es un habilitador
+de modo lento \textbf{activo a nivel bajo}:
+
+\begin{quote}
+\textit{«SLO (Slow Mode Enable): a low input switches the transmitter to the slew rate limited
+250\,kbps max data rate mode. A high input supports 20\,Mbps.»}
+\end{quote}
+
+Es decir: \textbf{el hardware no está invertido, sino que se comporta exactamente como especifica su
+fabricante}. Lo que está mal es el nombre de la macro en el software. Con el bit a 0 ---el valor por
+defecto--- el driver queda \textbf{capado a 250~kbps nominales}, y con el bit a 1 el limitador se
+\textit{desactiva} y el driver da hasta 20~Mbps. El bit no entra en el núcleo serie
+---\texttt{CONFIGURABLE\_SERIAL.vhd} no tiene ninguna entrada \texttt{slo}---, sino que viaja del
+registro de configuración directamente al pin del chip, sin inversores ni lógica intermedia, como
+confirma el esquemático de la placa.
+
+Las cifras medidas encajan con esa especificación con una precisión que no deja lugar a dudas:
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{lrr}
+        \hline
+        \textbf{Bus} & \textbf{Máx. medido (SLO = 0)} & \textbf{Nominal del chip} \\
+        \hline
+        A (RS-485 multipunto, 7 nodos) & 460~kbps  & \multirow{3}{*}{250~kbps} \\
+        B (RS-422 punto a punto)       & 1~Mbps    & \\
+        C (RS-422 punto a punto)       & 1~Mbps    & \\
+        \hline
+    \end{tabular}
+    \caption{Velocidad máxima medida con el limitador activo, frente al máximo nominal del LTC2865 en
+    ese modo. Los tres buses superan el nominal, que es un valor garantizado y por tanto conservador.}
+    \label{tab:pcb_slo_nominal}
+\end{table}
+
+Los tres buses aguantan \textit{por encima} de los 250~kbps nominales ---lo cual es esperable, ya que
+se trata de un límite garantizado y conservador, medido aquí sobre pistas cortas y a temperatura
+ambiente---, y el orden entre ellos es exactamente el que la física predice: el bus más cargado, el
+multipunto de siete nodos, es el que menos margen tiene sobre el nominal, mientras que los dos
+enlaces punto a punto, con la línea mucho más descargada, estiran hasta 1~Mbps. En cuanto se pide más
+velocidad, el tiempo de flanco pasa a ser una fracción apreciable del tiempo de bit, el ojo se cierra
+y aparecen los errores.
+
+Conviene deshacer aquí una intuición equivocada, porque es fácil caer en ella: el limitador de
+\textit{slew} \textbf{no mejora} la integridad de la señal a alta velocidad. Hace lo contrario. Su
+utilidad es reducir la emisión electromagnética cuando se trabaja despacio, y ese beneficio se paga
+en ancho de banda. Con el limitador desactivado el driver es de 20~Mbps, de modo que los 4~Mbps del
+barrido caen \textbf{holgadamente dentro de especificación}, y de ahí que la tasa de error sea nula
+en todos los puntos.
+
+La consecuencia práctica es inmediata y notable: \textbf{la PCB da 4~Mbps en los tres buses}, cuatro
+veces más de lo que se venía usando, sin tocar una sola pista de cobre y sin resintetizar nada. Basta
+con poner ese bit a 1 ---y renombrar la macro, que es la que indujo el error.
+
+La figura~\ref{fig:pcb_ber} muestra el mismo fenómeno visto desde la tasa de error del bus
+multipunto, que es el más exigente de los tres.
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            bench,
+            height=6.6cm,
+            xmode=log, log basis x=10,
+            xlabel={Velocidad de línea (baudios)},
+            ylabel={Tasa de error, BER (ppm)},
+            xmin=7000, xmax=5500000,
+            ymin=-40000, ymax=1150000,
+            xtick={9600, 115200, 460800, 921600, 2000000, 4000000},
+            xticklabels={{9,6k}, 115k, 461k, 922k, 2M, 4M},
+            scaled y ticks=false,
+            ytick={0, 250000, 500000, 750000, 1000000},
+            yticklabels={0, 250\,000, 500\,000, 750\,000, 1\,000\,000},
+            xmajorgrids=true,
+            legend style={at={(0.02,0.97)}, anchor=north west},
+        ]
+        \addplot[color=cGPIO, line width=1.4pt, mark=square*, mark size=2.2pt,
+                 mark options={fill=cGPIO, draw=white, line width=0.6pt}]
+            coordinates {(9600,0) (115200,0) (460800,0) (921600,52734) (1000000,15625) (2000000,1000000)};
+        \addlegendentry{SLO = 0: limitador activo (por defecto)}
+
+        \addplot[color=cMCDMA, line width=1.4pt, mark=*, mark size=2.4pt,
+                 mark options={fill=cMCDMA, draw=white, line width=0.6pt}]
+            coordinates {(9600,0) (115200,0) (460800,0) (921600,0) (1000000,0)
+                         (2000000,0) (3000000,0) (4000000,0)};
+        \addlegendentry{SLO = 1: limitador desactivado}
+
+        \node[anchor=east, font=\footnotesize, text=cGPIO!85!black,
+              fill=white, inner sep=1.5pt]
+            at (axis cs:1900000,780000) {el enlace se cae};
+        \node[anchor=west, font=\footnotesize, text=cMCDMA!80!black,
+              fill=white, inner sep=1.5pt]
+            at (axis cs:11000,150000) {BER 0 en todo el barrido, hasta 4~Mbps};
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Tasa de error del bus A (RS-485 multipunto, 7 nodos) frente a la velocidad de línea,
+    con y sin el limitador de \textit{slew}. Con el limitador activo ---el valor por defecto--- el
+    enlace se degrada a partir de 460~kbps y colapsa por completo a 2~Mbps, coherente con el máximo
+    nominal de 250~kbps del chip en ese modo; desactivándolo la tasa de error es nula en todo el
+    barrido. Los puntos de 3 y 4~Mbps no existen en la curva de SLO~=~0 porque el barrido se
+    interrumpe en cuanto un punto no deja pasar un solo byte correcto.}
+    \label{fig:pcb_ber}
+\end{figure}
+
+% ---------------------------------------------------------------------------
+\subsection{Comportamiento del bus multipunto}
+% ---------------------------------------------------------------------------
+
+El bus A topa antes que los otros dos (460~kbps frente a 1~Mbps con el mismo ajuste de SLO), y esto
+es coherente con su naturaleza y no un defecto de la placa: siete nodos colgados de un bus
+compartido cargan más la línea y reflejan más que un enlace punto a punto. La diferencia se mantiene
+en la parte alta del barrido incluso con el bit SLO a 1, de modo que es independiente del hallazgo
+anterior.
+
+El test T3 lo muestra con claridad: cuenta cuántos de los seis esclavos oyen la trama del maestro
+\textbf{íntegra} a cada velocidad.
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{lrrrrr}
+        \hline
+        \textbf{Velocidad} & 9\,600 & 115\,200 & 460\,800 & 921\,600 & 1~M \\
+        \hline
+        Esclavos íntegros (de 6) & 6 & 6 & \textbf{6} & 5 & 0 \\
+        Esclavos parciales       & 0 & 0 & 0 & 1 & 6 \\
+        \hline
+    \end{tabular}
+    \caption{Integridad del bus multipunto (T3) frente a la velocidad, con SLO~=~0. El escalón entre
+    460~kbps y 1~Mbps es nítido.}
+    \label{tab:pcb_multidrop}
+\end{table}
+
+La transición no es gradual sino un escalón: a 460~kbps los seis esclavos reciben la trama completa;
+a 921~kbps ya hay uno que la recibe truncada; a 1~Mbps ninguno la recibe entera. Ese punto de
+ruptura es el que define la velocidad de operación del bus, y es el que el bit SLO desplaza hasta
+4~Mbps.
+
+% ---------------------------------------------------------------------------
+\subsection{Integridad, aislamiento y estabilidad}
+% ---------------------------------------------------------------------------
+
+El resto de la campaña confirma que la placa se comporta como debe en los aspectos que no dependen
+de la velocidad:
+
+\textbf{Polarización de reposo (T1).} Con los catorce transceptores callados y escuchando durante
+300~ms, no aparece \textbf{ni un solo byte espurio} en ningún canal. Es la comprobación más barata
+de que la red de polarización de \textit{fail-safe} existe y hace su trabajo: si la línea flotara, el
+receptor amplificaría el ruido y lo entregaría como datos.
+
+\textbf{Aislamiento entre buses (T7).} Saturando el bus A con una ráfaga a su velocidad máxima, no se
+filtra \textbf{ni un byte} a los buses B y C. No hay acoplamiento apreciable entre pistas ni cruces
+de cableado, lo que la matriz de conectividad de T2 confirma de forma independiente: cero enlaces no
+esperados.
+
+\textbf{Vuelta del bus (T6).} En \textit{half-duplex}, el esclavo no puede contestar hasta que el
+maestro haya soltado la línea. Barriendo el tiempo de guarda desde 0 hasta 1000~$\mu$s, las ocho
+respuestas llegan íntegras \textbf{ya con guarda nula}: el control de dirección que genera el propio
+transceptor libera la línea a tiempo, y cualquier protocolo que se monte encima no necesita añadir
+guarda por software.
+
+\textbf{Colisión (T8).} Cuando dos esclavos emiten a la vez, la trama sale corrupta ---eso es física:
+los drivers hacen un AND cableado---, pero el bus \textbf{se recupera} y el intercambio siguiente es
+limpio. Ningún driver se queda enganchado conduciendo.
+
+\textbf{Estabilidad sostenida (T9).} Diez segundos de tráfico continuo por bus, a la velocidad máxima
+limpia de cada uno:
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{lrrrr}
+        \hline
+        \textbf{Bus} & \textbf{Velocidad} & \textbf{Tramas} & \textbf{Bytes} & \textbf{BER} \\
+        \hline
+        A (RS-485 multipunto) & 460\,800  & 6\,781  & 433\,984 & 147 ppm \\
+        B (RS-422)            & 1\,000\,000 & 14\,408 & 922\,112 & \textbf{0} \\
+        C (RS-422)            & 1\,000\,000 & 14\,466 & 925\,824 & \textbf{0} \\
+        \hline
+    \end{tabular}
+    \caption{Tasa de error en régimen permanente (T9), 10~s de tráfico continuo por bus.}
+    \label{tab:pcb_estabilidad}
+\end{table}
+
+Los dos buses RS-422 no cometen \textbf{un solo error} en casi un millón de bytes cada uno. El bus
+multipunto se queda en 147~ppm, una cifra baja pero no nula, coherente con la mayor exigencia de una
+línea compartida por siete nodos cerca de su límite de velocidad.
+
+% ---------------------------------------------------------------------------
+\subsection{Salvedades del método}
+% ---------------------------------------------------------------------------
+
+Tres precisiones sobre lo que estos números pueden y no pueden sostener:
+
+\textbf{Los conteos parciales de la matriz de conectividad no miden calidad de enlace.} En la matriz
+de T2 aparecen enlaces con 25 de 32 bytes correctos, y sin embargo T3 y T4 a esa misma velocidad dan
+seis de seis esclavos íntegros y BER nulo sobre 1024 bytes. Es un artefacto del método de T2, que
+espera un tiempo fijo y lee una sola vez: si un byte llega tarde se pierde y descuadra la
+comparación. T2 vale para el \textbf{mapa} de conectividad, que es para lo que está, y no para
+cuantificar.
+
+\textbf{Los ocho enlaces que faltan en la matriz no son un fallo.} De los sesenta enlaces esperados
+se miden cincuenta y dos. Los ocho ausentes son los esclavos de los buses B y C, que no se oyen entre
+sí porque esos buses son RS-422 punto a punto en estrella desde el maestro, y no multipunto. La
+topología medida coincide exactamente con la física de la placa.
+
+\textbf{El contador de errores de hardware de T9 no es fiable}, y no se ha usado para ninguna
+conclusión: marca millones de errores en tandas cuyo BER medido es nulo, de modo que está contando
+algo que no son errores de trama. Las cifras de BER de la tabla~\ref{tab:pcb_estabilidad} se calculan
+comparando byte a byte lo recibido con lo enviado.

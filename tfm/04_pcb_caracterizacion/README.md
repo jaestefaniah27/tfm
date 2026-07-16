@@ -8,8 +8,11 @@ jumpers. Todo lo que se mide aquí sale por los pines y vuelve.
 Corre sobre el transporte MCDMA, que es la solución final del TFM.
 
 Los resultados medidos, con su interpretación, están en [RESULTADOS.md](RESULTADOS.md).
-El titular: **el bit SLO está invertido respecto al chip, y poniéndolo a 1 los tres
-buses pasan de 460 kbps–1 Mbps a 4 Mbps limpios.**
+El titular: **la placa venía con el limitador de slew activado sin saberlo.** El pin
+`SLO` del LTC2865 es un habilitador de modo lento *activo a nivel bajo* (0 = capado a
+250 kbps; 1 = 20 Mbps), y el valor por defecto era 0. Poniéndolo a 1 los tres buses
+pasan de 460 kbps–1 Mbps a 4 Mbps limpios. El hardware no está invertido: lo que
+induce a error es el nombre de la macro en `transceiver.h`.
 
 ```
 04_pcb_caracterizacion/
@@ -155,11 +158,11 @@ El SLO no entra en el core serie: `CONFIGURABLE_SERIAL.vhd` no tiene ninguna
 entrada `slo`. El bit va del registro `AXI_UART_CONFIG` al pin SLO del **chip
 transceptor**, así que lo que este test caracteriza es el componente, no el RTL.
 
-Es el test que destapó que **la polaridad está invertida** respecto a lo que dice
-el nombre de la macro en `transceiver.h`: con el bit a 1 los tres buses llegan
-limpios a 4 Mbps, y con el bit a 0 —el valor por defecto— el bus A se queda en
-460 kbps. Un limitador de slew no puede *subir* la velocidad máxima; luego el 1 es
-el modo rápido del chip, y el 0 (el que se venía usando) es el slew-limitado.
+Es el test que destapó que el valor por defecto (`SLO = 0`) deja el limitador
+**activado**: el datasheet del LTC2865 define el pin como *Slow Mode Enable* activo a
+nivel bajo (0 = slew-limitado, 250 kbps máx.; 1 = 20 Mbps). Con el bit a 1 los tres
+buses llegan limpios a 4 Mbps; con el bit a 0 el bus A se queda en 460 kbps. El chip
+cumple su especificación; el que engaña es el nombre de la macro en `transceiver.h`.
 
 ### T6 — Vuelta del bus: el guard time del DE
 
