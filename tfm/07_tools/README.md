@@ -1,4 +1,4 @@
-# 06 — Herramientas de desarrollo
+# 07 — Herramientas de desarrollo
 
 Comunes a todas las apps RTEMS del repo.
 

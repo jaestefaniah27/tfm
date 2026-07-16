@@ -31,6 +31,52 @@
 \usepackage{tabularx}
 \usepackage{multirow}
 
+% --- Gráficos de la comparativa de transportes (capítulo de resultados) ---
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{groupplots}
+
+% Paleta categórica: un color fijo por variante, nunca reasignado.
+\definecolor{cGPIO}{HTML}{2A78D6}   % azul
+\definecolor{cDMA14}{HTML}{1BAF7A}  % aguamarina
+\definecolor{cMCDMA}{HTML}{EDA100}  % ámbar
+\definecolor{cRef}{HTML}{8A8A85}    % gris: líneas de referencia y rejilla
+
+% Formato de número español: coma decimal y espacio fino como separador de millares.
+\pgfplotsset{
+  /pgf/number format/.cd,
+    use comma,
+    1000 sep={\,},
+}
+
+% Estilo común: rejilla discreta, sin marco superior/derecho, barras finas.
+\pgfplotsset{
+  bench/.style={
+    width=0.86\textwidth,
+    font=\small,
+    axis lines=left,
+    axis line style={cRef!70},
+    tick align=outside,
+    tick style={cRef!70},
+    ymajorgrids=true,
+    grid style={cRef!30, very thin},
+    legend style={draw=none, fill=none, font=\small},
+    every axis label/.style={font=\small},
+    label style={font=\small},
+    nodes near coords style={font=\footnotesize},
+  },
+  benchbar/.style={
+    bench,
+    ybar,
+    bar width=18pt,
+    enlarge x limits=0.2,
+    ymin=0,
+    xtick=data,
+    nodes near coords,
+    every node near coord/.append style={anchor=south},
+  },
+}
+
 % --- Configuración de listings para código ---
 \lstset{
   basicstyle=\ttfamily\small,
@@ -177,14 +223,18 @@
 
 \chapter{Marco teórico}
     \import{capitulos/cap2/}{ejemplo.tex}
+    \import{capitulos/cap2/}{transporte.tex}
 \newpage
 
 \chapter{Desarrollo}
     \import{capitulos/cap3/}{ejemploDesarrollo.tex}
+    \import{capitulos/cap3/}{transporte.tex}
 \newpage
 
 \chapter{Resultados}
     \import{capitulos/cap4/}{ejemploResultados.tex}
+    \import{capitulos/cap4/}{benchmark.tex}
+    \import{capitulos/cap4/}{pcb.tex}
 \newpage
 
 \chapter{Conclusiones y líneas futuras}

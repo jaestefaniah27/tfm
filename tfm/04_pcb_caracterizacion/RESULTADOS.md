@@ -24,32 +24,48 @@ CSV: `resultados/caracterizacion.csv`.
 `fallos_tx_total = 0`: ni un envío se quedó sin transmitir, así que todas las
 cifras corresponden a bytes que de verdad viajaron por el bus.
 
-## El hallazgo principal: el bit SLO está invertido respecto al chip
+## El hallazgo principal: el limitador de slew venía activo por defecto
 
-El software llama `TRANSCEIVER_SLO_OFF` al 0 (valor por defecto) y
-`TRANSCEIVER_SLO_ON` al 1. Medido, en dos tandas independientes:
+El transceptor de la placa es un **LTC2865** (Analog Devices, doc `2862345fc`). Su
+datasheet dice, textualmente:
 
-| Bus | SLO = 0 (por defecto) | SLO = 1 |
+> *SLO (Slow Mode Enable): a low input switches the transmitter to the slew rate
+> limited 250 kbps max data rate mode. A high input supports 20 Mbps.*
+
+**El pin es un habilitador de modo lento activo a nivel BAJO.** Es decir:
+
+- `SLO = 0` (el valor por defecto) → limitador **ACTIVO** → driver capado a 250 kbps nominales.
+- `SLO = 1` → limitador **DESACTIVADO** → driver de 20 Mbps.
+
+**El hardware no está invertido**: se comporta exactamente como especifica el
+fabricante, y el bit va del registro `AXI_UART_CONFIG` directo al pin del chip, sin
+inversores (`CONFIGURABLE_SERIAL.vhd` no tiene entrada `slo`). Lo que está mal es el
+**nombre de la macro** en `transceiver.h`: `TRANSCEIVER_SLO_OFF` vale 0 y en realidad
+*enciende* el modo lento. Ese nombre es lo que despistó durante toda la campaña.
+
+Medido, en dos tandas independientes:
+
+| Bus | SLO = 0 (limitador activo) | SLO = 1 (limitador desactivado) |
 |---|---|---|
 | A (RS485, multidrop de 7 nodos) | 460 kbps | **4 Mbps** |
 | B (RS422) | 1 Mbps | **4 Mbps** |
 | C (RS422) | 1 Mbps | **4 Mbps** |
 
-Un limitador de slew **no puede subir** la velocidad máxima: frena los flancos, y
-eso solo puede costar velocidad. Que el bit a 1 dé más velocidad significa que el
-1 es el modo **rápido** del transceptor. Es decir, lo que el software llama
-"SLO OFF" es en realidad el driver *slew-limitado*, y por eso el bus A se queda en
-460 kbps en la configuración por defecto.
+Las cifras encajan con el nominal de 250 kbps del modo lento: los tres buses lo
+superan —es un máximo garantizado, y por tanto conservador— y el orden es el que la
+física predice. El bus más cargado (A, siete nodos en multidrop) es el que menos
+margen tiene; los punto a punto, con la línea mucho más descargada, estiran hasta
+1 Mbps. Al pedir más, el tiempo de flanco pasa a ser una fracción apreciable del
+tiempo de bit, el ojo se cierra y aparecen los errores (BER 52 734 ppm a 921 kbps,
+colapso total a 2 Mbps).
 
-El bit no entra en el core serie —`CONFIGURABLE_SERIAL.vhd` no tiene ninguna
-entrada `slo`—, sino que sale directo al pin SLO del chip transceptor:
-`AXI_UART_CONFIG` → `BRIDGE_UART_ADAPTER` → puerto `SLO[13:0]`. La polaridad la
-fija el chip. Está verificado el **efecto**, no la hoja de características: para
-cerrarlo del todo hay que mirar el datasheet del transceptor.
+Ojo con la intuición equivocada: **el limitador de slew no mejora la integridad de
+señal a alta velocidad, la empeora**. Sirve para reducir EMI cuando se va despacio, y
+ese beneficio se paga en ancho de banda. Con el limitador desactivado el driver es de
+20 Mbps, así que los 4 Mbps del barrido caen holgadamente dentro de especificación.
 
-Consecuencia práctica: **la PCB da 4 Mbps en los tres buses**, cuatro veces más de
-lo que se venía usando, sin más que poner ese bit a 1. Conviene corregir el nombre
-de la macro en `transceiver.h`, que induce a error.
+Consecuencia práctica: **la PCB da 4 Mbps en los tres buses**, cuatro veces más de lo
+que se venía usando, sin más que poner ese bit a 1 —y renombrar la macro.
 
 ## Qué cambió al conectar CH6
 

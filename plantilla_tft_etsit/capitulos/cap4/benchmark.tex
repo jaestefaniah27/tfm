@@ -1,0 +1,470 @@
+% ===========================================================================
+% CAPÍTULO 4 — RESULTADOS: comparativa de las tres arquitecturas de transporte
+% ===========================================================================
+
+\section{Comparativa de las arquitecturas de transporte PS--PL} \label{sec:resultados_benchmark}
+
+Esta sección recoge la medida de las tres arquitecturas descritas en la
+sección~\ref{sec:transporte_desarrollo}. Las tres se ejecutaron sobre la misma ZCU102, con el
+mismo transceptor serie de catorce canales, el mismo programa de pruebas
+(\texttt{bench\_main.c}) y los buses cerrados por el módulo de \textit{loopback} de la PL
+descrito en la sección~\ref{sec:bench_loopback}. Lo único que difiere entre las tres corridas es
+el transporte y su driver, que es precisamente lo que se quiere comparar.
+
+\paragraph{Una salvedad previa.} En la variante DMA14 \textbf{no se consiguió hacer funcionar el
+módulo de \textit{loopback}}: su autodiagnóstico detectó que el lazo de recepción estaba abierto
+y, en consecuencia, no llegó ningún byte. Como se explica en la
+sección~\ref{sec:transporte_desarrollo}, se decidió no invertir más tiempo en depurarlo, porque
+el coste en lógica y el límite de líneas de interrupción ya descartaban esta arquitectura como
+solución final. Todo lo que depende de recibir ---latencia, \textit{throughput}, multipunto,
+desbordamiento, recuperación--- sale a cero en esa variante, y ese cero \textbf{no mide el
+transporte}: mide la ausencia de lazo. Se hace constar con un guion en las tablas. Lo que sí es
+plenamente válido de esa corrida, y lo que sostiene el argumento sobre esta variante, es el coste
+de hardware, la huella de memoria y el coste en interrupciones de la transmisión.
+
+% ---------------------------------------------------------------------------
+\subsection{Coste de hardware}
+% ---------------------------------------------------------------------------
+
+Las tres arquitecturas están implementadas sobre el mismo dispositivo (XCZU9EG, 274\,080 LUT,
+548\,160 registros y 912 bloques de RAM), de modo que las cifras salen directamente de los
+informes de utilización de Vivado y son comparables sin normalización alguna.
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{lrrrrrrr}
+        \hline
+        \textbf{Variante} & \textbf{LUT} & \textbf{\%} & \textbf{Registros} & \textbf{BRAM} & \textbf{Potencia} & \textbf{WNS} & \textbf{LUT/canal} \\
+        \hline
+        GPIO   & 6\,434  & 2,35\,\%  & 7\,726  & 7  & 3,52 W & 4,69 ns & 460 \\
+        DMA14  & 40\,217 & 14,67\,\% & 53\,943 & 35 & 3,86 W & 4,05 ns & 2\,873 \\
+        MCDMA  & 14\,191 & 5,18\,\%  & 16\,438 & 18 & 3,62 W & 5,14 ns & 1\,014 \\
+        \hline
+    \end{tabular}
+    \caption{Ocupación de la lógica programable de las tres variantes sobre el XCZU9EG.}
+    \label{tab:bench_hw}
+\end{table}
+
+La figura~\ref{fig:bench_hw} representa las tres magnitudes normalizadas como porcentaje de los
+recursos disponibles en el dispositivo, que es lo que permite dibujarlas sobre un mismo eje y
+compararlas de un vistazo.
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            benchbar,
+            height=6.2cm,
+            ylabel={\% de los recursos del XCZU9EG},
+            ymax=17,
+            symbolic x coords={LUT, Registros, BRAM},
+            nodes near coords={\pgfmathprintnumber[fixed, fixed zerofill, precision=2]{\pgfplotspointmeta}\,\%},
+            legend style={at={(0.5,1.06)}, anchor=south, legend columns=3},
+        ]
+        \addplot[fill=cGPIO,  draw=none] coordinates {(LUT,2.35) (Registros,1.41) (BRAM,0.77)};
+        \addplot[fill=cDMA14, draw=none] coordinates {(LUT,14.67) (Registros,9.84) (BRAM,3.84)};
+        \addplot[fill=cMCDMA, draw=none] coordinates {(LUT,5.18) (Registros,3.00) (BRAM,1.97)};
+        \legend{GPIO, DMA14, MCDMA}
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Ocupación de la FPGA por variante, en porcentaje de los recursos del dispositivo.
+    Menos es mejor. El banco de catorce DMA triplica largamente el consumo de la solución
+    multicanal para el mismo número de canales.}
+    \label{fig:bench_hw}
+\end{figure}
+
+La cifra que resume la comparación es la última columna de la tabla. El banco de catorce AXI DMA cuesta
+\textbf{2,8 veces más lógica que el MCDMA} para exactamente el mismo número de canales, porque
+replica catorce motores completos en lugar de compartir uno multicanal. La variante GPIO es, con
+diferencia, la más pequeña ---y así debe ser: apenas contiene los transceptores y un puñado de
+registros---, pero ese ahorro de lógica no es gratuito: lo paga la CPU, como se ve más abajo.
+
+El margen de \textit{timing} (WNS) es positivo y holgado en las tres, de modo que ninguna cierra
+al límite y las diferencias de rendimiento no son atribuibles a la implementación física.
+
+% ---------------------------------------------------------------------------
+\subsection{Coste de software}
+% ---------------------------------------------------------------------------
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{lrrrrr}
+        \hline
+        \textbf{Variante} & \textbf{Código} & \textbf{RAM del driver} & \textbf{Líneas IRQ} & \textbf{Tareas} & \textbf{Semáforos} \\
+        \hline
+        GPIO  & 3\,099 B & 114\,688 B & 1 & 14 & 28 \\
+        DMA14 & 3\,036 B & 115\,584 B & 2 & 1  & 15 \\
+        MCDMA & 3\,884 B & 122\,434 B & 3 & 1  & 17 \\
+        \hline
+    \end{tabular}
+    \caption{Huella de software del driver de cada variante (tamaño de \texttt{.text} y recursos RTEMS reservados en ejecución).}
+    \label{tab:bench_sw}
+\end{table}
+
+La memoria total reservada es prácticamente la misma en las tres ---en torno a 112--120~KB,
+dominada por los \textit{buffers} circulares de 4~KB por canal---, aunque su origen difiere: la
+variante GPIO los pide con \texttt{malloc} y las de DMA los reservan estáticamente, porque el
+motor necesita direcciones fijas y alineadas.
+
+La diferencia significativa está en las \textbf{primitivas de RTEMS}. La variante GPIO necesita
+\textbf{una tarea de recepción por canal} ---catorce tareas y veintiocho semáforos--- porque cada
+canal drena su propio FIFO hardware de forma independiente. Las dos variantes con DMA se apañan
+con \textbf{una sola tarea de despacho}, ya que el motor entrega paquetes completos y la ISR solo
+tiene que señalizar quién ha terminado. Trece tareas menos es trece cambios de contexto menos, y
+trece pilas menos.
+
+% ---------------------------------------------------------------------------
+\subsection{Coste en interrupciones}
+% ---------------------------------------------------------------------------
+
+Esta es la métrica que explica todas las demás. Cuenta cuántas veces se expropia la CPU por cada
+kilobyte movido, acumulado sobre la sesión completa de pruebas.
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{lrrrrr}
+        \hline
+        \textbf{Variante} & \textbf{IRQ/KB} & \textbf{IRQ TX} & \textbf{IRQ RX} & \textbf{Bytes TX} & \textbf{Bytes RX} \\
+        \hline
+        GPIO  & 1\,250 & 22\,161 & 129\,382 & 22\,161 & 101\,890 \\
+        DMA14 & 3\,$^{*}$ & 85 & --- & 23\,132 & --- \\
+        MCDMA & \textbf{3} & 194 & 192 & 23\,132 & 101\,472 \\
+        \hline
+        \multicolumn{6}{l}{\footnotesize $^{*}$ Solo transmisión: sin lazo de recepción, la cifra no es comparable.} \\
+    \end{tabular}
+    \caption{Interrupciones por kilobyte transferido.}
+    \label{tab:bench_irq}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            benchbar,
+            height=5.6cm,
+            width=0.76\textwidth,
+            ylabel={Interrupciones por KB transferido},
+            bar shift=0pt,
+            ymax=1500,
+            bar width=30pt,
+            symbolic x coords={GPIO, DMA14, MCDMA},
+            xtick={GPIO, DMA14, MCDMA},
+            nodes near coords={\pgfmathprintnumber[fixed]{\pgfplotspointmeta}},
+        ]
+        \addplot[fill=cGPIO, draw=none] coordinates {(GPIO,1250)};
+        \addplot[fill=cDMA14, draw=none] coordinates {(DMA14,3)};
+        \addplot[fill=cMCDMA, draw=none] coordinates {(MCDMA,3)};
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Interrupciones por kilobyte transferido. Menos es mejor: cada interrupción es una
+    expropiación de la CPU. Las barras de DMA14 y MCDMA son invisibles a esta escala, y eso es
+    precisamente el resultado. La cifra de DMA14 recoge solo la transmisión.}
+    \label{fig:bench_irq}
+\end{figure}
+
+Los números hablan por sí solos. En la variante GPIO, el número de interrupciones de transmisión
+\textbf{coincide exactamente con el número de bytes transmitidos} (22\,161 y 22\,161): es la
+confirmación empírica de que el procesador toca cada byte. En recepción ocurre lo mismo, con un
+sobrecoste añadido por los eventos de estado. El resultado son \textbf{1250 interrupciones por
+kilobyte}.
+
+El MCDMA mueve la misma cantidad de datos con \textbf{194 interrupciones de transmisión y 192 de
+recepción}: tres por kilobyte, unas \textbf{cuatrocientas veces menos}. La CPU pasa de estar
+atendiendo el bus a estar disponible para la aplicación.
+
+% ---------------------------------------------------------------------------
+\subsection{Latencia}
+% ---------------------------------------------------------------------------
+
+Tiempo desde justo antes de la llamada de envío hasta que el receptor tiene el frame de 11 bytes
+completo, sobre 50 muestras.
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{lrrrrr}
+        \hline
+        \textbf{Variante} & \textbf{Media ($\mu$s)} & \textbf{p50} & \textbf{p95} & \textbf{Máx.} & \textbf{Timeouts} \\
+        \hline
+        GPIO  & 4\,606 & 4\,608 & 4\,611 & 4\,611 & 0 \\
+        DMA14 & --- & --- & --- & --- & 50 \\
+        MCDMA & \textbf{1\,530} & 1\,529 & 1\,535 & 1\,535 & 0 \\
+        \hline
+    \end{tabular}
+    \caption{Latencia de entrega de un frame de 11 bytes, del envío en el maestro a la
+    recepción completa en el esclavo (115\,200 8N1).}
+    \label{tab:bench_latencia}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            benchbar,
+            height=5.6cm,
+            width=0.7\textwidth,
+            ylabel={Latencia media ($\mu$s)},
+            bar shift=0pt,
+            ymax=5600,
+            scaled y ticks=false,
+            ytick={0,1000,2000,3000,4000,5000},
+            bar width=34pt,
+            symbolic x coords={GPIO, MCDMA},
+            xtick={GPIO, MCDMA},
+            nodes near coords={\pgfmathprintnumber[fixed]{\pgfplotspointmeta}},
+        ]
+        \addplot[fill=cGPIO, draw=none] coordinates {(GPIO,4606)};
+        \addplot[fill=cMCDMA, draw=none] coordinates {(MCDMA,1530)};
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Latencia media de entrega de un frame de 11 bytes. Menos es mejor. Se excluye
+    DMA14 por carecer de lazo de recepción.}
+    \label{fig:bench_latencia}
+\end{figure}
+
+El MCDMA es \textbf{tres veces más rápido} que el GPIO, y con una dispersión muy baja: la
+diferencia entre la mediana y el máximo es de 6~$\mu$s sobre 50 muestras, lo que indica un
+comportamiento notablemente determinista ---una propiedad especialmente valiosa en un sistema de
+tiempo real embarcado.
+
+% ---------------------------------------------------------------------------
+\subsection{Throughput}
+% ---------------------------------------------------------------------------
+
+A 115\,200 baudios en formato 8N1, cada byte ocupa 10 bits de línea, de modo que el techo físico
+de un canal es de \textbf{11\,520 B/s}. Esa es la referencia contra la que hay que leer la
+primera columna.
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{lrrrc}
+        \hline
+        \textbf{Variante} & \textbf{1 canal} & \textbf{3 maestros} & \textbf{6 receptores} & \textbf{Reps. sin pérdidas} \\
+        \hline
+        GPIO  & 3\,471 (30\,\%) & 10\,411 & 20\,838 & 5 / 5 \\
+        DMA14 & --- & --- & --- & --- \\
+        MCDMA & \textbf{11\,461 (99\,\%)} & \textbf{34\,303} & \textbf{68\,504} & 5 / 5 \\
+        \hline
+    \end{tabular}
+    \caption{\textit{Throughput} en B/s. El porcentaje es sobre el techo físico de la línea (11\,520 B/s).}
+    \label{tab:bench_throughput}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            benchbar,
+            height=6cm,
+            width=0.7\textwidth,
+            ylabel={\textit{Throughput} de un canal (B/s)},
+            bar shift=0pt,
+            ymax=14000,
+            scaled y ticks=false,
+            ytick={0,2000,4000,6000,8000,10000,12000},
+            % halo blanco tras la cifra: la línea de techo pasa justo por detrás
+            every node near coord/.append style={anchor=south, yshift=1pt,
+                fill=white, inner sep=1.2pt},
+            bar width=34pt,
+            symbolic x coords={GPIO, MCDMA},
+            xtick={GPIO, MCDMA},
+            nodes near coords={\pgfmathprintnumber[fixed]{\pgfplotspointmeta}},
+        ]
+        % Techo físico de la línea a 115200 8N1 (debajo de las barras y sus etiquetas)
+        \draw[cRef, dashed, thick] (axis cs:GPIO,11520) -- (axis cs:MCDMA,11520);
+        \node[anchor=south west, font=\footnotesize, text=black!65]
+            at (axis cs:GPIO,11700) {techo de línea: 11\,520 B/s};
+        \addplot[fill=cGPIO, draw=none] coordinates {(GPIO,3471)};
+        \addplot[fill=cMCDMA, draw=none] coordinates {(MCDMA,11461)};
+        \end{axis}
+    \end{tikzpicture}
+    \caption{\textit{Throughput} de un canal frente al techo físico de la línea a 115\,200 8N1.
+    Más es mejor. El MCDMA lo alcanza al 99\,\%; la variante GPIO se queda en el 30\,\%.}
+    \label{fig:bench_throughput}
+\end{figure}
+
+El MCDMA alcanza el \textbf{99\,\% del techo físico de la línea}: el transporte deja de ser el
+cuello de botella y el único límite pasa a ser la propia línea serie, que es exactamente el
+objetivo de diseño. La variante GPIO se queda en el 30\,\%: dos de cada tres bytes que la línea
+podría llevar se pierden atendiendo interrupciones.
+
+Con carga concurrente la diferencia se amplía en lugar de reducirse: con seis receptores
+simultáneos en el bus multipunto, el MCDMA sostiene \textbf{68\,504~B/s} frente a los 20\,838 del
+GPIO, y lo hace sin perder un solo byte.
+
+% ---------------------------------------------------------------------------
+\subsection{Barrido de velocidad}
+% ---------------------------------------------------------------------------
+
+La prueba más reveladora de todas. Se reprograman los catorce transceptores a cada velocidad y se
+mide un bloque de 1~KB en cada punto.
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{lrrrrrrr}
+        \hline
+        \textbf{Variante} & \textbf{115200} & \textbf{230400} & \textbf{460800} & \textbf{921600} & \textbf{1M} & \textbf{2M} & \textbf{4M} \\
+        \hline
+        GPIO  & 3\,471 & 4\,087 & 4\,485 & 4\,714 & 4\,733 & 4\,848 & 4\,907 \\
+        MCDMA & 11\,458 & 22\,789 & 45\,104 & 88\,298 & 96\,186 & 183\,053 & \textbf{344\,781} \\
+        \hline
+    \end{tabular}
+    \caption{\textit{Throughput} (B/s) frente a la velocidad de línea (baudios). La variante DMA14 se omite por carecer de lazo de recepción.}
+    \label{tab:bench_baudios}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            bench,
+            height=7.4cm,
+            xmode=log, ymode=log,
+            log basis x=10, log basis y=10,
+            xlabel={Velocidad de línea (baudios)},
+            ylabel={\textit{Throughput} (B/s)},
+            xmin=90000, xmax=5500000,
+            ymin=2000,  ymax=600000,
+            xtick={115200, 230400, 460800, 921600, 2000000, 4000000},
+            xticklabels={115k, 230k, 461k, 922k, 2M, 4M},
+            xmajorgrids=true,
+            legend style={at={(0.02,0.98)}, anchor=north west},
+        ]
+        \addplot[color=cMCDMA, line width=1.4pt, mark=*, mark size=2.4pt,
+                 mark options={fill=cMCDMA, draw=white, line width=0.6pt}]
+            coordinates {
+                (115200,11458) (230400,22789) (460800,45104) (921600,88298)
+                (1000000,96186) (2000000,183053) (4000000,344781)};
+        \addlegendentry{MCDMA}
+
+        \addplot[color=cGPIO, line width=1.4pt, mark=square*, mark size=2.2pt,
+                 mark options={fill=cGPIO, draw=white, line width=0.6pt}]
+            coordinates {
+                (115200,3471) (230400,4087) (460800,4485) (921600,4714)
+                (1000000,4733) (2000000,4848) (4000000,4907)};
+        \addlegendentry{GPIO}
+
+        % Anotaciones colocadas en hueco libre, con halo blanco para no pisar las curvas.
+        \node[anchor=west, font=\footnotesize, text=cMCDMA!80!black,
+              fill=white, inner sep=1.5pt]
+            at (axis cs:1250000,32000) {escala con la línea};
+        \node[anchor=north west, font=\footnotesize, text=cGPIO!85!black,
+              fill=white, inner sep=1.5pt]
+            at (axis cs:250000,3750) {saturado: el cuello de botella es la CPU};
+        \end{axis}
+    \end{tikzpicture}
+    \caption{\textit{Throughput} frente a la velocidad de línea, en escala logarítmica en ambos
+    ejes. El MCDMA crece de forma proporcional a la velocidad del enlace; la variante GPIO es una
+    recta plana, porque su límite no está en la línea sino en el coste de una interrupción por
+    byte. En el punto de 4~Mbaudios la diferencia es de 70 veces.}
+    \label{fig:bench_baudios}
+\end{figure}
+
+Aquí se ve, sin necesidad de más argumentos, la naturaleza del límite de cada arquitectura:
+
+\begin{itemize}
+    \item El \textbf{GPIO se satura}. Multiplicar la velocidad de línea por 35 (de 115\,200 a
+    4~Mbaudios) mejora el \textit{throughput} en un mísero 41\,\%, de 3471 a 4907~B/s. La curva es
+    plana porque \textbf{el cuello de botella no es la línea, es la CPU}: el coste de una
+    interrupción por byte no depende de lo rápido que vaya el bus. Por rápido que se haga el
+    hardware serie, el sistema no aprovechará esa velocidad.
+
+    \item El \textbf{MCDMA escala linealmente}. El \textit{throughput} crece de forma
+    prácticamente proporcional a la velocidad de línea, hasta \textbf{344\,781~B/s} a
+    4~Mbaudios: \textbf{70 veces} lo que consigue el GPIO en el mismo punto. La curva sigue a la
+    línea porque el transporte ya no interviene.
+\end{itemize}
+
+En los siete puntos, y en ambas variantes, el número de errores de transporte es \textbf{cero}: la
+saturación del GPIO no produce corrupción, solo pérdida de rendimiento.
+
+% ---------------------------------------------------------------------------
+\subsection{Robustez}
+% ---------------------------------------------------------------------------
+
+Dos pruebas adicionales verifican que la ganancia de rendimiento no se paga con fragilidad: el
+envío de tres frames corruptos seguidos de uno válido (T7) y el envío de 8~KB sin que la
+aplicación vacíe un \textit{ring} de 4~KB (T5), diseñado explícitamente para desbordar.
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{lccrr}
+        \hline
+        \textbf{Variante} & \textbf{Frames corruptos} & \textbf{Se recupera} & \textbf{Bytes aceptados} & \textbf{Bytes descartados} \\
+        \hline
+        GPIO  & 3 / 3 & sí & 24\,576 & 16\,246 \\
+        DMA14 & 3 / 3 & --- & --- & --- \\
+        MCDMA & 3 / 3 & sí & 24\,576 & 24\,576 \\
+        \hline
+    \end{tabular}
+    \caption{Rechazo de frames corruptos (T7) y comportamiento en desbordamiento del \textit{ring} de software (T5).}
+    \label{tab:bench_robustez}
+\end{table}
+
+Ambas variantes rechazan los tres frames corruptos y siguen aceptando el frame válido posterior:
+el error no deja el driver en un estado inconsistente.
+
+La columna de bytes descartados merece una aclaración, porque se presta a leerse al revés. \textbf{No
+son errores de transporte} ---esos son cero en las tres variantes---: cuentan un byte cada vez que
+un dato llega correctamente pero \textbf{no cabe en el \textit{ring} de software porque nadie lo ha
+leído}. La mayor parte procede de la prueba T5, cuyo propósito es justamente ese, y el resto de los
+canales que nadie lee en las pruebas de un solo maestro: al ser un bus multipunto, los seis
+receptores reciben cada bloque.
+
+Por eso el número del MCDMA es \textit{mayor} que el del GPIO, y eso es una buena noticia y no una
+mala: en la variante GPIO el propio cuello de botella de interrupciones frena la entrega ---el
+\textit{ring} se llena más despacio y desborda menos---, mientras que el MCDMA entrega a la
+velocidad de la línea todo lo que ésta produce y, en consecuencia, sobra más en los
+\textit{buffers} que la aplicación de prueba deliberadamente no vacía. \textbf{Un contador de
+descartes alto es aquí la firma de un transporte sano, no de uno defectuoso.} Conviene recordar
+que estas cifras corresponden a la campaña final, con las treinta y seis comprobaciones en verde:
+las corridas anteriores a las correcciones de contrapresión y de tamaño de paquete descritas en la
+sección~\ref{sec:transporte_depuracion} entregaban menos datos a los \textit{rings} y no son
+comparables.
+
+% ---------------------------------------------------------------------------
+\subsection{Discusión: qué arquitectura y por qué}
+% ---------------------------------------------------------------------------
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{p{3.2cm} p{3.4cm} p{3.4cm} p{3.4cm}}
+        \hline
+         & \textbf{GPIO} & \textbf{DMA14} & \textbf{MCDMA} \\
+        \hline
+        Lógica (LUT) & \textbf{6\,434} & 40\,217 & 14\,191 \\
+        IRQ/KB & 1\,250 & 3 (solo TX) & \textbf{3} \\
+        Throughput 1 canal & 3\,471 B/s (30\,\%) & --- & \textbf{11\,461 B/s (99\,\%)} \\
+        Latencia & 4\,606 $\mu$s & --- & \textbf{1\,530 $\mu$s} \\
+        Escala con el baudrate & no & --- & \textbf{sí} \\
+        Líneas IRQ necesarias & 1 & 28 (reducidas a 2) & 3 \\
+        Complejidad de diseño & \textbf{baja} & media & alta \\
+        \hline
+    \end{tabular}
+    \caption{Síntesis de la comparativa. En negrita, el mejor valor de cada fila.}
+    \label{tab:bench_resumen}
+\end{table}
+
+La conclusión que sostienen los datos es que \textbf{el MCDMA con puente VHDL es la arquitectura
+adecuada para este sistema}, y que su ventaja no procede de ser «más rápido» en un sentido vago,
+sino de una causa concreta y medible: \textbf{mueve paquetes en lugar de bytes}. Las 1250
+interrupciones por kilobyte de la variante GPIO se convierten en 3, y todo lo demás ---la
+latencia tres veces menor, el 99\,\% del techo de línea, la escalabilidad con la velocidad--- es
+consecuencia de eso.
+
+La variante DMA14 es instructiva precisamente por lo que demuestra que \textbf{no} hay que hacer.
+Fue el primer intento de mejorar la arquitectura frente al AXI GPIO, y resuelve el problema
+correcto ---quitar a la CPU de en medio--- pero por el camino equivocado: replicar catorce
+motores cuesta 2,8 veces más lógica y, sobre todo, exige veintiocho líneas de interrupción cuando
+el silicio solo ofrece ocho. La arquitectura no escala, y el límite no es del diseño sino del
+dispositivo. A ello se suma un argumento de futuro: un 14,7\,\% del dispositivo es una hipoteca
+incompatible con la triplicación TMR que exigiría endurecer el diseño frente a la radiación,
+mientras que el 5,2\,\% del MCDMA deja ese margen abierto. Es el conjunto de razones que
+justificó dejar de invertir en esta variante cuando su lazo de recepción se resistió, y el que
+sostiene el esfuerzo de diseñar el puente VHDL de la variante C: no era una optimización, era la
+única vía.
+
+En cuanto al GPIO, sigue siendo una opción perfectamente razonable \textbf{para pocos canales a
+baja velocidad}: es cuatro veces más pequeño en lógica, no necesita mapeo de MMU ni gestión de
+coherencia de caché, y su driver es sensiblemente más simple. Lo que los datos demuestran es que
+\textbf{no sirve para catorce canales}, y que su limitación no se cura subiendo la velocidad de la
+línea, porque el cuello de botella está en el otro extremo.

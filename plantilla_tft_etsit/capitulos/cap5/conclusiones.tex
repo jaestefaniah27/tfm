@@ -6,9 +6,10 @@ del proyecto LINCE. A lo largo del desarrollo se han obtenido los siguientes res
 
 El transceptor serie configurable diseñado en VHDL funciona correctamente sobre la lógica
 programable del ZCU102. Soporta los estándares RS422 y RS485 con configuración completa
-de protocolo en tiempo de ejecución, y el NCO de 32 bits implementado garantiza un error de
-baudrate inferior a 20~ppm para la mayoría de las velocidades estándar validadas, desde
-9.600 hasta 4.000.000~baudios.
+de protocolo en tiempo de ejecución, y el NCO de 32 bits que genera su temporización, validado
+velocidad a velocidad con un \textit{testbench} dedicado, presenta un error de baudrate nulo o
+inferior a 1~ppm en la mayoría de las velocidades estándar y de 120~ppm en el peor punto del
+rango, dos órdenes de magnitud por debajo de la tolerancia habitual de un receptor UART.
 
 El driver desarrollado para RTEMS abstrae el hardware de forma efectiva y permite gestionar
 hasta 14 instancias simultáneas del transceptor mediante una arquitectura orientada a
@@ -16,10 +17,45 @@ interrupciones. La separación entre la ISR maestra y las tareas \textit{worker}
 latencia mínimos en la atención de interrupciones, manteniendo el determinismo propio de
 un sistema de tiempo real.
 
+El estudio del transporte de datos entre el PS y la PL constituye la aportación de mayor
+recorrido del trabajo. Se implementaron y midieron \textbf{tres arquitecturas completas}
+---AXI GPIO, catorce AXI DMA y un AXI MCDMA con puente VHDL propio--- sobre el mismo
+transceptor y con el mismo programa de pruebas, y la comparación es concluyente: la
+arquitectura basada en AXI GPIO, que era la de partida, \textbf{interrumpe al procesador una
+vez por cada byte} (1250 interrupciones por kilobyte), lo que la deja en el 30\,\% del techo
+físico de la línea y, sobre todo, la vuelve insensible a la velocidad del enlace: de 115\,200 a
+4~Mbaudios su rendimiento apenas mejora un 41\,\%, porque el cuello de botella no está en la
+línea sino en la CPU.
+
+La solución final ---un MCDMA multicanal con un puente en VHDL que multiplexa los catorce
+canales--- baja a \textbf{3 interrupciones por kilobyte}, alcanza el \textbf{99\,\% del techo
+físico} de la línea, reduce la latencia a un tercio y, a diferencia de la anterior, escala
+linealmente con la velocidad hasta los 344~KB/s a 4~Mbaudios. El camino intermedio ---replicar
+catorce controladores DMA--- se hizo funcionar en placa, pero resultó inviable no por
+rendimiento sino por recursos: cuesta 2,8 veces más lógica y exige veintiocho líneas de
+interrupción cuando el MPSoC solo ofrece ocho, un consumo de área incompatible, además, con una
+futura triplicación TMR de la lógica para tolerancia a la radiación. Ese límite del silicio es
+lo que justificó el diseño del puente propio.
+
 Las dos tarjetas de circuito impreso diseñadas y fabricadas ---la placa CDHS y la placa
 AOCS--- cumplen con las especificaciones impuestas por Indra a través de Sener y han
 permitido validar el sistema de comunicaciones en un entorno hardware real. La fabricación
 se realizó en el propio laboratorio mediante proceso de soldadura por reflujo con stencil.
+
+La tercera placa, la de comunicación serie de diseño propio con sus catorce transceptores
+RS-485/RS-422, se fabricó y se caracterizó eléctricamente con una batería de nueve tests que
+recorren la polarización de reposo, el mapa de conectividad real, la integridad del bus
+multipunto, la velocidad máxima de cada bus, la diafonía, la colisión y la estabilidad sostenida.
+La placa supera todos: cero bytes espurios en reposo, cero fugas entre buses, recuperación limpia
+tras una colisión y tasa de error nula en los dos buses RS-422 tras diez segundos de tráfico
+continuo. De esa campaña salió además un hallazgo con consecuencias prácticas inmediatas: la placa
+venía funcionando con el \textbf{limitador de \textit{slew} de los transceptores activado} sin que
+nadie lo supiera. El pin \texttt{SLO} del LTC2865 es un habilitador de modo lento \textbf{activo a
+nivel bajo} ---con él a 0 el driver queda capado a 250~kbps nominales---, y el valor por defecto del
+software era precisamente 0, pese a que la macro correspondiente se llamaba «SLO desactivado». El
+hardware no estaba mal: era el nombre de la macro el que inducía a error. Desactivando de verdad el
+limitador, los tres buses pasan de 460~kbps--1~Mbps a \textbf{4~Mbps limpios}, con tasa de error
+nula: cuatro veces más velocidad sin tocar una sola pista de cobre ni resintetizar nada.
 
 La validación experimental ha confirmado el correcto funcionamiento de las interfaces RS422,
 RS485 y CAN de la placa CDHS, así como de las interfaces RS422 y RS485 de la placa AOCS.
@@ -27,6 +63,15 @@ En el caso del bus CAN, se comprobó experimentalmente la importancia de las res
 de terminación para la integridad de la señal diferencial. El driver SPI del ADC ADS7950
 produjo lecturas coherentes con la tensión de entrada aplicada, validando la cadena de
 adquisición analógica de la placa CDHS.
+
+En términos de volumen, el trabajo ha producido \textbf{20.188 líneas de código} de autoría propia
+---excluyendo todo lo generado automáticamente por las herramientas y el código de terceros---,
+repartidas entre el RTL del transceptor y el puente, sus \textit{testbenches}, el driver de RTEMS,
+las aplicaciones de prueba y las herramientas de automatización del flujo. El desglose completo se
+recoge en el anexo (tabla~\ref{tab:loc}), y su distribución refleja las dos decisiones
+metodológicas que vertebraron el desarrollo: el código de verificación pesa prácticamente lo mismo
+que el hardware que verifica, y la automatización del flujo, con un 40\,\% del total, es la mayor
+partida individual del trabajo.
 
 En conjunto, el trabajo ha servido como contribución directa al proyecto LINCE,
 proporcionando al laboratorio B105 una base funcional y documentada para el subsistema

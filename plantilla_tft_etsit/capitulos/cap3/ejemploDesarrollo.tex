@@ -161,11 +161,12 @@ caracteres corruptos en las pruebas posteriores.
 
 \subsection{Oscilador controlado numéricamente (NCO)}
 
-Este oscilador sirve para generar una señal de \textit{enable} a un baudrate seleccionado. Hay 54
-valores de velocidad seleccionables almacenados en una tabla de verdad. Para poder generar
-frecuencias que no son divisibles exactamente de la frecuencia de reloj de la FPGA, se utiliza
-este circuito que corrige periódicamente el desfase generado por esta imprecisión, logrando
-replicar un amplio número de frecuencias con muy poco error.
+El transceptor debía poder variar su velocidad en tiempo de ejecución sobre un rango muy amplio
+de baudrates, y un divisor entero del reloj de la FPGA no puede generar con exactitud la mayoría
+de esas frecuencias. La solución fue un \textbf{oscilador controlado numéricamente} (NCO), un tipo
+de circuito que corrige periódicamente el desfase acumulado por esa imprecisión, y que se diseñó
+a medida para las necesidades del proyecto: genera la señal de \textit{enable} al baudrate
+seleccionado de entre 54 valores de velocidad almacenados en una tabla de verdad.
 
 El circuito consiste en un sumador acumulador: para cada frecuencia seleccionada, se tiene
 calculado un incremento concreto que depende del número de bits del sumador. Cuantos más
@@ -173,8 +174,15 @@ bits tenga este sumador, mejor precisión se consigue. En esta implementación s
 utilizado 32 bits. El incremento se suma y acumula en cada período de reloj; cuando el
 sumador se desborda, se utiliza el bit de \textit{carry\_out} como \textit{tick} del NCO. Este \textit{tick} se genera
 a la frecuencia deseada, y el mecanismo de acumulación garantiza que el error promedio sea
-inferior al de un divisor entero simple. La tabla de frecuencias soportadas y su error medido
-se recoge en el Anexo~1.
+inferior al de un divisor entero simple.
+
+Para validar su funcionamiento se desarrolló un \textit{testbench} dedicado que recorre las
+velocidades soportadas y mide la frecuencia real del \textit{tick} generado. De esa campaña
+procede la tabla del Anexo~1, y su lectura valida el diseño: el peor error de todo el rango es de
+120~ppm (a 3,6864~Mbaudios), dos órdenes de magnitud por debajo de la tolerancia habitual del
+$\pm$2\,\% de un receptor UART, y en la mayoría de las velocidades estándar el error es nulo o
+inferior a 1~ppm. El NCO queda así acreditado como fuente de temporización fiable para todo el
+rango de operación del transceptor.
 
 \begin{figure}[H]
     \centering
@@ -230,7 +238,7 @@ pasos establecidos previamente para generar el binario BOOT.bin.
 El proceso manual de exportación del XSA, creación de la plataforma Vitis, compilación del
 FSBL y ensamblado del BOOT.BIN con \texttt{bootgen} resultó tedioso de repetir en cada
 iteración del diseño. Para automatizarlo, se desarrolló el script \texttt{generate\_boot.sh}
-(disponible en \texttt{tfm/04\_tools/}), un \textit{wizard} interactivo en Bash que encadena todos
+(disponible en \texttt{tfm/06\_firmware/boot\_scripts/}), un \textit{wizard} interactivo en Bash que encadena todos
 estos pasos de forma desatendida. El script ofrece tres puntos de entrada según el estado en
 que se encuentre el trabajo: partir del proyecto de Vivado y generar \textit{bitstream} desde cero,
 partir de un proyecto con \textit{bitstream} ya generado y solo exportar el XSA, o partir
@@ -260,6 +268,13 @@ tiempo de arranque, de modo que el mismo binario funcione con cualquier número 
 transceptores instanciados en el \textit{bitstream}; (2) comunicación orientada a interrupciones
 para no bloquear el procesador durante la espera de datos; y (3) una API sencilla que
 permita a la aplicación enviar y recibir datos sin conocer los detalles del mapa de registros.
+
+El driver que se describe a continuación es el de la \textbf{arquitectura de partida}, basada en
+AXI GPIO. Funciona, y es la referencia contra la que se mide todo lo demás, pero durante la
+validación con los catorce canales activos reveló un límite estructural ---el procesador tiene
+que tocar cada byte--- que motivó el rediseño completo del transporte entre el PS y la PL. Ese
+trabajo, con las tres arquitecturas implementadas y su comparativa, se aborda en la
+sección~\ref{sec:transporte_desarrollo}.
 
 \subsection{Interfaz hardware: mapa de registros}
 
@@ -399,9 +414,14 @@ transmisión.
 a la \texttt{Master\_ISR} localizar en $O(1)$ el objeto \texttt{Transceiver} asociado a cada par de bits de
 interrupción, evitando búsquedas costosas en contexto de ISR.
 
-\textbf{Modo SLO.} El bit \texttt{BIT\_SLO} del registro de control activa en el hardware VHDL una
-rampa de subida más lenta en las señales de salida, reduciendo el contenido espectral de alta
-frecuencia y mejorando la compatibilidad electromagnética en entornos con restricciones EMI.
+\textbf{Modo SLO.} El bit \texttt{BIT\_SLO} del registro de control \textbf{no actúa sobre la lógica
+en VHDL}: se limita a propagarse hasta el pin \texttt{SLO} del chip transceptor de la PCB, que es
+quien realmente limita la velocidad de flanco de sus salidas diferenciales. Un flanco más lento
+reduce el contenido espectral de alta frecuencia y mejora la compatibilidad electromagnética, a
+costa de limitar la velocidad máxima del enlace. Conviene advertir desde ya de una trampa que se
+destapó al caracterizar la placa (sección~\ref{sec:resultados_pcb}): en el transceptor empleado el
+pin es un habilitador de modo lento \textbf{activo a nivel bajo}, de modo que el nombre de la macro
+en \texttt{transceiver.h} induce a error y el valor por defecto deja el limitador \textit{activado}.
 
 % ---------------------------------------------------------------------------
 \section{Diseño hardware}
@@ -411,9 +431,74 @@ Una vez completado el firmware del transceptor serie, se desarrolló el hardware
 necesario para validar el sistema en condiciones reales. El plan inicial era diseñar una única
 PCB propia para testear múltiples líneas serie. Posteriormente, el proyecto LINCE requirió
 dos tarjetas adicionales con especificaciones impuestas por Indra ---la placa CDHS y la placa
-AOCS--- para que Sener pudiera validar su firmware sobre la ZCU102. Los esquemáticos
-completos, BOMs y archivos de fabricación de las tres placas están disponibles en el
-repositorio del proyecto bajo \texttt{HARDWARE/}.
+AOCS--- para que Sener pudiera validar su firmware sobre la ZCU102. Los esquemáticos (PDF)
+y las BOM de las tres placas están disponibles en el repositorio del proyecto bajo
+\texttt{tfm/00\_docs/pcbs/}.
+
+\subsection{Selección de componentes: la restricción de 1,8 V} \label{sec:seleccion_componentes}
+
+Antes de describir cada placa conviene exponer la restricción que condicionó la selección de
+componentes de las tres, porque no es una decisión de conveniencia sino un límite impuesto por la
+plataforma.
+
+Los bancos de entrada/salida del conector FMC HPC empleados por estas tarjetas operan a
+\textbf{1,8~V}: es el nivel del carril \texttt{VADJ} con el que la ZCU102 alimenta la interfaz. Todo
+componente que se conecte directamente a esos pines debe, por tanto, admitir una tensión de
+alimentación de E/S (\textit{VIO}) de 1,8~V. La alternativa ---interponer adaptadores de nivel entre
+el MPSoC y cada transceptor--- añade componentes activos en el camino de señal, introduce retardo
+de propagación en líneas que conmutan a varios megabaudios y multiplica los puntos de fallo. Se
+descartó salvo donde fue inevitable, y se buscaron deliberadamente componentes con \textit{VIO}
+nativo a 1,8~V.
+
+El primer criterio de búsqueda fue la \textbf{herencia de vuelo}: se exploró la posibilidad de
+emplear componentes ya utilizados en misiones espaciales, cualificados o con historial de vuelo
+demostrado, por ser la opción preferible desde el punto de vista de la fiabilidad. La búsqueda
+resultó infructuosa. Los transceptores de bus con herencia de vuelo disponibles en catálogo operan
+con niveles lógicos de 3,3~V o 5~V, herederos de una generación tecnológica anterior, y no se
+encontró ninguno cuya interfaz digital fuera compatible con 1,8~V. La restricción de la plataforma
+y el catálogo de componentes cualificados para espacio resultaron, sencillamente, incompatibles.
+
+La consecuencia es una decisión de diseño coherente con la filosofía NewSpace descrita en la
+introducción: se recurrió a \textbf{componentes comerciales}, seleccionando dentro de ellos el
+grado de calidad más alto disponible que cumpliera la restricción eléctrica. En la práctica, eso
+significó priorizar piezas de \textbf{grado automotriz} (cualificación AEC-Q100, identificable por
+el sufijo \texttt{Q1} en la referencia), que imponen rangos de temperatura extendidos y niveles de
+robustez muy superiores a los de grado comercial, y que son el sustituto habitual del componente
+cualificado para espacio en misiones de bajo coste. Los transceptores \texttt{TCAN1044AVDRQ1} del
+bus CAN y el conversor analógico-digital \texttt{ADS7950QDBTRQ1} de la placa CDHS responden a este
+criterio, igual que el transceptor \texttt{THVD1424RGTR} de los canales serie, elegido por soportar
+\textit{VIO} de 1,8~V de forma nativa.
+
+Esta elección tiene un coste que conviene declarar: las tarjetas diseñadas son \textbf{hardware de
+validación funcional, no hardware de vuelo}. Permiten verificar el subsistema de comunicaciones en
+condiciones eléctricas realistas, que es su propósito, pero un modelo de vuelo exigiría rehacer la
+selección de componentes atendiendo a tolerancia a radiación, \textit{outgassing} y cualificación
+térmica, y muy probablemente replantear el nivel lógico de la interfaz para poder acceder al
+catálogo cualificado.
+
+\subsection{Reglas de diseño y proceso de fabricación} \label{sec:reglas_diseno}
+
+El diseño de las tres placas se realizó en \textbf{Altium Designer}, y el primer paso en cualquiera
+de los tres proyectos ---antes de colocar un solo componente--- fue \textbf{establecer las reglas de
+diseño}. Es un paso que conviene no posponer: las reglas son el contrato que el comprobador de
+Altium verifica de forma continua durante el enrutado, de modo que fijarlas al principio convierte
+las restricciones de fabricación en un error detectado en el momento de cometerlo, en lugar de en un
+rechazo del fabricante cuando el diseño ya está cerrado.
+
+El criterio adoptado fue ceñirse a las \textbf{capacidades del proceso de fabricación del fabricante
+seleccionado}, PCBWay \cite{pcbway_caps}, en lugar de definir un conjunto de reglas propio. Los
+límites de su proceso estándar ---anchuras y separaciones mínimas de pista, diámetro mínimo de
+taladro, anillo de vía y distancia mínima al borde de placa--- son los que acotan lo que es
+fabricable a coste ordinario; apurarlos por debajo obliga a recurrir a procesos de precisión, que
+encarecen la tirada, y superarlos con margen no aporta nada. Diseñar directamente contra esas
+capacidades garantiza que las tres placas fueran fabricables en la primera tirada, como en efecto
+ocurrió.
+
+Sobre esas reglas generales se impusieron dos restricciones adicionales propias de las señales que
+transportan estas placas: \textbf{enrutado en par diferencial} con impedancia controlada para las
+líneas RS-422/RS-485 y CAN, cuyo desequilibrio degradaría el rechazo a modo común del que depende
+la inmunidad al ruido de un bus diferencial; y \textbf{longitud acotada} en las líneas de
+conmutación rápida procedentes del FMC.
 
 \subsection{Diseño de la placa de comunicación serie (diseño propio)}
 
@@ -423,6 +508,16 @@ con múltiples nodos en el mismo cable, y RS422 en configuración \textit{master
 TX y RX. A diferencia de las placas CDHS y AOCS, cuyas especificaciones vinieron dictadas
 por Indra, esta placa fue diseñada con total libertad para maximizar la flexibilidad de los
 ensayos en laboratorio.
+
+El transceptor seleccionado para los catorce canales es el \textbf{LTC2865} \cite{ltc2865} de
+Analog Devices, un transceptor RS-485/RS-422 de hasta 20~Mbps cuyo pin de alimentación lógica
+independiente (\texttt{VL}) le permite operar la interfaz digital directamente a los 1,8~V del
+FMC ---la restricción de la sección~\ref{sec:seleccion_componentes}---, y que expone además un
+pin \texttt{SLO} de limitación de \textit{slew} controlable desde el MPSoC, que tendrá un papel
+protagonista en la caracterización de la placa (sección~\ref{sec:pcb_slo}). Todas las líneas
+diferenciales incorporan diodos TVS \textbf{SM712-02HTG} contra transitorios, y cada driver
+dispone de una resistencia de terminación de 120~$\Omega$ conmutable mediante \textit{jumper},
+lo que permite terminar el bus en los nodos extremos y dejar abiertos los intermedios.
 
 La arquitectura general de la placa divide los 14 canales en dos grupos conectados al FMC:
 
@@ -469,8 +564,18 @@ Para RS422, cada driver \textit{slave} dispone de un conector con las líneas TX
 RS422 donde el receptor del esclavo escucha las transmisiones del \textit{master}. Al igual que en
 RS485, un \textit{jumper} determina si el driver se une al bus común o permanece independiente.
 
-El esquemático completo (12 hojas) y la BOM están disponibles en
-\texttt{HARDWARE/lince\_comunicacion\_serial/} del repositorio del proyecto.
+\subsubsection{Alimentación}
+
+La placa se alimenta íntegramente del conector FMC, que suministra los carriles de 12~V, 3,3~V y
+VADJ a 1,8~V. Los transceptores LTC2865 operan con la etapa de bus a 3,3~V (\texttt{VCC}) y la
+interfaz lógica a 1,8~V (\texttt{VL}), de modo que ---a diferencia de las placas CDHS y AOCS,
+que generan con un convertidor DC/DC los 5~V de su etapa de potencia--- esta placa no necesita
+ninguna etapa de conversión: todos los carriles llegan directamente del FMC. Sendos conectores
+de dos pines dan acceso externo a los carriles de 12~V y 3,3~V.
+
+El mapa completo de señales entre esta placa y el conector FMC se encuentra en el Anexo~1 de
+este documento. El esquemático completo (12 hojas, PDF) y la BOM están disponibles en
+\texttt{tfm/00\_docs/pcbs/serial/} del repositorio del proyecto.
 
 % ----- CDHS -----
 \subsection{Diseño de la placa CDHS}
@@ -495,12 +600,15 @@ y un ADC para termistores.
     \label{fig:cdhs_3d}
 \end{figure}
 
-\subsubsection{Decisión de nivel de tensión: 1,8 V}
+\subsubsection{Nivel de tensión y selección de componentes}
 
-Todos los bancos de pines del conector FMC HPC utilizados por esta placa operan a 1,8~V.
-Se buscaron deliberadamente componentes con VIO nativo a 1,8~V para evitar etapas de
-adaptación de nivel adicionales entre el MPSoC y los transceptores. Esta decisión simplifica
-el diseño y reduce el número de componentes activos en la cadena de señal.
+Como en las otras dos tarjetas, todos los bancos de pines del conector FMC HPC utilizados por esta
+placa operan a 1,8~V, y los componentes se seleccionaron con \textit{VIO} nativo a ese nivel para
+evitar etapas de adaptación en la cadena de señal. Las implicaciones de esta restricción ---y el
+motivo por el que obligó a descartar los componentes con herencia de vuelo--- se discuten en la
+sección~\ref{sec:seleccion_componentes}. Los subsistemas que siguen aplican ese criterio, y las
+excepciones ---las señales de PWM, que sí requieren adaptación de nivel--- se señalan donde
+corresponde.
 
 \subsubsection{Subsistema CAN}
 
@@ -534,9 +642,12 @@ por encima de su tensión de ruptura sin introducir una capacitancia parásita s
 \subsubsection{Subsistema RS422/RS485}
 
 Se disponen tres canales serie idénticos e independientes (RS1, RS2, RS3), cada uno con el
-transceptor \textbf{THVD1424RGTR}. Este integrado fue elegido porque soporta VIO de 1,8~V,
-incorpora resistencias de terminación internas conmutables y permite seleccionar entre modo
-\textit{Half-Duplex} y \textit{Full-Duplex} sin cambiar el hardware. La configuración se expone mediante
+transceptor \textbf{THVD1424RGTR}. Este integrado llegó como sugerencia de un compañero del
+proyecto LINCE en una reunión de seguimiento, posterior al diseño de la placa de comunicación
+serie propia, y resultó ser una opción mejor que el LTC2865 empleado en aquella: además de
+soportar VIO de 1,8~V, incorpora resistencias de terminación internas conmutables y permite
+seleccionar entre modo \textit{Half-Duplex} y \textit{Full-Duplex} sin cambiar el hardware, por
+lo que se adoptó para las dos tarjetas oficiales. La configuración se expone mediante
 \textit{jumpers} físicos de 2 pines: \textbf{H/F} (conmuta entre \textit{Half-Duplex} y \textit{Full-Duplex}), \textbf{SLR}
 (habilita control de \textit{slew rate}), \textbf{TERM\_TX / TERM\_RX} (conectan las resistencias de
 terminación internas). Los tres canales salen por los conectores J2, J3 y J4.
@@ -616,8 +727,8 @@ Los escudos metálicos de todos los conectores están conectados al plano de GND
 mantener la continuidad de apantallamiento EMI con los cables blindados.
 
 El mapa completo de señales entre la placa CDHS y el conector FMC se encuentra en el
-Anexo~1 de este documento. El esquemático completo y la BOM están disponibles en
-\texttt{HARDWARE/CDHS/}.
+Anexo~1 de este documento. El esquemático (PDF) y la BOM están disponibles en
+\texttt{tfm/00\_docs/pcbs/cdhs/}.
 
 % ----- AOCS -----
 \subsection{Diseño de la placa AOCS}
@@ -640,13 +751,13 @@ FMC y expone las interfaces al exterior a través de 8 conectores D-Sub-9 (J1--J
     \label{fig:aocs_3d}
 \end{figure}
 
-\subsubsection{Canales RS422/RS485}
+\subsubsection{Subsistema RS422/RS485}
 
 La placa incorpora 5 canales serie (RS1, RS3, RS4, RS5, RS8) con exactamente el mismo
 diseño de transceptor THVD1424RGTR descrito en la sección de la placa CDHS, incluyendo
 el cortocircuito DE--RE y los \textit{jumpers} de configuración H/F, SLR y terminación.
 
-\subsubsection{Canales SpaceWire}
+\subsubsection{Subsistema SpaceWire}
 
 Se implementan dos enlaces SpaceWire \textit{full-duplex} independientes (SPW1 y SPW2) mediante
 señalización diferencial LVDS, sin transceptor activo adicional, ya que el estándar SpaceWire
@@ -663,7 +774,7 @@ diferencial.
     \label{fig:aocs_spw}
 \end{figure}
 
-\subsubsection{Control de motores (MOT-PWM)}
+\subsubsection{Subsistema de control de motores (MOT-PWM)}
 
 Seis señales PWM de 1,8~V procedentes del FMC se elevan al nivel de tensión requerido por
 los puentes en H externos mediante un adaptador de niveles. Las señales se agrupan en tres
@@ -674,10 +785,12 @@ conecta mediante dos bornes banana independientes de la alimentación de la plac
 \subsubsection{Alimentación}
 
 Misma arquitectura que la placa CDHS: 12~V del FMC, convertidor DC/DC para los 5~V de
-potencia, y VADJ 1,8~V para los transceptores.
+potencia, y VADJ 1,8~V para los transceptores. La única diferencia es la etapa de potencia de
+los motores, que no se alimenta del FMC: admite alimentación exterior a través de los dos
+bornes banana, independiente del resto de la placa.
 
 El mapa completo de señales entre la placa AOCS y el conector FMC se encuentra en el
-Anexo~1. El esquemático completo y la BOM están disponibles en \texttt{HARDWARE/AOCS/}.
+Anexo~1. El esquemático (PDF) y la BOM están disponibles en \texttt{tfm/00\_docs/pcbs/aocs/}.
 
 % ----- FABRICACIÓN -----
 \subsection{Fabricación}
