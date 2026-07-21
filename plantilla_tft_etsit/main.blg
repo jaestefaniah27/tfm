@@ -1,10 +1,12 @@
-This is BibTeX, Version 0.99d (TeX Live 2023/Debian)
+This is BibTeX, Version 0.99e
 Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: main.aux
+Reallocating 'name_of_file' (item size: 1) to 6 items.
 The style file: unsrt.bst
+Reallocating 'name_of_file' (item size: 1) to 7 items.
 Database file #1: biblio.bib
 Warning--entry type for "ecss50spw" isn't style-file defined
---line 48 of file biblio.bib
+--line 95 of file biblio.bib
 You've used 18 entries,
             1791 wiz_defined-function locations,
             537 strings with 5829 characters,

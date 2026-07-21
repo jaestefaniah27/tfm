@@ -531,8 +531,10 @@ La arquitectura general de la placa divide los 14 canales en dos grupos conectad
 
 \begin{figure}[H]
     \centering
-    \fbox{\parbox{0.85\textwidth}{\centering \textit{[Figura pendiente: arquitectura general de la placa --- 7 drivers RS485, conector FMC, 7 drivers RS422]}\vspace{0.5cm}}}
-    \caption{Arquitectura general de la placa de comunicación serie.}
+    \includegraphics[width=0.8\textwidth]{IMG/serial_pcb_top.jpg}
+    \caption{Arquitectura general de la placa de comunicación serie: los siete drivers RS422
+    (Driver7--Driver13, arriba), el conector FMC (P2, izquierda) y los siete drivers RS485
+    (Driver0--Driver6, abajo).}
     \label{fig:placa_serial_top}
 \end{figure}
 
@@ -827,7 +829,7 @@ soldadura por reflujo SMD:
 
 \begin{figure}[H]
     \centering
-    \fbox{\parbox{0.85\textwidth}{\centering \textit{[Figura pendiente: foto de la placa AOCS soldada (cara superior)]}\vspace{0.5cm}}}
+    \includegraphics[width=0.62\textwidth]{IMG/aocs_soldada_caras.jpg}
     \caption{Placa AOCS tras el proceso de soldadura.}
     \label{fig:aocs_soldada}
 \end{figure}
@@ -948,15 +950,41 @@ arneses Micro-D9.
 
 \subsubsection{Arnés para verificar comunicaciones RS422}
 
-Arnés a 4 hilos, cruzando las líneas TX-P/N de un driver con las RX-P/N del opuesto.
+Arnés a 4 hilos, cruzando las líneas TX-P/N de un driver con las RX-P/N del opuesto
+(figura~\ref{fig:arnes_rs422}).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.45\textwidth]{IMG/arnes_rs422.jpg}
+    \caption{Arnés de \textit{loopback} RS422 a 4 hilos entre dos conectores D-Sub-9.}
+    \label{fig:arnes_rs422}
+\end{figure}
 
 \subsubsection{Arnés para verificar comunicaciones RS485}
 
-Arnés a 2 hilos, en el que se conectan A+ y B$-$ de un driver con los del otro.
+Arnés a 2 hilos, en el que se conectan A+ y B$-$ de un driver con los del otro
+(figura~\ref{fig:arnes_rs485}).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.45\textwidth]{IMG/arnes_rs485.jpg}
+    \caption{Arnés de \textit{loopback} RS485 a 2 hilos entre dos conectores D-Sub-9.}
+    \label{fig:arnes_rs485}
+\end{figure}
 
 \subsubsection{Arnés para verificar comunicaciones CAN}
 
 Se conectan las líneas CAN\_H y CAN\_L del canal nominal con las del canal redundante.
+Como ambos canales convergen en el mismo conector J1, el arnés emplea un único D-Sub-9
+con los hilos cruzados entre ambos pares, dejando puntas accesibles para la sonda del
+osciloscopio (figura~\ref{fig:arnes_can}).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.45\textwidth]{IMG/arnes_can.jpg}
+    \caption{Arnés de interconexión CAN nominal--redundante sobre el conector J1.}
+    \label{fig:arnes_can}
+\end{figure}
 
 \subsubsection{Equipo de laboratorio utilizado}
 
