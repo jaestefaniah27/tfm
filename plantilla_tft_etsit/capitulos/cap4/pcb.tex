@@ -4,15 +4,14 @@
 
 \section{Caracterización eléctrica de la PCB de comunicación serie} \label{sec:resultados_pcb}
 
-La comparativa de la sección anterior mide el \textbf{transporte} entre el PS y la PL, y por eso
-puede ejecutarse con el lazo cerrado dentro de la FPGA. Esta sección mide otra cosa distinta: la
-\textbf{placa de diseño propio}. Todo lo que se caracteriza aquí sale por los pines del MPSoC,
-atraviesa los catorce transceptores RS-485/RS-422, recorre el cobre y vuelve.
+Esta sección caracteriza la \textbf{placa de comunicación serie de diseño propio}. Las señales
+medidas salen por los pines del MPSoC, atraviesan los catorce transceptores RS-485/RS-422, recorren
+el cobre y regresan.
 
-La campaña se ejecuta sobre el transporte MCDMA, que es la solución final, con un
-\textit{bitstream} \textbf{sin el módulo de \textit{loopback}} ---requisito que no se puede saltar:
-con el \textit{bitstream} del banco de pruebas, los pines de recepción están desconectados de los
-transceptores y la PCB sería sencillamente invisible.
+La campaña se ejecuta sobre el transporte MCDMA, que constituye la solución final, con un
+\textit{bitstream} \textbf{sin el módulo de \textit{loopback}}. Esta condición es necesaria: con el
+\textit{bitstream} del banco de pruebas los pines de recepción quedan desconectados de los
+transceptores, por lo que la PCB no intervendría en la medida.
 
 La topología física de la placa, fijada por los \textit{jumpers}, es la siguiente:
 
@@ -31,13 +30,31 @@ La topología física de la placa, fijada por los \textit{jumpers}, es la siguie
     \label{tab:pcb_topologia}
 \end{table}
 
-Es importante subrayar que \textbf{ningún test da esta topología por supuesta}: el test T2 la mide,
-y el resto se apoya en lo medido. La diferencia entre el bus A y los buses B y C condiciona la
-lectura de todos los resultados: en el multipunto los seis esclavos se oyen entre sí, mientras que
-en los punto a punto los esclavos solo oyen al maestro.
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{IMG/serial_pcb_jumpers.jpg}
+        \caption{Vista superior: conectores D-Sub-9 y \textit{jumpers} de topología.}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{IMG/serial_pcb_zcu102.jpg}
+        \caption{Placa montada en el conector FMC HPC0 de la ZCU102.}
+    \end{subfigure}
+    \caption{PCB de comunicación serie configurada para la campaña de caracterización, con los
+    \textit{jumpers} fijando la topología de la tabla~\ref{tab:pcb_topologia}.}
+    \label{fig:pcb_montaje}
+\end{figure}
+
+Conviene señalar que \textbf{ningún test presupone esta topología}: el test T2 la mide de forma
+independiente y el resto de pruebas se apoya en lo medido. La diferencia entre el bus A y los buses
+B y C condiciona la lectura de todos los resultados: en el bus multipunto los seis esclavos se oyen
+entre sí, mientras que en los buses punto a punto los esclavos solo oyen al maestro.
 
 % ---------------------------------------------------------------------------
-\subsection{Los nueve tests}
+\subsection{Batería de pruebas de caracterización}
 % ---------------------------------------------------------------------------
 
 \begin{table}[H]
@@ -61,22 +78,25 @@ en los punto a punto los esclavos solo oyen al maestro.
     \label{tab:pcb_resumen}
 \end{table}
 
-El contador de fallos de transmisión de la campaña completa es \textbf{cero}: ningún envío se quedó
-sin salir, de modo que todas las cifras corresponden a bytes que de verdad viajaron por el bus. Esta
-distinción no es una formalidad: confundir «el transporte no llegó a transmitir» con «el bus
-corrompió los bytes» fue precisamente lo que invalidó la primera tanda de medidas, en la que los
-buses B y C aparecían rotos y era mentira.
+El contador de fallos de transmisión de la campaña completa es \textbf{cero}: ningún envío quedó sin
+transmitir, de modo que todas las cifras corresponden a bytes que efectivamente viajaron por el bus.
+Esta distinción es relevante para la validez de los datos: distinguir «el transporte no llegó a
+transmitir» de «el bus corrompió los bytes» es esencial, ya que una primera tanda de medidas que no
+separaba ambos casos daba los buses B y C como defectuosos de forma incorrecta.
 
 % ---------------------------------------------------------------------------
-\subsection{El hallazgo principal: el limitador de slew estaba activo por defecto} \label{sec:pcb_slo}
+\subsection{Efecto del limitador de slew rate sobre la velocidad máxima} \label{sec:pcb_slo}
 % ---------------------------------------------------------------------------
 
-El resultado más relevante de toda la caracterización es que \textbf{la placa venía funcionando con
-el limitador de \textit{slew} de los transceptores activado sin que nadie lo supiera}, y que
-desactivarlo multiplica por cuatro la velocidad de los tres buses. La medida, repetida en dos tandas
-independientes, es la de la figura~\ref{fig:pcb_slo}.
+El pin \texttt{SLO} del transceptor LTC2865 es un habilitador de modo lento \textbf{activo a nivel
+bajo}: con el valor por defecto (0) el limitador de \textit{slew rate} está activo y limita el
+driver a 250~kbps nominales; con el bit a 1 el limitador se desactiva y el driver alcanza hasta
+20~Mbps. Las medidas de esta sección se obtuvieron con el limitador desactivado (SLO = 1). En esa
+configuración los tres buses operan de forma limpia a \textbf{4~Mbps}, cuatro veces la velocidad del
+modo por defecto. La comparación, repetida en dos tandas independientes, se recoge en la
+figura~\ref{fig:pcb_slo}.
 
-\begin{figure}[H]
+\begin{figure}[htbp]
     \centering
     \begin{tikzpicture}
         \begin{axis}[
@@ -98,76 +118,29 @@ independientes, es la de la figura~\ref{fig:pcb_slo}.
         \end{axis}
     \end{tikzpicture}
     \caption{Velocidad máxima con tasa de error nula en cada bus de la PCB, según el valor del bit
-    SLO. Más es mejor. El pin \texttt{SLO} del LTC2865 es un habilitador de modo lento activo a nivel
-    bajo: con el valor por defecto (0) el limitador de \textit{slew} está \textit{activo} y capa el
-    driver a 250~kbps nominales, y el bus multipunto topa en 460~kbps. Desactivándolo (1), los tres
-    buses llegan limpios a 4~Mbps.}
+    SLO. El pin \texttt{SLO} del LTC2865 es un habilitador de modo lento activo a nivel bajo: con el
+    valor por defecto (0) el limitador de \textit{slew rate} está activo y limita el driver a
+    250~kbps nominales, con lo que el bus multipunto alcanza 460~kbps. Desactivándolo (1), los tres
+    buses operan de forma limpia a 4~Mbps.}
     \label{fig:pcb_slo}
 \end{figure}
 
-El resultado es contraintuitivo si uno se fía del nombre que el software da al bit: la macro
-\texttt{TRANSCEIVER\_SLO\_OFF} vale 0 ---y es el valor por defecto--- y \texttt{TRANSCEIVER\_SLO\_ON}
-vale 1. Poner a 1 lo que se llama «SLO activado» hace que el enlace vaya \textit{más rápido}, cuando
-un limitador de \textit{slew} solo puede costar velocidad: frenar los flancos nunca puede darla.
-
-La explicación no está en la PCB ni en el VHDL, sino en la hoja de características del transceptor.
-El componente empleado es el \textbf{LTC2865} \cite{ltc2865}, y su pin \texttt{SLO} es un habilitador
-de modo lento \textbf{activo a nivel bajo}:
+Este comportamiento lo fija la hoja de características del transceptor \textbf{LTC2865}
+\cite{ltc2865}, según la cual el pin \texttt{SLO} es activo a nivel bajo:
 
 \begin{quote}
 \textit{«SLO (Slow Mode Enable): a low input switches the transmitter to the slew rate limited
 250\,kbps max data rate mode. A high input supports 20\,Mbps.»}
 \end{quote}
 
-Es decir: \textbf{el hardware no está invertido, sino que se comporta exactamente como especifica su
-fabricante}. Lo que está mal es el nombre de la macro en el software. Con el bit a 0 ---el valor por
-defecto--- el driver queda \textbf{capado a 250~kbps nominales}, y con el bit a 1 el limitador se
-\textit{desactiva} y el driver da hasta 20~Mbps. El bit no entra en el núcleo serie
----\texttt{CONFIGURABLE\_SERIAL.vhd} no tiene ninguna entrada \texttt{slo}---, sino que viaja del
-registro de configuración directamente al pin del chip, sin inversores ni lógica intermedia, como
-confirma el esquemático de la placa.
+El bit de configuración viaja del registro directamente al pin del chip, sin lógica intermedia. Con
+el valor por defecto (0) el driver queda limitado a 250~kbps nominales, y con el bit a 1 el limitador
+se desactiva y el driver alcanza hasta 20~Mbps.
 
-Las cifras medidas encajan con esa especificación con una precisión que no deja lugar a dudas:
+El efecto se observa en las pruebas. La figura~\ref{fig:pcb_ber} muestra la tasa de error del bus
+multipunto, el más exigente de los tres, para ambos valores del bit.
 
-\begin{table}[H]
-    \centering
-    \begin{tabular}{lrr}
-        \hline
-        \textbf{Bus} & \textbf{Máx. medido (SLO = 0)} & \textbf{Nominal del chip} \\
-        \hline
-        A (RS-485 multipunto, 7 nodos) & 460~kbps  & \multirow{3}{*}{250~kbps} \\
-        B (RS-422 punto a punto)       & 1~Mbps    & \\
-        C (RS-422 punto a punto)       & 1~Mbps    & \\
-        \hline
-    \end{tabular}
-    \caption{Velocidad máxima medida con el limitador activo, frente al máximo nominal del LTC2865 en
-    ese modo. Los tres buses superan el nominal, que es un valor garantizado y por tanto conservador.}
-    \label{tab:pcb_slo_nominal}
-\end{table}
-
-Los tres buses aguantan \textit{por encima} de los 250~kbps nominales ---lo cual es esperable, ya que
-se trata de un límite garantizado y conservador, medido aquí sobre pistas cortas y a temperatura
-ambiente---, y el orden entre ellos es exactamente el que la física predice: el bus más cargado, el
-multipunto de siete nodos, es el que menos margen tiene sobre el nominal, mientras que los dos
-enlaces punto a punto, con la línea mucho más descargada, estiran hasta 1~Mbps. En cuanto se pide más
-velocidad, el tiempo de flanco pasa a ser una fracción apreciable del tiempo de bit, el ojo se cierra
-y aparecen los errores.
-
-Conviene deshacer aquí una intuición equivocada, porque es fácil caer en ella: el limitador de
-\textit{slew} \textbf{no mejora} la integridad de la señal a alta velocidad. Hace lo contrario. Su
-utilidad es reducir la emisión electromagnética cuando se trabaja despacio, y ese beneficio se paga
-en ancho de banda. Con el limitador desactivado el driver es de 20~Mbps, de modo que los 4~Mbps del
-barrido caen \textbf{holgadamente dentro de especificación}, y de ahí que la tasa de error sea nula
-en todos los puntos.
-
-La consecuencia práctica es inmediata y notable: \textbf{la PCB da 4~Mbps en los tres buses}, cuatro
-veces más de lo que se venía usando, sin tocar una sola pista de cobre y sin resintetizar nada. Basta
-con poner ese bit a 1 ---y renombrar la macro, que es la que indujo el error.
-
-La figura~\ref{fig:pcb_ber} muestra el mismo fenómeno visto desde la tasa de error del bus
-multipunto, que es el más exigente de los tres.
-
-\begin{figure}[H]
+\begin{figure}[htbp]
     \centering
     \begin{tikzpicture}
         \begin{axis}[
@@ -218,13 +191,13 @@ multipunto, que es el más exigente de los tres.
 \subsection{Comportamiento del bus multipunto}
 % ---------------------------------------------------------------------------
 
-El bus A topa antes que los otros dos (460~kbps frente a 1~Mbps con el mismo ajuste de SLO), y esto
-es coherente con su naturaleza y no un defecto de la placa: siete nodos colgados de un bus
-compartido cargan más la línea y reflejan más que un enlace punto a punto. La diferencia se mantiene
-en la parte alta del barrido incluso con el bit SLO a 1, de modo que es independiente del hallazgo
-anterior.
+El bus A alcanza su límite antes que los otros dos (460~kbps frente a 1~Mbps con el mismo ajuste de
+SLO). Este comportamiento es coherente con su naturaleza y no constituye un defecto de la placa:
+siete nodos conectados a un bus compartido cargan más la línea y generan más reflexiones que un
+enlace punto a punto. La diferencia se mantiene en la parte alta del barrido incluso con el bit SLO
+a 1, por lo que es independiente del efecto descrito en la sección anterior.
 
-El test T3 lo muestra con claridad: cuenta cuántos de los seis esclavos oyen la trama del maestro
+El test T3 lo cuantifica: registra cuántos de los seis esclavos reciben la trama del maestro
 \textbf{íntegra} a cada velocidad.
 
 \begin{table}[H]
@@ -242,37 +215,36 @@ El test T3 lo muestra con claridad: cuenta cuántos de los seis esclavos oyen la
     \label{tab:pcb_multidrop}
 \end{table}
 
-La transición no es gradual sino un escalón: a 460~kbps los seis esclavos reciben la trama completa;
-a 921~kbps ya hay uno que la recibe truncada; a 1~Mbps ninguno la recibe entera. Ese punto de
-ruptura es el que define la velocidad de operación del bus, y es el que el bit SLO desplaza hasta
-4~Mbps.
+La transición no es gradual sino abrupta: a 460~kbps los seis esclavos reciben la trama completa; a
+921~kbps uno la recibe truncada; a 1~Mbps ninguno la recibe entera. Este punto de ruptura define la
+velocidad de operación del bus, y es el que el bit SLO desplaza hasta 4~Mbps.
 
 % ---------------------------------------------------------------------------
 \subsection{Integridad, aislamiento y estabilidad}
 % ---------------------------------------------------------------------------
 
-El resto de la campaña confirma que la placa se comporta como debe en los aspectos que no dependen
-de la velocidad:
+El resto de la campaña confirma que la placa se comporta correctamente en los aspectos que no
+dependen de la velocidad:
 
-\textbf{Polarización de reposo (T1).} Con los catorce transceptores callados y escuchando durante
-300~ms, no aparece \textbf{ni un solo byte espurio} en ningún canal. Es la comprobación más barata
-de que la red de polarización de \textit{fail-safe} existe y hace su trabajo: si la línea flotara, el
-receptor amplificaría el ruido y lo entregaría como datos.
+\textbf{Polarización de reposo (T1).} Con los catorce transceptores en silencio y a la escucha
+durante 300~ms, no aparece \textbf{ningún byte espurio} en ningún canal. Es la comprobación de que
+la red de polarización de \textit{fail-safe} está presente y cumple su función: si la línea flotara,
+el receptor amplificaría el ruido y lo entregaría como datos.
 
 \textbf{Aislamiento entre buses (T7).} Saturando el bus A con una ráfaga a su velocidad máxima, no se
-filtra \textbf{ni un byte} a los buses B y C. No hay acoplamiento apreciable entre pistas ni cruces
-de cableado, lo que la matriz de conectividad de T2 confirma de forma independiente: cero enlaces no
-esperados.
+filtra \textbf{ningún byte} a los buses B y C. No existe acoplamiento apreciable entre pistas ni
+cruces de cableado, lo que la matriz de conectividad de T2 confirma de forma independiente: cero
+enlaces no esperados.
 
-\textbf{Vuelta del bus (T6).} En \textit{half-duplex}, el esclavo no puede contestar hasta que el
-maestro haya soltado la línea. Barriendo el tiempo de guarda desde 0 hasta 1000~$\mu$s, las ocho
+\textbf{Vuelta del bus (T6).} En \textit{half-duplex}, el esclavo no puede responder hasta que el
+maestro haya liberado la línea. Barriendo el tiempo de guarda de 0 a 1000~$\mu$s, las ocho
 respuestas llegan íntegras \textbf{ya con guarda nula}: el control de dirección que genera el propio
-transceptor libera la línea a tiempo, y cualquier protocolo que se monte encima no necesita añadir
-guarda por software.
+transceptor libera la línea a tiempo, por lo que un protocolo construido sobre este nivel no
+necesita añadir guarda por software.
 
-\textbf{Colisión (T8).} Cuando dos esclavos emiten a la vez, la trama sale corrupta ---eso es física:
-los drivers hacen un AND cableado---, pero el bus \textbf{se recupera} y el intercambio siguiente es
-limpio. Ningún driver se queda enganchado conduciendo.
+\textbf{Colisión (T8).} Cuando dos esclavos emiten simultáneamente, la trama resulta corrupta ---por
+el AND cableado de los drivers---, pero el bus \textbf{se recupera} y el intercambio siguiente es
+correcto. Ningún driver permanece conduciendo de forma indefinida.
 
 \textbf{Estabilidad sostenida (T9).} Diez segundos de tráfico continuo por bus, a la velocidad máxima
 limpia de cada uno:
@@ -292,29 +264,29 @@ limpia de cada uno:
     \label{tab:pcb_estabilidad}
 \end{table}
 
-Los dos buses RS-422 no cometen \textbf{un solo error} en casi un millón de bytes cada uno. El bus
+Los dos buses RS-422 no cometen \textbf{ningún error} en casi un millón de bytes cada uno. El bus
 multipunto se queda en 147~ppm, una cifra baja pero no nula, coherente con la mayor exigencia de una
 línea compartida por siete nodos cerca de su límite de velocidad.
 
 % ---------------------------------------------------------------------------
-\subsection{Salvedades del método}
+\subsection{Limitaciones del método de medida}
 % ---------------------------------------------------------------------------
 
-Tres precisiones sobre lo que estos números pueden y no pueden sostener:
+Deben tenerse en cuenta tres precisiones sobre el alcance de estos resultados:
 
-\textbf{Los conteos parciales de la matriz de conectividad no miden calidad de enlace.} En la matriz
-de T2 aparecen enlaces con 25 de 32 bytes correctos, y sin embargo T3 y T4 a esa misma velocidad dan
-seis de seis esclavos íntegros y BER nulo sobre 1024 bytes. Es un artefacto del método de T2, que
-espera un tiempo fijo y lee una sola vez: si un byte llega tarde se pierde y descuadra la
-comparación. T2 vale para el \textbf{mapa} de conectividad, que es para lo que está, y no para
-cuantificar.
+\textbf{Los conteos parciales de la matriz de conectividad no miden la calidad del enlace.} En la
+matriz de T2 aparecen enlaces con 25 de 32 bytes correctos, mientras que T3 y T4 a esa misma
+velocidad dan seis de seis esclavos íntegros y BER nulo sobre 1024 bytes. Se trata de un artefacto
+del método de T2, que espera un tiempo fijo y lee una sola vez: si un byte llega tarde se pierde y
+descuadra la comparación. T2 es válido para determinar el \textbf{mapa} de conectividad, que es su
+propósito, pero no para cuantificar la calidad.
 
-\textbf{Los ocho enlaces que faltan en la matriz no son un fallo.} De los sesenta enlaces esperados
-se miden cincuenta y dos. Los ocho ausentes son los esclavos de los buses B y C, que no se oyen entre
-sí porque esos buses son RS-422 punto a punto en estrella desde el maestro, y no multipunto. La
-topología medida coincide exactamente con la física de la placa.
+\textbf{Los ocho enlaces ausentes en la matriz no constituyen un fallo.} De los sesenta enlaces
+esperados se miden cincuenta y dos. Los ocho ausentes corresponden a los esclavos de los buses B y
+C, que no se oyen entre sí porque esos buses son RS-422 punto a punto en estrella desde el maestro,
+y no multipunto. La topología medida coincide exactamente con la física de la placa.
 
-\textbf{El contador de errores de hardware de T9 no es fiable}, y no se ha usado para ninguna
-conclusión: marca millones de errores en tandas cuyo BER medido es nulo, de modo que está contando
-algo que no son errores de trama. Las cifras de BER de la tabla~\ref{tab:pcb_estabilidad} se calculan
-comparando byte a byte lo recibido con lo enviado.
+\textbf{El contador de errores de hardware de T9 no es fiable}, por lo que no se ha empleado en
+ninguna conclusión: marca millones de errores en tandas cuyo BER medido es nulo, lo que indica que
+contabiliza eventos que no son errores de trama. Las cifras de BER de la
+tabla~\ref{tab:pcb_estabilidad} se calculan comparando byte a byte lo recibido con lo enviado.
