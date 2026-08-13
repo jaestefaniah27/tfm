@@ -1,10 +1,10 @@
 % ===========================================================================
-% CAPÍTULO 4 — RESULTADOS: caracterización eléctrica de la PCB de diseño propio
+% CAPÍTULO 4 — RESULTADOS: caracterización eléctrica de la placa de comunicación serie
 % ===========================================================================
 
-\section{Caracterización eléctrica de la PCB de comunicación serie} \label{sec:resultados_pcb}
+\subsection{Caracterización eléctrica de la placa de comunicación serie} \label{sec:resultados_pcb}
 
-Esta sección caracteriza la \textbf{placa de comunicación serie de diseño propio}. Las señales
+Esta sección caracteriza la \textbf{placa de comunicación serie}. Las señales
 medidas salen por los pines del MPSoC, atraviesan los catorce transceptores RS-485/RS-422, recorren
 el cobre y regresan.
 
@@ -54,7 +54,7 @@ B y C condiciona la lectura de todos los resultados: en el bus multipunto los se
 entre sí, mientras que en los buses punto a punto los esclavos solo oyen al maestro.
 
 % ---------------------------------------------------------------------------
-\subsection{Batería de pruebas de caracterización}
+\subsubsection{Batería de pruebas de caracterización}
 % ---------------------------------------------------------------------------
 
 \begin{table}[H]
@@ -85,7 +85,7 @@ transmitir» de «el bus corrompió los bytes» es esencial, ya que una primera 
 separaba ambos casos daba los buses B y C como defectuosos de forma incorrecta.
 
 % ---------------------------------------------------------------------------
-\subsection{Efecto del limitador de slew rate sobre la velocidad máxima} \label{sec:pcb_slo}
+\subsubsection{Efecto del limitador de slew rate sobre la velocidad máxima} \label{sec:pcb_slo}
 % ---------------------------------------------------------------------------
 
 El pin \texttt{SLO} del transceptor LTC2865 es un habilitador de modo lento \textbf{activo a nivel
@@ -188,7 +188,7 @@ multipunto, el más exigente de los tres, para ambos valores del bit.
 \end{figure}
 
 % ---------------------------------------------------------------------------
-\subsection{Comportamiento del bus multipunto}
+\subsubsection{Comportamiento del bus multipunto}
 % ---------------------------------------------------------------------------
 
 El bus A alcanza su límite antes que los otros dos (460~kbps frente a 1~Mbps con el mismo ajuste de
@@ -220,7 +220,7 @@ La transición no es gradual sino abrupta: a 460~kbps los seis esclavos reciben 
 velocidad de operación del bus, y es el que el bit SLO desplaza hasta 4~Mbps.
 
 % ---------------------------------------------------------------------------
-\subsection{Integridad, aislamiento y estabilidad}
+\subsubsection{Integridad, aislamiento y estabilidad}
 % ---------------------------------------------------------------------------
 
 El resto de la campaña confirma que la placa se comporta correctamente en los aspectos que no
@@ -269,7 +269,7 @@ multipunto se queda en 147~ppm, una cifra baja pero no nula, coherente con la ma
 línea compartida por siete nodos cerca de su límite de velocidad.
 
 % ---------------------------------------------------------------------------
-\subsection{Limitaciones del método de medida}
+\subsubsection{Limitaciones del método de medida}
 % ---------------------------------------------------------------------------
 
 Deben tenerse en cuenta tres precisiones sobre el alcance de estos resultados:

@@ -4,43 +4,45 @@
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {3.1}{\ignorespaces Diagrama FSM del transmisor serie.}}{15}{figure.caption.70}%
-\contentsline {figure}{\numberline {3.2}{\ignorespaces Diagrama FSM del receptor serie.}}{15}{figure.caption.71}%
-\contentsline {figure}{\numberline {3.3}{\ignorespaces Circuito del oscilador controlado numéricamente (NCO).}}{16}{figure.caption.73}%
-\contentsline {figure}{\numberline {3.4}{\ignorespaces Arquitectura general de la placa de comunicación serie: los siete drivers RS422 (Driver7--Driver13, arriba), el conector FMC (P2, izquierda) y los siete drivers RS485 (Driver0--Driver6, abajo).}}{23}{figure.caption.75}%
-\contentsline {figure}{\numberline {3.5}{\ignorespaces Diagrama de bloques de la placa CDHS.}}{24}{figure.caption.80}%
-\contentsline {figure}{\numberline {3.6}{\ignorespaces Render 3D de la placa CDHS.}}{24}{figure.caption.81}%
-\contentsline {figure}{\numberline {3.7}{\ignorespaces Subsistema CAN de la placa CDHS.}}{25}{figure.caption.84}%
-\contentsline {figure}{\numberline {3.8}{\ignorespaces Canal RS de la placa CDHS con THVD1424RGTR.}}{26}{figure.caption.88}%
-\contentsline {figure}{\numberline {3.9}{\ignorespaces Diagrama de bloques de la placa AOCS.}}{27}{figure.caption.93}%
-\contentsline {figure}{\numberline {3.10}{\ignorespaces Render 3D de la placa AOCS.}}{27}{figure.caption.94}%
-\contentsline {figure}{\numberline {3.11}{\ignorespaces Subsistema SpaceWire de la placa AOCS.}}{28}{figure.caption.97}%
-\contentsline {figure}{\numberline {3.12}{\ignorespaces Aplicación de pasta de soldadura con stencil.}}{28}{figure.caption.100}%
-\contentsline {figure}{\numberline {3.13}{\ignorespaces Placa CDHS tras el proceso de soldadura.}}{29}{figure.caption.101}%
-\contentsline {figure}{\numberline {3.14}{\ignorespaces Placa AOCS tras el proceso de soldadura.}}{29}{figure.caption.102}%
-\contentsline {figure}{\numberline {3.15}{\ignorespaces Arnés de \textit {loopback} RS422 a 4 hilos entre dos conectores D-Sub-9.}}{32}{figure.caption.108}%
-\contentsline {figure}{\numberline {3.16}{\ignorespaces Arnés de \textit {loopback} RS485 a 2 hilos entre dos conectores D-Sub-9.}}{33}{figure.caption.110}%
-\contentsline {figure}{\numberline {3.17}{\ignorespaces Arnés de interconexión CAN nominal--redundante sobre el conector J1.}}{33}{figure.caption.112}%
-\contentsline {figure}{\numberline {3.18}{\ignorespaces Arquitectura asimétrica de la variante MCDMA: un canal de transmisión y catorce de recepción.}}{36}{figure.caption.118}%
+\contentsline {figure}{\numberline {3.1}{\ignorespaces \textit {Block Design} del ejemplo de la puerta AND: bloque Zynq UltraScale+ MPSoC, los dos AXI GPIO y el módulo VHDL \texttt {AND\_GATE}.}}{13}{figure.caption.72}%
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Generador de imágenes de arranque de Vitis, con los componentes que conforman el \texttt {BOOT.bin}.}}{14}{figure.caption.73}%
+\contentsline {figure}{\numberline {3.3}{\ignorespaces Circuito del oscilador controlado numéricamente (NCO).}}{19}{figure.caption.75}%
+\contentsline {figure}{\numberline {3.4}{\ignorespaces Diagrama FSM del transmisor serie.}}{20}{figure.caption.78}%
+\contentsline {figure}{\numberline {3.5}{\ignorespaces Diagrama FSM del receptor serie.}}{23}{figure.caption.83}%
+\contentsline {figure}{\numberline {3.6}{\ignorespaces Arquitectura general de la placa de comunicación serie: los siete drivers RS422 (Driver7--Driver13, arriba), el conector FMC (P2, izquierda) y los siete drivers RS485 (Driver0--Driver6, abajo).}}{33}{figure.caption.89}%
+\contentsline {figure}{\numberline {3.7}{\ignorespaces Diagrama de bloques de la placa CDHS.}}{34}{figure.caption.94}%
+\contentsline {figure}{\numberline {3.8}{\ignorespaces Render 3D de la placa CDHS.}}{34}{figure.caption.95}%
+\contentsline {figure}{\numberline {3.9}{\ignorespaces Subsistema CAN de la placa CDHS.}}{35}{figure.caption.98}%
+\contentsline {figure}{\numberline {3.10}{\ignorespaces Canal RS de la placa CDHS con THVD1424RGTR.}}{36}{figure.caption.102}%
+\contentsline {figure}{\numberline {3.11}{\ignorespaces Diagrama de bloques de la placa AOCS.}}{37}{figure.caption.107}%
+\contentsline {figure}{\numberline {3.12}{\ignorespaces Render 3D de la placa AOCS.}}{37}{figure.caption.108}%
+\contentsline {figure}{\numberline {3.13}{\ignorespaces Subsistema SpaceWire de la placa AOCS.}}{37}{figure.caption.111}%
+\contentsline {figure}{\numberline {3.14}{\ignorespaces Aplicación de pasta de soldadura con stencil.}}{38}{figure.caption.114}%
+\contentsline {figure}{\numberline {3.15}{\ignorespaces Placa CDHS tras el proceso de soldadura.}}{38}{figure.caption.115}%
+\contentsline {figure}{\numberline {3.16}{\ignorespaces Placa AOCS tras el proceso de soldadura.}}{39}{figure.caption.116}%
+\contentsline {figure}{\numberline {3.17}{\ignorespaces Arnés de \textit {loopback} RS422 a 4 hilos entre dos conectores D-Sub-9.}}{42}{figure.caption.122}%
+\contentsline {figure}{\numberline {3.18}{\ignorespaces Arnés de \textit {loopback} RS485 a 2 hilos entre dos conectores D-Sub-9.}}{42}{figure.caption.124}%
+\contentsline {figure}{\numberline {3.19}{\ignorespaces Arnés de interconexión CAN nominal--redundante sobre el conector J1.}}{43}{figure.caption.126}%
+\contentsline {figure}{\numberline {3.20}{\ignorespaces Arquitectura asimétrica de la variante MCDMA: un canal de transmisión y catorce de recepción.}}{46}{figure.caption.132}%
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {4.1}{\ignorespaces Sistema completo montado: ZCU102 con la placa CDHS conectada al FMC.}}{42}{figure.caption.128}%
-\contentsline {figure}{\numberline {4.2}{\ignorespaces Placa CDHS con componentes montados (ambas caras).}}{43}{figure.caption.129}%
-\contentsline {figure}{\numberline {4.3}{\ignorespaces Placas AOCS con componentes montados (vista superior de las dos unidades fabricadas).}}{44}{figure.caption.130}%
-\contentsline {figure}{\numberline {4.4}{\ignorespaces Captura completa del terminal de pruebas RS en la placa CDHS.}}{45}{figure.caption.131}%
-\contentsline {figure}{\numberline {4.5}{\ignorespaces Captura completa del terminal de pruebas RS en la placa AOCS.}}{45}{figure.caption.132}%
-\contentsline {figure}{\numberline {4.6}{\ignorespaces Señal diferencial CAN sin resistencias de terminación.}}{47}{figure.caption.133}%
-\contentsline {figure}{\numberline {4.7}{\ignorespaces Señal diferencial CAN con resistencias de terminación (60~$\Omega $ + 60~$\Omega $).}}{47}{figure.caption.134}%
-\contentsline {figure}{\numberline {4.8}{\ignorespaces Captura completa del terminal de lectura ADC (placa CDHS).}}{48}{figure.caption.135}%
-\contentsline {figure}{\numberline {4.9}{\ignorespaces Señal PWM medida en el conector J5 de la placa CDHS: canal de 1~kHz con \textit {duty cycle} del 50\%.}}{49}{figure.caption.136}%
-\contentsline {figure}{\numberline {4.10}{\ignorespaces Señales PWM de control de motor en la placa AOCS (par complementario para puente en H).}}{49}{figure.caption.137}%
-\contentsline {figure}{\numberline {4.11}{\ignorespaces Ocupación de la FPGA por variante, en porcentaje de los recursos del dispositivo. Menos es mejor. El banco de catorce DMA triplica largamente el consumo de la solución multicanal para el mismo número de canales.}}{50}{figure.caption.140}%
-\contentsline {figure}{\numberline {4.12}{\ignorespaces Interrupciones por kilobyte transferido. Menos es mejor: cada interrupción es una expropiación de la CPU. Las barras de DMA14 y MCDMA son invisibles a esta escala, y eso es precisamente el resultado. La cifra de DMA14 recoge solo la transmisión.}}{52}{figure.caption.143}%
-\contentsline {figure}{\numberline {4.13}{\ignorespaces Latencia media de entrega de un frame de 11 bytes. Menos es mejor. Se excluye DMA14 por carecer de lazo de recepción.}}{53}{figure.caption.145}%
-\contentsline {figure}{\numberline {4.14}{\ignorespaces \textit {Throughput} de un canal frente al techo físico de la línea a 115\,200 8N1. Más es mejor. El MCDMA lo alcanza al 99\,\%; la variante GPIO se queda en el 30\,\%.}}{53}{figure.caption.147}%
-\contentsline {figure}{\numberline {4.15}{\ignorespaces \textit {Throughput} frente a la velocidad de línea, en escala logarítmica en ambos ejes. El MCDMA crece de forma proporcional a la velocidad del enlace; la variante GPIO es una recta plana, porque su límite no está en la línea sino en el coste de una interrupción por byte. En el punto de 4~Mbaudios la diferencia es de 70 veces.}}{54}{figure.caption.149}%
-\contentsline {figure}{\numberline {4.16}{\ignorespaces PCB de comunicación serie configurada para la campaña de caracterización, con los \textit {jumpers} fijando la topología de la tabla~\ref {tab:pcb_topologia}.}}{57}{figure.caption.153}%
-\contentsline {figure}{\numberline {4.17}{\ignorespaces Velocidad máxima con tasa de error nula en cada bus de la PCB, según el valor del bit SLO. El pin \texttt {SLO} del LTC2865 es un habilitador de modo lento activo a nivel bajo: con el valor por defecto (0) el limitador de \textit {slew rate} está activo y limita el driver a 250~kbps nominales, con lo que el bus multipunto alcanza 460~kbps. Desactivándolo (1), los tres buses operan de forma limpia a 4~Mbps.}}{59}{figure.caption.155}%
-\contentsline {figure}{\numberline {4.18}{\ignorespaces Tasa de error del bus A (RS-485 multipunto, 7 nodos) frente a la velocidad de línea, con y sin el limitador de \textit {slew}. Con el limitador activo ---el valor por defecto--- el enlace se degrada a partir de 460~kbps y colapsa por completo a 2~Mbps, coherente con el máximo nominal de 250~kbps del chip en ese modo; desactivándolo la tasa de error es nula en todo el barrido. Los puntos de 3 y 4~Mbps no existen en la curva de SLO~=~0 porque el barrido se interrumpe en cuanto un punto no deja pasar un solo byte correcto.}}{60}{figure.caption.156}%
+\contentsline {figure}{\numberline {4.1}{\ignorespaces Sistema completo montado: ZCU102 con la placa CDHS conectada al FMC.}}{52}{figure.caption.142}%
+\contentsline {figure}{\numberline {4.2}{\ignorespaces Placa CDHS con componentes montados (ambas caras).}}{53}{figure.caption.143}%
+\contentsline {figure}{\numberline {4.3}{\ignorespaces Captura completa del terminal de pruebas RS en la placa CDHS.}}{54}{figure.caption.144}%
+\contentsline {figure}{\numberline {4.4}{\ignorespaces Señal diferencial CAN sin resistencias de terminación.}}{55}{figure.caption.145}%
+\contentsline {figure}{\numberline {4.5}{\ignorespaces Señal diferencial CAN con resistencias de terminación (60~$\Omega $ + 60~$\Omega $).}}{55}{figure.caption.146}%
+\contentsline {figure}{\numberline {4.6}{\ignorespaces Captura completa del terminal de lectura ADC (placa CDHS).}}{56}{figure.caption.147}%
+\contentsline {figure}{\numberline {4.7}{\ignorespaces Señal PWM medida en el conector J5 de la placa CDHS: canal de 1~kHz con \textit {duty cycle} del 50\%.}}{56}{figure.caption.148}%
+\contentsline {figure}{\numberline {4.8}{\ignorespaces Placas AOCS con componentes montados (vista superior de las dos unidades fabricadas).}}{57}{figure.caption.149}%
+\contentsline {figure}{\numberline {4.9}{\ignorespaces Captura completa del terminal de pruebas RS en la placa AOCS.}}{58}{figure.caption.150}%
+\contentsline {figure}{\numberline {4.10}{\ignorespaces Señales PWM de control de motor en la placa AOCS (par complementario para puente en H).}}{58}{figure.caption.151}%
+\contentsline {figure}{\numberline {4.11}{\ignorespaces Ocupación de la FPGA por variante, en porcentaje de los recursos del dispositivo. Menos es mejor. El banco de catorce DMA triplica largamente el consumo de la solución multicanal para el mismo número de canales.}}{60}{figure.caption.155}%
+\contentsline {figure}{\numberline {4.12}{\ignorespaces Interrupciones por kilobyte transferido. Menos es mejor: cada interrupción es una expropiación de la CPU. Las barras de DMA14 y MCDMA son invisibles a esta escala, y eso es precisamente el resultado. La cifra de DMA14 recoge solo la transmisión.}}{61}{figure.caption.160}%
+\contentsline {figure}{\numberline {4.13}{\ignorespaces Latencia media de entrega de un frame de 11 bytes. Menos es mejor. Se excluye DMA14 por carecer de lazo de recepción.}}{62}{figure.caption.163}%
+\contentsline {figure}{\numberline {4.14}{\ignorespaces \textit {Throughput} de un canal frente al techo físico de la línea a 115\,200 8N1. Más es mejor. El MCDMA lo alcanza al 99\,\%; la variante GPIO se queda en el 30\,\%.}}{63}{figure.caption.166}%
+\contentsline {figure}{\numberline {4.15}{\ignorespaces \textit {Throughput} frente a la velocidad de línea, en escala logarítmica en ambos ejes. El MCDMA crece de forma proporcional a la velocidad del enlace; la variante GPIO es una recta plana, porque su límite no está en la línea sino en el coste de una interrupción por byte. En el punto de 4~Mbaudios la diferencia es de 70 veces.}}{64}{figure.caption.169}%
+\contentsline {figure}{\numberline {4.16}{\ignorespaces PCB de comunicación serie configurada para la campaña de caracterización, con los \textit {jumpers} fijando la topología de la tabla~\ref {tab:pcb_topologia}.}}{67}{figure.caption.175}%
+\contentsline {figure}{\numberline {4.17}{\ignorespaces Velocidad máxima con tasa de error nula en cada bus de la PCB, según el valor del bit SLO. El pin \texttt {SLO} del LTC2865 es un habilitador de modo lento activo a nivel bajo: con el valor por defecto (0) el limitador de \textit {slew rate} está activo y limita el driver a 250~kbps nominales, con lo que el bus multipunto alcanza 460~kbps. Desactivándolo (1), los tres buses operan de forma limpia a 4~Mbps.}}{69}{figure.caption.179}%
+\contentsline {figure}{\numberline {4.18}{\ignorespaces Tasa de error del bus A (RS-485 multipunto, 7 nodos) frente a la velocidad de línea, con y sin el limitador de \textit {slew}. Con el limitador activo ---el valor por defecto--- el enlace se degrada a partir de 460~kbps y colapsa por completo a 2~Mbps, coherente con el máximo nominal de 250~kbps del chip en ese modo; desactivándolo la tasa de error es nula en todo el barrido. Los puntos de 3 y 4~Mbps no existen en la curva de SLO~=~0 porque el barrido se interrumpe en cuanto un punto no deja pasar un solo byte correcto.}}{70}{figure.caption.180}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }

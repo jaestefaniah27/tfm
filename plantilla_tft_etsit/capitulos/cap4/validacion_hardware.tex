@@ -1,11 +1,16 @@
-En este capítulo se recogen los resultados de la validación hardware del sistema completo.
-Las primeras secciones cubren las pruebas realizadas con la placa CDHS y la placa AOCS
-conectadas a la ZCU102 mediante FMC. A continuación, la sección~\ref{sec:resultados_benchmark}
-compara las tres arquitecturas de transporte entre el PS y la PL, y la
-sección~\ref{sec:resultados_pcb} recoge la caracterización eléctrica de la placa de comunicación
-serie de diseño propio, ya fabricada y validada sobre sus catorce transceptores.
+En este capítulo se recogen los resultados de la validación hardware del sistema completo,
+organizados en tres bloques según la placa validada: la sección~\ref{sec:validacion_cdhs} cubre
+las pruebas realizadas con la placa CDHS, la sección~\ref{sec:validacion_aocs} las realizadas con
+la placa AOCS, y la sección~\ref{sec:validacion_propia} recoge la validación de la placa de
+comunicación serie ---la comparativa de las tres arquitecturas de transporte
+PS--PL y la caracterización eléctrica de la placa ya fabricada, sobre sus catorce
+transceptores---. Las tres placas se conectan a la ZCU102 mediante FMC.
 
-\section{Montaje del sistema}
+% ===========================================================================
+\section{Validación CDHS} \label{sec:validacion_cdhs}
+% ===========================================================================
+
+\subsection{Montaje}
 
 \begin{figure}[H]
     \centering
@@ -21,14 +26,7 @@ serie de diseño propio, ya fabricada y validada sobre sus catorce transceptores
     \label{fig:cdhs_foto}
 \end{figure}
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.62\textwidth]{IMG/aocs_soldada.jpg}
-    \caption{Placas AOCS con componentes montados (vista superior de las dos unidades fabricadas).}
-    \label{fig:aocs_foto}
-\end{figure}
-
-\section{Validación de comunicaciones serie RS422/RS485}
+\subsection{Comunicaciones serie RS422/RS485} \label{sec:cdhs_rs}
 
 Las pruebas de comunicaciones serie se realizaron con la aplicación de testing en RTEMS,
 que expone una consola interactiva por USB donde el usuario puede enviar mensajes a
@@ -39,8 +37,6 @@ cualquier transceptor con el formato \texttt{<ID> <MENSAJE>} o a todos simultán
     \item \textbf{RS422}: arnés a 4 hilos cruzando TX\_P/N de un canal con RX\_P/N del opuesto.
     \item \textbf{RS485}: arnés a 2 hilos conectando A+ y B$-$ de un canal con A+ y B$-$ del otro.
 \end{itemize}
-
-\subsection{CDHS --- 3 transceptores}
 
 Al arrancar, el driver descubrió automáticamente los 3 transceptores instanciados en el
 \textit{bitstream} e imprimió sus direcciones base (\texttt{0xA0000000}, \texttt{0xA0001000},
@@ -74,40 +70,7 @@ Tx -> UART 2: OK
     \label{fig:cdhs_rs_terminal}
 \end{figure}
 
-\subsection{AOCS --- 5 transceptores}
-
-Con el \textit{bitstream} de 5 transceptores para la placa AOCS, el descubrimiento detectó
-correctamente 5 instancias (\texttt{0xA0000000}--\texttt{0xA0004000}, INTC en
-\texttt{0xA0005000}). Las pruebas de \textit{loopback} entre distintos pares de canales
----UART 0$\leftrightarrow$4, UART 0$\leftrightarrow$3, UART 0$\leftrightarrow$2,
-UART 0$\leftrightarrow$1--- resultaron todas correctas sin errores de \textit{framing}.
-
-\begin{lstlisting}[caption={Salida de terminal --- prueba RS422/RS485 con la placa AOCS (5 transceptores)}]
-[TRANSCEIVER DEBUG] Detectados: 5 | Base: 0xA0000000 | INT: 0xA0005000
-CMD> 0 HOLA  ->  [RX UART 04]: HOLA
-CMD> 4 HOLA  ->  [RX UART 00]: HOLA
-CMD> 0 HOLA  ->  [RX UART 03]: HOLA
-CMD> 0 HOLA  ->  [RX UART 01]: HOLA
-\end{lstlisting}
-
-\begin{figure}[H]
-    \centering
-    \fbox{\parbox{0.85\textwidth}{\centering \textit{[Figura pendiente: captura completa del terminal \texttt{aocs\_testing\_rs} disponible en \texttt{tfm/00\_docs/logs\_terminal/}]}\vspace{0.5cm}}}
-    \caption{Captura completa del terminal de pruebas RS en la placa AOCS.}
-    \label{fig:aocs_rs_terminal}
-\end{figure}
-
-\subsection{Prueba con 13 transceptores simultáneos}
-
-Para verificar el correcto funcionamiento del driver con un número elevado de instancias, se
-cargó un \textit{bitstream} con 13 transceptores instanciados, conectando los canales adicionales a
-los pines externos del conector J3 de la ZCU102. El sistema arrancó y operó correctamente
-con todos los canales, confirmando que la arquitectura de ISR maestra con tareas \textit{worker}
-individuales escala sin problemas hasta el número máximo de instancias soportado. La prueba
-con los 14 transceptores sobre la placa de comunicación serie de diseño propio se aborda en la
-sección~\ref{sec:resultados_pcb}, ya con la placa fabricada.
-
-\section{Validación del bus CAN}
+\subsection{Bus CAN}
 
 Las pruebas del bus CAN se realizaron con la aplicación de test desarrollada por Diego Ramos
 (compañero del laboratorio B105 en el proyecto LINCE), que configura los canales CAN y
@@ -152,7 +115,7 @@ conectadas, la forma de onda resultó limpia y bien definida.
     \label{fig:can_con_term}
 \end{figure}
 
-\section{Validación del ADC SPI (termistores CDHS)}
+\subsection{ADC SPI (termistores)}
 
 La aplicación de lectura del ADC ADS7950 muestreó los cuatro canales a 500~ms de intervalo
 e imprimió los valores digitales por el terminal. Para verificar la linealidad de la cadena de
@@ -187,16 +150,11 @@ estables bajos durante todo el ensayo, correspondientes a las entradas no excita
     \label{fig:cdhs_adc_terminal}
 \end{figure}
 
-\section{Validación PWM (calentadores CDHS y puentes en H AOCS)}
+\subsection{PWM (calentadores)}
 
 Las señales PWM generadas por el bloque \texttt{PWMx4\_auto\_test} se midieron con el
 osciloscopio sobre el conector J5 de la placa CDHS, verificando los cuatro canales: 10~kHz,
 5~kHz, 1~kHz y 100~Hz, todos con \textit{duty cycle} del 50\%.
-
-Para la placa AOCS, el bloque VHDL de control de motores generó señales PWM alternando
-la dirección de giro cada pocos segundos (línea 1 activa con línea 2 a 0, y a continuación
-línea 1 a 0 con línea 2 activa), permitiendo verificar el control de puentes en H con una
-fuente de alimentación externa conectada a los bornes banana.
 
 \begin{figure}[H]
     \centering
@@ -204,6 +162,52 @@ fuente de alimentación externa conectada a los bornes banana.
     \caption{Señal PWM medida en el conector J5 de la placa CDHS: canal de 1~kHz con \textit{duty cycle} del 50\%.}
     \label{fig:cdhs_pwm}
 \end{figure}
+
+% ===========================================================================
+\section{Validación AOCS} \label{sec:validacion_aocs}
+% ===========================================================================
+
+\subsection{Montaje}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.62\textwidth]{IMG/aocs_soldada.jpg}
+    \caption{Placas AOCS con componentes montados (vista superior de las dos unidades fabricadas).}
+    \label{fig:aocs_foto}
+\end{figure}
+
+\subsection{Comunicaciones serie RS422/RS485}
+
+El procedimiento de prueba ---consola interactiva por USB y arneses de \textit{loopback}
+RS422/RS485--- es el mismo descrito para la placa CDHS (sección~\ref{sec:cdhs_rs}).
+
+Con el \textit{bitstream} de 5 transceptores para la placa AOCS, el descubrimiento detectó
+correctamente 5 instancias (\texttt{0xA0000000}--\texttt{0xA0004000}, INTC en
+\texttt{0xA0005000}). Las pruebas de \textit{loopback} entre distintos pares de canales
+---UART 0$\leftrightarrow$4, UART 0$\leftrightarrow$3, UART 0$\leftrightarrow$2,
+UART 0$\leftrightarrow$1--- resultaron todas correctas sin errores de \textit{framing}.
+
+\begin{lstlisting}[caption={Salida de terminal --- prueba RS422/RS485 con la placa AOCS (5 transceptores)}]
+[TRANSCEIVER DEBUG] Detectados: 5 | Base: 0xA0000000 | INT: 0xA0005000
+CMD> 0 HOLA  ->  [RX UART 04]: HOLA
+CMD> 4 HOLA  ->  [RX UART 00]: HOLA
+CMD> 0 HOLA  ->  [RX UART 03]: HOLA
+CMD> 0 HOLA  ->  [RX UART 01]: HOLA
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    \fbox{\parbox{0.85\textwidth}{\centering \textit{[Figura pendiente: captura completa del terminal \texttt{aocs\_testing\_rs} disponible en \texttt{tfm/00\_docs/logs\_terminal/}]}\vspace{0.5cm}}}
+    \caption{Captura completa del terminal de pruebas RS en la placa AOCS.}
+    \label{fig:aocs_rs_terminal}
+\end{figure}
+
+\subsection{PWM (puentes en H)}
+
+Para la placa AOCS, el bloque VHDL de control de motores generó señales PWM alternando
+la dirección de giro cada pocos segundos (línea 1 activa con línea 2 a 0, y a continuación
+línea 1 a 0 con línea 2 activa), permitiendo verificar el control de puentes en H con una
+fuente de alimentación externa conectada a los bornes banana.
 
 \begin{figure}[H]
     \centering

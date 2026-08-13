@@ -1,79 +1,104 @@
 \section{Introducción y motivación}
 
-El sector espacial atraviesa un cambio de paradigma que se conoce como \textbf{NewSpace}: frente
-al modelo clásico de misiones únicas, de plazos de una década y presupuestos de cientos de
-millones, se impone el de constelaciones de satélites pequeños, fabricados en serie, con ciclos
-de desarrollo de meses y costes dos órdenes de magnitud menores. Ese cambio no es solo
-económico, sino técnico, y afecta directamente a cómo se diseña la electrónica de a bordo. La
-vía tradicional ---componentes cualificados para espacio, endurecidos frente a radiación y con
-herencia de vuelo demostrada--- es incompatible con esos plazos y esos costes: el catálogo de
-piezas cualificadas es reducido, caro y va tecnológicamente por detrás. El enfoque NewSpace
-acepta por ello el uso de \textbf{componentes comerciales} (COTS, \textit{commercial off-the-shelf}),
-trasladando la fiabilidad desde la pieza individual hacia la arquitectura del sistema: redundancia,
-detección de errores y capacidad de recuperación en vuelo. Esta filosofía es la que enmarca todas
-las decisiones de diseño de este trabajo, y explica que la plataforma de partida sea un MPSoC
-comercial y que los componentes de las tarjetas diseñadas sean de grado industrial o automotriz
-y no de grado espacial.
+Este trabajo se enmarca en el proyecto \textbf{LINCE} (\textit{Línea de INdustrialización de
+Cargas de pago y plataformas Espaciales}), una iniciativa del PERTE Aeroespacial liderada por
+Indra que impulsa la producción en serie de plataformas de microsatélites (100--200 kg) y de sus
+cargas de pago para órbita baja (LEO), con el objetivo de reducir costes y plazos y consolidar la
+autonomía estratégica española en este segmento; su constelación demostradora, STARTICAL,
+validará en vuelo tecnologías críticas de comunicaciones y vigilancia \cite{indra2026lince}.
 
-Dentro de ese marco, el diseño de ordenadores de a bordo (OBC) para satélites exige resolver un
-reto de ingeniería que va más allá del procesamiento puro: conseguir que el procesador central se
-comunique de forma determinista y fiable con una familia heterogénea de periféricos ---sensores de
-actitud, actuadores, cargas de pago--- a través de buses serie con especificaciones eléctricas y de
-temporización muy diferentes entre sí. En el marco del proyecto LINCE, el grupo B105
-Electronic Systems Lab de la Universidad Politécnica de Madrid asume la responsabilidad del
-subsistema de comunicaciones del OBC.
+Dentro del consorcio, Sener participa como socio tecnológico: desarrolla y valida el firmware
+del OBC, y traslada a los demás participantes los requisitos técnicos que recibe de Indra,
+líder del consorcio. La
+Universidad Politécnica de Madrid participa a través del grupo B105 Electronic Systems Lab,
+responsable del subsistema de comunicaciones del ordenador de a bordo (OBC); este trabajo se
+desarrolla dentro de esa responsabilidad. El proyecto sigue el enfoque \textbf{NewSpace}: uso de
+componentes comerciales (COTS, \textit{commercial off-the-shelf}) frente a los cualificados para
+espacio, trasladando la fiabilidad desde la pieza individual hacia la arquitectura del sistema.
 
-El trabajo se desarrolló en el laboratorio B105 en calidad de colaborador en prácticas dentro
-del proyecto LINCE, y la tarea inicial consistió en implementar el soporte de comunicaciones
-serie RS422 y RS485 sobre la plataforma de evaluación Zynq UltraScale+ ZCU102. Esta
-plataforma, basada en un MPSoC que integra en un mismo encapsulado un sistema de
-procesamiento ARM (PS) y una lógica programable tipo FPGA (PL), proporciona la
-flexibilidad necesaria para implementar transceptores serie a medida. Se optó por un diseño
-propio en VHDL en lugar de emplear IPs de terceros, con el objetivo de obtener control total
-sobre el comportamiento del transceptor: parámetros de temporización, gestión de errores y
-adaptación a los requisitos concretos del sistema.
+El OBC concentra el control del satélite y se comunica con los periféricos de la plataforma
+(propulsores, cámaras, seguidores de estrellas, sensores térmicos) mediante enlaces serie.
+Los requisitos de LINCE fijan catorce enlaces RS422/RS485 operando de forma simultánea, cada uno
+con sus propios parámetros de línea. Esa cifra obliga a estudiar el transporte de datos desde
+cada transceptor hasta la aplicación de usuario. Hay que
+balancear los recursos del sistema de manera que se minimicen el área de la lógica programable (PL) y el uso de CPU del
+sistema de procesamiento (PS) sin penalizar el rendimiento del conjunto. La ZCU102, plataforma de desarrollo basada en el
+MPSoC Zynq UltraScale+ escogida para el prototipado, no dispone ni de tantos transceptores físicos
+serie ni de los conectores de los periféricos del satélite, de modo que el propio banco de ensayo
+forma parte del problema a resolver.
 
-El alcance del trabajo, sin embargo, no se mantuvo en ese encargo inicial, y la forma en que se
-amplió merece ser explicada porque condiciona la estructura de esta memoria. Una vez operativo
-el transceptor en la lógica programable, validarlo exigía ejercitar sus catorce canales sobre
-buses reales, y la plataforma de evaluación no ofrece ese hardware. Se abordó entonces, por
-iniciativa propia y sin que mediara encargo, el \textbf{diseño de una tarjeta de expansión propia}
-que reprodujera las topologías RS-485 multipunto y RS-422 punto a punto sobre las que el sistema
-tendría que operar en vuelo. El resultado de esa tarjeta fue lo que llevó al consorcio a asignar
-al autor el diseño de las \textbf{dos tarjetas oficiales del proyecto} ---la placa CDHS, de gestión
-de datos y control térmico, y la placa AOCS, de control de actitud y órbita---, con las que Sener
-debía validar su propio firmware sobre la ZCU102. El trabajo pasó así de ser exclusivamente de
-codiseño hardware-software a incluir también el diseño electrónico, la selección de componentes y
-la fabricación de tres tarjetas de circuito impreso.
+El autor se incorporó al laboratorio B105 Electronic Systems Lab como becario para trabajar en
+el proyecto LINCE debido a su interés en proyectos espaciales y satelitales. La aportación
+inicial se centró en el desarrollo de firmware en VHDL y C para las comunicaciones serie RS422 y
+RS485 sobre la ZCU102. La necesidad de ejercitar ese firmware en condiciones eléctricas reales
+amplió después el alcance del trabajo al diseño y fabricación del hardware que completa el banco
+de ensayo.
 
-Esa ampliación fue posible porque la colaboración con Sener ---socio tecnológico del proyecto
-LINCE--- fue continua y no puntual: el trabajo se integró en su ciclo de \textit{sprints}, con
-reuniones periódicas de revisión y planificación que permitían reasignar tareas conforme
-avanzaba el proyecto. A su vez, Sener traslada los requisitos técnicos impuestos por Indra, que
-lidera el consorcio.
 
-El resultado de todo este trabajo es una plataforma funcional que abarca el codiseño
-hardware-software del subsistema de comunicaciones serie, su integración bajo el sistema
-operativo de tiempo real RTEMS, y la fabricación y validación de las tres tarjetas de
-prueba: las dos oficiales del proyecto (CDHS y AOCS) y la de comunicación serie de diseño
-propio, caracterizada eléctricamente sobre sus catorce transceptores.
+
+\section{Objetivos} \label{objetivos}
+
+El objetivo principal de este trabajo es desarrollar una plataforma funcional y validada de
+comunicación con periféricos serie sobre el MPSoC Zynq UltraScale+ ZCU102, que sirva
+como base para el OBC del proyecto LINCE. Para alcanzarlo, se plantearon los siguientes
+objetivos específicos:
+
+\begin{enumerate}
+    \item \textbf{Diseñar un módulo VHDL de transceptor serie configurable} para la lógica
+    programable del MPSoC, capaz de operar sobre los estándares RS422 y RS485, con
+    parámetros configurables en tiempo de ejecución: baudrate, paridad, número de bits de
+    datos, bits de parada, orden de bit y limitación del \textit{slew rate} del transceptor
+    físico. El número total de transceptores serie que deben operar a la vez es de 14,
+    por los requisitos del proyecto LINCE.
+
+    \item \textbf{Diseñar la arquitectura de transporte de datos entre la lógica programable y el
+    sistema de procesamiento.} El transceptor resuelve la capa física de un enlace, pero llevar
+    los flujos de los catorce enlaces instanciados hasta el procesador es un problema
+    distinto, y su solución condiciona el rendimiento del conjunto. Se plantea investigar 
+    las alternativas disponibles, desarrollarlas, compararlas y seleccionar la que mejor escale 
+    en rendimiento, en ocupación de la lógica programable y en consumo de recursos de CPU.
+
+    \item \textbf{Desarrollar un driver de software completo en C para RTEMS 7} que abstraiga el
+    acceso al hardware y permita a la aplicación gestionar los transceptores serie,
+    incluyendo la configuración de todos los parámetros exponiendo una API pública 
+    sencilla de utilizar.
+
+    \item \textbf{Diseñar y fabricar una placa de comunicación serie}
+    que permita ejercitar los catorce transceptores de forma simultánea y sobre topologías de bus
+    realistas, como puede ser punto a punto o multipunto compartido.
+
+    \item \textbf{Diseñar y fabricar dos placas de circuito impreso de expansión de la ZCU102} que
+    permitan la conexión con diversos periféricos, bajo las especificaciones de los subsistemas
+    CDHS y AOCS del satélite, incluyendo interfaces RS422/RS485, SpaceWire, CAN, PWM y medida de
+    señales analógicas.
+
+    \item \textbf{Integrar y validar el sistema completo}, verificando la comunicación entre la
+    ZCU102 y las tres placas, y comprobando que cada placa cumple con su función de proporcionar 
+    una capa física con buses compartidos o de exponer
+    las conexiones a los distintos periféricos sin errores.
+\end{enumerate}
+
+
 
 \section{Metodología}
 
-El desarrollo de este trabajo se enmarcó en la dinámica de trabajo colaborativo del proyecto
-LINCE, que sigue una \textbf{metodología ágil}. El trabajo se organizó en \textit{sprints}, con
-reuniones quincenales de revisión y planificación con los ingenieros de Sener asignados al
-proyecto ---donde se demostraba el incremento alcanzado, se identificaban bloqueos y se
-comprometía el alcance del siguiente ciclo---, además de comunicación continua por correo para
-resolver dudas técnicas y alinear requisitos. Las tareas se gestionaron mediante Jira como
-tablero común. Esta cadencia es la que explica que el alcance del trabajo pudiera reajustarse
-sobre la marcha, incorporando el diseño de las tarjetas CDHS y AOCS a mitad de desarrollo. Los
-requisitos de diseño de las PCBs de prueba llegaron a través de Sener, que los traslada desde
-Indra como líder del consorcio.
+Durante el desarrollo del trabajo se ha tenido un contacto estrecho con los compañeros de
+Sener. Se han seguido \textbf{metodologías ágiles} mediante el uso del programa \textit{Jira},
+que permite organizar las tareas en función del tiempo que requieren. La metodología ágil
+utilizada consiste en establecer las tareas que se van a realizar durante un tiempo
+establecido, denominado como \textit{Sprint}. Al final de cada \textit{Sprint}, se tiene una
+reunión estructurada en las siguientes fases: revisión de \textit{sprint}, preparación del
+siguiente \textit{sprint}, análisis de posibles mejoras acerca de la metodología, y preguntas
+finales. Durante la reunión los participantes se turnan para hablar. En nuestro caso, los 
+\textit{sprints} han tenido una duración de dos semanas, y se han realizado un total de 20 sprints.
+
+Además de las reuniones de \textit{Sprint}, se ha mantenido una comunicación constante con el
+equipo de Sener para resolver todo tipo de dudas acerca de los requerimientos del proyecto, y
+de cómo orientar muchos aspectos.
 
 El trabajo se estructuró en tres fases principales:
 
-\textbf{Fase 1 --- Familiarización y establecimiento del entorno (octubre -- enero):} Los primeros
+\textbf{Fase 1: Familiarización y establecimiento del entorno (octubre -- enero):} Los primeros
 meses se dedicaron a establecer las bases del entorno de desarrollo: instalación y
 configuración de Vivado y Vitis, compilación de RTEMS 7 desde código fuente para la
 arquitectura AArch64 mediante el RTEMS Source Builder, y validación del flujo completo
@@ -82,39 +107,69 @@ un ejemplo funcional de extremo a extremo. Esta fase fue fundamental para compre
 arquitectura PS-PL del MPSoC y las particularidades del entorno de compilación cruzada
 para sistemas empotrados.
 
-\textbf{Fase 2 --- Desarrollo e integración (febrero -- junio):} Con el entorno establecido, se abordó
+\textbf{Fase 2: Desarrollo e integración (febrero -- junio):} Con el entorno establecido, se abordó
 el desarrollo principal: el transceptor serie en VHDL, el driver para RTEMS, el diseño de las
-PCBs CDHS y AOCS, y las aplicaciones de prueba. Se siguió una metodología iterativa: cada
+PCB de comunicación serie, CDHS y AOCS, y las aplicaciones de prueba. Se siguió una metodología iterativa: cada
 módulo se implementaba, se validaba de forma aislada (mediante simulación en Vivado o
 prueba directa sobre la placa) y se integraba en el sistema global antes de avanzar al
 siguiente.
 
-\textbf{Fase 3 --- Estudio del transporte y caracterización (junio -- julio):} La validación con los
-catorce canales activos reveló que el factor limitante del sistema no era el transceptor sino el
-transporte de datos entre el PS y la PL, lo que reorientó la fase final del trabajo: se
-implementaron y compararon las tres arquitecturas de transporte (AXI GPIO, catorce AXI DMA y AXI
-MCDMA con puente VHDL) sobre un banco de pruebas común, y se fabricó y caracterizó eléctricamente
-la placa de comunicación serie de diseño propio mediante una campaña de nueve tests sobre sus
-catorce transceptores.
+\textbf{Fase 3: Estudio del transporte y caracterización (junio -- julio):} Se caracterizó el firmware desarrollado (VHDL y C) y el hardware (PCBs) mediante un conjunto de pruebas, las cuales
+revelaron que la aproximación inicial del sistema de transporte de datos no era eficiente. Se desarrollaron
+dos alternativas nuevas: la primera consistió en un sistema de transporte basado en catorce controladores AXI DMA independientes,
+y la segunda en un sistema de transporte basado en un único controlador AXI MCDMA con un puente VHDL que multiplexa 
+los catorce canales. Ambas alternativas fueron implementadas y comparadas, revelando que la segunda alternativa era la 
+más eficiente y escalable. 
 
-Dos principios atraviesan todo el desarrollo y conviene enunciarlos aquí, porque explican
-decisiones que aparecerán repetidamente a lo largo de la memoria.
+En el diseño y fabricación del hardware se asumió desde el principio la detección de errores de
+diseño como parte del proceso: cada placa se caracterizaba en el laboratorio y, cuando el
+calendario lo permitía, se corregía y se volvía a fabricar. Quedó fuera del alcance la validación
+de la comunicación SpaceWire presente en la PCB AOCS, por su alta complejidad técnica.
 
-El primero es la \textbf{verificación como parte del diseño, no como fase posterior}. Ningún bloque
-de la lógica programable se integró en el sistema sin haber pasado antes su propio
-\textit{testbench} en simulación, y el sistema completo se validó en placa mediante baterías de
-pruebas automatizadas que actuaban como test de regresión. Este principio no es retórico: el
-código de \textit{testbench} escrito en el trabajo (4.551 líneas) es prácticamente equivalente en
-volumen al código VHDL sintetizable que verifica (4.710 líneas). Fue además determinante en el
-punto más difícil del proyecto ---la depuración del bus AXI contra el motor de DMA---, donde la
-ausencia de observabilidad desde el software hizo de la simulación la única vía de diagnóstico.
+Durante el desarrollo de los bloques VHDL, se comprobó en todo momento el correcto funcionamiento de los mismos
+mediante simulaciones de testbench antes de integrarlos en el sistema completo.
+Además, se realizaron simulaciones del sistema completo, las cuales permitieron encontrar y corregir
+algunos errores.
 
-El segundo es la \textbf{automatización y la reproducibilidad del flujo}. Un ciclo de iteración en
-esta plataforma atraviesa síntesis en Vivado, empaquetado en Vitis, compilación cruzada de RTEMS
-y generación de la imagen de arranque; hecho a mano es lento y, sobre todo, propenso a errores
-silenciosos. Se invirtió por ello un esfuerzo deliberado en construir herramientas propias
----\textit{scripts} TCL que regeneran el diseño de bloques completo desde cero, \textit{scripts} de
-compilación y despliegue de la imagen de arranque, utilidades de instrumentación--- de modo que
-cualquier resultado de esta memoria pueda reproducirse desde el repositorio con un único comando.
-El peso de esa decisión es medible: las herramientas de automatización suponen el 40\,\% de las
-líneas de código escritas en el trabajo, más que ninguna otra categoría.
+Por último, se desarrollaron múltiples automatizaciones en forma de scripts de shell, Python, TCL, etc,
+que agilizaron el flujo de trabajo permitiendo ahorrar tiempo en tareas repetitivas y eliminar errores manuales.
+
+Todo el trabajo desarrollado (código VHDL, aplicaciones y drivers de RTEMS, bancos de pruebas,
+diseños de las placas y scripts de automatización) se ha versionado en un único repositorio Git,
+disponible públicamente en GitHub \cite{repo_tfm}. Bajo el directorio \texttt{tfm/} se organiza
+por bloques temáticos:
+\texttt{01\_ip\_serie} (transceptor serie en VHDL), \texttt{02\_transporte} (las tres
+arquitecturas de transporte), \texttt{03\_bench\_loopback} y \texttt{04\_pcb\_caracterizacion}
+(bancos de prueba y caracterización), \texttt{05\_aplicaciones\_cdhs\_aocs} (aplicaciones sobre las
+placas CDHS y AOCS), \texttt{06\_firmware} (componentes y scripts de arranque),
+\texttt{07\_tools} (herramientas de desarrollo comunes) y \texttt{00\_docs} (documentación,
+esquemáticos y BOM). A lo largo de la memoria se hace referencia a rutas concretas dentro de este
+repositorio, siempre relativas a su raíz.
+
+
+
+\section{Estructura de la memoria}
+
+El resto del documento se organiza en cuatro capítulos y tres anexos.
+
+El \textbf{capítulo 2} recoge el marco teórico: el proyecto LINCE, el MPSoC Zynq UltraScale+ y la
+plataforma ZCU102, el entorno de herramientas Vivado y Vitis, el sistema operativo de tiempo real
+RTEMS, los estándares de comunicación empleados (RS422, RS485, SpaceWire y CAN) y los mecanismos
+de transporte de datos entre el sistema de procesamiento y la lógica programable, con el bus AXI y
+el acceso directo a memoria.
+
+El \textbf{capítulo 3} describe el desarrollo: la preparación del entorno y del flujo de
+compilación, el diseño del transceptor serie configurable en VHDL, el driver para RTEMS 7, las
+tres arquitecturas de transporte implementadas, el diseño y fabricación de las tres placas de 
+circuito impreso y las herramientas de prueba desarrolladas.
+
+El \textbf{capítulo 4} presenta los resultados: la validación de la placa de comunicación serie
+con los catorce transceptores en funcionamiento simultáneo, la comparativa
+cuantitativa entre las tres arquitecturas de transporte, la caracterización eléctrica de la placa y
+la validación de las placas CDHS y AOCS sobre cada uno de sus interfaces.
+
+El \textbf{capítulo 5} reúne las conclusiones y las líneas futuras de trabajo. Los anexos
+contienen los mapas de señales y la tabla del oscilador controlado numéricamente, el análisis de
+aspectos éticos, económicos, sociales y ambientales, y el presupuesto económico del trabajo.
+
+

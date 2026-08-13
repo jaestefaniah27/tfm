@@ -1,11 +1,25 @@
 \begin{thebibliography}{10}
 
+\bibitem{xilinx2023ug1182}
+{AMD/Xilinx}.
+\newblock {\em {ZCU102} Evaluation Board User Guide}.
+\newblock AMD/Xilinx, 2023.
+\newblock Copia disponible en \texttt{tfm/00\_docs/ug1182-zcu102-eval-bd.pdf}
+  del repositorio del proyecto.
+
 \bibitem{indra2026lince}
 {Indra}.
 \newblock Proyecto {LINCE}: Línea de industrialización de cargas de pago y
   plataformas espaciales.
-\newblock Indra Sistemas S.A., 2026.
+\newblock Indra Sistemas S.A., \url{https://www.ptelince.es/}, 2026.
 \newblock Recuperado el 12 de junio de 2026.
+
+\bibitem{repo_tfm}
+Jorge Antonio~Estefanía Hidalgo.
+\newblock Repositorio de código del {TFM}: transceptores serie configurables y
+  transporte de datos sobre {Zynq UltraScale+}.
+\newblock \url{https://github.com/jaestefaniah27/tfm}, 2026.
+\newblock Recuperado el 6 de agosto de 2026.
 
 \bibitem{vita571fmc}
 {VITA Standards Organization}.
@@ -61,11 +75,6 @@ S.~M. Parkes.
   {AXI4-Lite}, {ACE}, {ACE-Lite})}.
 \newblock ARM Ltd., 2011.
 
-\bibitem{mogul1997livelock}
-Jeffrey~C. Mogul and K.~K. Ramakrishnan.
-\newblock Eliminating receive livelock in an interrupt-driven kernel.
-\newblock {\em ACM Transactions on Computer Systems}, 15(3):217--252, 1997.
-
 \bibitem{xilinx2022pg021}
 {AMD/Xilinx}.
 \newblock {\em {AXI DMA} v7.1 --- {LogiCORE IP} Product Guide}.
@@ -77,10 +86,25 @@ Jeffrey~C. Mogul and K.~K. Ramakrishnan.
   Guide}.
 \newblock AMD/Xilinx, 2022.
 
-\bibitem{xilinx2023ug1085}
-{AMD/Xilinx}.
-\newblock {\em {Zynq UltraScale+ MPSoC} Technical Reference Manual}.
-\newblock AMD/Xilinx, 2023.
+\bibitem{rtems_quickstart}
+{RTEMS Project}.
+\newblock {\em {RTEMS User Manual} (RTEMS 7) --- Cap.~2: Quick Start}.
+\newblock RTEMS Project, 2026.
+\newblock Guía paso a paso de instalación del \textit{toolchain} y
+  compilación de los BSP mediante el {RTEMS Source Builder}. Consultado en
+  2026.
+
+\bibitem{rtems_rsb}
+{RTEMS Project}.
+\newblock {\em {RTEMS User Manual} (RTEMS 7) --- Cap.~15: {Source Builder}
+  (RSB)}.
+\newblock RTEMS Project, 2026.
+\newblock Consultado en 2026.
+
+\bibitem{weicker1984dhrystone}
+Reinhold~P. Weicker.
+\newblock Dhrystone: A synthetic systems programming benchmark.
+\newblock {\em Communications of the ACM}, 27(10):1013--1030, 1984.
 
 \bibitem{pcbway_caps}
 {PCBWay}.
@@ -100,5 +124,10 @@ Jeffrey~C. Mogul and K.~K. Ramakrishnan.
 \newblock {ADS7950/51/52/53} --- 12/10/8-bit, 1-{MSPS}, 4-/8-channel, serial
   interface, {MicroPower} sampling analog-to-digital converter.
 \newblock Technical Report SLAS605C, Texas Instruments, 2018.
+
+\bibitem{xilinx2023ug1085}
+{AMD/Xilinx}.
+\newblock {\em {Zynq UltraScale+ MPSoC} Technical Reference Manual}.
+\newblock AMD/Xilinx, 2023.
 
 \end{thebibliography}

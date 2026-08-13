@@ -4,15 +4,14 @@
 
 \section{Preparación del entorno de desarrollo}
 
-Para llevar a cabo la implementación propuesta en este Trabajo de Fin de Máster, fue
-necesario establecer un entorno de desarrollo robusto que permitiera el codiseño
-hardware-software (PS-PL) sobre la plataforma Zynq UltraScale+ MPSoC. A continuación, se
-detalla la metodología seguida para la configuración de las herramientas de síntesis, la
-compilación del sistema operativo en tiempo real (RTEMS) y la validación del flujo de trabajo
-completo. El entorno de desarrollo principal se desplegó sobre una máquina virtual con una
-distribución Linux (Ubuntu/Debian). En este sistema se instalaron las dependencias necesarias
-para la compilación cruzada, incluyendo paquetes esenciales de desarrollo de C/C++,
-Python 3 y herramientas de control de versiones.
+Durante este trabajo se utilizó una máquina virtual con un sistema operativo Linux
+(Ubuntu/Debian) como entorno de desarrollo principal, por dos motivos prácticos: por un
+lado, la máquina virtual puede dejarse trabajando de forma indefinida, lo que resulta
+necesario para las compilaciones prolongadas de la herramienta de síntesis; por otro, se le pueden asignar muchos más recursos de memoria y
+almacenamiento de los que estarían disponibles en un equipo de trabajo convencional.
+
+Se siguieron los siguientes pasos para dejar operativo el
+entorno de desarrollo.
 
 \subsection{Instalación de Vivado y Vitis}
 
@@ -20,27 +19,46 @@ Para el desarrollo de la lógica programable (PL) y la generación de imágenes 
 utilizaron las herramientas oficiales de AMD Xilinx: Vivado Design Suite y Vitis Unified
 Software Platform. Vivado se empleó para el diseño a nivel de hardware y la generación del
 \textit{bitstream}, mientras que Vitis se utilizó para empaquetar los binarios y generar la imagen de
-arranque (BOOT.bin).
+arranque (BOOT.bin). Ambas estaban instaladas previamente en la máquina virtual.
 
 \subsection{Instalación de RTEMS}
 
 En lugar de utilizar binarios precompilados, se optó por compilar el sistema operativo RTEMS
-(versión 7) desde cero, garantizando el control total sobre la configuración del núcleo. La
-compilación se realizó utilizando la herramienta RTEMS Source Builder (RSB). Se generó un
+(versión 7) desde cero, garantizando el control total sobre la configuración del núcleo. Se
+siguió para ello la guía \textit{Quick Start} del manual de usuario oficial del
+proyecto~\cite{rtems_quickstart}, que describe paso a paso todo el proceso. La
+compilación se realizó utilizando la herramienta RTEMS Source Builder (RSB)~\cite{rtems_rsb}. Se generó un
 \textit{toolchain} cruzado específico para la arquitectura AArch64. Se configuró y compiló el Board
 Support Package (BSP) correspondiente a la plataforma ZynqMP (\texttt{zynqmp\_apu}),
 habilitando explícitamente el soporte para multiprocesamiento simétrico (SMP).
 
 Para validar el entorno recién compilado, se ejecutaron pruebas preliminares utilizando el
 emulador QEMU (\texttt{qemu-system-aarch64}) configurado con la máquina
-\texttt{xlnx-zcu102}. Se verificó la correcta ejecución de ejemplos básicos como
-\texttt{hello.exe} y pruebas de rendimiento computacional como el \textit{benchmark} Dhrystone.
+\texttt{xlnx-zcu102}. Se verificó la correcta ejecución de dos de los ejemplos que el propio
+RTEMS incluye en su BSP: \texttt{hello.exe}, que confirma que el arranque, la consola serie y la
+salida estándar funcionan, y \texttt{dhrystone.exe}, una implementación del \textit{benchmark}
+sintético Dhrystone~\cite{weicker1984dhrystone}, que ejercita la aritmética entera, el manejo de
+cadenas y las llamadas a función, y que sirve aquí únicamente como comprobación de que el
+\textit{toolchain} genera código funcional y el planificador ejecuta una carga sostenida.
 
-\subsection{Flujo de desarrollo completo}
+\subsection{Establecimiento de un flujo de desarrollo completo}
 
-Una vez preparadas todas las herramientas de desarrollo, se probó a realizar un desarrollo
-completo de principio a fin implementando un ejemplo sencillo: una puerta AND. Para ello, se
-siguieron los siguientes pasos.
+Una vez preparadas todas las herramientas de desarrollo, se realizó un desarrollo
+completo de principio a fin implementando un ejemplo sencillo: una
+\textbf{puerta AND}.
+
+En este ejemplo se repartieron las tareas entre las dos mitades del MPSoC: la puerta AND se
+implementó en la \textbf{PL}, describiéndola en VHDL, y en el \textbf{PS} se escribió un
+programa que excitaba todas las combinaciones de sus entradas y leía la salida en cada caso,
+escribiendo los resultados por la consola serie.
+
+La complejidad de este ejercicio no reside en la puerta AND en sí, sino en
+recorrer correctamente el procedimiento que lleva un programa escrito en C/C++ y un
+\textit{bitstream} hasta la ZCU102. En resumen, ese procedimiento consiste en generar dos
+ficheros y copiarlos en una tarjeta SD: el \texttt{BOOT.bin}, que contiene el \textit{bitstream}
+de la PL y todo el software de arranque, y el \texttt{rtems.img}, que contiene la aplicación que
+se ejecutará en el PS. El primero se construye con Vivado y Vitis; el segundo, compilando la
+aplicación de RTEMS. Los apartados que siguen recorren cada uno de esos pasos.
 
 \textbf{Parte Vivado.} Se creó un proyecto nuevo en Vivado llamado \texttt{and\_gate\_ps\_p}, y se
 diseñó la puerta AND en VHDL:
@@ -66,28 +84,204 @@ del paso anterior al \textit{Block Design}. Se añadieron dos AXI GPIO IPs al \t
 comunicar el PS con la PL, y se conectaron los bloques entre sí, utilizando \textit{Automate
 Connection} de Vivado para todas las conexiones faltantes.
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{IMG/Desarrollo/block_design_and.png}
+    \caption{\textit{Block Design} del ejemplo de la puerta AND: bloque Zynq UltraScale+ MPSoC,
+    los dos AXI GPIO y el módulo VHDL \texttt{AND\_GATE}.}
+    \label{fig:block_design_and}
+\end{figure}
+
 Después se creó un \textit{Wrapper} del \textit{Block Design} para que Vivado pudiera sintetizarlo
 correctamente. En la pestaña \textit{Address Editor} pueden verse las direcciones de los registros
 para acceder a la parte PL desde el PS. Por último, se generó el \textit{BitStream} y se exportó el
 hardware como .xsa.
 
-\textbf{Generación de la imagen de arranque (Vitis).} Se siguieron los siguientes pasos para
-empaquetar el hardware generado en Vivado en un binario que el MPSoC pudiera ejecutar:
-se creó un nuevo componente en Vitis de tipo \textit{Platform}, utilizando como base el .xsa
-generado; se compiló el FSBL usando el ejemplo \textit{Zynq MP FSBL}; y se generó el archivo
-\texttt{BOOT.bin} mediante el generador de imágenes de Vitis con la estructura de componentes
-estándar (FSBL, PMUFW, bitstream de la PL, BL31, U-Boot y DTB).
+\textbf{Generación de la imagen de arranque (Vitis).} El objetivo de este paso es empaquetar el
+hardware generado en Vivado, junto con el software de arranque, en un único binario
+(\texttt{BOOT.bin}) que el MPSoC pueda ejecutar desde la tarjeta SD. El proceso fue el siguiente:
+
+\begin{enumerate}
+    \item Se creó un componente de tipo \textit{Platform} en Vitis, utilizando como base el .xsa
+    exportado desde Vivado, y se compiló.
+    \item Sobre esa plataforma se creó una aplicación a partir del ejemplo \textit{Zynq MP FSBL},
+    y se compiló para obtener el \texttt{zynqmp\_fsbl\_proyect.elf}.
+    \item Se lanzó el generador de imágenes de Vitis (\textit{Create Zynq UltraScale+ Boot Image})
+    y se añadieron los componentes en el orden indicado en la figura
+    \ref{fig:vitis_boot_image}, ya que el orden dentro del fichero BIF determina la secuencia
+    de arranque.
+\end{enumerate}
+
+Los componentes que forman la imagen, en orden, son:
+
+\begin{itemize}
+    \item \texttt{zynqmp\_fsbl\_proyect.elf}, en modo \textit{bootloader}, destino a53-0 y nivel
+    de excepción EL3. Se encuentra en la carpeta \texttt{build} de la aplicación anterior.
+    \item \texttt{pmufw.elf}, en modo \textit{pmufw\_image} y destino a53-0. Es el firmware de la
+    unidad de gestión de potencia y se descargó del repositorio de firmware precompilado de
+    Xilinx para la ZCU102\footnote{\url{https://github.com/Xilinx/soc-prebuilt-firmware/tree/xilinx_v2025.1/zcu102-zynqmp}}.
+    \item \texttt{BLOCK\_DESIGN\_ZYNQ\_AND\_wrapper.bit}, en modo \textit{datafile} y con la PL
+    como dispositivo de destino. Es el \textit{bitstream} generado por Vivado.
+    \item \texttt{bl31.elf}, en modo \textit{datafile}, destino a53-0 y nivel de excepción EL3. Es
+    el \textit{firmware} de ARM Trusted Firmware y se descarga del mismo sitio que el PMUFW.
+    \item \texttt{u-boot.elf}, en modo \textit{datafile}, destino a53-0 y nivel de excepción EL2.
+    U-Boot es un gestor de arranque de segunda etapa: se ejecuta después del FSBL, inicializa
+    los periféricos necesarios (tarjeta SD, red, consola serie) y es el encargado de cargar en
+    memoria la imagen del sistema operativo (en este caso \texttt{rtems.img}) y cederle el
+    control. Ofrece además una consola interactiva desde la que se puede inspeccionar la
+    memoria o elegir manualmente qué imagen arrancar, lo que resultó muy útil durante la
+    depuración.
+    \item \texttt{system.dtb}, en modo \textit{datafile}, destino a53-0 y dirección de carga
+    \texttt{0x100000}. Este \textit{device tree} es el que permite a BL31 saber dónde está
+    enlazado el BL33 (U-Boot) y arrancarlo.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{IMG/Desarrollo/vitis_boot_image.png}
+    \caption{Generador de imágenes de arranque de Vitis, con los componentes que conforman el
+    \texttt{BOOT.bin}.}
+    \label{fig:vitis_boot_image}
+\end{figure}
 
 \textbf{Parte RTEMS.} Una vez generado el archivo de arranque, se desarrolló un software de
 ejemplo que interactuaba con los puertos GPIO conectados por AXI, excitando todas las
 combinaciones posibles de la puerta AND en la PL y leyendo su salida. Fue necesario añadir
 un archivo de mapeado de memoria para que el sistema operativo reconociera las direcciones
-correspondientes a la PL, y un \texttt{wscript} para la compilación.
+correspondientes a la PL, y un \texttt{wscript} para la compilación. Ambos fuentes están
+disponibles en \texttt{tfm/00\_docs/AND\_example/} dentro del repositorio del proyecto
+\cite{repo_tfm}.
 
-Para facilitar el desarrollo rápido en la parte de RTEMS, se desarrolló un script que compila
-la imagen de RTEMS, generando \texttt{rtems.img}. Para evitar quitar y poner la tarjeta SD
-constantemente, se desarrolló un script en Python que es capaz de subir la imagen de RTEMS
-a la tarjeta SD mediante una conexión USB.
+El primero de ellos, \texttt{and\_demo.c}, contiene la tarea \texttt{Init} de RTEMS: escribe la
+pareja de entradas \texttt{(A,B)} en el registro de datos del \texttt{axi\_gpio\_0} (mapeado en
+\texttt{0xA0000000}), espera un instante a que la lógica de la PL se estabilice y lee la salida
+\texttt{Z} del \texttt{axi\_gpio\_1} (\texttt{0xA0010000}), imprimiendo cada resultado por la
+consola serie.
+
+El segundo, \texttt{mmu\_pl\_map.c}, es el archivo de mapeado mencionado: declara como memoria de
+periférico el rango \texttt{0xA0000000}--\texttt{0xA01FFFFF}, donde Vivado ha situado los AXI GPIO.
+Este mapeado se realiza nada más arrancar \texttt{Init}, ya que RTEMS desconoce a priori las
+direcciones de la PL y, sin él, el primer acceso a los GPIO aborta la ejecución.
+
+\textbf{Carga en la tarjeta SD y arranque de la placa.} \label{sec:carga_sd}
+Los dos ficheros se copian en la partición FAT de una tarjeta SD, que se inserta en el zócalo
+\texttt{J100} de la placa \cite{xilinx2023ug1182}. El \texttt{BOOT.bin} es el que el MPSoC ejecuta
+nada más alimentarse: inicializa el PS, carga el \textit{bitstream} en la PL y encadena el resto
+de etapas hasta U-Boot, que a su vez carga el \texttt{rtems.img} en memoria y le cede el control.
+Si el ensayo solo ejercita la PL, el \texttt{BOOT.bin} basta por sí solo, ya que lleva dentro el
+\textit{bitstream}.
+
+Antes de encender la placa hay que colocar el selector de modo de arranque en la posición de
+tarjeta SD. Es el conmutador DIP \texttt{SW6}, la referencia 44 del plano de componentes de la
+ZCU102 \cite{xilinx2023ug1182}, cuyas posiciones recoge la tabla~\ref{tab:sw6}. Conviene tenerlo
+presente porque la configuración de fábrica es \texttt{QSPI32}: sin cambiar el conmutador, la
+placa no arranca desde la tarjeta aunque los ficheros estén correctamente copiados.
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{lcc}
+        \hline
+        \textbf{Modo de arranque} & \textbf{\texttt{PS\_MODE[3:0]}} & \textbf{SW6 [4:1]} \\
+        \hline
+        JTAG                      & 0000 & ON, ON, ON, ON \\
+        QSPI32 (por defecto)      & 0010 & ON, ON, OFF, ON \\
+        \textbf{Tarjeta SD}       & 1110 & \textbf{OFF, OFF, OFF, ON} \\
+        \hline
+    \end{tabular}
+    \caption{Posiciones del selector de modo de arranque SW6 de la ZCU102. Adaptada
+    de \cite{xilinx2023ug1182}.}
+    \label{tab:sw6}
+\end{table}
+
+Con la tarjeta insertada y el conmutador en su sitio, el barrido completo de la tabla de verdad se
+obtiene por la consola serie y confirma el comportamiento esperado de la puerta AND:
+
+\begin{lstlisting}[caption={Salida de terminal --- barrido de la puerta AND}]
+## Transferring control to RTEMS (at address 000100000) ...
+Barrido AND via PL
+A=0, B=0, Z=0 (raw=0x00000000)
+A=0, B=1, Z=0 (raw=0x00000000)
+A=1, B=0, Z=0 (raw=0x00000000)
+A=1, B=1, Z=1 (raw=0x00000001)
+
+[ RTEMS shutdown ]
+\end{lstlisting}
+
+La primera línea la emite U-Boot al ceder el control a la imagen de RTEMS; las cuatro siguientes
+son las escritas por \texttt{and\_demo.c}, con la salida \texttt{Z} a uno únicamente cuando ambas
+entradas valen uno. Esta traza fue la primera confirmación de que el flujo completo
+(VHDL sintetizado en la PL, imagen de arranque, aplicación de RTEMS y comunicación PS$\leftrightarrow$PL
+por AXI) funcionaba de extremo a extremo. La salida se conserva en
+\texttt{tfm/\allowbreak 00\_docs/\allowbreak logs\_terminal/\allowbreak and\_gate\_output.txt}.
+
+Para facilitar el desarrollo rápido en la parte de RTEMS se desarrollaron dos herramientas,
+disponibles en \texttt{tfm/07\_tools/} dentro del repositorio del proyecto \cite{repo_tfm}. La primera,
+\texttt{make\_img.sh}, automatiza la
+compilación: deduce el nombre de la aplicación del directorio desde el que se lanza, ejecuta
+\texttt{waf}\footnote{\texttt{waf} es el sistema de compilación que emplean las aplicaciones de
+RTEMS; el fichero \texttt{wscript} de cada aplicación describe sus fuentes y opciones de
+compilación.} (configurándolo la primera vez), convierte el ejecutable a binario plano con
+\texttt{objcopy}\footnote{Utilidad del \textit{toolchain} cruzado que extrae del ejecutable
+compilado una copia del contenido tal cual debe quedar en memoria, sin la información auxiliar
+que el ejecutable lleva para el enlazado y la depuración.}, lo comprime y lo empaqueta con
+\texttt{mkimage}\footnote{Herramienta de U-Boot que añade al binario una cabecera con los datos
+que el gestor de arranque necesita para cargarlo y ejecutarlo, entre ellos la dirección de
+memoria en la que debe copiarlo.} en el formato de imagen que
+espera U-Boot, generando \texttt{rtems.img}.
+
+La segunda, \texttt{automate\_ymodem\_update.py}, evita tener que quitar y poner la tarjeta SD
+en cada prueba. Escrito en Python sobre \texttt{pyserial}\footnote{Biblioteca de Python para
+manejar puertos serie, empleada aquí para dialogar con la consola de U-Boot.}, invoca al script
+anterior para regenerar la imagen y, a través de la conexión USB-serie con la placa, interrumpe
+el \textit{autoboot}\footnote{Arranque automático que U-Boot lanza tras un breve tiempo de
+espera; pulsando una tecla durante esa ventana se accede a su consola de comandos.} de U-Boot,
+transfiere \texttt{rtems.img} por YMODEM\footnote{Protocolo para enviar ficheros por un enlace
+serie: los trocea, los numera y comprueba que cada trozo llega sin errores.} con el comando
+\texttt{loady} y la escribe en la partición FAT\footnote{Partición de la tarjeta SD, con el
+mismo formato que usa un USB corriente, de la que la ZCU102 lee los ficheros de arranque.} de
+la SD mediante
+\texttt{fatwrite}; ambos son comandos de la consola de U-Boot.
+Opcionalmente puede enviar también el \texttt{BOOT.bin}, pero en la práctica no se utilizó porque este archivo resultaba ser demasiado grande y la conexión por USB-serial muy lenta. De esta manera, cada vez que se quería probar un cambio en la
+aplicación de RTEMS bastaba con ejecutar este único script y reiniciar la ZCU pulsando su
+botón de ResetCPU, que reinicia el sistema de procesamiento sin cortar la alimentación de la placa.
+
+
+
+
+
+Conviene señalar que poner en marcha todo este flujo costó bastante tiempo. Cada intento
+implicaba sintetizar el diseño en Vivado, crear y compilar la plataforma en Vitis, crear y compilar
+la aplicación, generar la imagen de arranque, compilar la imagen de RTEMS, copiar todo a la
+tarjeta SD y arrancar la placa. Una iteración completa llevaba bastantes minutos y, cuando la
+placa no arrancaba, no había ninguna indicación clara del motivo, así que había que volver atrás
+y probar otra combinación de componentes o de parámetros. Solo después de varios intentos se
+dio con la configuración que funciona.
+
+Una vez conseguido el primer arranque correcto apareció un segundo problema: al modificar el
+diseño VHDL y repetir el proceso, el sistema seguía comportándose como antes del cambio. La
+causa era que Vitis reutiliza artefactos ya compilados de la plataforma y de la aplicación, de
+modo que un .xsa nuevo no siempre se propagaba a la imagen final. Limpiar y recompilar no
+resultó fiable, así que se optó por la solución directa: crear una plataforma y una aplicación
+nuevas para cada cambio en la PL. Es más lento, pero garantiza que la imagen generada
+corresponde realmente al hardware que se acaba de sintetizar.
+
+\textbf{Automatización de la generación de la imagen.} Repetir a mano toda esta secuencia en
+cada iteración del diseño (exportar el XSA, crear y compilar la plataforma en Vitis, compilar el
+FSBL y ensamblar el BOOT.BIN) resultaba tedioso y, sobre todo, propenso al error humano: basta
+olvidar un componente, invertir su orden dentro del BIF o arrastrar un artefacto antiguo para que
+la placa no arranque sin dar ninguna pista del motivo. A eso se sumaba el tiempo puramente
+logístico de ir abriendo cada aplicación gráfica y navegar por sus asistentes. Para eliminar ambos
+problemas se desarrolló el script \texttt{generate\_boot.sh} (disponible en
+\texttt{tfm/06\_firmware/boot\_scripts/} del repositorio del proyecto \cite{repo_tfm}), un
+\textit{wizard} interactivo en Bash que encadena todos estos pasos de forma desatendida. El script
+ofrece tres puntos de entrada según el estado en que se encuentre el trabajo: partir del proyecto
+de Vivado y generar \textit{bitstream} desde cero, partir de un proyecto con \textit{bitstream} ya
+generado y solo exportar el XSA, o partir directamente de un XSA ya exportado. A partir de ahí
+invoca Vitis en modo script mediante su API Python para crear la plataforma y compilar el FSBL, y
+llama a \texttt{bootgen} para ensamblar el BOOT.BIN final con los componentes de arranque
+precompilados (PMUFW, BL31, U-Boot, DTB). Esto redujo el tiempo de iteración hardware
+$\rightarrow$ imagen de varios minutos de clics a una sola ejecución de terminal, y garantiza que
+la imagen generada corresponde siempre al hardware que se acaba de sintetizar.
 
 Una vez verificado que esta metodología de desarrollo funcionaba correctamente, se
 estableció como el proceso estándar a seguir para los próximos desarrollos.
@@ -97,7 +291,31 @@ estableció como el proceso estándar a seguir para los próximos desarrollos.
 % ---------------------------------------------------------------------------
 
 El transceptor serie se diseñó para ser altamente configurable y adaptable a cualquier
-dispositivo. Los parámetros configurables son:
+dispositivo, debido a que se desconocían los dispositivos finales que iban a estar conectados
+al OBC.
+
+El transceptor completo consta de varios bloques conectados entre sí. Los bloques
+fundamentales son:
+
+\begin{itemize}
+    \item \textbf{Oscilador controlado numéricamente} (\texttt{NCO.vhd}): proporciona la señal
+    de temporización de bit para las 54 velocidades soportadas, de modo que transmisor y
+    receptor puedan trabajar a cualquiera de ellas.
+    \item \textbf{Transmisor} (\texttt{TX\_CONFIGURABLE\_SERIAL.vhd}): serializa y emite las
+    tramas, y gobierna la señal de \textit{Driver Enable} del transceptor físico.
+    \item \textbf{Receptor} (\texttt{RX\_CONFIGURABLE\_SERIAL.vhd}): detecta el inicio de trama,
+    muestrea la línea, comprueba paridad y bit de parada y valida la palabra recibida.
+    \item \textbf{Registro de desplazamiento} (\texttt{ShiftRegister.vhd}): convierte a paralelo
+    los bits recibidos. Incorpora la lógica necesaria para adaptarse a todas las combinaciones
+    de número y orden de los bits.
+    \item \textbf{Memoria FIFO}: almacena las palabras recibidas hasta que el PS las lee.
+    \item \textbf{Bloque de canal} (\texttt{CONFIGURABLE\_SERIAL.vhd}): integra los bloques
+    anteriores y añade la lógica de acoplamiento entre ellos.
+    \item \textbf{Bloque \textit{top}} (\texttt{CONFIGURABLE\_SERIAL\_TOP.vhd}): empaqueta el
+    canal completo en los dos vectores que lo conectan al PS.
+\end{itemize}
+
+Los parámetros configurables son:
 
 \begin{itemize}
     \item Baudrate (desde 50 hasta 4.000.000 baudios).
@@ -107,59 +325,11 @@ dispositivo. Los parámetros configurables son:
     \item Número de bits de datos (entre 5 y 9).
 \end{itemize}
 
-\subsection{Transmisor}
-
-El siguiente diagrama FSM resume el comportamiento del transmisor. Debido a su tamaño, se
-ha dividido en tres partes para su legibilidad.
-
-\begin{figure}[H]
-    \centering
-    \fbox{\parbox{0.85\textwidth}{\centering \textit{[Figura pendiente: Diagrama FSM del transmisor (tres partes)]}\vspace{0.5cm}}}
-    \caption{Diagrama FSM del transmisor serie.}
-    \label{fig:fsm_tx}
-\end{figure}
-
-Durante las pruebas sobre la placa CDHS se detectó que en las primeras recepciones aparecían
-ocasionalmente caracteres corruptos. Como primera hipótesis se consideró que la señal DE
-podría estar conmutando demasiado rápido al paso de transmisión a recepción, haciendo que
-el transceptor físico no tuviera tiempo de establecerse. Para corregirlo, se añadieron dos
-estados adicionales en la FSM del transmisor que introducen un retardo de microsegundos
-entre la desactivación del último bit y la desactivación de DE. Sin embargo, esto no resolvió
-el problema, descartando la hipótesis inicial.
-
-\subsection{Receptor}
-
-El siguiente diagrama FSM resume el comportamiento del receptor.
-
-\begin{figure}[H]
-    \centering
-    \fbox{\parbox{0.85\textwidth}{\centering \textit{[Figura pendiente: Diagrama FSM del receptor serie]}\vspace{0.5cm}}}
-    \caption{Diagrama FSM del receptor serie.}
-    \label{fig:fsm_rx}
-\end{figure}
-
-\subsubsection{Decisión de diseño: verificación de start-bit a mitad de período}
-
-Tras descartar el flanco de DE como causa de los caracteres corruptos, el análisis se centró
-en el receptor. El protocolo serie comienza con un \textbf{start-bit}: la línea, normalmente en
-reposo en nivel alto, cae a nivel bajo para señalizar el inicio de una trama. El receptor detecta
-este flanco descendente y arranca la máquina de estados de recepción.
-
-El problema era que pulsos de ruido breves en la línea generaban flancos descendentes
-espurios que el receptor interpretaba como \textit{start-bits} válidos, capturando una trama de
-basura y enviando un carácter corrupto al \textit{buffer}.
-
-La solución se implementó directamente en la FSM: en el estado de recepción del
-\textit{start-bit}, una vez transcurrido el \textbf{primer medio período de bit}, se vuelve a muestrear la
-línea antes de continuar. Si la línea ha vuelto a nivel alto, el pulso era ruido y la FSM regresa
-al estado IDLE sin capturar nada. Solo si la línea sigue en bajo al llegar a la mitad del bit se
-considera un \textit{start-bit} legítimo y se procede con la recepción del resto de la trama.
-
-Esta técnica ---verificación a mitad de \textit{start-bit}--- es una práctica estándar de robustez en
-receptores UART. Su implementación en la FSM VHDL eliminó por completo la aparición de
-caracteres corruptos en las pruebas posteriores.
-
 \subsection{Oscilador controlado numéricamente (NCO)}
+
+El transmisor y el receptor comparten una misma base de tiempos, que es el bloque que se describe
+en primer lugar porque su salida ---el \textit{tick}--- es la referencia con la que ambos miden el
+tiempo de bit.
 
 El transceptor debía poder variar su velocidad en tiempo de ejecución sobre un rango muy amplio
 de baudrates, y un divisor entero del reloj de la FPGA no puede generar con exactitud la mayoría
@@ -168,6 +338,12 @@ de circuito que corrige periódicamente el desfase acumulado por esa imprecisió
 a medida para las necesidades del proyecto: genera la señal de \textit{enable} al baudrate
 seleccionado de entre 54 valores de velocidad almacenados en una tabla de verdad.
 
+El bloque expone una interfaz mínima: además del reloj, una entrada de reset asíncrono activo a
+nivel bajo (\texttt{rst}), una habilitación (\texttt{en}), el selector de velocidad
+(\texttt{baud\_sel}, 6 bits), un selector de modo (\texttt{half\_mode}) y la salida de
+temporización (\texttt{tick}). El número de bits del acumulador es un parámetro \textit{generic},
+fijado a 32.
+
 El circuito consiste en un sumador acumulador: para cada frecuencia seleccionada, se tiene
 calculado un incremento concreto que depende del número de bits del sumador. Cuantos más
 bits tenga este sumador, mejor precisión se consigue. En esta implementación se han
@@ -175,6 +351,22 @@ utilizado 32 bits. El incremento se suma y acumula en cada período de reloj; cu
 sumador se desborda, se utiliza el bit de \textit{carry\_out} como \textit{tick} del NCO. Este \textit{tick} se genera
 a la frecuencia deseada, y el mecanismo de acumulación garantiza que el error promedio sea
 inferior al de un divisor entero simple.
+
+Los incrementos no se almacenan como literales: los calcula en tiempo de síntesis una función
+que evalúa $\mathrm{inc} = \lfloor 2^{32} \cdot f_{\mathrm{baud}} / f_{\mathrm{clk}} \rfloor$ para
+cada entrada de la tabla, de modo que basta cambiar la constante de frecuencia de reloj para
+reajustar las 54 velocidades. La tabla tiene dos columnas por entrada: el incremento nominal y el
+de doble frecuencia, que selecciona \texttt{half\_mode}. Este segundo valor es el que permite medir
+semiperiodos de bit, algo que necesitan tanto el transmisor, en el campo de parada, como el
+receptor, en el bit de inicio. Tabularlo en lugar de duplicar el primero evita arrastrar
+multiplicado por dos el error de truncamiento del incremento nominal.
+
+Las dos entradas de control restantes son las que permiten a las máquinas de estados del
+transmisor y del receptor anclar la fase del temporizador: \texttt{rst} pone a cero acumulador y
+salida, con lo que el \textit{tick} arranca alineado con el inicio de la trama, y \texttt{en}
+congela el acumulador en los estados en los que no se necesita temporización, evitando que la fase
+derive entre tramas. La salida \texttt{tick} está registrada, por lo que aparece un ciclo de reloj
+después del desbordamiento.
 
 Para validar su funcionamiento se desarrolló un \textit{testbench} dedicado que recorre las
 velocidades soportadas y mide la frecuencia real del \textit{tick} generado. De esa campaña
@@ -191,17 +383,413 @@ rango de operación del transceptor.
     \label{fig:nco}
 \end{figure}
 
-\subsection{Shift-register}
+\subsection{Transmisor}
 
-El registro de desplazamiento está diseñado para poder almacenar datos tanto si la
-configuración es LSB-\textit{first} como MSB-\textit{first}, de modo que una vez recibido el mensaje la
-palabra en la salida siempre es la correcta independientemente del modo configurado.
+El transmisor recibe una palabra en paralelo y la emite por la línea serie con el formato de
+trama que fijan sus entradas de configuración. Sus puertos se recogen en la
+tabla~\ref{tab:tx_puertos}.
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{llp{0.55\textwidth}}
+        \hline
+        \textbf{Puerto} & \textbf{Dir.} & \textbf{Función} \\
+        \hline
+        \texttt{Clk}       & in  & Reloj del sistema, 100~MHz, activo por flanco de subida. \\
+        \texttt{Reset}     & in  & Reset asíncrono del sistema, activo a nivel bajo. \\
+        \texttt{Start}     & in  & Pulso de petición de transmisión. \\
+        \texttt{Data}      & in  & Palabra a transmitir (9 bits, alineada en el LSB). \\
+        \texttt{baud\_sel} & in  & Índice de velocidad dentro de la tabla del NCO (6 bits). \\
+        \texttt{stop\_bit} & in  & Duración del campo de parada, en semiperiodos de bit
+                                   (\texttt{010}~=~1, \texttt{011}~=~1,5, \texttt{100}~=~2). \\
+        \texttt{parity}    & in  & Modo de paridad: par, impar, \textit{mark}, \textit{space}
+                                   o deshabilitada. \\
+        \texttt{bit\_order}& in  & Orden de emisión: \texttt{0}~=~LSB \textit{first},
+                                   \texttt{1}~=~MSB \textit{first}. \\
+        \texttt{data\_bits}& in  & Número de bits de datos (\texttt{000}--\texttt{100}
+                                   $\rightarrow$ 5--9 bits). \\
+        \texttt{EOT}       & out & Transmisor libre: a nivel alto únicamente en reposo. \\
+        \texttt{DE}        & out & \textit{Driver Enable} del transceptor físico. \\
+        \texttt{TX}        & out & Línea de transmisión serie. \\
+        \hline
+    \end{tabular}
+    \caption{Puertos del transmisor \texttt{TX\_CONFIGURABLE\_SERIAL}.}
+    \label{tab:tx_puertos}
+\end{table}
+
+Dispone además de un parámetro \textit{generic}, \texttt{DELAY\_CYCLES}, cuyo uso se detalla más
+adelante.
+
+\subsubsection{Máquina de estados}
+
+La temporización del tiempo de bit y del semiperiodo de bit la proporciona el NCO, instanciado
+dentro del propio transmisor: la FSM lo habilita, lo pone a cero y conmuta su entrada
+\texttt{half\_mode} según el estado, y consume su salida \texttt{tick} como base de tiempos. El
+comportamiento se organiza en siete estados:
+
+\begin{itemize}
+    \item \textbf{\texttt{Idle}}: estado de reposo. Mantiene la línea en alto, \texttt{EOT} a uno
+    y el NCO detenido. Al llegar \texttt{Start} activa \texttt{DE}, pone a cero el contador de
+    retardo y pasa a \texttt{PreDE}.
+
+    \item \textbf{\texttt{PreDE}}: mantiene \texttt{DE} activo y la línea en reposo durante
+    \texttt{DELAY\_CYCLES} ciclos de reloj, para dar tiempo al transceptor físico a habilitar su
+    etapa de salida antes de que empiece la trama. Al cumplirse la cuenta se borra el contador de
+    bits y se resetea el acumulador del NCO ---de modo que la fase del temporizador arranque desde
+    cero justo en el bit de inicio, sin arrastrar el desfase acumulado de la trama anterior--- y se
+    pasa a \texttt{StartBit}.
+
+    \item \textbf{\texttt{StartBit}}: fuerza la línea a nivel bajo durante un tiempo de bit
+    completo. Con el primer \textit{tick} del NCO pasa a \texttt{SendData}.
+
+    \item \textbf{\texttt{SendData}}: saca a la línea el bit seleccionado por el multiplexor de
+    serialización y avanza el contador de bits con cada \textit{tick}. Cuando el contador alcanza
+    el número de bits configurado, pasa a \texttt{ParityBit} presentando ya el bit de paridad o,
+    si la paridad está deshabilitada (\texttt{parity}~=~\texttt{100}), directamente a
+    \texttt{StopBit} con la línea en alto.
+
+    \item \textbf{\texttt{ParityBit}}: mantiene el bit de paridad durante un tiempo de bit y pasa
+    a \texttt{StopBit}.
+
+    \item \textbf{\texttt{StopBit}}: mantiene la línea en alto y conmuta el NCO a
+    \texttt{half\_mode}, que lo hace oscilar al doble de la velocidad seleccionada. Contando
+    semiperiodos ---dos, tres o cuatro según \texttt{stop\_bit}--- se obtienen los tres campos de
+    parada admitidos, incluido el de 1,5~bits, que no es expresable con una cuenta de bits enteros.
+    Alcanzada la cuenta pasa a \texttt{PostDE}.
+
+    \item \textbf{\texttt{PostDE}}: simétrico de \texttt{PreDE}. Mantiene \texttt{DE} activo y la
+    línea en reposo otros tantos ciclos antes de volver a \texttt{Idle}, donde
+    \texttt{DE} se libera.
+\end{itemize}
+
+El siguiente diagrama FSM resume el comportamiento del transmisor. Debido a su tamaño, se
+ha dividido en tres partes para su legibilidad.
+
+\begin{figure}[H]
+    \centering
+    \fbox{\parbox{0.85\textwidth}{\centering \textit{[Figura pendiente: Diagrama FSM del transmisor (tres partes)]}\vspace{0.5cm}}}
+    \caption{Diagrama FSM del transmisor serie.}
+    \label{fig:fsm_tx}
+\end{figure}
+
+\subsubsection{Lógica de apoyo a la máquina de estados}
+
+La FSM se limita a secuenciar la trama y a generar señales de control; el trabajo de seleccionar
+qué bit sale a la línea en cada momento recae en un camino de datos puramente combinacional que
+la acompaña, y que evita tener que desplazar o rotar la palabra de entrada.
+
+\textbf{Banco de contadores.} Tres contadores síncronos con habilitación y borrado independientes,
+gobernados por la FSM: el de bits de datos (4 bits), el de semiperiodos del campo de parada
+(3~bits) y el de retardo de \texttt{DE} (14~bits, suficiente para el valor por defecto de
+\texttt{DELAY\_CYCLES}). Todos comparten el mismo proceso síncrono y el mismo reset asíncrono.
+
+\textbf{Decodificador de anchura de palabra.} Traduce el código de \texttt{data\_bits}
+(\texttt{000}--\texttt{100}) al número real de bits (5--9), que es el valor terminal con el que se
+compara el contador de datos.
+
+\textbf{Multiplexor de serialización.} Selecciona el bit a emitir a partir de la cuenta actual, en
+tres etapas. La rama LSB \textit{first} es directa: el índice del contador es el índice del bit. La
+rama MSB \textit{first} requiere cinco multiplexores distintos, uno por anchura de palabra, porque
+el primer bit emitido depende del tamaño de la trama: es el bit~4 en una palabra de 5~bits y el
+bit~8 en una de 9. Una segunda etapa elige entre esas cinco ramas según \texttt{data\_bits}, y una
+tercera entre LSB y MSB \textit{first} según \texttt{bit\_order}. El resultado es que la palabra
+permanece inmóvil en su registro de entrada durante toda la trama.
+
+\textbf{Generador de paridad.} Una red de puertas XOR calcula la paridad de los bits activos ---una
+expresión por cada anchura de palabra--- y un multiplexor final aplica el modo configurado: paridad
+par, su complemento para la impar, o las constantes uno y cero para los modos \textit{mark} y
+\textit{space}.
+
+\textbf{Reset del NCO.} La entrada de reset del NCO se combina con el reset global del sistema, de
+modo que el temporizador se inicializa tanto cuando lo pide la FSM ---antes de cada trama--- como
+cuando se resetea el transceptor completo.
+
+\subsubsection{Retardo de establecimiento del \textit{Driver Enable}}
+
+Los estados \texttt{PreDE} y \texttt{PostDE} se incorporaron después de la primera versión del
+transmisor, al aparecer caracteres corruptos de forma ocasional en las primeras recepciones sobre
+la placa CDHS. La hipótesis de partida era que \texttt{DE} conmutaba con demasiada rapidez en el
+paso de transmisión a recepción y no dejaba establecerse al transceptor físico. Los dos estados
+sitúan un margen configurable a ambos lados de la trama: \texttt{DE} se activa
+\texttt{DELAY\_CYCLES} ciclos antes del bit de inicio y se libera otros tantos después del último
+bit de parada. El valor por defecto es de 10\,000 ciclos, esto es, 100~$\mu$s con el reloj de
+100~MHz; en simulación se reduce a una decena de ciclos mediante el \textit{generic} para no
+alargar los \textit{testbench}, sin que ello afecte al valor de síntesis.
+
+La medida no eliminó los caracteres corruptos ---la causa estaba en el receptor, y se aborda en el
+apartado siguiente---, pero los dos estados se conservaron: el margen es coherente con los tiempos
+de habilitación que especifican los transceptores empleados y su coste, 200~$\mu$s por trama en el
+peor caso, es despreciable frente al tiempo de trama salvo a las velocidades más altas.
+
+\subsection{Receptor}
+
+El receptor vigila la línea serie, recupera la temporización de bit a partir del flanco de inicio y
+entrega los bits muestreados al registro de desplazamiento, señalando al final si la trama es
+válida. Sus puertos se recogen en la tabla~\ref{tab:rx_puertos}; las cinco entradas de
+configuración son las mismas del transmisor y con idéntica codificación, de modo que ambos
+comparten la palabra de configuración del canal.
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{p{0.24\textwidth}lp{0.5\textwidth}}
+        \hline
+        \textbf{Puerto} & \textbf{Dir.} & \textbf{Función} \\
+        \hline
+        \texttt{Clk}, \texttt{Reset}    & in  & Reloj de 100~MHz y reset asíncrono activo a nivel
+                                                bajo. \\
+        \texttt{baud\_sel}, \texttt{stop\_bit}, \texttt{parity}, \texttt{bit\_order},
+        \texttt{data\_bits}             & in  & Configuración del formato de trama, idéntica a la
+                                                del transmisor. \\
+        \texttt{LineRD\_in}             & in  & Línea de recepción, ya registrada por el bloque de
+                                                canal. \\
+        \texttt{shiftRegister\_Q}       & in  & Palabra normalizada que va acumulando el registro
+                                                de desplazamiento, sobre la que se calcula la
+                                                paridad esperada. \\
+        \texttt{ERROR\_OK}              & in  & Borrado de las banderas de error. \\
+        \texttt{PAR\_ERROR}             & out & Error de paridad. \\
+        \texttt{FRAME\_ERROR}           & out & Error de trama (bit de parada ausente). \\
+        \texttt{Valid\_out}             & out & Pulso de bit válido; habilita el registro de
+                                                desplazamiento. \\
+        \texttt{Code\_out}              & out & Valor muestreado de la línea, que entra al registro
+                                                de desplazamiento. \\
+        \texttt{Store\_out}             & out & Pulso de escritura de la palabra completa en la
+                                                FIFO. \\
+        \hline
+    \end{tabular}
+    \caption{Puertos del receptor \texttt{RX\_CONFIGURABLE\_SERIAL}.}
+    \label{tab:rx_puertos}
+\end{table}
+
+\subsubsection{Máquina de estados}
+
+El receptor no dispone de un reloj común con el emisor, de modo que la referencia temporal ha de
+extraerla de la propia línea. Su FSM consta de cinco estados:
+
+\begin{itemize}
+    \item \textbf{\texttt{Idle}}: NCO detenido y línea en observación. Un nivel bajo en la línea se
+    interpreta como posible bit de inicio: se resetea el acumulador del NCO ---con lo que la fase
+    del temporizador queda anclada al flanco de bajada--- se borra el contador de bits y se pasa a
+    \texttt{StartBit}.
+
+    \item \textbf{\texttt{StartBit}}: el NCO trabaja en \texttt{half\_mode}, de forma que su primer
+    \textit{tick} llega a mitad del bit de inicio. En ese instante se vuelve a muestrear la línea:
+    si sigue en bajo, el bit de inicio es legítimo y se pasa a \texttt{RcvData}; si ha vuelto a
+    alto, se descarta y se regresa a \texttt{Idle}.
+
+    \item \textbf{\texttt{RcvData}}: cada \textit{tick} ---ya a la velocidad nominal--- genera un
+    pulso de \texttt{Valid\_out}, que hace que el registro de desplazamiento capture el valor
+    presente en la línea, e incrementa el contador de bits. Como la fase arrancó a mitad del bit de
+    inicio, todos los \textit{ticks} posteriores caen en el centro de su bit, que es el punto de
+    máxima inmunidad frente al error de velocidad entre los dos extremos del enlace. Alcanzado el
+    número de bits configurado, se pasa a \texttt{ParityBit} o, si la paridad está deshabilitada,
+    directamente a \texttt{StopBit}.
+
+    \item \textbf{\texttt{ParityBit}}: compara el valor muestreado con la paridad esperada. Si
+    coinciden pasa a \texttt{StopBit}; si no, activa \texttt{PAR\_ERROR} y vuelve a \texttt{Idle}
+    descartando la trama, sin escribirla en la FIFO.
+
+    \item \textbf{\texttt{StopBit}}: muestrea el centro del primer bit de parada. Si la línea está
+    en alto, emite \texttt{Store\_out} y la palabra se escribe en la FIFO; si está en bajo, la
+    trama está desalineada y se activa \texttt{FRAME\_ERROR}. En ambos casos se regresa a
+    \texttt{Idle}.
+\end{itemize}
+
+Solo se comprueba el primer bit de parada: la entrada \texttt{stop\_bit} no interviene en la FSM
+del receptor. El resto del campo de parada transcurre con la FSM ya en \texttt{Idle}, donde la
+línea en reposo está en alto y no se dispara ninguna detección; el receptor queda así preparado
+para el siguiente flanco de inicio sin necesidad de contar la duración exacta del campo.
+
+\begin{figure}[H]
+    \centering
+    \fbox{\parbox{0.85\textwidth}{\centering \textit{[Figura pendiente: Diagrama FSM del receptor serie]}\vspace{0.5cm}}}
+    \caption{Diagrama FSM del receptor serie.}
+    \label{fig:fsm_rx}
+\end{figure}
+
+\subsubsection{Lógica de apoyo a la máquina de estados}
+
+\textbf{Contador de bits y decodificador de anchura.} Idénticos a los del transmisor: el contador
+avanza con cada \textit{tick} en \texttt{RcvData} y se compara con la anchura de palabra
+decodificada a partir de \texttt{data\_bits}.
+
+\textbf{Cálculo de la paridad esperada.} La red de puertas XOR opera sobre
+\texttt{shiftRegister\_Q}, es decir, sobre la palabra que el registro de desplazamiento ya ha
+normalizado. Gracias a esa normalización el cálculo es el mismo en LSB y en MSB \textit{first}, y
+reutiliza sin cambios el esquema del transmisor: paridad par, su complemento para la impar y las
+constantes de los modos \textit{mark} y \textit{space}.
+
+\textbf{Registros de error.} \texttt{PAR\_ERROR} y \texttt{FRAME\_ERROR} son biestables que
+retienen el error hasta que el PS lo reconoce con \texttt{ERROR\_OK}. El borrado es síncrono, dentro
+de la rama de reloj del proceso: en una versión anterior estaba escrito como una rama alternativa
+\textit{previa} al flanco de reloj, lo que impedía ejecutar la rama síncrona mientras
+\texttt{ERROR\_OK} estuviese activo. Como el PS mantiene ese bit permanentemente a uno, el efecto
+era que el contador de bits nunca avanzaba y el receptor no llegaba a completar ninguna palabra.
+Conviene tener presente que, con \texttt{ERROR\_OK} fijo a uno, las banderas se borran en cada
+ciclo de reloj; para poder leerlas, el software debe desactivar ese bit.
+
+\subsubsection{Verificación del bit de inicio a mitad de período}
+
+El muestreo a mitad del bit de inicio descrito en \texttt{StartBit} cumple una segunda función,
+además de fijar la fase de muestreo: filtra los falsos inicios de trama. Pulsos de ruido breves en
+la línea generan flancos descendentes que un receptor sin esta comprobación aceptaría como bits de
+inicio válidos, capturando a continuación una trama de basura y entregando un carácter corrupto al
+\textit{buffer}. Con la verificación, un pulso más corto que medio bit deja la línea de nuevo en
+alto antes del \textit{tick} y la FSM regresa a \texttt{Idle} sin capturar nada; solo se prosigue
+con la recepción si la línea sigue en bajo al llegar a la mitad del bit.
+
+Esta técnica es una práctica estándar de robustez en receptores UART, y es la que resolvió los
+caracteres corruptos observados en las pruebas sobre la placa CDHS: con ella no volvió a aparecer
+ninguno en las pruebas posteriores.
+
+\subsection{Registro de desplazamiento}
+
+El registro de desplazamiento convierte a paralelo los bits que va entregando el receptor. Sus
+entradas son el bit muestreado (\texttt{D}), un pulso de habilitación por bit recibido
+(\texttt{Enable}, conectado al \texttt{Valid\_out} del receptor) y las dos señales de configuración
+que determinan el formato de la palabra (\texttt{data\_bits} y \texttt{bit\_order}); su salida
+\texttt{Q} es la palabra de 9~bits. El registro solo evoluciona en los ciclos en que
+\texttt{Enable} está activo, de modo que la FSM del receptor controla exactamente qué muestras
+entran en la palabra.
+
+Está diseñado para poder almacenar datos tanto si la configuración es LSB-\textit{first} como
+MSB-\textit{first}, de modo que una vez recibido el mensaje la palabra en la salida siempre es la
+correcta independientemente del modo configurado. Para ello dispone de dos caminos de
+desplazamiento combinacionales, seleccionados por \texttt{bit\_order}: en LSB \textit{first} el
+bit entrante se inserta en la posición más significativa de la palabra activa y el contenido se
+desplaza hacia la derecha; en MSB \textit{first} se inserta en la posición cero y el contenido se
+desplaza hacia la izquierda. Cada camino tiene a su vez cinco variantes, una por anchura de
+palabra, que fijan dónde se inserta el bit y rellenan a cero las posiciones no utilizadas.
+
+El efecto de esta \textbf{normalización} es que, completada la trama, el primer bit de datos
+recibido ocupa siempre \texttt{Q(0)} y la palabra está alineada al LSB con independencia de la
+configuración. Los dos consumidores de la salida ---la FIFO y el cálculo de paridad esperada del
+receptor--- pueden así ignorar por completo el orden de bits configurado, y el software del PS
+recibe la palabra en el mismo formato en los cinco anchos y en los dos órdenes posibles.
 
 \subsection{FIFO}
 
 La FIFO es un bloque IP con 9 bits de datos (para poder almacenar mensajes de 9 bits) y
 512 de profundidad, que permite almacenar temporalmente varios mensajes y habilitarlos
-para su lectura posterior por el PS.
+para su lectura posterior por el PS. Está configurada en modo \textit{first word fall through},
+de modo que la palabra más antigua está disponible en la salida sin necesidad de una lectura
+previa, y su reset síncrono se deriva del reset global del transceptor. La escritura la ordena
+directamente el pulso \texttt{Store\_out} del receptor, que solo se emite cuando la trama ha
+superado las comprobaciones de paridad y bit de parada.
+
+La habilitación de lectura se construye como la conjunción de FIFO no vacía y la señal
+\texttt{Data\_read} procedente del PS. Esta última se toma \textbf{a nivel}: en la versión inicial
+se empleaba el flanco detectado de \texttt{Data\_read}, lo que resulta adecuado cuando el PS lee
+byte a byte, pero deja de serlo con el transporte por DMA descrito en la
+sección~\ref{sec:transporte_desarrollo}, donde \texttt{Data\_read} lo conduce la señal
+\textit{tready} del canal AXI-Stream. La latencia del detector de flanco ---dos etapas de
+registro--- hacía que el receptor de DMA capturase varias veces la misma palabra de la FIFO. Con
+la lectura a nivel, la FIFO avanza exactamente en el ciclo en que el consumidor acepta el dato.
+
+\subsection{Bloque de canal}
+
+\texttt{CONFIGURABLE\_SERIAL.vhd} instancia el transmisor, el receptor, el registro de
+desplazamiento y la FIFO, y añade la lógica de acoplamiento entre ellos y con el PS:
+
+\begin{itemize}
+    \item \textbf{Registro de la línea de recepción.} La entrada \texttt{RD} se registra un ciclo
+    antes de entrar al receptor, para no muestrear directamente una señal externa asíncrona
+    respecto del reloj del sistema.
+
+    \item \textbf{Detección de flanco de los mandos del PS.} \texttt{TX\_Send} y
+    \texttt{Data\_read} llegan del PS como señales de nivel a través del AXI GPIO. Sendos
+    detectores de flanco de dos etapas de registro los convierten en pulsos de un ciclo, que es lo
+    que esperan los bloques internos.
+
+    \item \textbf{Arranque de la transmisión.} El pulso de \texttt{Start} hacia el transmisor solo
+    se emite si además el transmisor está libre (\texttt{EOT} activo), y en ese mismo ciclo la
+    palabra presente en \texttt{Data\_in} se captura en un registro propio. De este modo el dato
+    permanece estable durante toda la trama aunque el PS modifique el registro de escritura, y las
+    peticiones que llegan con una transmisión en curso se ignoran en lugar de corromperla.
+
+    \item \textbf{Adaptación del campo de parada.} El PS codifica los bits de parada en dos bits;
+    transmisor y receptor los esperan como una cuenta de semiperiodos de tres bits. Una pequeña
+    lógica combinacional traduce entre ambas representaciones.
+
+    \item \textbf{Vector de depuración.} Una salida de cuatro bits agrupa las señales internas del
+    camino de recepción (FIFO vacía, escritura en FIFO, bit válido y línea registrada), empleada
+    únicamente para el diagnóstico en simulación.
+\end{itemize}
+
+\subsection{Bloque \textit{top} del transceptor}
+
+\texttt{CONFIGURABLE\_SERIAL\_TOP.vhd} no añade funcionalidad: empaqueta el canal completo en dos
+vectores, uno de entrada y otro de salida, para que pueda conectarse a los dos canales de un AXI
+GPIO sin lógica adicional. El reparto de bits, que es el contrato entre la PL y el driver de RTEMS
+descrito en la sección siguiente, se recoge en la tabla~\ref{tab:mapa_bits_top}.
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{llp{0.46\textwidth}}
+        \hline
+        \textbf{Bits} & \textbf{Campo} & \textbf{Función} \\
+        \hline
+        \multicolumn{3}{l}{\textit{Vector de configuración y escritura (PS $\rightarrow$ PL), 28 bits}} \\
+        \hline
+        8:0   & \texttt{Data\_in}   & Palabra a transmitir. \\
+        9     & \texttt{TX\_Send}   & Petición de transmisión. \\
+        10    & \texttt{ERROR\_OK}  & Reconocimiento de las banderas de error. \\
+        11    & \texttt{Data\_read} & Lectura de la FIFO de recepción. \\
+        17:12 & \texttt{baud\_sel}  & Índice de velocidad. \\
+        19:18 & \texttt{stop\_bit}  & Bits de parada. \\
+        22:20 & \texttt{parity}     & Modo de paridad. \\
+        25:23 & \texttt{data\_bits} & Número de bits de datos. \\
+        26    & \texttt{bit\_order} & Orden de bits. \\
+        27    & \texttt{SLO}        & Control del limitador de \textit{slew rate} del transceptor
+                                      físico. \\
+        \hline
+        \multicolumn{3}{l}{\textit{Vector de estado y lectura (PL $\rightarrow$ PS), 14 bits}} \\
+        \hline
+        8:0   & \texttt{Data\_out}    & Palabra recibida. \\
+        9     & \texttt{Empty}        & FIFO de recepción vacía. \\
+        10    & \texttt{Full}         & FIFO de recepción llena. \\
+        11    & \texttt{PAR\_ERROR}   & Error de paridad. \\
+        12    & \texttt{FRAME\_ERROR} & Error de trama. \\
+        13    & \texttt{TX\_RDY}      & Transmisor libre. \\
+        \hline
+    \end{tabular}
+    \caption{Reparto de bits de los vectores de interfaz del bloque
+    \texttt{CONFIGURABLE\_SERIAL\_TOP}.}
+    \label{tab:mapa_bits_top}
+\end{table}
+
+Junto a esos dos vectores, el bloque expone las líneas físicas del canal (\texttt{TD},
+\texttt{RD}, \texttt{DE} y \texttt{SLO}) y una salida auxiliar de dos bits que duplica
+\texttt{TX\_RDY} y \texttt{Empty}. Esta última es la que se lleva al controlador de interrupciones,
+de modo que el PS pueda ser avisado tanto de la llegada de datos como de la disponibilidad del
+transmisor sin tener que sondear el vector de estado. La salida \texttt{SLO} es una conexión
+directa desde el bit~27 del vector de configuración hasta el pin del transceptor físico: no
+interviene en la lógica del transceptor en VHDL.
+
+\subsubsection{Envoltorios de nivel superior}
+
+El canal así empaquetado es la unidad que reutilizan los tres envoltorios de nivel superior
+presentes en el repositorio, cada uno asociado a una de las arquitecturas de transporte entre el
+PS y la PL:
+
+\begin{itemize}
+    \item \texttt{MULTI\_SERIAL\_CORE.vhd} agrupa hasta catorce instancias del bloque \textit{top}
+    en un único IP, con las interfaces de todos los canales aplanadas en vectores de ancho fijo y
+    un par de genéricos por canal que ocultan los pines \texttt{DE} y \texttt{SLO} que no se
+    cablean; es el bloque de catorce canales de la arquitectura basada en AXI GPIO.
+
+    \item \texttt{SERIAL\_CHANNEL\_IP.vhd} envuelve un solo canal como IP independiente, con esos
+    mismos genéricos, de modo que los canales puedan instanciarse y conectarse uno a uno en el
+    \textit{Block Design} en lugar de como un bloque monolítico.
+
+    \item \texttt{UART\_AXIS\_TOP.vhd} sustituye la interfaz paralela por un registro de
+    configuración AXI-Lite y dos canales AXI-Stream ---uno de transmisión y otro de recepción, este
+    último con \textit{TDEST} fijado al índice de canal y \textit{TLAST} por byte---, que es lo que
+    permite conectar el transceptor directamente a un controlador de DMA.
+\end{itemize}
+
+Ninguno de los tres modifica el comportamiento del transceptor descrito en esta sección: cambian
+únicamente la forma en que sus dos vectores se presentan al PS. Su papel dentro de cada
+arquitectura se detalla en la sección~\ref{sec:transporte_desarrollo}.
 
 \subsection{Bloque Zynq UltraScale+ MPSoC}
 
@@ -229,30 +817,8 @@ permite reproducir exactamente cualquier configuración sin necesidad de guardar
 de Vivado completo en el repositorio.
 
 % ---------------------------------------------------------------------------
-\section{Generación del binario en Vitis (PS)}
-% ---------------------------------------------------------------------------
-
-Una vez diseñada la lógica hardware en Vivado y exportado el hardware, se siguieron los
-pasos establecidos previamente para generar el binario BOOT.bin.
-
-El proceso manual de exportación del XSA, creación de la plataforma Vitis, compilación del
-FSBL y ensamblado del BOOT.BIN con \texttt{bootgen} resultó tedioso de repetir en cada
-iteración del diseño. Para automatizarlo, se desarrolló el script \texttt{generate\_boot.sh}
-(disponible en \texttt{tfm/06\_firmware/boot\_scripts/}), un \textit{wizard} interactivo en Bash que encadena todos
-estos pasos de forma desatendida. El script ofrece tres puntos de entrada según el estado en
-que se encuentre el trabajo: partir del proyecto de Vivado y generar \textit{bitstream} desde cero,
-partir de un proyecto con \textit{bitstream} ya generado y solo exportar el XSA, o partir
-directamente de un XSA ya exportado. A partir de ahí invoca Vitis en modo script mediante
-su API Python para crear la plataforma y compilar el FSBL, y llama a \texttt{bootgen} para
-ensamblar el BOOT.BIN final con los componentes de arranque precompilados (PMUFW,
-BL31, U-Boot, DTB). Esto redujo el tiempo de iteración hardware $\rightarrow$ imagen de varios
-minutos de clics a una sola ejecución de terminal.
-
-% ---------------------------------------------------------------------------
 \section{Diseño del driver serie en RTEMS (PS)}
 % ---------------------------------------------------------------------------
-
-\subsection{Motivación y contexto}
 
 El subsistema de comunicaciones del OBC requiere gestionar simultáneamente múltiples
 interfaces serie físicas (RS422 y RS485) desde una aplicación de tiempo real ejecutada sobre
@@ -429,10 +995,10 @@ en \texttt{transceiver.h} induce a error y el valor por defecto deja el limitado
 
 Una vez completado el firmware del transceptor serie, se desarrolló el hardware de prueba
 necesario para validar el sistema en condiciones reales. El plan inicial era diseñar una única
-PCB propia para testear múltiples líneas serie. Posteriormente, el proyecto LINCE requirió
+placa de comunicación serie para ejercitar múltiples líneas a la vez. Posteriormente, el proyecto LINCE requirió
 dos tarjetas adicionales con especificaciones impuestas por Indra ---la placa CDHS y la placa
 AOCS--- para que Sener pudiera validar su firmware sobre la ZCU102. Los esquemáticos (PDF)
-y las BOM de las tres placas están disponibles en el repositorio del proyecto bajo
+y las BOM de las tres placas están disponibles en el repositorio del proyecto \cite{repo_tfm} bajo
 \texttt{tfm/00\_docs/pcbs/}.
 
 \subsection{Selección de componentes: la restricción de 1,8 V} \label{sec:seleccion_componentes}
@@ -466,8 +1032,8 @@ el sufijo \texttt{Q1} en la referencia), que imponen rangos de temperatura exten
 robustez muy superiores a los de grado comercial, y que son el sustituto habitual del componente
 cualificado para espacio en misiones de bajo coste. Los transceptores \texttt{TCAN1044AVDRQ1} del
 bus CAN y el conversor analógico-digital \texttt{ADS7950QDBTRQ1} de la placa CDHS responden a este
-criterio, igual que el transceptor \texttt{THVD1424RGTR} de los canales serie, elegido por soportar
-\textit{VIO} de 1,8~V de forma nativa.
+criterio, igual que el transceptor \texttt{THVD1424RGTR} de los canales serie de las placas CDHS y
+AOCS, elegido por soportar \textit{VIO} de 1,8~V de forma nativa.
 
 Esta elección tiene un coste que conviene declarar: las tarjetas diseñadas son \textbf{hardware de
 validación funcional, no hardware de vuelo}. Permiten verificar el subsistema de comunicaciones en
@@ -500,7 +1066,7 @@ líneas RS-422/RS-485 y CAN, cuyo desequilibrio degradaría el rechazo a modo co
 la inmunidad al ruido de un bus diferencial; y \textbf{longitud acotada} en las líneas de
 conmutación rápida procedentes del FMC.
 
-\subsection{Diseño de la placa de comunicación serie (diseño propio)}
+\subsection{Diseño de la placa de comunicación serie}
 
 El objetivo de esta placa es poder ejercitar simultáneamente los 14 transceptores del IP core,
 replicando las topologías de bus reales que se encontrarán en el satélite: RS485 multipunto
@@ -943,8 +1509,11 @@ línea 2 de cada motor en función de la dirección deseada. Para estas pruebas,
 tiempo para cada dirección de manera que durante unos segundos el PWM fuera en un
 sentido (línea 1 activa, línea 2 a 0) y durante los siguientes segundos en el sentido contrario.
 
-La comunicación por SpaceWire no se llegó a probar por falta de tiempo al adquirir los
-arneses Micro-D9.
+La comunicación por SpaceWire quedó fuera del alcance de la validación por su alta complejidad
+técnica: el estándar no se agota en la capa física LVDS que expone la placa, sino que exige
+implementar en la lógica programable la codificación \textit{data-strobe}, la máquina de estados
+de establecimiento y recuperación del enlace y los niveles de paquete y red, un desarrollo que
+por sí solo excede el alcance de este trabajo.
 
 \subsection{Validación de hardware: arneses y equipamiento}
 

@@ -25,22 +25,20 @@ complementarios, permitiendo separar la carga de trabajo entre el Sistema de Pro
 
 El \textbf{PS} representa el dominio del software. Su desarrollo es análogo a la programación de
 cualquier microcontrolador o microprocesador clásico; está basado en una arquitectura física
-fija (núcleos ARM en este dispositivo) diseñada para ejecutar instrucciones de código en C o
-C++ de forma estrictamente secuencial. Este dominio es el encargado de ejecutar sistemas
+fija (núcleos ARM en este dispositivo) diseñada para ejecutar instrucciones de código en de forma estrictamente secuencial. Este dominio es el encargado de ejecutar sistemas
 operativos (como RTEMS o Linux), gestionar la memoria y ejecutar las rutinas de control de
 alto nivel.
 
-Por el contrario, la \textbf{PL} representa el dominio del hardware a medida. Se trata de una matriz
+La \textbf{PL} representa el dominio del hardware a medida. Se trata de una matriz
 tipo FPGA (\textit{Field Programmable Gate Array}), la cual no ejecuta un programa línea a línea,
 sino que se reconfigura físicamente. Mediante lenguajes de descripción de hardware (como
-VHDL), se define la interconexión de miles de recursos internos disponibles en el silicio
----tales como tablas de búsqueda (LUTs), biestables, memorias BRAM y bloques de
-procesamiento digital de señales (DSP)--- para conformar circuitos digitales reales y
+VHDL), se define la interconexión de miles de recursos internos disponibles en el silicio, tales como tablas de búsqueda (LUTs), biestables, memorias BRAM y bloques de
+procesamiento digital de señales (DSP); para conformar circuitos digitales reales y
 específicos. Esta característica otorga a la PL un determinismo temporal estricto y la
 capacidad de procesar señales con un paralelismo masivo inalcanzable para un procesador
 convencional.
 
-Entre sus características destacadas, una que resulta relevante para este trabajo es la
+Entre las características destacadasde la ZCU102, una que resulta relevante para este trabajo es la
 capacidad de expansión externa mediante dos conectores FMC HPC (\textit{High Pin Count}). Estos
 puertos son el punto de anclaje para tarjetas de expansión o \textit{Mezzanines}, permitiendo
 extraer pines digitales y pares diferenciales hacia el exterior del sistema. Siguen el estándar
