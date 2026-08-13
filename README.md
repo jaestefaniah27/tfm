@@ -31,6 +31,7 @@ tfm/
 │   ├── informe_benchmark.html        comparativa de las 3 variantes
 │   ├── registro_investigacion_rx.txt bitácora de depuración del RX
 │   ├── pcbs/                         esquemáticos y BOM de las tres placas
+│   ├── AND_example/                  primer ejemplo PS↔PL: and_demo.c + mmu_pl_map.c
 │   ├── logs_terminal/                capturas de consola de las campañas de prueba
 │   └── PS_PL_instructions.md
 │
@@ -71,6 +72,30 @@ Cada carpeta relevante tiene su propio `README.md` con el detalle.
 ### Por qué esta estructura
 
 El IP serie (`01_ip_serie`) es el mismo en las tres variantes, y el programa de pruebas (`bench_main.c`) también. **Lo único que cambia entre variantes es el transporte**: el bloque de la PL que conecta los UART al PS, y el driver `transceiver.c/h` que lo maneja. Por eso el árbol separa lo común (01) de lo que se compara (02) y de lo que lo mide (03), en vez de guardar tres copias completas del proyecto.
+
+---
+
+## Ejemplo inicial PS↔PL (puerta AND)
+
+Antes de las tres variantes de transporte se validó el flujo completo Vivado → Vitis → `BOOT.bin` → RTEMS con un caso mínimo: una puerta AND descrita en VHDL en la PL, excitada desde el PS a través de dos AXI GPIO. Los fuentes de la aplicación RTEMS están en [`00_docs/AND_example/`](tfm/00_docs/AND_example/):
+
+| Fichero | Qué hace |
+|---|---|
+| `and_demo.c` | Tarea `Init`: escribe (A,B) en `axi_gpio_0` (`0xA0000000`), lee Z de `axi_gpio_1` (`0xA0010000`) y vuelca la tabla de verdad por consola. Accesos `volatile` con barreras `dmb sy`. |
+| `mmu_pl_map.c` | Mapea en la MMU los 2 MiB `0xA0000000–0xA01FFFFF` como región de dispositivo (`AARCH64_MMU_DEVICE_nGnRE`). Sin esto, el primer acceso a la PL falla por traducción. |
+
+Salida de la placa en [`00_docs/logs_terminal/and_gate_output.txt`](tfm/00_docs/logs_terminal/and_gate_output.txt):
+
+```
+## Transferring control to RTEMS (at address 000100000) ...
+Barrido AND via PL
+A=0, B=0, Z=0 (raw=0x00000000)
+A=0, B=1, Z=0 (raw=0x00000000)
+A=1, B=0, Z=0 (raw=0x00000000)
+A=1, B=1, Z=1 (raw=0x00000001)
+
+[ RTEMS shutdown ]
+```
 
 ---
 

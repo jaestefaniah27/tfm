@@ -2,10 +2,12 @@
 
 A partir del trabajo realizado, se identifican las siguientes líneas de continuación:
 
-\textbf{Validación SpaceWire.} La interfaz SpaceWire de la placa AOCS no pudo probarse por falta
-del arnés Micro-D9 adecuado. Completar esta validación es el paso inmediato más relevante,
-ya que SpaceWire es el protocolo de alta velocidad previsto para los enlaces de mayor ancho
-de banda del satélite.
+\textbf{Validación SpaceWire.} La interfaz SpaceWire de la placa AOCS quedó fuera del alcance por
+su alta complejidad técnica: la placa expone la capa física LVDS, pero ejercitarla exige
+implementar en la lógica programable la codificación \textit{data-strobe}, la máquina de estados
+de establecimiento del enlace y los niveles superiores del estándar. Completar esta validación es
+el paso inmediato más relevante, ya que SpaceWire es el protocolo de alta velocidad previsto para
+los enlaces de mayor ancho de banda del satélite.
 
 \textbf{Corregir el valor por defecto del bit SLO y operar la plataforma a 4~Mbps.} La
 caracterización de la PCB (sección~\ref{sec:pcb_slo}) demuestra que el limitador de \textit{slew} de

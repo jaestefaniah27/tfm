@@ -1,8 +1,20 @@
 % ===========================================================================
-% CAPÍTULO 4 — RESULTADOS: comparativa de las tres arquitecturas de transporte
+% CAPÍTULO 4 — RESULTADOS: validación de la placa de comunicación serie
 % ===========================================================================
 
-\section{Comparativa de las arquitecturas de transporte PS--PL} \label{sec:resultados_benchmark}
+\section{Validación de la placa de comunicación serie} \label{sec:validacion_propia}
+
+\subsection{Prueba previa: 14 transceptores simultáneos}
+
+Para verificar el correcto funcionamiento del driver con un número elevado de instancias, se
+cargó un \textit{bitstream} con 14 transceptores instanciados (canales 0 a 13), conectando los
+canales adicionales a los pines externos del conector J3 de la ZCU102. El sistema arrancó y operó
+correctamente con todos los canales, confirmando que la arquitectura de ISR maestra con tareas
+\textit{worker} individuales escala sin problemas hasta el número máximo de instancias soportado.
+La prueba con los 14 transceptores sobre la placa de comunicación serie ya
+fabricada se aborda en la sección~\ref{sec:resultados_pcb}.
+
+\subsection{Comparativa de las arquitecturas de transporte PS--PL} \label{sec:resultados_benchmark}
 
 Esta sección recoge la medida de las tres arquitecturas descritas en la
 sección~\ref{sec:transporte_desarrollo}. Las tres se ejecutaron sobre la misma ZCU102, con el
@@ -23,7 +35,7 @@ plenamente válido de esa corrida, y lo que sostiene el argumento sobre esta var
 de hardware, la huella de memoria y el coste en interrupciones de la transmisión.
 
 % ---------------------------------------------------------------------------
-\subsection{Coste de hardware}
+\subsubsection{Coste de hardware}
 % ---------------------------------------------------------------------------
 
 Las tres arquitecturas están implementadas sobre el mismo dispositivo (XCZU9EG, 274\,080 LUT,
@@ -83,7 +95,7 @@ El margen de \textit{timing} (WNS) es positivo y holgado en las tres, de modo qu
 al límite y las diferencias de rendimiento no son atribuibles a la implementación física.
 
 % ---------------------------------------------------------------------------
-\subsection{Coste de software}
+\subsubsection{Coste de software}
 % ---------------------------------------------------------------------------
 
 \begin{table}[H]
@@ -114,7 +126,7 @@ tiene que señalizar quién ha terminado. Trece tareas menos es trece cambios de
 trece pilas menos.
 
 % ---------------------------------------------------------------------------
-\subsection{Coste en interrupciones}
+\subsubsection{Coste en interrupciones}
 % ---------------------------------------------------------------------------
 
 Esta es la métrica que explica todas las demás. Cuenta cuántas veces se expropia la CPU por cada
@@ -173,7 +185,7 @@ recepción}: tres por kilobyte, unas \textbf{cuatrocientas veces menos}. La CPU 
 atendiendo el bus a estar disponible para la aplicación.
 
 % ---------------------------------------------------------------------------
-\subsection{Latencia}
+\subsubsection{Latencia}
 % ---------------------------------------------------------------------------
 
 Tiempo desde justo antes de la llamada de envío hasta que el receptor tiene el frame de 11 bytes
@@ -227,7 +239,7 @@ comportamiento notablemente determinista ---una propiedad especialmente valiosa 
 tiempo real embarcado.
 
 % ---------------------------------------------------------------------------
-\subsection{Throughput}
+\subsubsection{Throughput}
 % ---------------------------------------------------------------------------
 
 A 115\,200 baudios en formato 8N1, cada byte ocupa 10 bits de línea, de modo que el techo físico
@@ -292,7 +304,7 @@ simultáneos en el bus multipunto, el MCDMA sostiene \textbf{68\,504~B/s} frente
 GPIO, y lo hace sin perder un solo byte.
 
 % ---------------------------------------------------------------------------
-\subsection{Barrido de velocidad}
+\subsubsection{Barrido de velocidad}
 % ---------------------------------------------------------------------------
 
 La prueba más reveladora de todas. Se reprograman los catorce transceptores a cada velocidad y se
@@ -378,7 +390,7 @@ En los siete puntos, y en ambas variantes, el número de errores de transporte e
 saturación del GPIO no produce corrupción, solo pérdida de rendimiento.
 
 % ---------------------------------------------------------------------------
-\subsection{Robustez}
+\subsubsection{Robustez}
 % ---------------------------------------------------------------------------
 
 Dos pruebas adicionales verifican que la ganancia de rendimiento no se paga con fragilidad: el
@@ -422,7 +434,7 @@ sección~\ref{sec:transporte_depuracion} entregaban menos datos a los \textit{ri
 comparables.
 
 % ---------------------------------------------------------------------------
-\subsection{Discusión: qué arquitectura y por qué}
+\subsubsection{Discusión: qué arquitectura y por qué}
 % ---------------------------------------------------------------------------
 
 \begin{table}[H]
