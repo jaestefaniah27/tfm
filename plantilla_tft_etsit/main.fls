@@ -1,6 +1,6 @@
-PWD c:\Users\jaest\OneDrive\Documentos\4_TELECO\TFM\tfm\plantilla_tft_etsit
+PWD C:\Users\jaest\OneDrive\Documentos\4_TELECO\TFM\tfm\plantilla_tft_etsit
 INPUT C:\Users\jaest\AppData\Local\MiKTeX\miktex\data\le\pdftex\pdflatex.fmt
-INPUT c:\Users\jaest\OneDrive\Documentos\4_TELECO\TFM\tfm\plantilla_tft_etsit\main.tex
+INPUT main.tex
 OUTPUT main.log
 INPUT C:\Users\jaest\AppData\Local\Programs\MiKTeX\tex\latex\base\book.cls
 INPUT C:\Users\jaest\AppData\Local\Programs\MiKTeX\tex\latex\base\book.cls
@@ -617,6 +617,15 @@ INPUT .\portada\logosportada\logoetsit.png
 INPUT .\portada\logosportada\logoetsit.png
 INPUT portada\logosportada\logoetsit.png
 INPUT .\portada\logosportada\logoetsit.png
+INPUT C:\Users\jaest\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmmi10.tfm
+INPUT C:\Users\jaest\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmsy10.tfm
+INPUT C:\Users\jaest\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmex10.tfm
+INPUT C:\Users\jaest\AppData\Local\Programs\MiKTeX\fonts\tfm\public\amsfonts\symbols\msam10.tfm
+INPUT C:\Users\jaest\AppData\Local\Programs\MiKTeX\fonts\tfm\public\amsfonts\symbols\msbm10.tfm
+INPUT .\portada\logosportada\logoetsit.png
+INPUT .\portada\logosportada\logoetsit.png
+INPUT portada\logosportada\logoetsit.png
+INPUT .\portada\logosportada\logoetsit.png
 INPUT .\portada\logosportada\logoetsit.png
 INPUT .\portada\logosportada\logoetsit.png
 INPUT portada\logosportada\logoetsit.png
@@ -871,11 +880,6 @@ INPUT .\portada\logosportada\logoetsit.png
 INPUT .\portada\logosportada\logoetsit.png
 INPUT portada\logosportada\logoetsit.png
 INPUT .\portada\logosportada\logoetsit.png
-INPUT C:\Users\jaest\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmmi10.tfm
-INPUT C:\Users\jaest\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmsy10.tfm
-INPUT C:\Users\jaest\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmex10.tfm
-INPUT C:\Users\jaest\AppData\Local\Programs\MiKTeX\fonts\tfm\public\amsfonts\symbols\msam10.tfm
-INPUT C:\Users\jaest\AppData\Local\Programs\MiKTeX\fonts\tfm\public\amsfonts\symbols\msbm10.tfm
 INPUT .\portada\logosportada\logoetsit.png
 INPUT .\portada\logosportada\logoetsit.png
 INPUT portada\logosportada\logoetsit.png
@@ -1052,6 +1056,8 @@ INPUT C:\Users\jaest\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\c
 INPUT C:\Users\jaest\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmmi10.pfb
 INPUT C:\Users\jaest\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmmi12.pfb
 INPUT C:\Users\jaest\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmmi12.pfb
+INPUT C:\Users\jaest\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmmi8.pfb
+INPUT C:\Users\jaest\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmmi8.pfb
 INPUT C:\Users\jaest\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmr10.pfb
 INPUT C:\Users\jaest\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmr10.pfb
 INPUT C:\Users\jaest\AppData\Local\Programs\MiKTeX\fonts\type1\public\amsfonts\cm\cmr12.pfb
