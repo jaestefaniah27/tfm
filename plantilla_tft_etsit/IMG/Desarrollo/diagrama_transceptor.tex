@@ -30,11 +30,10 @@
     aux/.style={draw=cRef, line width=0.6pt, rounded corners=2pt, fill=white},
     sig/.style={-{Stealth[length=4pt]}, line width=0.6pt, cRef!85!black},
     plain/.style={line width=0.6pt, cRef!85!black},
-    ck/.style={-{Stealth[length=4pt]}, line width=0.55pt, cRef!65!black, dashed},
     slo/.style={-{Stealth[length=4.5pt]}, line width=0.7pt, cIP!75!black, dashed},
     bus/.style={-{Stealth[length=6pt]}, line width=1.5pt, cRef!60!black},
     port/.style={font=\ttfamily\scriptsize, anchor=west},
-    portr/.style={font=\ttfamily\scriptsize, anchor=east},
+    portr/.style={font=\ttfamily\scriptsize, anchor=south east},
     grp/.style={font=\sffamily\scriptsize\bfseries, anchor=west,
                 text=cRef!60!black},
     name/.style={font=\ttfamily\scriptsize, align=center},
@@ -93,29 +92,29 @@
 \draw[sig] (3.00,2.75) -- (6.00,2.75);
 
 % ===================== Puertos: línea física =====================
-\node[portr] at (17.05,6.60) {TD};
-\node[portr] at (17.05,6.20) {DE};
-\node[portr] at (17.05,2.25) {RD};
+\node[portr] at (17.10,6.66) {TD};
+\node[portr] at (17.10,6.26) {DE};
+\node[portr] at (17.15,2.31) {RD};
 
 % ===================== Bloques internos =====================
-\draw[blk] (9.00,5.50) rectangle (12.20,7.00);
-\node[name, anchor=north] at (10.60,6.90) {TX\_CONFIGURABLE\\\_SERIAL};
-\draw[aux] (11.20,5.65) rectangle (12.10,6.10);
-\node[font=\ttfamily\scriptsize] at (11.65,5.88) {NCO};
+\draw[blk] (9.90,5.30) rectangle (13.10,6.80);
+\node[name, anchor=north] at (11.50,6.72) {TX\_CONFIGURABLE\\\_SERIAL};
+\draw[aux] (12.10,5.45) rectangle (13.00,5.90);
+\node[font=\ttfamily\scriptsize] at (12.55,5.68) {NCO};
 
-\draw[blk] (12.00,2.00) rectangle (14.60,3.40);
-\node[name, anchor=north] at (13.30,3.30) {RX\_CONFIGURABLE\\\_SERIAL};
-\draw[aux] (13.60,2.15) rectangle (14.50,2.60);
-\node[font=\ttfamily\scriptsize] at (14.05,2.38) {NCO};
+\draw[blk] (12.90,2.00) rectangle (15.50,3.40);
+\node[name, anchor=north] at (14.20,3.30) {RX\_CONFIGURABLE\\\_SERIAL};
+\draw[aux] (14.50,2.15) rectangle (15.40,2.60);
+\node[font=\ttfamily\scriptsize] at (14.95,2.38) {NCO};
 
-\draw[blk] (12.00,4.00) rectangle (14.60,4.90);
-\node[name] at (13.30,4.45) {ShiftRegister};
+\draw[blk] (12.90,4.00) rectangle (15.50,4.90);
+\node[name] at (14.20,4.45) {ShiftRegister};
 
-\draw[ip] (9.00,3.70) rectangle (11.00,5.20);
-\node[name] at (10.00,4.45) {FIFO};
+\draw[ip] (9.90,3.70) rectangle (11.90,5.20);
+\node[name] at (10.90,4.45) {FIFO};
 
-\draw[aux] (15.10,2.00) rectangle (15.90,2.50);
-\node[lbl] at (15.50,2.25) {reg.};
+\draw[aux] (15.95,2.00) rectangle (16.75,2.50);
+\node[lbl] at (16.35,2.25) {reg.};
 
 % ===================== Transceptor físico y bus =====================
 \draw[ext] (18.60,3.00) rectangle (20.80,7.00);
@@ -123,49 +122,45 @@
 \draw[ext] (21.80,4.30) rectangle (23.40,5.70);
 \node[align=center] at (22.60,5.00) {Bus\\\texttt{A} / \texttt{B}};
 
-% ===================== Reloj y reset hacia los bloques =====================
-\draw[plain, dashed, cRef!65!black] (7.90,9.70) -- (8.40,9.70);
-\draw[plain, dashed, cRef!65!black] (7.90,9.35) -- (8.40,9.35);
-\draw[plain, dashed, cRef!65!black] (8.40,9.35) -- (8.40,9.70);
-\draw[plain, dashed, cRef!65!black] (8.40,9.55) -- (16.40,9.55);
-\draw[ck] (10.00,9.55) -- (10.00,7.00);
-\draw[ck] (16.40,9.55) -- (16.40,3.40);
+% Clk y Reset se dibujan solo como puertos: alcanzan a todos los bloques
+% internos, y trazar su distribución solo añadiría cruces.
 
 % ===================== Configuración hacia los bloques =====================
-\foreach \y in {8.60,8.25,7.90,7.55,7.20} \draw[plain] (7.90,\y) -- (8.40,\y);
-\draw[plain] (8.40,7.20) -- (8.40,8.60);
-\draw[plain] (8.40,7.90) -- (16.80,7.90);
-\draw[sig] (10.60,7.90) -- (10.60,7.00);
-\draw[plain] (16.80,7.90) -- (16.80,2.55);
-\draw[sig] (16.80,4.70) -- (14.60,4.70);
-\draw[sig] (16.80,2.55) -- (14.60,2.55);
+\foreach \y in {8.60,8.25,7.90,7.55,7.20} \draw[plain] (8.75,\y) -- (9.20,\y);
+\draw[plain] (9.20,7.20) -- (9.20,8.60);
+\draw[plain] (9.20,7.00) -- (16.80,7.00);
+\draw[plain] (9.20,7.00) -- (9.20,7.20);
+\draw[sig] (11.20,7.00) -- (11.20,6.80);
+\draw[plain] (16.80,7.00) -- (16.80,2.65);
+\draw[sig] (16.80,4.70) -- (15.50,4.70);
+\draw[sig] (16.80,2.65) -- (15.50,2.65);
 
 % ===================== Camino de transmisión =====================
-\draw[sig] (7.90,6.45) -- (9.00,6.45);
-\draw[sig] (7.90,6.10) -- (9.00,6.10);
-\draw[sig] (9.00,5.75) -- (7.90,5.75);
-\draw[sig] (12.20,6.60) -- (18.60,6.60);
-\draw[sig] (12.20,6.20) -- (18.60,6.20);
+\draw[sig] (8.75,6.45) -- (9.90,6.45);
+\draw[sig] (8.75,6.10) -- (9.90,6.10);
+\draw[sig] (9.90,5.75) -- (8.75,5.75);
+\draw[sig] (13.10,6.60) -- (18.60,6.60);
+\draw[sig] (13.10,6.20) -- (18.60,6.20);
 
 % ===================== Camino de recepción =====================
-\draw[sig] (17.20,2.25) -- (15.90,2.25);
-\draw[sig] (15.10,2.25) -- (14.60,2.25);
-\draw[sig] (14.60,4.45) -- (15.50,4.45) -- (15.50,3.05) -- (14.60,3.05);
-\draw[sig] (13.30,3.40) -- (13.30,4.00);
-\node[tlbl, anchor=west] at (13.36,3.70) {\texttt{Valid}};
-\draw[sig] (12.00,4.45) -- (11.00,4.45);
-\node[tlbl, anchor=south] at (11.50,4.50) {\texttt{Q}};
-\draw[sig] (12.40,3.40) -- (12.40,3.80) -- (11.00,3.80);
-\node[tlbl, anchor=south] at (11.70,3.84) {\texttt{Store}};
+\draw[sig] (18.60,3.60) -- (17.60,3.60) -- (17.60,2.25) -- (16.75,2.25);
+\draw[sig] (15.95,2.25) -- (15.50,2.25);
+\draw[sig] (15.50,4.45) -- (16.20,4.45) -- (16.20,3.05) -- (15.50,3.05);
+\draw[sig] (14.20,3.40) -- (14.20,4.00);
+\node[tlbl, anchor=west] at (14.26,3.70) {\texttt{Valid}};
+\draw[sig] (12.90,4.45) -- (11.90,4.45);
+\node[tlbl, anchor=south] at (12.40,4.50) {\texttt{Q}};
+\draw[sig] (13.30,3.40) -- (13.30,3.80) -- (11.90,3.80);
+\node[tlbl, anchor=south] at (12.75,3.84) {\texttt{Store}};
 
 % ===================== Salidas del canal hacia los puertos =====================
-\draw[sig] (9.00,5.00) -- (7.90,5.00);
-\draw[sig] (7.90,4.60) -- (9.00,4.60);
-\draw[sig] (9.00,4.20) -- (7.90,4.20);
-\draw[sig] (9.00,3.80) -- (7.90,3.80);
-\draw[sig] (12.00,3.45) -- (7.90,3.45);
-\draw[sig] (12.00,3.10) -- (7.90,3.10);
-\draw[sig] (7.90,2.75) -- (12.00,2.75);
+\draw[sig] (9.90,5.00) -- (8.75,5.00);
+\draw[sig] (8.75,4.60) -- (9.90,4.60);
+\draw[sig] (9.90,4.20) -- (8.75,4.20);
+\draw[sig] (9.90,3.80) -- (8.75,3.80);
+\draw[sig] (12.90,3.45) -- (8.75,3.45);
+\draw[sig] (12.90,3.10) -- (8.75,3.10);
+\draw[sig] (8.75,2.75) -- (12.90,2.75);
 
 % ===================== Transceptor -> bus =====================
 \draw[bus] (20.80,5.00) -- (21.80,5.00);
