@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.7.22)  14 AUG 2026 23:29
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.7.22)  14 AUG 2026 23:43
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1709,12 +1709,12 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
 [18]
-<IMG/Desarrollo/diagrama_transceptor.pdf, id=1000, 651.39662pt x 277.30101pt>
+<IMG/Desarrollo/diagrama_transceptor.pdf, id=1000, 651.39662pt x 264.49817pt>
 File: IMG/Desarrollo/diagrama_transceptor.pdf Graphic file (type pdf)
 <use IMG/Desarrollo/diagrama_transceptor.pdf>
 Package pdftex.def Info: IMG/Desarrollo/diagrama_transceptor.pdf  used on input
  line 341.
-(pdftex.def)             Requested size: 689.9802pt x 293.73456pt.
+(pdftex.def)             Requested size: 689.9802pt x 280.17299pt.
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
@@ -2014,7 +2014,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
 [36]
-<IMG/serial_pcb_top.jpg, id=1185, 1606.0pt x 1204.5pt>
+<IMG/serial_pcb_top.jpg, id=1179, 1606.0pt x 1204.5pt>
 File: IMG/serial_pcb_top.jpg Graphic file (type jpg)
 <use IMG/serial_pcb_top.jpg>
 Package pdftex.def Info: IMG/serial_pcb_top.jpg  used on input line 1277.
@@ -2036,7 +2036,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 pdfTeX warning: pdflatex.exe (file ./IMG/pcbs/LINCE3_CDHS.pdf): PDF inclusion: 
 found PDF version <1.7>, but at most version <1.5> allowed
-<IMG/pcbs/LINCE3_CDHS.pdf, id=1194, page=1, 1228.59pt x 794.97pt>
+<IMG/pcbs/LINCE3_CDHS.pdf, id=1188, page=1, 1228.59pt x 794.97pt>
 File: IMG/pcbs/LINCE3_CDHS.pdf Graphic file (type pdf)
 <use IMG/pcbs/LINCE3_CDHS.pdf, page 1>
 Package pdftex.def Info: IMG/pcbs/LINCE3_CDHS.pdf , page1 used on input line 13
@@ -2059,12 +2059,12 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
 [38]
-<IMG/pcbs/cdhs_3d_top.png, id=1201, 569.12625pt x 422.17725pt>
+<IMG/pcbs/cdhs_3d_top.png, id=1195, 569.12625pt x 422.17725pt>
 File: IMG/pcbs/cdhs_3d_top.png Graphic file (type png)
 <use IMG/pcbs/cdhs_3d_top.png>
 Package pdftex.def Info: IMG/pcbs/cdhs_3d_top.png  used on input line 1350.
 (pdftex.def)             Requested size: 218.51521pt x 162.09746pt.
-<IMG/pcbs/cdhs_3d_bot.png, id=1202, 558.28575pt x 377.0085pt>
+<IMG/pcbs/cdhs_3d_bot.png, id=1196, 558.28575pt x 377.0085pt>
 File: IMG/pcbs/cdhs_3d_bot.png Graphic file (type png)
 <use IMG/pcbs/cdhs_3d_bot.png>
 Package pdftex.def Info: IMG/pcbs/cdhs_3d_bot.png  used on input line 1358.
@@ -2096,7 +2096,7 @@ Overfull \hbox (13.42162pt too wide) in paragraph at lines 1395--1399
 
 pdfTeX warning: pdflatex.exe (file ./IMG/pcbs/LINCE3_CDHS.pdf): PDF inclusion: 
 found PDF version <1.7>, but at most version <1.5> allowed
-<IMG/pcbs/LINCE3_CDHS.pdf, id=1244, page=3, 1228.59pt x 794.97pt>
+<IMG/pcbs/LINCE3_CDHS.pdf, id=1238, page=3, 1228.59pt x 794.97pt>
 File: IMG/pcbs/LINCE3_CDHS.pdf Graphic file (type pdf)
 <use IMG/pcbs/LINCE3_CDHS.pdf, page 3>
 Package pdftex.def Info: IMG/pcbs/LINCE3_CDHS.pdf , page3 used on input line 14
@@ -2136,7 +2136,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 pdfTeX warning: pdflatex.exe (file ./IMG/pcbs/LINCE3_CDHS.pdf): PDF inclusion: 
 found PDF version <1.7>, but at most version <1.5> allowed
-<IMG/pcbs/LINCE3_CDHS.pdf, id=1300, page=4, 1228.59pt x 794.97pt>
+<IMG/pcbs/LINCE3_CDHS.pdf, id=1294, page=4, 1228.59pt x 794.97pt>
 File: IMG/pcbs/LINCE3_CDHS.pdf Graphic file (type pdf)
 <use IMG/pcbs/LINCE3_CDHS.pdf, page 4>
 Package pdftex.def Info: IMG/pcbs/LINCE3_CDHS.pdf , page4 used on input line 14
@@ -2165,7 +2165,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 pdfTeX warning: pdflatex.exe (file ./IMG/pcbs/LINCE3_AOCS_V2.pdf): PDF inclusio
 n: found PDF version <1.7>, but at most version <1.5> allowed
-<IMG/pcbs/LINCE3_AOCS_V2.pdf, id=1345, page=1, 794.97pt x 614.295pt>
+<IMG/pcbs/LINCE3_AOCS_V2.pdf, id=1339, page=1, 794.97pt x 614.295pt>
 File: IMG/pcbs/LINCE3_AOCS_V2.pdf Graphic file (type pdf)
 <use IMG/pcbs/LINCE3_AOCS_V2.pdf, page 1>
 Package pdftex.def Info: IMG/pcbs/LINCE3_AOCS_V2.pdf , page1 used on input line
@@ -2184,12 +2184,12 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
 [43]
-<IMG/pcbs/aocs_3d_top.png, id=1354, 666.0885pt x 301.125pt>
+<IMG/pcbs/aocs_3d_top.png, id=1348, 666.0885pt x 301.125pt>
 File: IMG/pcbs/aocs_3d_top.png Graphic file (type png)
 <use IMG/pcbs/aocs_3d_top.png>
 Package pdftex.def Info: IMG/pcbs/aocs_3d_top.png  used on input line 1537.
 (pdftex.def)             Requested size: 218.51521pt x 98.78342pt.
-<IMG/pcbs/aocs_3d_bot.png, id=1355, 653.44125pt x 289.68225pt>
+<IMG/pcbs/aocs_3d_bot.png, id=1349, 653.44125pt x 289.68225pt>
 File: IMG/pcbs/aocs_3d_bot.png Graphic file (type png)
 <use IMG/pcbs/aocs_3d_bot.png>
 Package pdftex.def Info: IMG/pcbs/aocs_3d_bot.png  used on input line 1545.
@@ -2215,7 +2215,7 @@ cs_3d_bot.png>]
 
 pdfTeX warning: pdflatex.exe (file ./IMG/pcbs/LINCE3_AOCS_V2.pdf): PDF inclusio
 n: found PDF version <1.7>, but at most version <1.5> allowed
-<IMG/pcbs/LINCE3_AOCS_V2.pdf, id=1397, page=6, 794.97pt x 614.295pt>
+<IMG/pcbs/LINCE3_AOCS_V2.pdf, id=1391, page=6, 794.97pt x 614.295pt>
 File: IMG/pcbs/LINCE3_AOCS_V2.pdf Graphic file (type pdf)
 <use IMG/pcbs/LINCE3_AOCS_V2.pdf, page 6>
 Package pdftex.def Info: IMG/pcbs/LINCE3_AOCS_V2.pdf , page6 used on input line
@@ -2257,7 +2257,7 @@ Overfull \hbox (12.97235pt too wide) in paragraph at lines 1650--1656
 ni-bles en \OT1/cmtt/m/n/12 tfm/00[]docs/pcbs/aocs/\OT1/cmr/m/n/12 .
  []
 
-<IMG/cdhs_soldada.jpg, id=1455, 3035.34pt x 4047.12pt>
+<IMG/cdhs_soldada.jpg, id=1449, 3035.34pt x 4047.12pt>
 File: IMG/cdhs_soldada.jpg Graphic file (type jpg)
 <use IMG/cdhs_soldada.jpg>
 Package pdftex.def Info: IMG/cdhs_soldada.jpg  used on input line 1682.
@@ -2279,7 +2279,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
 [47]
-<IMG/aocs_soldada_caras.jpg, id=1464, 3854.4pt x 5139.2pt>
+<IMG/aocs_soldada_caras.jpg, id=1458, 3854.4pt x 5139.2pt>
 File: IMG/aocs_soldada_caras.jpg Graphic file (type jpg)
 <use IMG/aocs_soldada_caras.jpg>
 Package pdftex.def Info: IMG/aocs_soldada_caras.jpg  used on input line 1691.
@@ -2344,7 +2344,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
 [50]
-<IMG/arnes_rs422.jpg, id=1501, 3854.4pt x 5139.2pt>
+<IMG/arnes_rs422.jpg, id=1495, 3854.4pt x 5139.2pt>
 File: IMG/arnes_rs422.jpg Graphic file (type jpg)
 <use IMG/arnes_rs422.jpg>
 Package pdftex.def Info: IMG/arnes_rs422.jpg  used on input line 1820.
@@ -2363,7 +2363,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
 [51]
-<IMG/arnes_rs485.jpg, id=1511, 3854.4pt x 5139.2pt>
+<IMG/arnes_rs485.jpg, id=1505, 3854.4pt x 5139.2pt>
 File: IMG/arnes_rs485.jpg Graphic file (type jpg)
 <use IMG/arnes_rs485.jpg>
 Package pdftex.def Info: IMG/arnes_rs485.jpg  used on input line 1832.
@@ -2385,7 +2385,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
 [52 <./IMG/arnes_rs422.jpg> <./IMG/arnes_rs485.jpg>]
-<IMG/arnes_can.jpg, id=1518, 3854.4pt x 5139.2pt>
+<IMG/arnes_can.jpg, id=1512, 3854.4pt x 5139.2pt>
 File: IMG/arnes_can.jpg Graphic file (type jpg)
 <use IMG/arnes_can.jpg>
 Package pdftex.def Info: IMG/arnes_can.jpg  used on input line 1846.
@@ -2434,13 +2434,13 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
 [55]
-<IMG/Desarrollo/diagrama_arquitectura_mcdma.pdf, id=1542, 702.4112pt x 337.0020
-4pt>
+<IMG/Desarrollo/diagrama_arquitectura_mcdma.pdf, id=1536, 665.42302pt x 321.352
+58pt>
 File: IMG/Desarrollo/diagrama_arquitectura_mcdma.pdf Graphic file (type pdf)
 <use IMG/Desarrollo/diagrama_arquitectura_mcdma.pdf>
 Package pdftex.def Info: IMG/Desarrollo/diagrama_arquitectura_mcdma.pdf  used o
 n input line 164.
-(pdftex.def)             Requested size: 689.9802pt x 331.05165pt.
+(pdftex.def)             Requested size: 689.9802pt x 333.23282pt.
 
 Overfull \hbox (2.72746pt too wide) in paragraph at lines 207--213
 \OT1/cmr/m/n/12 por-que las l^^S^^Pneas son ocho. Se di-se~n^^So por tan-to un 
@@ -2562,7 +2562,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 [63]
 Cap\'{\i }tulo 4.
 (capitulos/cap4/validacion_hardware.tex
-<IMG/sistema_montado.jpg, id=1667, 5139.2pt x 3854.4pt>
+<IMG/sistema_montado.jpg, id=1653, 5139.2pt x 3854.4pt>
 File: IMG/sistema_montado.jpg Graphic file (type jpg)
 <use IMG/sistema_montado.jpg>
 Package pdftex.def Info: IMG/sistema_montado.jpg  used on input line 22.
@@ -2595,25 +2595,25 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
 [65]
-<IMG/slew/rs485_flanco_rapido.png, id=1718, 803.0pt x 481.8pt>
+<IMG/slew/rs485_flanco_rapido.png, id=1704, 803.0pt x 481.8pt>
 File: IMG/slew/rs485_flanco_rapido.png Graphic file (type png)
 <use IMG/slew/rs485_flanco_rapido.png>
 Package pdftex.def Info: IMG/slew/rs485_flanco_rapido.png  used on input line 1
 56.
 (pdftex.def)             Requested size: 218.51521pt x 131.10962pt.
-<IMG/slew/rs485_flanco_lento.png, id=1719, 803.0pt x 481.8pt>
+<IMG/slew/rs485_flanco_lento.png, id=1705, 803.0pt x 481.8pt>
 File: IMG/slew/rs485_flanco_lento.png Graphic file (type png)
 <use IMG/slew/rs485_flanco_lento.png>
 Package pdftex.def Info: IMG/slew/rs485_flanco_lento.png  used on input line 16
 2.
 (pdftex.def)             Requested size: 218.51521pt x 131.10962pt.
-<IMG/slew/rs485_bajada_rapida.png, id=1720, 803.0pt x 481.8pt>
+<IMG/slew/rs485_bajada_rapida.png, id=1706, 803.0pt x 481.8pt>
 File: IMG/slew/rs485_bajada_rapida.png Graphic file (type png)
 <use IMG/slew/rs485_bajada_rapida.png>
 Package pdftex.def Info: IMG/slew/rs485_bajada_rapida.png  used on input line 1
 70.
 (pdftex.def)             Requested size: 218.51521pt x 131.10962pt.
-<IMG/slew/rs485_bajada_lenta.png, id=1721, 803.0pt x 481.8pt>
+<IMG/slew/rs485_bajada_lenta.png, id=1707, 803.0pt x 481.8pt>
 File: IMG/slew/rs485_bajada_lenta.png Graphic file (type png)
 <use IMG/slew/rs485_bajada_lenta.png>
 Package pdftex.def Info: IMG/slew/rs485_bajada_lenta.png  used on input line 17
@@ -2652,12 +2652,12 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 [67 <./IMG/slew/rs485_flanco_rapido.png (PNG copy)> <./IMG/slew/rs485_flanco_le
 nto.png (PNG copy)> <./IMG/slew/rs485_bajada_rapida.png (PNG copy)> <./IMG/slew
 /rs485_bajada_lenta.png (PNG copy)>]
-<IMG/can_sin_term.png, id=1784, 803.0pt x 481.8pt>
+<IMG/can_sin_term.png, id=1770, 803.0pt x 481.8pt>
 File: IMG/can_sin_term.png Graphic file (type png)
 <use IMG/can_sin_term.png>
 Package pdftex.def Info: IMG/can_sin_term.png  used on input line 220.
 (pdftex.def)             Requested size: 355.08981pt x 213.05864pt.
-<IMG/can_con_term.png, id=1785, 803.0pt x 481.8pt>
+<IMG/can_con_term.png, id=1771, 803.0pt x 481.8pt>
 File: IMG/can_con_term.png Graphic file (type png)
 <use IMG/can_con_term.png>
 Package pdftex.def Info: IMG/can_con_term.png  used on input line 227.
@@ -2690,7 +2690,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
 [69]
-<IMG/cdhs_pwm_1khz.png, id=1835, 803.0pt x 481.8pt>
+<IMG/cdhs_pwm_1khz.png, id=1821, 803.0pt x 481.8pt>
 File: IMG/cdhs_pwm_1khz.png Graphic file (type png)
 <use IMG/cdhs_pwm_1khz.png>
 Package pdftex.def Info: IMG/cdhs_pwm_1khz.png  used on input line 335.
@@ -2712,7 +2712,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
 [70 <./IMG/cdhs_pwm_1khz.png (PNG copy)>]
-<IMG/aocs_soldada.jpg, id=1867, 3854.4pt x 5139.2pt>
+<IMG/aocs_soldada.jpg, id=1853, 3854.4pt x 5139.2pt>
 File: IMG/aocs_soldada.jpg Graphic file (type jpg)
 <use IMG/aocs_soldada.jpg>
 Package pdftex.def Info: IMG/aocs_soldada.jpg  used on input line 355.
@@ -2750,7 +2750,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
 [72]
-<IMG/aocs_pwm_motor.png, id=1941, 803.0pt x 481.8pt>
+<IMG/aocs_pwm_motor.png, id=1927, 803.0pt x 481.8pt>
 File: IMG/aocs_pwm_motor.png Graphic file (type png)
 <use IMG/aocs_pwm_motor.png>
 Package pdftex.def Info: IMG/aocs_pwm_motor.png  used on input line 465.
@@ -2910,12 +2910,12 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
 [80]) (capitulos/cap4/pcb.tex
-<IMG/serial_pcb_jumpers.jpg, id=2011, 1606.0pt x 1204.5pt>
+<IMG/serial_pcb_jumpers.jpg, id=1997, 1606.0pt x 1204.5pt>
 File: IMG/serial_pcb_jumpers.jpg Graphic file (type jpg)
 <use IMG/serial_pcb_jumpers.jpg>
 Package pdftex.def Info: IMG/serial_pcb_jumpers.jpg  used on input line 40.
 (pdftex.def)             Requested size: 218.51521pt x 163.88702pt.
-<IMG/serial_pcb_zcu102.jpg, id=2012, 1204.5pt x 1606.0pt>
+<IMG/serial_pcb_zcu102.jpg, id=1998, 1204.5pt x 1606.0pt>
 File: IMG/serial_pcb_zcu102.jpg Graphic file (type jpg)
 <use IMG/serial_pcb_zcu102.jpg>
 Package pdftex.def Info: IMG/serial_pcb_zcu102.jpg  used on input line 46.
@@ -3336,13 +3336,12 @@ TeX/fonts/type1/public/eurosym/feymr10.pfb><C:/Users/jaest/AppData/Local/Progra
 ms/MiKTeX/fonts/type1/public/lm/lmss8.pfb><C:/Users/jaest/AppData/Local/Program
 s/MiKTeX/fonts/type1/public/lm/lmss9.pfb><C:/Users/jaest/AppData/Local/Programs
 /MiKTeX/fonts/type1/public/lm/lmssbx10.pfb><C:/Users/jaest/AppData/Local/Progra
-ms/MiKTeX/fonts/type1/public/lm/lmsso8.pfb><C:/Users/jaest/AppData/Local/Progra
 ms/MiKTeX/fonts/type1/public/lm/lmsy7.pfb><C:/Users/jaest/AppData/Local/Program
 s/MiKTeX/fonts/type1/public/lm/lmtt8.pfb><C:/Users/jaest/AppData/Local/Programs
 /MiKTeX/fonts/type1/public/lm/lmtt9.pfb>
-Output written on main.pdf (121 pages, 14243628 bytes).
+Output written on main.pdf (121 pages, 14200369 bytes).
 PDF statistics:
- 2409 PDF objects out of 2487 (max. 8388607)
+ 2394 PDF objects out of 2487 (max. 8388607)
  787 named destinations out of 1000 (max. 500000)
  890 words of extra memory for PDF output out of 10000 (max. 10000000)
 
