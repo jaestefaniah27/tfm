@@ -285,323 +285,333 @@
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.3}{\ignorespaces Diagrama de bloques de un canal del transceptor serie configurable. El NCO proporciona la temporización de bit a transmisor y receptor; el receptor entrega los bits muestreados al registro de desplazamiento, que los normaliza y los escribe en la FIFO, de donde el PS los lee. La palabra de configuración es común a ambos sentidos.}}{19}{figure.caption.75}\protected@file@percent }
-\newlabel{fig:transceptor_bloques}{{3.3}{19}{Diagrama de bloques de un canal del transceptor serie configurable. El NCO proporciona la temporización de bit a transmisor y receptor; el receptor entrega los bits muestreados al registro de desplazamiento, que los normaliza y los escribe en la FIFO, de donde el PS los lee. La palabra de configuración es común a ambos sentidos}{figure.caption.75}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.2.1}Oscilador controlado numéricamente (NCO)}{19}{subsection.3.2.1}\protected@file@percent }
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.3}{\ignorespaces Salida de la simulación de \texttt  {tb\_NCO.vhd} (extracto: primera, intermedia y última velocidad del barrido)}}{20}{lstlisting.3.3}\protected@file@percent }
+\newlabel{RF1}{20}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.3}{\ignorespaces Diagrama de bloques de un canal del transceptor serie configurable. El NCO proporciona la temporización de bit a transmisor y receptor; el receptor entrega los bits muestreados al registro de desplazamiento, que los normaliza y los escribe en la FIFO, de donde el PS los lee. La palabra de configuración es común a ambos sentidos.}}{20}{figure.caption.75}\protected@file@percent }
+\newlabel{fig:transceptor_bloques}{{3.3}{20}{Diagrama de bloques de un canal del transceptor serie configurable. El NCO proporciona la temporización de bit a transmisor y receptor; el receptor entrega los bits muestreados al registro de desplazamiento, que los normaliza y los escribe en la FIFO, de donde el PS los lee. La palabra de configuración es común a ambos sentidos}{figure.caption.75}{}}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.3}{\ignorespaces Salida de la simulación de \texttt  {tb\_NCO.vhd} (extracto: primera, intermedia y última velocidad del barrido)}}{21}{lstlisting.3.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.2.2}Transmisor}{21}{subsection.3.2.2}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {3.2}{\ignorespaces Puertos del transmisor \texttt  {TX\_CONFIGURABLE\_SERIAL}.}}{21}{table.caption.76}\protected@file@percent }
-\newlabel{tab:tx_puertos}{{3.2}{21}{Puertos del transmisor \texttt {TX\_CONFIGURABLE\_SERIAL}}{table.caption.76}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Máquina de estados}{21}{section*.77}\protected@file@percent }
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.4}{\ignorespaces Cronograma de una trama completa, con la configuración 8 bits de datos, paridad par, un bit de parada y orden LSB \textit  {first} (dato \texttt  {0x53}). El transmisor consume un \textit  {tick} por frontera de bit y pasa al doble de frecuencia en el campo de parada, donde cuenta semiperiodos. El receptor, tras alinear su fase medio bit después del flanco de inicio, muestrea en el centro de cada bit; el primer muestreo, en el centro del bit de inicio, es el que descarta los falsos inicios de trama. Las zonas sombreadas \texttt  {PreDE} y \texttt  {PostDE} no están a escala: duran 100~$\mu $s frente a los 8,7~$\mu $s del tiempo de bit a 115\,200~baudios.}}{22}{figure.caption.78}\protected@file@percent }
-\newlabel{fig:cronograma_trama}{{3.4}{22}{Cronograma de una trama completa, con la configuración 8 bits de datos, paridad par, un bit de parada y orden LSB \textit {first} (dato \texttt {0x53}). El transmisor consume un \textit {tick} por frontera de bit y pasa al doble de frecuencia en el campo de parada, donde cuenta semiperiodos. El receptor, tras alinear su fase medio bit después del flanco de inicio, muestrea en el centro de cada bit; el primer muestreo, en el centro del bit de inicio, es el que descarta los falsos inicios de trama. Las zonas sombreadas \texttt {PreDE} y \texttt {PostDE} no están a escala: duran 100~$\mu $s frente a los 8,7~$\mu $s del tiempo de bit a 115\,200~baudios}{figure.caption.78}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Lógica de apoyo a la máquina de estados}{22}{section*.79}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3.2}{\ignorespaces Puertos del transmisor \texttt  {TX\_CONFIGURABLE\_SERIAL}.}}{22}{table.caption.76}\protected@file@percent }
+\newlabel{tab:tx_puertos}{{3.2}{22}{Puertos del transmisor \texttt {TX\_CONFIGURABLE\_SERIAL}}{table.caption.76}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Máquina de estados}{22}{section*.77}\protected@file@percent }
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{toc}{\contentsline {subsubsection}{Retardo de establecimiento del \textit  {Driver Enable}}{23}{section*.80}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.3}Receptor}{23}{subsection.3.2.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.4}{\ignorespaces Cronograma de una trama completa, con la configuración 8 bits de datos, paridad par, un bit de parada y orden LSB \textit  {first} (dato \texttt  {0x53}). El transmisor consume un \textit  {tick} por frontera de bit y pasa al doble de frecuencia en el campo de parada, donde cuenta semiperiodos. El receptor, tras alinear su fase medio bit después del flanco de inicio, muestrea en el centro de cada bit; el primer muestreo, en el centro del bit de inicio, es el que descarta los falsos inicios de trama. Las zonas sombreadas \texttt  {PreDE} y \texttt  {PostDE} no están a escala: duran 100~$\mu $s frente a los 8,7~$\mu $s del tiempo de bit a 115\,200~baudios.}}{23}{figure.caption.78}\protected@file@percent }
+\newlabel{fig:cronograma_trama}{{3.4}{23}{Cronograma de una trama completa, con la configuración 8 bits de datos, paridad par, un bit de parada y orden LSB \textit {first} (dato \texttt {0x53}). El transmisor consume un \textit {tick} por frontera de bit y pasa al doble de frecuencia en el campo de parada, donde cuenta semiperiodos. El receptor, tras alinear su fase medio bit después del flanco de inicio, muestrea en el centro de cada bit; el primer muestreo, en el centro del bit de inicio, es el que descarta los falsos inicios de trama. Las zonas sombreadas \texttt {PreDE} y \texttt {PostDE} no están a escala: duran 100~$\mu $s frente a los 8,7~$\mu $s del tiempo de bit a 115\,200~baudios}{figure.caption.78}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Lógica de apoyo a la máquina de estados}{23}{section*.79}\protected@file@percent }
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{lot}{\contentsline {table}{\numberline {3.3}{\ignorespaces Puertos del receptor \texttt  {RX\_CONFIGURABLE\_SERIAL}.}}{24}{table.caption.81}\protected@file@percent }
-\newlabel{tab:rx_puertos}{{3.3}{24}{Puertos del receptor \texttt {RX\_CONFIGURABLE\_SERIAL}}{table.caption.81}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Máquina de estados}{24}{section*.82}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Retardo de establecimiento del \textit  {Driver Enable}}{24}{section*.80}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.3}Receptor}{24}{subsection.3.2.3}\protected@file@percent }
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{toc}{\contentsline {subsubsection}{Lógica de apoyo a la máquina de estados}{25}{section*.83}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{Verificación del bit de inicio a mitad de período}{25}{section*.84}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.4}Registro de desplazamiento}{25}{subsection.3.2.4}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3.3}{\ignorespaces Puertos del receptor \texttt  {RX\_CONFIGURABLE\_SERIAL}.}}{25}{table.caption.81}\protected@file@percent }
+\newlabel{tab:rx_puertos}{{3.3}{25}{Puertos del receptor \texttt {RX\_CONFIGURABLE\_SERIAL}}{table.caption.81}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Máquina de estados}{25}{section*.82}\protected@file@percent }
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.5}FIFO}{26}{subsection.3.2.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.6}Bloque de canal}{26}{subsection.3.2.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Lógica de apoyo a la máquina de estados}{26}{section*.83}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Verificación del bit de inicio a mitad de período}{26}{section*.84}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.4}Registro de desplazamiento}{26}{subsection.3.2.4}\protected@file@percent }
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.7}Bloque \textit  {top} del transceptor}{27}{subsection.3.2.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.5}FIFO}{27}{subsection.3.2.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.6}Bloque de canal}{27}{subsection.3.2.6}\protected@file@percent }
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{lot}{\contentsline {table}{\numberline {3.4}{\ignorespaces Reparto de bits de los vectores de interfaz del bloque \texttt  {CONFIGURABLE\_SERIAL\_TOP}.}}{28}{table.caption.85}\protected@file@percent }
-\newlabel{tab:mapa_bits_top}{{3.4}{28}{Reparto de bits de los vectores de interfaz del bloque \texttt {CONFIGURABLE\_SERIAL\_TOP}}{table.caption.85}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Envoltorios de nivel superior}{28}{section*.86}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.7}Bloque \textit  {top} del transceptor}{28}{subsection.3.2.7}\protected@file@percent }
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.8}Verificación en simulación del canal completo}{29}{subsection.3.2.8}\protected@file@percent }
-\newlabel{sec:verificacion_canal}{{3.2.8}{29}{Verificación en simulación del canal completo}{subsection.3.2.8}{}}
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.4}{\ignorespaces Salida de la simulación de \texttt  {tb\_CONFIGURABLE\_SERIAL\_TOP.vhd} (extracto: primeras y últimas configuraciones del barrido)}}{29}{lstlisting.3.4}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3.4}{\ignorespaces Reparto de bits de los vectores de interfaz del bloque \texttt  {CONFIGURABLE\_SERIAL\_TOP}.}}{29}{table.caption.85}\protected@file@percent }
+\newlabel{tab:mapa_bits_top}{{3.4}{29}{Reparto de bits de los vectores de interfaz del bloque \texttt {CONFIGURABLE\_SERIAL\_TOP}}{table.caption.85}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Envoltorios de nivel superior}{29}{section*.86}\protected@file@percent }
+\transparent@use{.6}
+\transparent@use{.6}
+\transparent@use{.6}
+\transparent@use{.6}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.8}Verificación en simulación del canal completo}{30}{subsection.3.2.8}\protected@file@percent }
+\newlabel{sec:verificacion_canal}{{3.2.8}{30}{Verificación en simulación del canal completo}{subsection.3.2.8}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.4}{\ignorespaces Salida de la simulación de \texttt  {tb\_CONFIGURABLE\_SERIAL\_TOP.vhd} (extracto: primeras y últimas configuraciones del barrido)}}{30}{lstlisting.3.4}\protected@file@percent }
 \citation{repo_tfm}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.9}Bloque Zynq UltraScale+ MPSoC}{30}{subsection.3.2.9}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {3.3}Herramientas para facilitar el desarrollo del transceptor (PL)}{30}{section.3.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.3.1}Generación de transceivers con TCL}{30}{subsection.3.3.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.3.2}Generación de proyecto con TCL}{30}{subsection.3.3.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {3.4}Diseño del driver serie en RTEMS (PS)}{30}{section.3.4}\protected@file@percent }
-\newlabel{sec:driver_rtems}{{3.4}{30}{Diseño del driver serie en RTEMS (PS)}{section.3.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.9}Bloque Zynq UltraScale+ MPSoC}{31}{subsection.3.2.9}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3.3}Herramientas para facilitar el desarrollo del transceptor (PL)}{31}{section.3.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3.1}Generación de transceivers con TCL}{31}{subsection.3.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3.2}Generación de proyecto con TCL}{31}{subsection.3.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3.4}Diseño del driver serie en RTEMS (PS)}{31}{section.3.4}\protected@file@percent }
+\newlabel{sec:driver_rtems}{{3.4}{31}{Diseño del driver serie en RTEMS (PS)}{section.3.4}{}}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.4.1}Interfaz hardware: mapa de registros}{31}{subsection.3.4.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.4.2}Arquitectura software}{31}{subsection.3.4.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4.1}Interfaz hardware: mapa de registros}{32}{subsection.3.4.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4.2}Arquitectura software}{32}{subsection.3.4.2}\protected@file@percent }
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.4.3}Descubrimiento dinámico del hardware}{32}{subsection.3.4.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.4.4}Modelo de interrupciones: ISR maestra y tareas worker}{32}{subsection.3.4.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.4.5}Inicialización y configuración del hardware}{32}{subsection.3.4.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4.3}Descubrimiento dinámico del hardware}{33}{subsection.3.4.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4.4}Modelo de interrupciones: ISR maestra y tareas worker}{33}{subsection.3.4.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4.5}Inicialización y configuración del hardware}{33}{subsection.3.4.5}\protected@file@percent }
 \citation{repo_tfm}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.4.6}API pública}{33}{subsection.3.4.6}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {3.5}{\ignorespaces API pública del driver serie.}}{33}{table.caption.87}\protected@file@percent }
-\newlabel{tab:api}{{3.5}{33}{API pública del driver serie}{table.caption.87}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.4.7}Decisiones de diseño destacadas}{33}{subsection.3.4.7}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {3.5}Diseño hardware}{33}{section.3.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4.6}API pública}{34}{subsection.3.4.6}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3.5}{\ignorespaces API pública del driver serie.}}{34}{table.caption.87}\protected@file@percent }
+\newlabel{tab:api}{{3.5}{34}{API pública del driver serie}{table.caption.87}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4.7}Decisiones de diseño destacadas}{34}{subsection.3.4.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3.5}Diseño hardware}{34}{section.3.5}\protected@file@percent }
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.5.1}Selección de componentes: la restricción de 1,8 V}{34}{subsection.3.5.1}\protected@file@percent }
-\newlabel{sec:seleccion_componentes}{{3.5.1}{34}{Selección de componentes: la restricción de 1,8 V}{subsection.3.5.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.5.1}Selección de componentes: la restricción de 1,8 V}{35}{subsection.3.5.1}\protected@file@percent }
+\newlabel{sec:seleccion_componentes}{{3.5.1}{35}{Selección de componentes: la restricción de 1,8 V}{subsection.3.5.1}{}}
 \citation{pcbway_caps}
 \citation{ltc2865}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.5.2}Reglas de diseño y proceso de fabricación}{35}{subsection.3.5.2}\protected@file@percent }
-\newlabel{sec:reglas_diseno}{{3.5.2}{35}{Reglas de diseño y proceso de fabricación}{subsection.3.5.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.5.3}Diseño de la placa de comunicación serie}{35}{subsection.3.5.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.5.2}Reglas de diseño y proceso de fabricación}{36}{subsection.3.5.2}\protected@file@percent }
+\newlabel{sec:reglas_diseno}{{3.5.2}{36}{Reglas de diseño y proceso de fabricación}{subsection.3.5.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.5.3}Diseño de la placa de comunicación serie}{36}{subsection.3.5.3}\protected@file@percent }
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.5}{\ignorespaces Arquitectura general de la placa de comunicación serie: los siete drivers RS422 (Driver7--Driver13, arriba), el conector FMC (P2, izquierda) y los siete drivers RS485 (Driver0--Driver6, abajo).}}{36}{figure.caption.88}\protected@file@percent }
-\newlabel{fig:placa_serial_top}{{3.5}{36}{Arquitectura general de la placa de comunicación serie: los siete drivers RS422 (Driver7--Driver13, arriba), el conector FMC (P2, izquierda) y los siete drivers RS485 (Driver0--Driver6, abajo)}{figure.caption.88}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Topología RS485: bus compartido configurable por jumper}{36}{section*.89}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{Selector de conector Micro-D para RS485}{36}{section*.90}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.5}{\ignorespaces Arquitectura general de la placa de comunicación serie: los siete drivers RS422 (Driver7--Driver13, arriba), el conector FMC (P2, izquierda) y los siete drivers RS485 (Driver0--Driver6, abajo).}}{37}{figure.caption.88}\protected@file@percent }
+\newlabel{fig:placa_serial_top}{{3.5}{37}{Arquitectura general de la placa de comunicación serie: los siete drivers RS422 (Driver7--Driver13, arriba), el conector FMC (P2, izquierda) y los siete drivers RS485 (Driver0--Driver6, abajo)}{figure.caption.88}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Topología RS485: bus compartido configurable por jumper}{37}{section*.89}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Selector de conector Micro-D para RS485}{37}{section*.90}\protected@file@percent }
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{toc}{\contentsline {subsubsection}{Topología RS422: master/slave configurable por jumper}{37}{section*.91}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{Alimentación}{37}{section*.92}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.5.4}Diseño de la placa CDHS}{37}{subsection.3.5.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Topología RS422: master/slave configurable por jumper}{38}{section*.91}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Alimentación}{38}{section*.92}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.5.4}Diseño de la placa CDHS}{38}{subsection.3.5.4}\protected@file@percent }
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.6}{\ignorespaces Hoja de nivel superior del esquemático de la placa CDHS: el bloque de conectores D-Sub-9 (J1--J6) a la izquierda, los bloques funcionales en el centro (CAN en J1, los tres canales RS en J2--J4, el adaptador de nivel de las PWM en J5 y el ADC de termistores en J6) y el conector FMC hacia el MPSoC a la derecha.}}{38}{figure.caption.93}\protected@file@percent }
-\newlabel{fig:cdhs_top}{{3.6}{38}{Hoja de nivel superior del esquemático de la placa CDHS: el bloque de conectores D-Sub-9 (J1--J6) a la izquierda, los bloques funcionales en el centro (CAN en J1, los tres canales RS en J2--J4, el adaptador de nivel de las PWM en J5 y el ADC de termistores en J6) y el conector FMC hacia el MPSoC a la derecha}{figure.caption.93}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.7}{\ignorespaces Render 3D de la placa CDHS, con la serigrafía de bloques que identifica cada subsistema sobre el conector por el que sale.}}{38}{figure.caption.94}\protected@file@percent }
-\newlabel{fig:cdhs_3d}{{3.7}{38}{Render 3D de la placa CDHS, con la serigrafía de bloques que identifica cada subsistema sobre el conector por el que sale}{figure.caption.94}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.6}{\ignorespaces Hoja de nivel superior del esquemático de la placa CDHS: el bloque de conectores D-Sub-9 (J1--J6) a la izquierda, los bloques funcionales en el centro (CAN en J1, los tres canales RS en J2--J4, el adaptador de nivel de las PWM en J5 y el ADC de termistores en J6) y el conector FMC hacia el MPSoC a la derecha.}}{39}{figure.caption.93}\protected@file@percent }
+\newlabel{fig:cdhs_top}{{3.6}{39}{Hoja de nivel superior del esquemático de la placa CDHS: el bloque de conectores D-Sub-9 (J1--J6) a la izquierda, los bloques funcionales en el centro (CAN en J1, los tres canales RS en J2--J4, el adaptador de nivel de las PWM en J5 y el ADC de termistores en J6) y el conector FMC hacia el MPSoC a la derecha}{figure.caption.93}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.7}{\ignorespaces Render 3D de la placa CDHS, con la serigrafía de bloques que identifica cada subsistema sobre el conector por el que sale.}}{39}{figure.caption.94}\protected@file@percent }
+\newlabel{fig:cdhs_3d}{{3.7}{39}{Render 3D de la placa CDHS, con la serigrafía de bloques que identifica cada subsistema sobre el conector por el que sale}{figure.caption.94}{}}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{toc}{\contentsline {subsubsection}{Nivel de tensión y selección de componentes}{39}{section*.95}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{Subsistema CAN}{39}{section*.96}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Nivel de tensión y selección de componentes}{40}{section*.95}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Subsistema CAN}{40}{section*.96}\protected@file@percent }
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.8}{\ignorespaces Subsistema CAN de la placa CDHS: los dos transceptores TCAN1044AVDRQ1 (nominal y redundante), los diodos de protección ESDCAN24-2BLY, la terminación conmutable por \textit  {jumper} y los condensadores de desacoplo.}}{40}{figure.caption.97}\protected@file@percent }
-\newlabel{fig:cdhs_can}{{3.8}{40}{Subsistema CAN de la placa CDHS: los dos transceptores TCAN1044AVDRQ1 (nominal y redundante), los diodos de protección ESDCAN24-2BLY, la terminación conmutable por \textit {jumper} y los condensadores de desacoplo}{figure.caption.97}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Subsistema RS422/RS485}{40}{section*.98}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Decisión de diseño: cortocircuito DE--RE.}{40}{section*.99}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.8}{\ignorespaces Subsistema CAN de la placa CDHS: los dos transceptores TCAN1044AVDRQ1 (nominal y redundante), los diodos de protección ESDCAN24-2BLY, la terminación conmutable por \textit  {jumper} y los condensadores de desacoplo.}}{41}{figure.caption.97}\protected@file@percent }
+\newlabel{fig:cdhs_can}{{3.8}{41}{Subsistema CAN de la placa CDHS: los dos transceptores TCAN1044AVDRQ1 (nominal y redundante), los diodos de protección ESDCAN24-2BLY, la terminación conmutable por \textit {jumper} y los condensadores de desacoplo}{figure.caption.97}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Subsistema RS422/RS485}{41}{section*.98}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Decisión de diseño: cortocircuito DE--RE.}{41}{section*.99}\protected@file@percent }
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{lot}{\contentsline {table}{\numberline {3.6}{\ignorespaces Control complementario DE/RE en el THVD1424.}}{41}{table.caption.100}\protected@file@percent }
-\newlabel{tab:de_re}{{3.6}{41}{Control complementario DE/RE en el THVD1424}{table.caption.100}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.9}{\ignorespaces Canal RS de la placa CDHS con THVD1424RGTR: el cortocircuito DE--RE en el lado lógico, los diodos TVS SM712-02HTG sobre las cuatro líneas diferenciales y los cuatro \textit  {jumpers} de configuración (H/F en P3, SLR en P4 y las terminaciones internas en P5 y P6).}}{41}{figure.caption.101}\protected@file@percent }
-\newlabel{fig:cdhs_rs}{{3.9}{41}{Canal RS de la placa CDHS con THVD1424RGTR: el cortocircuito DE--RE en el lado lógico, los diodos TVS SM712-02HTG sobre las cuatro líneas diferenciales y los cuatro \textit {jumpers} de configuración (H/F en P3, SLR en P4 y las terminaciones internas en P5 y P6)}{figure.caption.101}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Subsistema PWM (calentadores)}{41}{section*.102}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3.6}{\ignorespaces Control complementario DE/RE en el THVD1424.}}{42}{table.caption.100}\protected@file@percent }
+\newlabel{tab:de_re}{{3.6}{42}{Control complementario DE/RE en el THVD1424}{table.caption.100}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.9}{\ignorespaces Canal RS de la placa CDHS con THVD1424RGTR: el cortocircuito DE--RE en el lado lógico, los diodos TVS SM712-02HTG sobre las cuatro líneas diferenciales y los cuatro \textit  {jumpers} de configuración (H/F en P3, SLR en P4 y las terminaciones internas en P5 y P6).}}{42}{figure.caption.101}\protected@file@percent }
+\newlabel{fig:cdhs_rs}{{3.9}{42}{Canal RS de la placa CDHS con THVD1424RGTR: el cortocircuito DE--RE en el lado lógico, los diodos TVS SM712-02HTG sobre las cuatro líneas diferenciales y los cuatro \textit {jumpers} de configuración (H/F en P3, SLR en P4 y las terminaciones internas en P5 y P6)}{figure.caption.101}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Subsistema PWM (calentadores)}{42}{section*.102}\protected@file@percent }
 \citation{ti2018ads7950}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{toc}{\contentsline {subsubsection}{Subsistema ADC (termistores)}{42}{section*.103}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{Alimentación}{42}{section*.104}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{Conectores externos}{42}{section*.105}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.5.5}Diseño de la placa AOCS}{42}{subsection.3.5.5}\protected@file@percent }
-\newlabel{sec:diseno_aocs}{{3.5.5}{42}{Diseño de la placa AOCS}{subsection.3.5.5}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Subsistema ADC (termistores)}{43}{section*.103}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Alimentación}{43}{section*.104}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Conectores externos}{43}{section*.105}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.5.5}Diseño de la placa AOCS}{43}{subsection.3.5.5}\protected@file@percent }
+\newlabel{sec:diseno_aocs}{{3.5.5}{43}{Diseño de la placa AOCS}{subsection.3.5.5}{}}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.10}{\ignorespaces Hoja de nivel superior del esquemático de la placa AOCS: seis canales RS repartidos entre cinco conectores (J1, J3, J5 y J8 con un canal cada uno, y J4 con dos en la hoja \texttt  {RSx2}), el bloque de PWM de motores en J2 y los dos enlaces SpaceWire en J6 y J7, todos ellos entre el bloque de conectores D-Sub-9 y el conector FMC.}}{43}{figure.caption.106}\protected@file@percent }
-\newlabel{fig:aocs_top}{{3.10}{43}{Hoja de nivel superior del esquemático de la placa AOCS: seis canales RS repartidos entre cinco conectores (J1, J3, J5 y J8 con un canal cada uno, y J4 con dos en la hoja \texttt {RSx2}), el bloque de PWM de motores en J2 y los dos enlaces SpaceWire en J6 y J7, todos ellos entre el bloque de conectores D-Sub-9 y el conector FMC}{figure.caption.106}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.11}{\ignorespaces Render 3D de la revisión V2 de la placa AOCS. La serigrafía identifica cada bloque sobre el conector por el que sale, y los puntos de prueba quedan accesibles junto a los \textit  {jumpers} en la cara de conectores.}}{43}{figure.caption.107}\protected@file@percent }
-\newlabel{fig:aocs_3d}{{3.11}{43}{Render 3D de la revisión V2 de la placa AOCS. La serigrafía identifica cada bloque sobre el conector por el que sale, y los puntos de prueba quedan accesibles junto a los \textit {jumpers} en la cara de conectores}{figure.caption.107}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.10}{\ignorespaces Hoja de nivel superior del esquemático de la placa AOCS: seis canales RS repartidos entre cinco conectores (J1, J3, J5 y J8 con un canal cada uno, y J4 con dos en la hoja \texttt  {RSx2}), el bloque de PWM de motores en J2 y los dos enlaces SpaceWire en J6 y J7, todos ellos entre el bloque de conectores D-Sub-9 y el conector FMC.}}{44}{figure.caption.106}\protected@file@percent }
+\newlabel{fig:aocs_top}{{3.10}{44}{Hoja de nivel superior del esquemático de la placa AOCS: seis canales RS repartidos entre cinco conectores (J1, J3, J5 y J8 con un canal cada uno, y J4 con dos en la hoja \texttt {RSx2}), el bloque de PWM de motores en J2 y los dos enlaces SpaceWire en J6 y J7, todos ellos entre el bloque de conectores D-Sub-9 y el conector FMC}{figure.caption.106}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.11}{\ignorespaces Render 3D de la revisión V2 de la placa AOCS. La serigrafía identifica cada bloque sobre el conector por el que sale, y los puntos de prueba quedan accesibles junto a los \textit  {jumpers} en la cara de conectores.}}{44}{figure.caption.107}\protected@file@percent }
+\newlabel{fig:aocs_3d}{{3.11}{44}{Render 3D de la revisión V2 de la placa AOCS. La serigrafía identifica cada bloque sobre el conector por el que sale, y los puntos de prueba quedan accesibles junto a los \textit {jumpers} en la cara de conectores}{figure.caption.107}{}}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{toc}{\contentsline {subsubsection}{Subsistema RS422/RS485}{44}{section*.108}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Puntos de prueba.}{44}{section*.109}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{Subsistema SpaceWire}{44}{section*.110}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Subsistema RS422/RS485}{45}{section*.108}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Puntos de prueba.}{45}{section*.109}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Subsistema SpaceWire}{45}{section*.110}\protected@file@percent }
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.12}{\ignorespaces Subsistema SpaceWire de la placa AOCS: cada enlace atraviesa dos repetidores LVDS DS90CP22M, uno por sentido de la comunicación (U7 y U9 para SPW1, U8 y U10 para SPW2). Cada enlace lleva sus cuatro pares diferenciales (DIN, SIN, SOUT y DOUT) protegidos con diodos TVS.}}{45}{figure.caption.111}\protected@file@percent }
-\newlabel{fig:aocs_spw}{{3.12}{45}{Subsistema SpaceWire de la placa AOCS: cada enlace atraviesa dos repetidores LVDS DS90CP22M, uno por sentido de la comunicación (U7 y U9 para SPW1, U8 y U10 para SPW2). Cada enlace lleva sus cuatro pares diferenciales (DIN, SIN, SOUT y DOUT) protegidos con diodos TVS}{figure.caption.111}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Subsistema de control de motores (MOT-PWM)}{45}{section*.112}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Corrección de la revisión V2: el eje Z.}{45}{section*.113}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.12}{\ignorespaces Subsistema SpaceWire de la placa AOCS: cada enlace atraviesa dos repetidores LVDS DS90CP22M, uno por sentido de la comunicación (U7 y U9 para SPW1, U8 y U10 para SPW2). Cada enlace lleva sus cuatro pares diferenciales (DIN, SIN, SOUT y DOUT) protegidos con diodos TVS.}}{46}{figure.caption.111}\protected@file@percent }
+\newlabel{fig:aocs_spw}{{3.12}{46}{Subsistema SpaceWire de la placa AOCS: cada enlace atraviesa dos repetidores LVDS DS90CP22M, uno por sentido de la comunicación (U7 y U9 para SPW1, U8 y U10 para SPW2). Cada enlace lleva sus cuatro pares diferenciales (DIN, SIN, SOUT y DOUT) protegidos con diodos TVS}{figure.caption.111}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Subsistema de control de motores (MOT-PWM)}{46}{section*.112}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Corrección de la revisión V2: el eje Z.}{46}{section*.113}\protected@file@percent }
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{toc}{\contentsline {subsubsection}{Alimentación}{46}{section*.114}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.5.6}Fabricación}{46}{subsection.3.5.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Alimentación}{47}{section*.114}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.5.6}Fabricación}{47}{subsection.3.5.6}\protected@file@percent }
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.13}{\ignorespaces Placa CDHS tras el proceso de soldadura, con las dos caras a la vista: arriba la cara de conectores D-Sub-9 y \textit  {jumpers} de configuración, y abajo la cara de componentes con los transceptores, el adaptador de nivel, el ADC y el conector FMC.}}{47}{figure.caption.115}\protected@file@percent }
-\newlabel{fig:cdhs_soldada}{{3.13}{47}{Placa CDHS tras el proceso de soldadura, con las dos caras a la vista: arriba la cara de conectores D-Sub-9 y \textit {jumpers} de configuración, y abajo la cara de componentes con los transceptores, el adaptador de nivel, el ADC y el conector FMC}{figure.caption.115}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.13}{\ignorespaces Placa CDHS tras el proceso de soldadura, con las dos caras a la vista: arriba la cara de conectores D-Sub-9 y \textit  {jumpers} de configuración, y abajo la cara de componentes con los transceptores, el adaptador de nivel, el ADC y el conector FMC.}}{48}{figure.caption.115}\protected@file@percent }
+\newlabel{fig:cdhs_soldada}{{3.13}{48}{Placa CDHS tras el proceso de soldadura, con las dos caras a la vista: arriba la cara de conectores D-Sub-9 y \textit {jumpers} de configuración, y abajo la cara de componentes con los transceptores, el adaptador de nivel, el ADC y el conector FMC}{figure.caption.115}{}}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.14}{\ignorespaces Placa AOCS tras el proceso de soldadura.}}{48}{figure.caption.116}\protected@file@percent }
-\newlabel{fig:aocs_soldada}{{3.14}{48}{Placa AOCS tras el proceso de soldadura}{figure.caption.116}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {3.6}Desarrollo de herramientas de testing}{48}{section.3.6}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.6.1}Aplicación de testing del driver serie en RTEMS}{48}{subsection.3.6.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{Configuración del sistema RTEMS --- \texttt  {init.c}}{48}{section*.117}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.5}{\ignorespaces Configuración estática de RTEMS en init.c}}{48}{lstlisting.3.5}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.14}{\ignorespaces Placa AOCS tras el proceso de soldadura.}}{49}{figure.caption.116}\protected@file@percent }
+\newlabel{fig:aocs_soldada}{{3.14}{49}{Placa AOCS tras el proceso de soldadura}{figure.caption.116}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.6}Desarrollo de herramientas de testing}{49}{section.3.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.6.1}Aplicación de testing del driver serie en RTEMS}{49}{subsection.3.6.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Configuración del sistema RTEMS --- \texttt  {init.c}}{49}{section*.117}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.5}{\ignorespaces Configuración estática de RTEMS en init.c}}{49}{lstlisting.3.5}\protected@file@percent }
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{toc}{\contentsline {subsubsection}{Aplicación de testing --- \texttt  {main.c}}{49}{section*.118}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.6}{\ignorespaces Protocolo de comandos de la aplicación de testing}}{49}{lstlisting.3.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Aplicación de testing --- \texttt  {main.c}}{50}{section*.118}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.6}{\ignorespaces Protocolo de comandos de la aplicación de testing}}{50}{lstlisting.3.6}\protected@file@percent }
 \citation{xilinx2023ug1085}
 \citation{ti2018ads7950}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.6.2}Aplicación de testing de las placas CDHS y AOCS}{50}{subsection.3.6.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{Ampliación en PL para soportar interfaces adicionales CDHS}{50}{section*.119}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{Ampliación para soportar interfaces adicionales AOCS}{50}{section*.120}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.6.3}Validación de hardware: arneses y equipamiento}{50}{subsection.3.6.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{Arnés para verificar comunicaciones RS422}{50}{section*.121}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.6.2}Aplicación de testing de las placas CDHS y AOCS}{51}{subsection.3.6.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Ampliación en PL para soportar interfaces adicionales CDHS}{51}{section*.119}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Ampliación para soportar interfaces adicionales AOCS}{51}{section*.120}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.6.3}Validación de hardware: arneses y equipamiento}{51}{subsection.3.6.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Arnés para verificar comunicaciones RS422}{51}{section*.121}\protected@file@percent }
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.15}{\ignorespaces Arnés de \textit  {loopback} RS422 a 4 hilos entre dos conectores D-Sub-9.}}{51}{figure.caption.122}\protected@file@percent }
-\newlabel{fig:arnes_rs422}{{3.15}{51}{Arnés de \textit {loopback} RS422 a 4 hilos entre dos conectores D-Sub-9}{figure.caption.122}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Arnés para verificar comunicaciones RS485}{51}{section*.123}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.16}{\ignorespaces Arnés de \textit  {loopback} RS485 a 2 hilos entre dos conectores D-Sub-9.}}{51}{figure.caption.124}\protected@file@percent }
-\newlabel{fig:arnes_rs485}{{3.16}{51}{Arnés de \textit {loopback} RS485 a 2 hilos entre dos conectores D-Sub-9}{figure.caption.124}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.15}{\ignorespaces Arnés de \textit  {loopback} RS422 a 4 hilos entre dos conectores D-Sub-9.}}{52}{figure.caption.122}\protected@file@percent }
+\newlabel{fig:arnes_rs422}{{3.15}{52}{Arnés de \textit {loopback} RS422 a 4 hilos entre dos conectores D-Sub-9}{figure.caption.122}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Arnés para verificar comunicaciones RS485}{52}{section*.123}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.16}{\ignorespaces Arnés de \textit  {loopback} RS485 a 2 hilos entre dos conectores D-Sub-9.}}{52}{figure.caption.124}\protected@file@percent }
+\newlabel{fig:arnes_rs485}{{3.16}{52}{Arnés de \textit {loopback} RS485 a 2 hilos entre dos conectores D-Sub-9}{figure.caption.124}{}}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{toc}{\contentsline {subsubsection}{Arnés para verificar comunicaciones CAN}{52}{section*.125}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.17}{\ignorespaces Arnés de interconexión CAN nominal--redundante sobre el conector J1.}}{52}{figure.caption.126}\protected@file@percent }
-\newlabel{fig:arnes_can}{{3.17}{52}{Arnés de interconexión CAN nominal--redundante sobre el conector J1}{figure.caption.126}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Equipo de laboratorio utilizado}{52}{section*.127}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {3.7}Arquitecturas de transporte PS--PL}{52}{section.3.7}\protected@file@percent }
-\newlabel{sec:transporte_desarrollo}{{3.7}{52}{Arquitecturas de transporte PS--PL}{section.3.7}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Arnés para verificar comunicaciones CAN}{53}{section*.125}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.17}{\ignorespaces Arnés de interconexión CAN nominal--redundante sobre el conector J1.}}{53}{figure.caption.126}\protected@file@percent }
+\newlabel{fig:arnes_can}{{3.17}{53}{Arnés de interconexión CAN nominal--redundante sobre el conector J1}{figure.caption.126}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Equipo de laboratorio utilizado}{53}{section*.127}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3.7}Arquitecturas de transporte PS--PL}{53}{section.3.7}\protected@file@percent }
+\newlabel{sec:transporte_desarrollo}{{3.7}{53}{Arquitecturas de transporte PS--PL}{section.3.7}{}}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{lot}{\contentsline {table}{\numberline {3.7}{\ignorespaces Las tres arquitecturas de transporte implementadas y comparadas.}}{53}{table.caption.128}\protected@file@percent }
-\newlabel{tab:tres_variantes}{{3.7}{53}{Las tres arquitecturas de transporte implementadas y comparadas}{table.caption.128}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.7.1}Variante A --- AXI GPIO (referencia)}{53}{subsection.3.7.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.7.2}Variante B --- catorce AXI DMA}{53}{subsection.3.7.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{Adaptación del UART a AXI-Stream}{53}{section*.129}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3.7}{\ignorespaces Las tres arquitecturas de transporte implementadas y comparadas.}}{54}{table.caption.128}\protected@file@percent }
+\newlabel{tab:tres_variantes}{{3.7}{54}{Las tres arquitecturas de transporte implementadas y comparadas}{table.caption.128}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.7.1}Variante A --- AXI GPIO (referencia)}{54}{subsection.3.7.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.7.2}Variante B --- catorce AXI DMA}{54}{subsection.3.7.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Adaptación del UART a AXI-Stream}{54}{section*.129}\protected@file@percent }
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{toc}{\contentsline {subsubsection}{Operación}{54}{section*.130}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{Lo que se aprendió: el precio de replicar}{54}{section*.131}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Operación}{55}{section*.130}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Lo que se aprendió: el precio de replicar}{55}{section*.131}\protected@file@percent }
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.7.3}Variante C --- AXI MCDMA con puente VHDL}{55}{subsection.3.7.3}\protected@file@percent }
-\newlabel{sec:variante_mcdma}{{3.7.3}{55}{Variante C --- AXI MCDMA con puente VHDL}{subsection.3.7.3}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.18}{\ignorespaces Arquitectura de la variante MCDMA, que es la solución final del trabajo: un único canal de transmisión y catorce de recepción sobre el mismo motor multicanal, con el puente VHDL repartiendo y recogiendo de los catorce transceptores. Es también la vista de conjunto del sistema completo, del \textit  {buffer} en la DDR al pin del conector FMC.}}{55}{figure.caption.132}\protected@file@percent }
-\newlabel{fig:mcdma_bd}{{3.18}{55}{Arquitectura de la variante MCDMA, que es la solución final del trabajo: un único canal de transmisión y catorce de recepción sobre el mismo motor multicanal, con el puente VHDL repartiendo y recogiendo de los catorce transceptores. Es también la vista de conjunto del sistema completo, del \textit {buffer} en la DDR al pin del conector FMC}{figure.caption.132}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Camino de transmisión: un canal para catorce UART}{55}{section*.133}\protected@file@percent }
-\transparent@use{.6}
-\transparent@use{.6}
-\transparent@use{.6}
-\transparent@use{.6}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.7.3}Variante C --- AXI MCDMA con puente VHDL}{56}{subsection.3.7.3}\protected@file@percent }
+\newlabel{sec:variante_mcdma}{{3.7.3}{56}{Variante C --- AXI MCDMA con puente VHDL}{subsection.3.7.3}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Camino de transmisión: un canal para catorce UART}{56}{section*.133}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{Notificación de fin de transmisión: el bloque TX\_ISR\_EOF\_HANDLER}{56}{section*.134}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {3.8}{\ignorespaces Mapa de registros del bloque \texttt  {TX\_ISR\_EOF\_HANDLER} (base \texttt  {0xA0001000}).}}{56}{table.caption.135}\protected@file@percent }
-\newlabel{tab:tx_isr_regs}{{3.8}{56}{Mapa de registros del bloque \texttt {TX\_ISR\_EOF\_HANDLER} (base \texttt {0xA0001000})}{table.caption.135}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Camino de recepción: catorce canales y el TDEST}{56}{section*.136}\protected@file@percent }
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{toc}{\contentsline {subsubsection}{Mapa de memoria y de interrupciones}{57}{section*.137}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {3.9}{\ignorespaces Mapa de memoria de la variante MCDMA.}}{57}{table.caption.138}\protected@file@percent }
-\newlabel{tab:mcdma_map}{{3.9}{57}{Mapa de memoria de la variante MCDMA}{table.caption.138}{}}
-\@writefile{toc}{\contentsline {subsubsection}{El driver: descriptores scatter-gather}{57}{section*.139}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {3.10}{\ignorespaces Estructura del descriptor de buffer (BD) del MCDMA.}}{57}{table.caption.140}\protected@file@percent }
-\newlabel{tab:mcdma_bd}{{3.10}{57}{Estructura del descriptor de buffer (BD) del MCDMA}{table.caption.140}{}}
+\newlabel{RF2}{57}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.18}{\ignorespaces Arquitectura de la variante MCDMA, que es la solución final del trabajo: un único canal de transmisión y catorce de recepción sobre el mismo motor multicanal, con el puente VHDL repartiendo y recogiendo de los catorce transceptores. Es también la vista de conjunto del sistema completo, del \textit  {buffer} en la DDR al pin del conector FMC.}}{57}{figure.caption.132}\protected@file@percent }
+\newlabel{fig:mcdma_bd}{{3.18}{57}{Arquitectura de la variante MCDMA, que es la solución final del trabajo: un único canal de transmisión y catorce de recepción sobre el mismo motor multicanal, con el puente VHDL repartiendo y recogiendo de los catorce transceptores. Es también la vista de conjunto del sistema completo, del \textit {buffer} en la DDR al pin del conector FMC}{figure.caption.132}{}}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.7.4}Verificación y depuración iterativa del driver}{58}{subsection.3.7.4}\protected@file@percent }
-\newlabel{sec:transporte_depuracion}{{3.7.4}{58}{Verificación y depuración iterativa del driver}{subsection.3.7.4}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {3.8}{\ignorespaces Mapa de registros del bloque \texttt  {TX\_ISR\_EOF\_HANDLER} (base \texttt  {0xA0001000}).}}{58}{table.caption.135}\protected@file@percent }
+\newlabel{tab:tx_isr_regs}{{3.8}{58}{Mapa de registros del bloque \texttt {TX\_ISR\_EOF\_HANDLER} (base \texttt {0xA0001000})}{table.caption.135}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Camino de recepción: catorce canales y el TDEST}{58}{section*.136}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Mapa de memoria y de interrupciones}{58}{section*.137}\protected@file@percent }
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.7}{\ignorespaces Salida de la simulación de \texttt  {tb\_bridge\_rx.vhd}}}{59}{lstlisting.3.7}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.8}{\ignorespaces Salida de la simulación del sistema completo, \texttt  {tb\_system\_e2e.vhd}}}{59}{lstlisting.3.8}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3.9}{\ignorespaces Mapa de memoria de la variante MCDMA.}}{59}{table.caption.138}\protected@file@percent }
+\newlabel{tab:mcdma_map}{{3.9}{59}{Mapa de memoria de la variante MCDMA}{table.caption.138}{}}
+\@writefile{toc}{\contentsline {subsubsection}{El driver: descriptores scatter-gather}{59}{section*.139}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3.10}{\ignorespaces Estructura del descriptor de buffer (BD) del MCDMA.}}{59}{table.caption.140}\protected@file@percent }
+\newlabel{tab:mcdma_bd}{{3.10}{59}{Estructura del descriptor de buffer (BD) del MCDMA}{table.caption.140}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.7.4}Verificación y depuración iterativa del driver}{59}{subsection.3.7.4}\protected@file@percent }
+\newlabel{sec:transporte_depuracion}{{3.7.4}{59}{Verificación y depuración iterativa del driver}{subsection.3.7.4}{}}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.7.5}Banco de pruebas: loopback en la PL}{60}{subsection.3.7.5}\protected@file@percent }
-\newlabel{sec:bench_loopback}{{3.7.5}{60}{Banco de pruebas: loopback en la PL}{subsection.3.7.5}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {3.11}{\ignorespaces Topología de buses reproducida por el módulo de \textit  {loopback} de la PL.}}{60}{table.caption.141}\protected@file@percent }
-\newlabel{tab:loopback_buses}{{3.11}{60}{Topología de buses reproducida por el módulo de \textit {loopback} de la PL}{table.caption.141}{}}
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.9}{\ignorespaces Salida de la simulación de \texttt  {tb\_bench\_loopback.v}}}{60}{lstlisting.3.9}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.7}{\ignorespaces Salida de la simulación de \texttt  {tb\_bridge\_rx.vhd}}}{60}{lstlisting.3.7}\protected@file@percent }
+\transparent@use{.6}
+\transparent@use{.6}
+\transparent@use{.6}
+\transparent@use{.6}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.8}{\ignorespaces Salida de la simulación del sistema completo, \texttt  {tb\_system\_e2e.vhd}}}{61}{lstlisting.3.8}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.7.5}Banco de pruebas: loopback en la PL}{61}{subsection.3.7.5}\protected@file@percent }
+\newlabel{sec:bench_loopback}{{3.7.5}{61}{Banco de pruebas: loopback en la PL}{subsection.3.7.5}{}}
+\transparent@use{.6}
+\transparent@use{.6}
+\transparent@use{.6}
+\transparent@use{.6}
+\@writefile{lot}{\contentsline {table}{\numberline {3.11}{\ignorespaces Topología de buses reproducida por el módulo de \textit  {loopback} de la PL.}}{62}{table.caption.141}\protected@file@percent }
+\newlabel{tab:loopback_buses}{{3.11}{62}{Topología de buses reproducida por el módulo de \textit {loopback} de la PL}{table.caption.141}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.9}{\ignorespaces Salida de la simulación de \texttt  {tb\_bench\_loopback.v}}}{62}{lstlisting.3.9}\protected@file@percent }
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
@@ -610,202 +620,202 @@
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{toc}{\contentsline {chapter}{\numberline {4}Resultados}{62}{chapter.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {4}Resultados}{64}{chapter.4}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\@writefile{toc}{\contentsline {section}{\numberline {4.1}Validación CDHS}{62}{section.4.1}\protected@file@percent }
-\newlabel{sec:validacion_cdhs}{{4.1}{62}{Validación CDHS}{section.4.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.1}Montaje}{62}{subsection.4.1.1}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {4.1}{\ignorespaces Sistema completo montado: ZCU102 con la placa CDHS conectada al FMC.}}{62}{figure.caption.142}\protected@file@percent }
-\newlabel{fig:sistema_montado}{{4.1}{62}{Sistema completo montado: ZCU102 con la placa CDHS conectada al FMC}{figure.caption.142}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.1}Validación CDHS}{64}{section.4.1}\protected@file@percent }
+\newlabel{sec:validacion_cdhs}{{4.1}{64}{Validación CDHS}{section.4.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.1}Montaje}{64}{subsection.4.1.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4.1}{\ignorespaces Sistema completo montado: ZCU102 con la placa CDHS conectada al FMC.}}{64}{figure.caption.142}\protected@file@percent }
+\newlabel{fig:sistema_montado}{{4.1}{64}{Sistema completo montado: ZCU102 con la placa CDHS conectada al FMC}{figure.caption.142}{}}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.2}Comunicaciones serie RS422/RS485}{63}{subsection.4.1.2}\protected@file@percent }
-\newlabel{sec:cdhs_rs}{{4.1.2}{63}{Comunicaciones serie RS422/RS485}{subsection.4.1.2}{}}
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {4.1}{\ignorespaces Salida completa del terminal --- prueba RS422/RS485 con la placa CDHS (3 transceptores)}}{63}{lstlisting.4.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.2}Comunicaciones serie RS422/RS485}{65}{subsection.4.1.2}\protected@file@percent }
+\newlabel{sec:cdhs_rs}{{4.1.2}{65}{Comunicaciones serie RS422/RS485}{subsection.4.1.2}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {4.1}{\ignorespaces Salida completa del terminal --- prueba RS422/RS485 con la placa CDHS (3 transceptores)}}{65}{lstlisting.4.1}\protected@file@percent }
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{toc}{\contentsline {subsubsection}{Efecto del control de \textit  {slew rate}}{64}{section*.143}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Efecto del control de \textit  {slew rate}}{66}{section*.143}\protected@file@percent }
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.2}{\ignorespaces Flancos de la línea RS485 de la placa CDHS con y sin control de \textit  {slew rate}. Obsérvese que la base de tiempos de las capturas de la derecha es cinco veces mayor que la de las de la izquierda: la transición pasa de unas pocas decenas de nanosegundos a varios centenares.}}{65}{figure.caption.144}\protected@file@percent }
-\newlabel{fig:cdhs_slew}{{4.2}{65}{Flancos de la línea RS485 de la placa CDHS con y sin control de \textit {slew rate}. Obsérvese que la base de tiempos de las capturas de la derecha es cinco veces mayor que la de las de la izquierda: la transición pasa de unas pocas decenas de nanosegundos a varios centenares}{figure.caption.144}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.3}Bus CAN}{65}{subsection.4.1.3}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {4.2}{\ignorespaces Resumen de resultados del test CAN (placa CDHS)}}{65}{lstlisting.4.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4.2}{\ignorespaces Flancos de la línea RS485 de la placa CDHS con y sin control de \textit  {slew rate}. Obsérvese que la base de tiempos de las capturas de la derecha es cinco veces mayor que la de las de la izquierda: la transición pasa de unas pocas decenas de nanosegundos a varios centenares.}}{67}{figure.caption.144}\protected@file@percent }
+\newlabel{fig:cdhs_slew}{{4.2}{67}{Flancos de la línea RS485 de la placa CDHS con y sin control de \textit {slew rate}. Obsérvese que la base de tiempos de las capturas de la derecha es cinco veces mayor que la de las de la izquierda: la transición pasa de unas pocas decenas de nanosegundos a varios centenares}{figure.caption.144}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.3}Bus CAN}{67}{subsection.4.1.3}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {4.2}{\ignorespaces Resumen de resultados del test CAN (placa CDHS)}}{67}{lstlisting.4.2}\protected@file@percent }
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.3}{\ignorespaces Señal diferencial CAN sin resistencias de terminación.}}{66}{figure.caption.145}\protected@file@percent }
-\newlabel{fig:can_sin_term}{{4.3}{66}{Señal diferencial CAN sin resistencias de terminación}{figure.caption.145}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.4}{\ignorespaces Señal diferencial CAN con resistencias de terminación (60~$\Omega $ + 60~$\Omega $).}}{66}{figure.caption.146}\protected@file@percent }
-\newlabel{fig:can_con_term}{{4.4}{66}{Señal diferencial CAN con resistencias de terminación (60~$\Omega $ + 60~$\Omega $)}{figure.caption.146}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.4}ADC SPI (termistores)}{66}{subsection.4.1.4}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4.3}{\ignorespaces Señal diferencial CAN sin resistencias de terminación.}}{68}{figure.caption.145}\protected@file@percent }
+\newlabel{fig:can_sin_term}{{4.3}{68}{Señal diferencial CAN sin resistencias de terminación}{figure.caption.145}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.4}{\ignorespaces Señal diferencial CAN con resistencias de terminación (60~$\Omega $ + 60~$\Omega $).}}{68}{figure.caption.146}\protected@file@percent }
+\newlabel{fig:can_con_term}{{4.4}{68}{Señal diferencial CAN con resistencias de terminación (60~$\Omega $ + 60~$\Omega $)}{figure.caption.146}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.4}ADC SPI (termistores)}{68}{subsection.4.1.4}\protected@file@percent }
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {4.3}{\ignorespaces Lectura del ADC ADS7950 durante barrido de tensión en CH2}}{67}{lstlisting.4.3}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {4.4}{\ignorespaces Salida completa del terminal --- barrido de tensión sobre CH2 del ADS7950 (placa CDHS)}}{67}{lstlisting.4.4}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {4.3}{\ignorespaces Lectura del ADC ADS7950 durante barrido de tensión en CH2}}{69}{lstlisting.4.3}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {4.4}{\ignorespaces Salida completa del terminal --- barrido de tensión sobre CH2 del ADS7950 (placa CDHS)}}{69}{lstlisting.4.4}\protected@file@percent }
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.5}PWM (calentadores)}{68}{subsection.4.1.5}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {4.5}{\ignorespaces Señal PWM medida en el conector J5 de la placa CDHS: canal de 1~kHz con \textit  {duty cycle} del 50\%.}}{68}{figure.caption.147}\protected@file@percent }
-\newlabel{fig:cdhs_pwm}{{4.5}{68}{Señal PWM medida en el conector J5 de la placa CDHS: canal de 1~kHz con \textit {duty cycle} del 50\%}{figure.caption.147}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.5}PWM (calentadores)}{70}{subsection.4.1.5}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4.5}{\ignorespaces Señal PWM medida en el conector J5 de la placa CDHS: canal de 1~kHz con \textit  {duty cycle} del 50\%.}}{70}{figure.caption.147}\protected@file@percent }
+\newlabel{fig:cdhs_pwm}{{4.5}{70}{Señal PWM medida en el conector J5 de la placa CDHS: canal de 1~kHz con \textit {duty cycle} del 50\%}{figure.caption.147}{}}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{toc}{\contentsline {section}{\numberline {4.2}Validación AOCS}{69}{section.4.2}\protected@file@percent }
-\newlabel{sec:validacion_aocs}{{4.2}{69}{Validación AOCS}{section.4.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.1}Montaje}{69}{subsection.4.2.1}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {4.6}{\ignorespaces Placas AOCS con componentes montados (vista superior de las dos unidades fabricadas).}}{69}{figure.caption.148}\protected@file@percent }
-\newlabel{fig:aocs_foto}{{4.6}{69}{Placas AOCS con componentes montados (vista superior de las dos unidades fabricadas)}{figure.caption.148}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.2}Comunicaciones serie RS422/RS485}{69}{subsection.4.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4.2}Validación AOCS}{71}{section.4.2}\protected@file@percent }
+\newlabel{sec:validacion_aocs}{{4.2}{71}{Validación AOCS}{section.4.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.1}Montaje}{71}{subsection.4.2.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4.6}{\ignorespaces Placas AOCS con componentes montados (vista superior de las dos unidades fabricadas).}}{71}{figure.caption.148}\protected@file@percent }
+\newlabel{fig:aocs_foto}{{4.6}{71}{Placas AOCS con componentes montados (vista superior de las dos unidades fabricadas)}{figure.caption.148}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.2}Comunicaciones serie RS422/RS485}{71}{subsection.4.2.2}\protected@file@percent }
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {4.5}{\ignorespaces Salida de terminal --- prueba RS422/RS485 con la placa AOCS (5 transceptores)}}{70}{lstlisting.4.5}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {4.6}{\ignorespaces Salida completa del terminal --- prueba RS422/RS485 con la placa AOCS (5 transceptores)}}{70}{lstlisting.4.6}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {4.5}{\ignorespaces Salida de terminal --- prueba RS422/RS485 con la placa AOCS (5 transceptores)}}{72}{lstlisting.4.5}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {4.6}{\ignorespaces Salida completa del terminal --- prueba RS422/RS485 con la placa AOCS (5 transceptores)}}{72}{lstlisting.4.6}\protected@file@percent }
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.3}PWM (puentes en H)}{71}{subsection.4.2.3}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {4.7}{\ignorespaces Señales PWM de control de motor en la placa AOCS (par complementario para puente en H).}}{71}{figure.caption.149}\protected@file@percent }
-\newlabel{fig:aocs_pwm}{{4.7}{71}{Señales PWM de control de motor en la placa AOCS (par complementario para puente en H)}{figure.caption.149}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {4.3}Validación de la placa de comunicación serie}{71}{section.4.3}\protected@file@percent }
-\newlabel{sec:validacion_propia}{{4.3}{71}{Validación de la placa de comunicación serie}{section.4.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.1}Prueba previa: 14 transceptores simultáneos}{71}{subsection.4.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.3}PWM (puentes en H)}{73}{subsection.4.2.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4.7}{\ignorespaces Señales PWM de control de motor en la placa AOCS (par complementario para puente en H).}}{73}{figure.caption.149}\protected@file@percent }
+\newlabel{fig:aocs_pwm}{{4.7}{73}{Señales PWM de control de motor en la placa AOCS (par complementario para puente en H)}{figure.caption.149}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.3}Validación de la placa de comunicación serie}{73}{section.4.3}\protected@file@percent }
+\newlabel{sec:validacion_propia}{{4.3}{73}{Validación de la placa de comunicación serie}{section.4.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.1}Prueba previa: 14 transceptores simultáneos}{73}{subsection.4.3.1}\protected@file@percent }
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.2}Comparativa de las arquitecturas de transporte PS--PL}{72}{subsection.4.3.2}\protected@file@percent }
-\newlabel{sec:resultados_benchmark}{{4.3.2}{72}{Comparativa de las arquitecturas de transporte PS--PL}{subsection.4.3.2}{}}
-\@writefile{toc}{\contentsline {paragraph}{Una salvedad previa.}{72}{section*.150}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{Coste de hardware}{72}{section*.151}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {4.1}{\ignorespaces Ocupación de la lógica programable de las tres variantes sobre el XCZU9EG.}}{72}{table.caption.152}\protected@file@percent }
-\newlabel{tab:bench_hw}{{4.1}{72}{Ocupación de la lógica programable de las tres variantes sobre el XCZU9EG}{table.caption.152}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.2}Comparativa de las arquitecturas de transporte PS--PL}{74}{subsection.4.3.2}\protected@file@percent }
+\newlabel{sec:resultados_benchmark}{{4.3.2}{74}{Comparativa de las arquitecturas de transporte PS--PL}{subsection.4.3.2}{}}
+\@writefile{toc}{\contentsline {paragraph}{Una salvedad previa.}{74}{section*.150}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Coste de hardware}{74}{section*.151}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4.1}{\ignorespaces Ocupación de la lógica programable de las tres variantes sobre el XCZU9EG.}}{74}{table.caption.152}\protected@file@percent }
+\newlabel{tab:bench_hw}{{4.1}{74}{Ocupación de la lógica programable de las tres variantes sobre el XCZU9EG}{table.caption.152}{}}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.8}{\ignorespaces Ocupación de la FPGA por variante, en porcentaje de los recursos del dispositivo. Menos es mejor. El banco de catorce DMA triplica largamente el consumo de la solución multicanal para el mismo número de canales.}}{73}{figure.caption.153}\protected@file@percent }
-\newlabel{fig:bench_hw}{{4.8}{73}{Ocupación de la FPGA por variante, en porcentaje de los recursos del dispositivo. Menos es mejor. El banco de catorce DMA triplica largamente el consumo de la solución multicanal para el mismo número de canales}{figure.caption.153}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Coste de software}{73}{section*.154}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {4.2}{\ignorespaces Huella de software del driver de cada variante (tamaño de \texttt  {.text} y recursos RTEMS reservados en ejecución).}}{73}{table.caption.155}\protected@file@percent }
-\newlabel{tab:bench_sw}{{4.2}{73}{Huella de software del driver de cada variante (tamaño de \texttt {.text} y recursos RTEMS reservados en ejecución)}{table.caption.155}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.8}{\ignorespaces Ocupación de la FPGA por variante, en porcentaje de los recursos del dispositivo. Menos es mejor. El banco de catorce DMA triplica largamente el consumo de la solución multicanal para el mismo número de canales.}}{75}{figure.caption.153}\protected@file@percent }
+\newlabel{fig:bench_hw}{{4.8}{75}{Ocupación de la FPGA por variante, en porcentaje de los recursos del dispositivo. Menos es mejor. El banco de catorce DMA triplica largamente el consumo de la solución multicanal para el mismo número de canales}{figure.caption.153}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Coste de software}{75}{section*.154}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4.2}{\ignorespaces Huella de software del driver de cada variante (tamaño de \texttt  {.text} y recursos RTEMS reservados en ejecución).}}{75}{table.caption.155}\protected@file@percent }
+\newlabel{tab:bench_sw}{{4.2}{75}{Huella de software del driver de cada variante (tamaño de \texttt {.text} y recursos RTEMS reservados en ejecución)}{table.caption.155}{}}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{toc}{\contentsline {subsubsection}{Coste en interrupciones}{74}{section*.156}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {4.3}{\ignorespaces Interrupciones por kilobyte transferido.}}{74}{table.caption.157}\protected@file@percent }
-\newlabel{tab:bench_irq}{{4.3}{74}{Interrupciones por kilobyte transferido}{table.caption.157}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.9}{\ignorespaces Interrupciones por kilobyte transferido. Menos es mejor: cada interrupción es una expropiación de la CPU. Las barras de DMA14 y MCDMA son invisibles a esta escala, y eso es precisamente el resultado. La cifra de DMA14 recoge solo la transmisión.}}{74}{figure.caption.158}\protected@file@percent }
-\newlabel{fig:bench_irq}{{4.9}{74}{Interrupciones por kilobyte transferido. Menos es mejor: cada interrupción es una expropiación de la CPU. Las barras de DMA14 y MCDMA son invisibles a esta escala, y eso es precisamente el resultado. La cifra de DMA14 recoge solo la transmisión}{figure.caption.158}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Latencia}{74}{section*.159}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Coste en interrupciones}{76}{section*.156}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4.3}{\ignorespaces Interrupciones por kilobyte transferido.}}{76}{table.caption.157}\protected@file@percent }
+\newlabel{tab:bench_irq}{{4.3}{76}{Interrupciones por kilobyte transferido}{table.caption.157}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.9}{\ignorespaces Interrupciones por kilobyte transferido. Menos es mejor: cada interrupción es una expropiación de la CPU. Las barras de DMA14 y MCDMA son invisibles a esta escala, y eso es precisamente el resultado. La cifra de DMA14 recoge solo la transmisión.}}{76}{figure.caption.158}\protected@file@percent }
+\newlabel{fig:bench_irq}{{4.9}{76}{Interrupciones por kilobyte transferido. Menos es mejor: cada interrupción es una expropiación de la CPU. Las barras de DMA14 y MCDMA son invisibles a esta escala, y eso es precisamente el resultado. La cifra de DMA14 recoge solo la transmisión}{figure.caption.158}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Latencia}{76}{section*.159}\protected@file@percent }
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{lot}{\contentsline {table}{\numberline {4.4}{\ignorespaces Latencia de entrega de un frame de 11 bytes, del envío en el maestro a la recepción completa en el esclavo (115\,200 8N1).}}{75}{table.caption.160}\protected@file@percent }
-\newlabel{tab:bench_latencia}{{4.4}{75}{Latencia de entrega de un frame de 11 bytes, del envío en el maestro a la recepción completa en el esclavo (115\,200 8N1)}{table.caption.160}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.10}{\ignorespaces Latencia media de entrega de un frame de 11 bytes. Menos es mejor. Se excluye DMA14 por carecer de lazo de recepción.}}{75}{figure.caption.161}\protected@file@percent }
-\newlabel{fig:bench_latencia}{{4.10}{75}{Latencia media de entrega de un frame de 11 bytes. Menos es mejor. Se excluye DMA14 por carecer de lazo de recepción}{figure.caption.161}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Throughput}{75}{section*.162}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {4.5}{\ignorespaces \textit  {Throughput} en B/s. El porcentaje es sobre el techo físico de la línea (11\,520 B/s).}}{75}{table.caption.163}\protected@file@percent }
-\newlabel{tab:bench_throughput}{{4.5}{75}{\textit {Throughput} en B/s. El porcentaje es sobre el techo físico de la línea (11\,520 B/s)}{table.caption.163}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {4.4}{\ignorespaces Latencia de entrega de un frame de 11 bytes, del envío en el maestro a la recepción completa en el esclavo (115\,200 8N1).}}{77}{table.caption.160}\protected@file@percent }
+\newlabel{tab:bench_latencia}{{4.4}{77}{Latencia de entrega de un frame de 11 bytes, del envío en el maestro a la recepción completa en el esclavo (115\,200 8N1)}{table.caption.160}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.10}{\ignorespaces Latencia media de entrega de un frame de 11 bytes. Menos es mejor. Se excluye DMA14 por carecer de lazo de recepción.}}{77}{figure.caption.161}\protected@file@percent }
+\newlabel{fig:bench_latencia}{{4.10}{77}{Latencia media de entrega de un frame de 11 bytes. Menos es mejor. Se excluye DMA14 por carecer de lazo de recepción}{figure.caption.161}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Throughput}{77}{section*.162}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4.5}{\ignorespaces \textit  {Throughput} en B/s. El porcentaje es sobre el techo físico de la línea (11\,520 B/s).}}{77}{table.caption.163}\protected@file@percent }
+\newlabel{tab:bench_throughput}{{4.5}{77}{\textit {Throughput} en B/s. El porcentaje es sobre el techo físico de la línea (11\,520 B/s)}{table.caption.163}{}}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.11}{\ignorespaces \textit  {Throughput} de un canal frente al techo físico de la línea a 115\,200 8N1. Más es mejor. El MCDMA lo alcanza al 99\,\%; la variante GPIO se queda en el 30\,\%.}}{76}{figure.caption.164}\protected@file@percent }
-\newlabel{fig:bench_throughput}{{4.11}{76}{\textit {Throughput} de un canal frente al techo físico de la línea a 115\,200 8N1. Más es mejor. El MCDMA lo alcanza al 99\,\%; la variante GPIO se queda en el 30\,\%}{figure.caption.164}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Barrido de velocidad}{76}{section*.165}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {4.6}{\ignorespaces \textit  {Throughput} (B/s) frente a la velocidad de línea (baudios). La variante DMA14 se omite por carecer de lazo de recepción.}}{76}{table.caption.166}\protected@file@percent }
-\newlabel{tab:bench_baudios}{{4.6}{76}{\textit {Throughput} (B/s) frente a la velocidad de línea (baudios). La variante DMA14 se omite por carecer de lazo de recepción}{table.caption.166}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.11}{\ignorespaces \textit  {Throughput} de un canal frente al techo físico de la línea a 115\,200 8N1. Más es mejor. El MCDMA lo alcanza al 99\,\%; la variante GPIO se queda en el 30\,\%.}}{78}{figure.caption.164}\protected@file@percent }
+\newlabel{fig:bench_throughput}{{4.11}{78}{\textit {Throughput} de un canal frente al techo físico de la línea a 115\,200 8N1. Más es mejor. El MCDMA lo alcanza al 99\,\%; la variante GPIO se queda en el 30\,\%}{figure.caption.164}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Barrido de velocidad}{78}{section*.165}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4.6}{\ignorespaces \textit  {Throughput} (B/s) frente a la velocidad de línea (baudios). La variante DMA14 se omite por carecer de lazo de recepción.}}{78}{table.caption.166}\protected@file@percent }
+\newlabel{tab:bench_baudios}{{4.6}{78}{\textit {Throughput} (B/s) frente a la velocidad de línea (baudios). La variante DMA14 se omite por carecer de lazo de recepción}{table.caption.166}{}}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.12}{\ignorespaces \textit  {Throughput} frente a la velocidad de línea, en escala logarítmica en ambos ejes. El MCDMA crece de forma proporcional a la velocidad del enlace; la variante GPIO es una recta plana, porque su límite no está en la línea sino en el coste de una interrupción por byte. En el punto de 4~Mbaudios la diferencia es de 70 veces.}}{77}{figure.caption.167}\protected@file@percent }
-\newlabel{fig:bench_baudios}{{4.12}{77}{\textit {Throughput} frente a la velocidad de línea, en escala logarítmica en ambos ejes. El MCDMA crece de forma proporcional a la velocidad del enlace; la variante GPIO es una recta plana, porque su límite no está en la línea sino en el coste de una interrupción por byte. En el punto de 4~Mbaudios la diferencia es de 70 veces}{figure.caption.167}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Robustez}{77}{section*.168}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {4.7}{\ignorespaces Rechazo de frames corruptos (T7) y comportamiento en desbordamiento del \textit  {ring} de software (T5).}}{77}{table.caption.169}\protected@file@percent }
-\newlabel{tab:bench_robustez}{{4.7}{77}{Rechazo de frames corruptos (T7) y comportamiento en desbordamiento del \textit {ring} de software (T5)}{table.caption.169}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.12}{\ignorespaces \textit  {Throughput} frente a la velocidad de línea, en escala logarítmica en ambos ejes. El MCDMA crece de forma proporcional a la velocidad del enlace; la variante GPIO es una recta plana, porque su límite no está en la línea sino en el coste de una interrupción por byte. En el punto de 4~Mbaudios la diferencia es de 70 veces.}}{79}{figure.caption.167}\protected@file@percent }
+\newlabel{fig:bench_baudios}{{4.12}{79}{\textit {Throughput} frente a la velocidad de línea, en escala logarítmica en ambos ejes. El MCDMA crece de forma proporcional a la velocidad del enlace; la variante GPIO es una recta plana, porque su límite no está en la línea sino en el coste de una interrupción por byte. En el punto de 4~Mbaudios la diferencia es de 70 veces}{figure.caption.167}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Robustez}{79}{section*.168}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4.7}{\ignorespaces Rechazo de frames corruptos (T7) y comportamiento en desbordamiento del \textit  {ring} de software (T5).}}{79}{table.caption.169}\protected@file@percent }
+\newlabel{tab:bench_robustez}{{4.7}{79}{Rechazo de frames corruptos (T7) y comportamiento en desbordamiento del \textit {ring} de software (T5)}{table.caption.169}{}}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{toc}{\contentsline {subsubsection}{Discusión: qué arquitectura y por qué}{78}{section*.170}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {4.8}{\ignorespaces Síntesis de la comparativa. En negrita, el mejor valor de cada fila.}}{78}{table.caption.171}\protected@file@percent }
-\newlabel{tab:bench_resumen}{{4.8}{78}{Síntesis de la comparativa. En negrita, el mejor valor de cada fila}{table.caption.171}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Discusión: qué arquitectura y por qué}{80}{section*.170}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4.8}{\ignorespaces Síntesis de la comparativa. En negrita, el mejor valor de cada fila.}}{80}{table.caption.171}\protected@file@percent }
+\newlabel{tab:bench_resumen}{{4.8}{80}{Síntesis de la comparativa. En negrita, el mejor valor de cada fila}{table.caption.171}{}}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.3}Caracterización eléctrica de la placa de comunicación serie}{79}{subsection.4.3.3}\protected@file@percent }
-\newlabel{sec:resultados_pcb}{{4.3.3}{79}{Caracterización eléctrica de la placa de comunicación serie}{subsection.4.3.3}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {4.9}{\ignorespaces Topología de buses de la PCB de comunicación serie.}}{79}{table.caption.172}\protected@file@percent }
-\newlabel{tab:pcb_topologia}{{4.9}{79}{Topología de buses de la PCB de comunicación serie}{table.caption.172}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.3}Caracterización eléctrica de la placa de comunicación serie}{81}{subsection.4.3.3}\protected@file@percent }
+\newlabel{sec:resultados_pcb}{{4.3.3}{81}{Caracterización eléctrica de la placa de comunicación serie}{subsection.4.3.3}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {4.9}{\ignorespaces Topología de buses de la PCB de comunicación serie.}}{81}{table.caption.172}\protected@file@percent }
+\newlabel{tab:pcb_topologia}{{4.9}{81}{Topología de buses de la PCB de comunicación serie}{table.caption.172}{}}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.13}{\ignorespaces PCB de comunicación serie configurada para la campaña de caracterización, con los \textit  {jumpers} fijando la topología de la tabla~\ref {tab:pcb_topologia}.}}{80}{figure.caption.173}\protected@file@percent }
-\newlabel{fig:pcb_montaje}{{4.13}{80}{PCB de comunicación serie configurada para la campaña de caracterización, con los \textit {jumpers} fijando la topología de la tabla~\ref {tab:pcb_topologia}}{figure.caption.173}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Batería de pruebas de caracterización}{80}{section*.174}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4.13}{\ignorespaces PCB de comunicación serie configurada para la campaña de caracterización, con los \textit  {jumpers} fijando la topología de la tabla~\ref {tab:pcb_topologia}.}}{82}{figure.caption.173}\protected@file@percent }
+\newlabel{fig:pcb_montaje}{{4.13}{82}{PCB de comunicación serie configurada para la campaña de caracterización, con los \textit {jumpers} fijando la topología de la tabla~\ref {tab:pcb_topologia}}{figure.caption.173}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Batería de pruebas de caracterización}{82}{section*.174}\protected@file@percent }
 \citation{ltc2865}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{lot}{\contentsline {table}{\numberline {4.10}{\ignorespaces Resultado de los nueve tests de caracterización de la PCB.}}{81}{table.caption.175}\protected@file@percent }
-\newlabel{tab:pcb_resumen}{{4.10}{81}{Resultado de los nueve tests de caracterización de la PCB}{table.caption.175}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Efecto del limitador de slew rate sobre la velocidad máxima}{81}{section*.176}\protected@file@percent }
-\newlabel{sec:pcb_slo}{{4.3.3}{81}{Efecto del limitador de slew rate sobre la velocidad máxima}{section*.176}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {4.10}{\ignorespaces Resultado de los nueve tests de caracterización de la PCB.}}{83}{table.caption.175}\protected@file@percent }
+\newlabel{tab:pcb_resumen}{{4.10}{83}{Resultado de los nueve tests de caracterización de la PCB}{table.caption.175}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Efecto del limitador de slew rate sobre la velocidad máxima}{83}{section*.176}\protected@file@percent }
+\newlabel{sec:pcb_slo}{{4.3.3}{83}{Efecto del limitador de slew rate sobre la velocidad máxima}{section*.176}{}}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.14}{\ignorespaces Velocidad máxima con tasa de error nula en cada bus de la PCB, según el valor del bit SLO. El pin \texttt  {SLO} del LTC2865 es un habilitador de modo lento activo a nivel bajo: con el valor por defecto (0) el limitador de \textit  {slew rate} está activo y limita el driver a 250~kbps nominales, con lo que el bus multipunto alcanza 460~kbps. Desactivándolo (1), los tres buses operan de forma limpia a 4~Mbps.}}{82}{figure.caption.177}\protected@file@percent }
-\newlabel{fig:pcb_slo}{{4.14}{82}{Velocidad máxima con tasa de error nula en cada bus de la PCB, según el valor del bit SLO. El pin \texttt {SLO} del LTC2865 es un habilitador de modo lento activo a nivel bajo: con el valor por defecto (0) el limitador de \textit {slew rate} está activo y limita el driver a 250~kbps nominales, con lo que el bus multipunto alcanza 460~kbps. Desactivándolo (1), los tres buses operan de forma limpia a 4~Mbps}{figure.caption.177}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Comportamiento del bus multipunto}{82}{section*.179}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {4.11}{\ignorespaces Integridad del bus multipunto (T3) frente a la velocidad, con SLO~=~0. El escalón entre 460~kbps y 1~Mbps es nítido.}}{82}{table.caption.180}\protected@file@percent }
-\newlabel{tab:pcb_multidrop}{{4.11}{82}{Integridad del bus multipunto (T3) frente a la velocidad, con SLO~=~0. El escalón entre 460~kbps y 1~Mbps es nítido}{table.caption.180}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.14}{\ignorespaces Velocidad máxima con tasa de error nula en cada bus de la PCB, según el valor del bit SLO. El pin \texttt  {SLO} del LTC2865 es un habilitador de modo lento activo a nivel bajo: con el valor por defecto (0) el limitador de \textit  {slew rate} está activo y limita el driver a 250~kbps nominales, con lo que el bus multipunto alcanza 460~kbps. Desactivándolo (1), los tres buses operan de forma limpia a 4~Mbps.}}{84}{figure.caption.177}\protected@file@percent }
+\newlabel{fig:pcb_slo}{{4.14}{84}{Velocidad máxima con tasa de error nula en cada bus de la PCB, según el valor del bit SLO. El pin \texttt {SLO} del LTC2865 es un habilitador de modo lento activo a nivel bajo: con el valor por defecto (0) el limitador de \textit {slew rate} está activo y limita el driver a 250~kbps nominales, con lo que el bus multipunto alcanza 460~kbps. Desactivándolo (1), los tres buses operan de forma limpia a 4~Mbps}{figure.caption.177}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Comportamiento del bus multipunto}{84}{section*.179}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4.11}{\ignorespaces Integridad del bus multipunto (T3) frente a la velocidad, con SLO~=~0. El escalón entre 460~kbps y 1~Mbps es nítido.}}{84}{table.caption.180}\protected@file@percent }
+\newlabel{tab:pcb_multidrop}{{4.11}{84}{Integridad del bus multipunto (T3) frente a la velocidad, con SLO~=~0. El escalón entre 460~kbps y 1~Mbps es nítido}{table.caption.180}{}}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.15}{\ignorespaces Tasa de error del bus A (RS-485 multipunto, 7 nodos) frente a la velocidad de línea, con y sin el limitador de \textit  {slew}. Con el limitador activo, que es el valor por defecto, el enlace se degrada a partir de 460~kbps y colapsa por completo a 2~Mbps, coherente con el máximo nominal de 250~kbps del chip en ese modo; desactivándolo la tasa de error es nula en todo el barrido. Los puntos de 3 y 4~Mbps no existen en la curva de SLO~=~0 porque el barrido se interrumpe en cuanto un punto no deja pasar un solo byte correcto.}}{83}{figure.caption.178}\protected@file@percent }
-\newlabel{fig:pcb_ber}{{4.15}{83}{Tasa de error del bus A (RS-485 multipunto, 7 nodos) frente a la velocidad de línea, con y sin el limitador de \textit {slew}. Con el limitador activo, que es el valor por defecto, el enlace se degrada a partir de 460~kbps y colapsa por completo a 2~Mbps, coherente con el máximo nominal de 250~kbps del chip en ese modo; desactivándolo la tasa de error es nula en todo el barrido. Los puntos de 3 y 4~Mbps no existen en la curva de SLO~=~0 porque el barrido se interrumpe en cuanto un punto no deja pasar un solo byte correcto}{figure.caption.178}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Integridad, aislamiento y estabilidad}{83}{section*.181}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4.15}{\ignorespaces Tasa de error del bus A (RS-485 multipunto, 7 nodos) frente a la velocidad de línea, con y sin el limitador de \textit  {slew}. Con el limitador activo, que es el valor por defecto, el enlace se degrada a partir de 460~kbps y colapsa por completo a 2~Mbps, coherente con el máximo nominal de 250~kbps del chip en ese modo; desactivándolo la tasa de error es nula en todo el barrido. Los puntos de 3 y 4~Mbps no existen en la curva de SLO~=~0 porque el barrido se interrumpe en cuanto un punto no deja pasar un solo byte correcto.}}{85}{figure.caption.178}\protected@file@percent }
+\newlabel{fig:pcb_ber}{{4.15}{85}{Tasa de error del bus A (RS-485 multipunto, 7 nodos) frente a la velocidad de línea, con y sin el limitador de \textit {slew}. Con el limitador activo, que es el valor por defecto, el enlace se degrada a partir de 460~kbps y colapsa por completo a 2~Mbps, coherente con el máximo nominal de 250~kbps del chip en ese modo; desactivándolo la tasa de error es nula en todo el barrido. Los puntos de 3 y 4~Mbps no existen en la curva de SLO~=~0 porque el barrido se interrumpe en cuanto un punto no deja pasar un solo byte correcto}{figure.caption.178}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Integridad, aislamiento y estabilidad}{85}{section*.181}\protected@file@percent }
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{lot}{\contentsline {table}{\numberline {4.12}{\ignorespaces Tasa de error en régimen permanente (T9), 10~s de tráfico continuo por bus.}}{84}{table.caption.182}\protected@file@percent }
-\newlabel{tab:pcb_estabilidad}{{4.12}{84}{Tasa de error en régimen permanente (T9), 10~s de tráfico continuo por bus}{table.caption.182}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Limitaciones del método de medida}{84}{section*.183}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4.12}{\ignorespaces Tasa de error en régimen permanente (T9), 10~s de tráfico continuo por bus.}}{86}{table.caption.182}\protected@file@percent }
+\newlabel{tab:pcb_estabilidad}{{4.12}{86}{Tasa de error en régimen permanente (T9), 10~s de tráfico continuo por bus}{table.caption.182}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Limitaciones del método de medida}{86}{section*.183}\protected@file@percent }
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{toc}{\contentsline {chapter}{\numberline {5}Conclusiones y líneas futuras}{85}{chapter.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {5}Conclusiones y líneas futuras}{87}{chapter.5}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\@writefile{toc}{\contentsline {section}{\numberline {5.1}Conclusiones}{85}{section.5.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5.1}Conclusiones}{87}{section.5.1}\protected@file@percent }
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
@@ -814,7 +824,7 @@
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{toc}{\contentsline {section}{\numberline {5.2}Líneas futuras}{87}{section.5.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5.2}Líneas futuras}{89}{section.5.2}\protected@file@percent }
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
@@ -842,7 +852,7 @@
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{toc}{\contentsline {chapter}{Bibliograf\'{\i }a}{89}{chapter*.184}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{Bibliograf\'{\i }a}{91}{chapter*.184}\protected@file@percent }
 \bibcite{rtems_rsb}{18}
 \bibcite{weicker1984dhrystone}{19}
 \bibcite{pcbway_caps}{20}
@@ -864,15 +874,15 @@
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{toc}{\contentsline {chapter}{Anexo A: Mapas de señales, tabla del NCO y volumen de código}{91}{chapter*.185}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{Anexo A: Mapas de señales, tabla del NCO y volumen de código}{93}{chapter*.185}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{lot}{\contentsline {table}{\numberline {5.1}{\ignorespaces Mapa de señales entre la placa LINCE Comunicación Serial y el conector FMC HPC0 (P2) de la ZCU102.}}{92}{table.5.1}\protected@file@percent }
-\newlabel{tab:mapa_lince_serial}{{5.1}{92}{Mapa de señales entre la placa LINCE Comunicación Serial y el conector FMC HPC0 (P2) de la ZCU102}{table.5.1}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.1}{\ignorespaces Mapa de señales entre la placa LINCE Comunicación Serial y el conector FMC HPC0 (P2) de la ZCU102.}}{94}{table.5.1}\protected@file@percent }
+\newlabel{tab:mapa_lince_serial}{{5.1}{94}{Mapa de señales entre la placa LINCE Comunicación Serial y el conector FMC HPC0 (P2) de la ZCU102}{table.5.1}{}}
 \gdef \LT@ii {\LT@entry 
     {4}{94.12514pt}\LT@entry 
     {4}{62.31532pt}\LT@entry 
@@ -883,10 +893,10 @@
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{lot}{\contentsline {table}{\numberline {5.2}{\ignorespaces Mapa de señales entre la placa CDHS y el conector FMC HPC0 de la ZCU102.}}{93}{table.caption.188}\protected@file@percent }
-\newlabel{tab:mapa_cdhs}{{5.2}{93}{Mapa de señales entre la placa CDHS y el conector FMC HPC0 de la ZCU102}{table.caption.188}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {5.3}{\ignorespaces Mapa de señales entre la revisión V2 de la placa AOCS y el conector FMC HPC0 de la ZCU102.}}{93}{table.5.3}\protected@file@percent }
-\newlabel{tab:mapa_aocs}{{5.3}{93}{Mapa de señales entre la revisión V2 de la placa AOCS y el conector FMC HPC0 de la ZCU102}{table.5.3}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.2}{\ignorespaces Mapa de señales entre la placa CDHS y el conector FMC HPC0 de la ZCU102.}}{95}{table.caption.188}\protected@file@percent }
+\newlabel{tab:mapa_cdhs}{{5.2}{95}{Mapa de señales entre la placa CDHS y el conector FMC HPC0 de la ZCU102}{table.caption.188}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.3}{\ignorespaces Mapa de señales entre la revisión V2 de la placa AOCS y el conector FMC HPC0 de la ZCU102.}}{95}{table.5.3}\protected@file@percent }
+\newlabel{tab:mapa_aocs}{{5.3}{95}{Mapa de señales entre la revisión V2 de la placa AOCS y el conector FMC HPC0 de la ZCU102}{table.5.3}{}}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
@@ -899,19 +909,19 @@
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{lot}{\contentsline {table}{\numberline {5.4}{\ignorespaces Tabla NCO: las 29 velocidades del rango de uso ejercitadas en simulación, con sus incrementos de síntesis y el error medido (modo \textit  {full-bit}).}}{96}{table.caption.191}\protected@file@percent }
-\newlabel{tab:nco}{{5.4}{96}{Tabla NCO: las 29 velocidades del rango de uso ejercitadas en simulación, con sus incrementos de síntesis y el error medido (modo \textit {full-bit})}{table.caption.191}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.4}{\ignorespaces Tabla NCO: las 29 velocidades del rango de uso ejercitadas en simulación, con sus incrementos de síntesis y el error medido (modo \textit  {full-bit}).}}{98}{table.caption.191}\protected@file@percent }
+\newlabel{tab:nco}{{5.4}{98}{Tabla NCO: las 29 velocidades del rango de uso ejercitadas en simulación, con sus incrementos de síntesis y el error medido (modo \textit {full-bit})}{table.caption.191}{}}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{lot}{\contentsline {table}{\numberline {5.5}{\ignorespaces Distribución de las líneas de código desarrolladas en el trabajo.}}{97}{table.caption.193}\protected@file@percent }
-\newlabel{tab:loc}{{5.5}{97}{Distribución de las líneas de código desarrolladas en el trabajo}{table.caption.193}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.5}{\ignorespaces Distribución de las líneas de código desarrolladas en el trabajo.}}{99}{table.caption.193}\protected@file@percent }
+\newlabel{tab:loc}{{5.5}{99}{Distribución de las líneas de código desarrolladas en el trabajo}{table.caption.193}{}}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{toc}{\contentsline {chapter}{Anexo B: Aspectos éticos, económicos, sociales y ambientales}{98}{chapter*.194}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{Anexo B: Aspectos éticos, económicos, sociales y ambientales}{100}{chapter*.194}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
 \transparent@use{.6}
@@ -922,9 +932,9 @@
 \transparent@use{.6}
 \transparent@use{.6}
 \transparent@use{.6}
-\@writefile{toc}{\contentsline {chapter}{Anexo C: Presupuesto económico}{100}{chapter*.195}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{Anexo C: Presupuesto económico}{102}{chapter*.195}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\@writefile{lot}{\contentsline {table}{\numberline {5.6}{\ignorespaces Presupuesto económico}}{100}{table.caption.196}\protected@file@percent }
-\newlabel{presupuesto-economico}{{5.6}{100}{Presupuesto económico}{table.caption.196}{}}
-\gdef \@abspage@last{119}
+\@writefile{lot}{\contentsline {table}{\numberline {5.6}{\ignorespaces Presupuesto económico}}{102}{table.caption.196}\protected@file@percent }
+\newlabel{presupuesto-economico}{{5.6}{102}{Presupuesto económico}{table.caption.196}{}}
+\gdef \@abspage@last{121}

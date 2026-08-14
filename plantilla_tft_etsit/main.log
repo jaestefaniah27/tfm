@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.7.22)  14 AUG 2026 21:44
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.7.22)  14 AUG 2026 23:01
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -584,6 +584,18 @@ Package: multirow 2024/11/12 v2.9 Span multiple rows of a table
 \multirow@dima=\skip80
 \bigstrutjot=\dimen268
 )
+(C:\Users\jaest\AppData\Local\Programs\MiKTeX\tex/latex/graphics\rotating.sty
+Package: rotating 2025/01/14 v2.16e rotated objects in LaTeX
+
+(C:\Users\jaest\AppData\Local\Programs\MiKTeX\tex/latex/base\ifthen.sty
+Package: ifthen 2024/03/16 v1.1e Standard LaTeX ifthen package (DPC)
+)
+\c@r@tfl@t=\count343
+\rotFPtop=\skip81
+\rotFPbot=\skip82
+\rot@float@box=\box71
+\rot@mess@toks=\toks37
+)
 (C:\Users\jaest\AppData\Local\Programs\MiKTeX\tex/latex/pgfplots\pgfplots.sty
 (C:\Users\jaest\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgfplots.rev
 ision.tex)
@@ -596,13 +608,13 @@ sty
 y
 (C:\Users\jaest\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfutil
 -common.tex
-\pgfutil@everybye=\toks37
+\pgfutil@everybye=\toks38
 \pgfutil@tempdima=\dimen269
 \pgfutil@tempdimb=\dimen270
 )
 (C:\Users\jaest\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfutil
 -latex.def
-\pgfutil@abb=\box71
+\pgfutil@abb=\box72
 )
 (C:\Users\jaest\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfrcs.
 code.tex
@@ -621,12 +633,12 @@ Package: pgfsys 2025-08-29 v3.1.11a (3.1.11a)
 
 (C:\Users\jaest\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfkeys
 .code.tex
-\pgfkeys@pathtoks=\toks38
-\pgfkeys@temptoks=\toks39
+\pgfkeys@pathtoks=\toks39
+\pgfkeys@temptoks=\toks40
 
 (C:\Users\jaest\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfkeys
 libraryfiltered.code.tex
-\pgfkeys@tmptoks=\toks40
+\pgfkeys@tmptoks=\toks41
 ))
 \pgf@x=\dimen271
 \pgf@y=\dimen272
@@ -640,14 +652,14 @@ libraryfiltered.code.tex
 \pgf@yd=\dimen280
 \w@pgf@writea=\write3
 \r@pgf@reada=\read4
-\c@pgf@counta=\count343
-\c@pgf@countb=\count344
-\c@pgf@countc=\count345
-\c@pgf@countd=\count346
-\t@pgf@toka=\toks41
-\t@pgf@tokb=\toks42
-\t@pgf@tokc=\toks43
-\pgf@sys@id@count=\count347
+\c@pgf@counta=\count344
+\c@pgf@countb=\count345
+\c@pgf@countc=\count346
+\c@pgf@countd=\count347
+\t@pgf@toka=\toks42
+\t@pgf@tokb=\toks43
+\t@pgf@tokc=\toks44
+\pgf@sys@id@count=\count348
 
 (C:\Users\jaest\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgf.c
 fg
@@ -666,8 +678,8 @@ File: pgfsys-common-pdf.def 2025-08-29 v3.1.11a (3.1.11a)
 (C:\Users\jaest\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsy
 ssoftpath.code.tex
 File: pgfsyssoftpath.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-\pgfsyssoftpath@smallbuffer@items=\count348
-\pgfsyssoftpath@bigbuffer@items=\count349
+\pgfsyssoftpath@smallbuffer@items=\count349
+\pgfsyssoftpath@bigbuffer@items=\count350
 )
 (C:\Users\jaest\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsy
 sprotocol.code.tex
@@ -684,11 +696,11 @@ code.tex)
 (C:\Users\jaest\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathparse
 r.code.tex
 \pgfmath@dimen=\dimen281
-\pgfmath@count=\count350
-\pgfmath@box=\box72
-\pgfmath@toks=\toks44
-\pgfmath@stack@operand=\toks45
-\pgfmath@stack@operation=\toks46
+\pgfmath@count=\count351
+\pgfmath@box=\box73
+\pgfmath@toks=\toks45
+\pgfmath@stack@operand=\toks46
+\pgfmath@stack@operation=\toks47
 )
 (C:\Users\jaest\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunct
 ions.code.tex)
@@ -712,7 +724,7 @@ ions.integerarithmetics.code.tex)
 code.tex)
 (C:\Users\jaest\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfloat
 .code.tex
-\c@pgfmathroundto@lastzeros=\count351
+\c@pgfmathroundto@lastzeros=\count352
 ))
 (C:\Users\jaest\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfint.code.
 tex)
@@ -749,10 +761,10 @@ File: pgfcorepathusage.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 (C:\Users\jaest\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
 escopes.code.tex
 File: pgfcorescopes.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-\pgfpic=\box73
-\pgf@hbox=\box74
-\pgf@layerbox@main=\box75
-\pgf@picture@serial@count=\count352
+\pgfpic=\box74
+\pgf@hbox=\box75
+\pgf@layerbox@main=\box76
+\pgf@picture@serial@count=\count353
 )
 (C:\Users\jaest\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
 egraphicstate.code.tex
@@ -787,8 +799,8 @@ File: pgfcorearrows.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 eshade.code.tex
 File: pgfcoreshade.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 \pgf@max=\dimen305
-\pgf@sys@shading@range@num=\count353
-\pgf@shadingcount=\count354
+\pgf@sys@shading@range@num=\count354
+\pgf@shadingcount=\count355
 )
 (C:\Users\jaest\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
 eimage.code.tex
@@ -797,7 +809,7 @@ File: pgfcoreimage.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 (C:\Users\jaest\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
 eexternal.code.tex
 File: pgfcoreexternal.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-\pgfexternal@startupbox=\box76
+\pgfexternal@startupbox=\box77
 )
 (C:\Users\jaest\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
 elayers.code.tex
@@ -818,7 +830,7 @@ File: pgfcorerdf.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 (C:\Users\jaest\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodule
 shapes.code.tex
 File: pgfmoduleshapes.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-\pgfnodeparttextbox=\box77
+\pgfnodeparttextbox=\box78
 )
 (C:\Users\jaest\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodule
 plot.code.tex
@@ -848,8 +860,8 @@ code.tex
 Package: pgffor 2025-08-29 v3.1.11a (3.1.11a)
 \pgffor@iter=\dimen308
 \pgffor@skip=\dimen309
-\pgffor@stack=\toks47
-\pgffor@toks=\toks48
+\pgffor@stack=\toks48
+\pgffor@toks=\toks49
 ))
 (C:\Users\jaest\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tik
 z\tikz.code.tex
@@ -858,7 +870,7 @@ Package: tikz 2025-08-29 v3.1.11a (3.1.11a)
 (C:\Users\jaest\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries\pgflibr
 aryplothandlers.code.tex
 File: pgflibraryplothandlers.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-\pgf@plot@mark@count=\count355
+\pgf@plot@mark@count=\count356
 \pgfplotmarksize=\dimen310
 )
 \tikz@lastx=\dimen311
@@ -869,23 +881,23 @@ File: pgflibraryplothandlers.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 \tikz@lastmovetoy=\dimen316
 \tikzleveldistance=\dimen317
 \tikzsiblingdistance=\dimen318
-\tikz@figbox=\box78
-\tikz@figbox@bg=\box79
-\tikz@tempbox=\box80
-\tikz@tempbox@bg=\box81
-\tikztreelevel=\count356
-\tikznumberofchildren=\count357
-\tikznumberofcurrentchild=\count358
-\tikz@fig@count=\count359
+\tikz@figbox=\box79
+\tikz@figbox@bg=\box80
+\tikz@tempbox=\box81
+\tikz@tempbox@bg=\box82
+\tikztreelevel=\count357
+\tikznumberofchildren=\count358
+\tikznumberofcurrentchild=\count359
+\tikz@fig@count=\count360
 
 (C:\Users\jaest\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodule
 matrix.code.tex
 File: pgfmodulematrix.code.tex 2025-08-29 v3.1.11a (3.1.11a)
-\pgfmatrixcurrentrow=\count360
-\pgfmatrixcurrentcolumn=\count361
-\pgf@matrix@numberofcolumns=\count362
+\pgfmatrixcurrentrow=\count361
+\pgfmatrixcurrentcolumn=\count362
+\pgf@matrix@numberofcolumns=\count363
 )
-\tikz@expandcount=\count363
+\tikz@expandcount=\count364
 
 (C:\Users\jaest\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tik
 z/libraries\tikzlibrarytopaths.code.tex
@@ -895,12 +907,12 @@ File: tikzlibrarytopaths.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 e.tex
 (C:\Users\jaest\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgfplotscore
 .code.tex
-\t@pgfplots@toka=\toks49
-\t@pgfplots@tokb=\toks50
-\t@pgfplots@tokc=\toks51
+\t@pgfplots@toka=\toks50
+\t@pgfplots@tokb=\toks51
+\t@pgfplots@tokc=\toks52
 \pgfplots@tmpa=\dimen319
-\c@pgfplots@coordindex=\count364
-\c@pgfplots@scanlineindex=\count365
+\c@pgfplots@coordindex=\count365
+\c@pgfplots@scanlineindex=\count366
 
 (C:\Users\jaest\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/sys\pgfplots
 sysgeneric.code.tex))
@@ -911,9 +923,9 @@ ib\pgfplotsoldpgfsupp_loader.code.tex
 (C:\Users\jaest\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries\pgflibr
 aryfpu.code.tex)
 Package pgfplots: loading complementary utilities for your pgf version...
-\t@pgf@toka=\toks52
-\t@pgf@tokb=\toks53
-\t@pgf@tokc=\toks54
+\t@pgf@toka=\toks53
+\t@pgf@tokb=\toks54
+\t@pgf@tokc=\toks55
 
 (C:\Users\jaest\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/oldpgfcompat
 ib\pgfplotsoldpgfsupp_pgfutil-common-lists.tex))
@@ -925,14 +937,14 @@ e\pgfplotsliststructure.code.tex)
 e\pgfplotsliststructureext.code.tex)
 (C:\Users\jaest\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/liststructur
 e\pgfplotsarray.code.tex
-\c@pgfplotsarray@tmp=\count366
+\c@pgfplotsarray@tmp=\count367
 )
 (C:\Users\jaest\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/liststructur
 e\pgfplotsmatrix.code.tex)
 (C:\Users\jaest\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/numtable\pgf
 plotstableshared.code.tex
-\c@pgfplotstable@counta=\count367
-\t@pgfplotstable@a=\toks55
+\c@pgfplotstable@counta=\count368
+\t@pgfplotstable@a=\toks56
 )
 (C:\Users\jaest\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/liststructur
 e\pgfplotsdeque.code.tex)
@@ -944,7 +956,7 @@ sbinary.data.code.tex))
 sutil.verb.code.tex)
 (C:\Users\jaest\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/libs\pgflibr
 arypgfplots.surfshading.code.tex
-\c@pgfplotslibrarysurf@no=\count368
+\c@pgfplotslibrarysurf@no=\count369
 
 (C:\Users\jaest\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/sys\pgflibra
 rypgfplots.surfshading.pgfsys-pdftex.def)))
@@ -981,11 +993,11 @@ decorations.code.tex
 \pgfdecoratedinputsegmentcompleteddistance=\dimen322
 \pgfdecoratedinputsegmentremainingdistance=\dimen323
 \pgf@decorate@distancetomove=\dimen324
-\pgf@decorate@repeatstate=\count369
+\pgf@decorate@repeatstate=\count370
 \pgfdecorationsegmentamplitude=\dimen325
 \pgfdecorationsegmentlength=\dimen326
 )
-\tikz@lib@dec@box=\box82
+\tikz@lib@dec@box=\box83
 )
 (C:\Users\jaest\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tik
 z/libraries\tikzlibrarydecorations.pathmorphing.code.tex
@@ -997,7 +1009,7 @@ z/libraries\tikzlibrarydecorations.pathreplacing.code.tex
 ions\pgflibrarydecorations.pathreplacing.code.tex))
 (C:\Users\jaest\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/libs\tikzlib
 rarypgfplots.contourlua.code.tex)
-\pgfplots@numplots=\count370
+\pgfplots@numplots=\count371
 \pgfplots@xmin@reg=\dimen327
 \pgfplots@xmax@reg=\dimen328
 \pgfplots@ymin@reg=\dimen329
@@ -1015,22 +1027,22 @@ File: pgflibraryplotmarks.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 )))
 (C:\Users\jaest\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/libs\tikzlib
 rarypgfplots.groupplots.code.tex
-\pgfplots@group@current@plot=\count371
-\pgfplots@group@current@row=\count372
-\pgfplots@group@current@column=\count373
+\pgfplots@group@current@plot=\count372
+\pgfplots@group@current@row=\count373
+\pgfplots@group@current@column=\count374
 
 (C:\Users\jaest\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tik
 z/libraries\tikzlibrarycalc.code.tex
 File: tikzlibrarycalc.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 ))
-\chapheadtopskip=\skip81
-\chapheadsep=\skip82
-\chapheadbelowskip=\skip83
+\chapheadtopskip=\skip83
+\chapheadsep=\skip84
+\chapheadbelowskip=\skip85
 
 (C:\Users\jaest\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-pdf
 tex.def
 File: l3backend-pdftex.def 2025-10-09 L3 backend support: PDF output (pdfTeX)
-\l__color_backend_stack_int=\count374
+\l__color_backend_stack_int=\count375
 ) (main.aux
 LaTeX Info: Redefining \. on input line 12.
 LaTeX Info: Redefining \% on input line 12.
@@ -1039,41 +1051,41 @@ Package babel Info: 'spanish' activates 'spanish' shorthands.
 )
 \openout1 = `main.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 194.
-LaTeX Font Info:    ... okay on input line 194.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 194.
-LaTeX Font Info:    ... okay on input line 194.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 194.
-LaTeX Font Info:    ... okay on input line 194.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 194.
-LaTeX Font Info:    ... okay on input line 194.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 194.
-LaTeX Font Info:    ... okay on input line 194.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 194.
-LaTeX Font Info:    ... okay on input line 194.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 194.
-LaTeX Font Info:    ... okay on input line 194.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 194.
-LaTeX Font Info:    ... okay on input line 194.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 194.
-LaTeX Font Info:    ... okay on input line 194.
-LaTeX Info: Redefining \. on input line 194.
-LaTeX Info: Redefining \% on input line 194.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 195.
+LaTeX Font Info:    ... okay on input line 195.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 195.
+LaTeX Font Info:    ... okay on input line 195.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 195.
+LaTeX Font Info:    ... okay on input line 195.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 195.
+LaTeX Font Info:    ... okay on input line 195.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 195.
+LaTeX Font Info:    ... okay on input line 195.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 195.
+LaTeX Font Info:    ... okay on input line 195.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 195.
+LaTeX Font Info:    ... okay on input line 195.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 195.
+LaTeX Font Info:    ... okay on input line 195.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 195.
+LaTeX Font Info:    ... okay on input line 195.
+LaTeX Info: Redefining \. on input line 195.
+LaTeX Info: Redefining \% on input line 195.
 
 (C:\Users\jaest\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.mk
 ii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count375
+\scratchcounter=\count376
 \scratchdimen=\dimen333
-\scratchbox=\box83
-\nofMPsegments=\count376
-\nofMParguments=\count377
-\everyMPshowfont=\toks56
-\MPscratchCnt=\count378
+\scratchbox=\box84
+\nofMPsegments=\count377
+\nofMParguments=\count378
+\everyMPshowfont=\toks57
+\MPscratchCnt=\count379
 \MPscratchDim=\dimen334
-\MPnumerator=\count379
-\makeMPintoPDFobject=\count380
-\everyMPtoPDFconversion=\toks57
+\MPnumerator=\count380
+\makeMPintoPDFobject=\count381
+\everyMPtoPDFconversion=\toks58
 )
 (C:\Users\jaest\AppData\Local\Programs\MiKTeX\tex/latex/epstopdf-pkg\epstopdf-b
 ase.sty
@@ -1093,15 +1105,16 @@ Package caption Info: longtable package is loaded.
 (C:\Users\jaest\AppData\Local\Programs\MiKTeX\tex/latex/caption\ltcaption.sty
 Package: ltcaption 2021/01/08 v1.4c longtable captions (AR)
 )
+Package caption Info: rotating package is loaded.
 Package caption Info: wrapfig package is loaded.
 Package caption Info: End \AtBeginDocument code.
-Package hyperref Info: Link coloring ON on input line 194.
+Package hyperref Info: Link coloring ON on input line 195.
 
 (main.out) (main.out)
 \@outlinefile=\write4
 \openout4 = `main.out'.
 
-\c@lstlisting=\count381
+\c@lstlisting=\count382
 
 Package pgfplots notification 'compat/show suggested version=true': document ha
 s been generated with the most recent feature set (\pgfplotsset{compat=1.18}).
@@ -1185,7 +1198,7 @@ l.60 \normalsize{M
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
- 211.
+ 212.
 (pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
 
 
@@ -1199,7 +1212,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
- 215.
+ 216.
 (pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
 
 
@@ -1262,7 +1275,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
- 219.
+ 220.
 (pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
 
 
@@ -1346,7 +1359,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
- 224.
+ 225.
 (pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
 
 
@@ -1402,7 +1415,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
- 228.
+ 229.
 (pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
 
 
@@ -1464,7 +1477,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
- 234.
+ 235.
 (pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
 
 
@@ -1566,7 +1579,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
- 239.
+ 240.
 (pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
 
 
@@ -1696,10 +1709,16 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
 [18]
+<IMG/Desarrollo/diagrama_transceptor.pdf, id=1000, 651.39662pt x 277.30101pt>
+File: IMG/Desarrollo/diagrama_transceptor.pdf Graphic file (type pdf)
+<use IMG/Desarrollo/diagrama_transceptor.pdf>
+Package pdftex.def Info: IMG/Desarrollo/diagrama_transceptor.pdf  used on input
+ line 341.
+(pdftex.def)             Requested size: 689.9802pt x 293.73456pt.
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
- 375.
+ 385.
 (pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
 
 
@@ -1713,7 +1732,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
- 458.
+ 385.
 (pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
 
 
@@ -1723,11 +1742,13 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[20]
+[20 <./IMG/Desarrollo/diagrama_transceptor.pdf>]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
- 485.
+ 459.
 (pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
 
 
@@ -1741,7 +1762,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
- 609.
+ 491.
 (pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
 
 
@@ -1752,13 +1773,27 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
 [22]
+File: portada/logosportada/logoetsit.png Graphic file (type png)
+<use portada/logosportada/logoetsit.png>
+Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
+ 617.
+(pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 31.03018pt, for example:
+(fancyhdr)                \setlength{\headheight}{31.03018pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
+
+[23]
 Underfull \hbox (badness 6592) in paragraph at lines 660--661
 \OT1/cmtt/m/n/12 parity\OT1/cmr/m/n/12 , \OT1/cmtt/m/n/12 bit[]order\OT1/cmr/m/
 n/12 ,
  []
 
 
-Underfull \vbox (badness 6300) has occurred while \output is active []
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
@@ -1773,7 +1808,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[23]
+[24]
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
@@ -1787,7 +1822,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[24]
+[25]
 Overfull \hbox (0.84685pt too wide) in paragraph at lines 728--733
 []\OT1/cmr/bx/sc/12 C^^Salcu-lo de la pa-ri-dad es-pe-ra-da. \OT1/cmr/m/n/12 La
  red de puer-tas XOR ope-ra so-bre \OT1/cmtt/m/n/12 shiftRegister[]Q\OT1/cmr/m/
@@ -1806,7 +1841,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[25]
+[26]
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
@@ -1820,7 +1855,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[26]
+[27]
 Underfull \hbox (badness 10000) in paragraph at lines 869--869
 []\OT1/cmr/m/n/12 Tabla 3.4: |Re-par-to de bits de los vec-to-res de in-ter-faz
  del blo-que
@@ -1842,7 +1877,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[27]
+[28]
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
@@ -1856,7 +1891,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[28]
+[29]
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
@@ -1870,7 +1905,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[29]
+[30]
 Overfull \hbox (10.12976pt too wide) in paragraph at lines 962--962
 []\OT1/cmr/bx/n/17.28 Herramientas pa-ra fa-ci-li-tar el de-sa-rro-llo del tran
 s-
@@ -1888,7 +1923,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[30]
+[31]
 Overfull \hbox (12.72249pt too wide) in paragraph at lines 1033--1038
 []\OT1/cmr/m/n/12 Adicionalmente, un blo-que de in-for-ma-ci^^Son del sis-te-ma
  si-tua-do en la di-rec-ci^^Son fi-ja \OT1/cmtt/m/n/12 0xA0020000
@@ -1906,7 +1941,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[31]
+[32]
 Overfull \hbox (21.46971pt too wide) in paragraph at lines 1082--1085
 []\OT1/cmr/m/n/12 Para ca-da trans-cep-tor con in-te-rrup-ci^^Son RX ac-ti-va: 
 re-co-no-ce la in-te-rrup-ci^^Son (INTC[]IAR),
@@ -1931,7 +1966,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[32]
+[33]
 Overfull \hbox (74.07431pt too wide) in paragraph at lines 1124--1135
  [][] 
  []
@@ -1948,7 +1983,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[33]
+[34]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 File: portada/logosportada/logoetsit.png Graphic file (type png)
@@ -1964,7 +1999,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[34]
+[35]
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
@@ -1978,8 +2013,8 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[35]
-<IMG/serial_pcb_top.jpg, id=1143, 1606.0pt x 1204.5pt>
+[36]
+<IMG/serial_pcb_top.jpg, id=1185, 1606.0pt x 1204.5pt>
 File: IMG/serial_pcb_top.jpg Graphic file (type jpg)
 <use IMG/serial_pcb_top.jpg>
 Package pdftex.def Info: IMG/serial_pcb_top.jpg  used on input line 1277.
@@ -1997,11 +2032,11 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[36 <./IMG/serial_pcb_top.jpg>]
+[37 <./IMG/serial_pcb_top.jpg>]
 
 pdfTeX warning: pdflatex.exe (file ./IMG/pcbs/LINCE3_CDHS.pdf): PDF inclusion: 
 found PDF version <1.7>, but at most version <1.5> allowed
-<IMG/pcbs/LINCE3_CDHS.pdf, id=1153, page=1, 1228.59pt x 794.97pt>
+<IMG/pcbs/LINCE3_CDHS.pdf, id=1194, page=1, 1228.59pt x 794.97pt>
 File: IMG/pcbs/LINCE3_CDHS.pdf Graphic file (type pdf)
 <use IMG/pcbs/LINCE3_CDHS.pdf, page 1>
 Package pdftex.def Info: IMG/pcbs/LINCE3_CDHS.pdf , page1 used on input line 13
@@ -2023,13 +2058,13 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[37]
-<IMG/pcbs/cdhs_3d_top.png, id=1160, 569.12625pt x 422.17725pt>
+[38]
+<IMG/pcbs/cdhs_3d_top.png, id=1201, 569.12625pt x 422.17725pt>
 File: IMG/pcbs/cdhs_3d_top.png Graphic file (type png)
 <use IMG/pcbs/cdhs_3d_top.png>
 Package pdftex.def Info: IMG/pcbs/cdhs_3d_top.png  used on input line 1350.
 (pdftex.def)             Requested size: 218.51521pt x 162.09746pt.
-<IMG/pcbs/cdhs_3d_bot.png, id=1161, 558.28575pt x 377.0085pt>
+<IMG/pcbs/cdhs_3d_bot.png, id=1202, 558.28575pt x 377.0085pt>
 File: IMG/pcbs/cdhs_3d_bot.png Graphic file (type png)
 <use IMG/pcbs/cdhs_3d_bot.png>
 Package pdftex.def Info: IMG/pcbs/cdhs_3d_bot.png  used on input line 1358.
@@ -2050,7 +2085,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[38 <./IMG/pcbs/LINCE3_CDHS.pdf> <./IMG/pcbs/cdhs_3d_top.png> <./IMG/pcbs/cdhs_
+[39 <./IMG/pcbs/LINCE3_CDHS.pdf> <./IMG/pcbs/cdhs_3d_top.png> <./IMG/pcbs/cdhs_
 3d_bot.png>]
 Overfull \hbox (13.42162pt too wide) in paragraph at lines 1395--1399
 []\OT1/cmr/m/n/12 Las l^^S^^Pneas CANH y CANL de ca-da ca-nal in-cor-po-ran dio
@@ -2061,7 +2096,7 @@ Overfull \hbox (13.42162pt too wide) in paragraph at lines 1395--1399
 
 pdfTeX warning: pdflatex.exe (file ./IMG/pcbs/LINCE3_CDHS.pdf): PDF inclusion: 
 found PDF version <1.7>, but at most version <1.5> allowed
-<IMG/pcbs/LINCE3_CDHS.pdf, id=1203, page=3, 1228.59pt x 794.97pt>
+<IMG/pcbs/LINCE3_CDHS.pdf, id=1244, page=3, 1228.59pt x 794.97pt>
 File: IMG/pcbs/LINCE3_CDHS.pdf Graphic file (type pdf)
 <use IMG/pcbs/LINCE3_CDHS.pdf, page 3>
 Package pdftex.def Info: IMG/pcbs/LINCE3_CDHS.pdf , page3 used on input line 14
@@ -2083,7 +2118,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[39]
+[40]
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
@@ -2097,11 +2132,11 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[40 <./IMG/pcbs/LINCE3_CDHS.pdf>]
+[41 <./IMG/pcbs/LINCE3_CDHS.pdf>]
 
 pdfTeX warning: pdflatex.exe (file ./IMG/pcbs/LINCE3_CDHS.pdf): PDF inclusion: 
 found PDF version <1.7>, but at most version <1.5> allowed
-<IMG/pcbs/LINCE3_CDHS.pdf, id=1259, page=4, 1228.59pt x 794.97pt>
+<IMG/pcbs/LINCE3_CDHS.pdf, id=1300, page=4, 1228.59pt x 794.97pt>
 File: IMG/pcbs/LINCE3_CDHS.pdf Graphic file (type pdf)
 <use IMG/pcbs/LINCE3_CDHS.pdf, page 4>
 Package pdftex.def Info: IMG/pcbs/LINCE3_CDHS.pdf , page4 used on input line 14
@@ -2126,11 +2161,11 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[41 <./IMG/pcbs/LINCE3_CDHS.pdf>]
+[42 <./IMG/pcbs/LINCE3_CDHS.pdf>]
 
 pdfTeX warning: pdflatex.exe (file ./IMG/pcbs/LINCE3_AOCS_V2.pdf): PDF inclusio
 n: found PDF version <1.7>, but at most version <1.5> allowed
-<IMG/pcbs/LINCE3_AOCS_V2.pdf, id=1303, page=1, 794.97pt x 614.295pt>
+<IMG/pcbs/LINCE3_AOCS_V2.pdf, id=1345, page=1, 794.97pt x 614.295pt>
 File: IMG/pcbs/LINCE3_AOCS_V2.pdf Graphic file (type pdf)
 <use IMG/pcbs/LINCE3_AOCS_V2.pdf, page 1>
 Package pdftex.def Info: IMG/pcbs/LINCE3_AOCS_V2.pdf , page1 used on input line
@@ -2148,13 +2183,13 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[42]
-<IMG/pcbs/aocs_3d_top.png, id=1313, 666.0885pt x 301.125pt>
+[43]
+<IMG/pcbs/aocs_3d_top.png, id=1354, 666.0885pt x 301.125pt>
 File: IMG/pcbs/aocs_3d_top.png Graphic file (type png)
 <use IMG/pcbs/aocs_3d_top.png>
 Package pdftex.def Info: IMG/pcbs/aocs_3d_top.png  used on input line 1537.
 (pdftex.def)             Requested size: 218.51521pt x 98.78342pt.
-<IMG/pcbs/aocs_3d_bot.png, id=1314, 653.44125pt x 289.68225pt>
+<IMG/pcbs/aocs_3d_bot.png, id=1355, 653.44125pt x 289.68225pt>
 File: IMG/pcbs/aocs_3d_bot.png Graphic file (type png)
 <use IMG/pcbs/aocs_3d_bot.png>
 Package pdftex.def Info: IMG/pcbs/aocs_3d_bot.png  used on input line 1545.
@@ -2175,12 +2210,12 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[43 <./IMG/pcbs/LINCE3_AOCS_V2.pdf> <./IMG/pcbs/aocs_3d_top.png> <./IMG/pcbs/ao
+[44 <./IMG/pcbs/LINCE3_AOCS_V2.pdf> <./IMG/pcbs/aocs_3d_top.png> <./IMG/pcbs/ao
 cs_3d_bot.png>]
 
 pdfTeX warning: pdflatex.exe (file ./IMG/pcbs/LINCE3_AOCS_V2.pdf): PDF inclusio
 n: found PDF version <1.7>, but at most version <1.5> allowed
-<IMG/pcbs/LINCE3_AOCS_V2.pdf, id=1356, page=6, 794.97pt x 614.295pt>
+<IMG/pcbs/LINCE3_AOCS_V2.pdf, id=1397, page=6, 794.97pt x 614.295pt>
 File: IMG/pcbs/LINCE3_AOCS_V2.pdf Graphic file (type pdf)
 <use IMG/pcbs/LINCE3_AOCS_V2.pdf, page 6>
 Package pdftex.def Info: IMG/pcbs/LINCE3_AOCS_V2.pdf , page6 used on input line
@@ -2202,7 +2237,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[44]
+[45]
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
@@ -2216,13 +2251,13 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[45 <./IMG/pcbs/LINCE3_AOCS_V2.pdf>]
+[46 <./IMG/pcbs/LINCE3_AOCS_V2.pdf>]
 Overfull \hbox (12.97235pt too wide) in paragraph at lines 1650--1656
 \OT1/cmr/m/n/12 Ane-xo A. Los es-quem^^Sati-cos (PDF) y la BOM est^^San dis-po-
 ni-bles en \OT1/cmtt/m/n/12 tfm/00[]docs/pcbs/aocs/\OT1/cmr/m/n/12 .
  []
 
-<IMG/cdhs_soldada.jpg, id=1414, 3035.34pt x 4047.12pt>
+<IMG/cdhs_soldada.jpg, id=1455, 3035.34pt x 4047.12pt>
 File: IMG/cdhs_soldada.jpg Graphic file (type jpg)
 <use IMG/cdhs_soldada.jpg>
 Package pdftex.def Info: IMG/cdhs_soldada.jpg  used on input line 1682.
@@ -2243,8 +2278,8 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[46]
-<IMG/aocs_soldada_caras.jpg, id=1423, 3854.4pt x 5139.2pt>
+[47]
+<IMG/aocs_soldada_caras.jpg, id=1464, 3854.4pt x 5139.2pt>
 File: IMG/aocs_soldada_caras.jpg Graphic file (type jpg)
 <use IMG/aocs_soldada_caras.jpg>
 Package pdftex.def Info: IMG/aocs_soldada_caras.jpg  used on input line 1691.
@@ -2265,7 +2300,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[47 <./IMG/cdhs_soldada.jpg>]
+[48 <./IMG/cdhs_soldada.jpg>]
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
@@ -2279,7 +2314,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[48 <./IMG/aocs_soldada_caras.jpg>]
+[49 <./IMG/aocs_soldada_caras.jpg>]
 LaTeX Font Info:    Trying to load font information for OMS+cmtt on input line 
 1760.
 LaTeX Font Info:    No file OMScmtt.fd. on input line 1760.
@@ -2308,8 +2343,8 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[49]
-<IMG/arnes_rs422.jpg, id=1460, 3854.4pt x 5139.2pt>
+[50]
+<IMG/arnes_rs422.jpg, id=1501, 3854.4pt x 5139.2pt>
 File: IMG/arnes_rs422.jpg Graphic file (type jpg)
 <use IMG/arnes_rs422.jpg>
 Package pdftex.def Info: IMG/arnes_rs422.jpg  used on input line 1820.
@@ -2327,8 +2362,8 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[50]
-<IMG/arnes_rs485.jpg, id=1470, 3854.4pt x 5139.2pt>
+[51]
+<IMG/arnes_rs485.jpg, id=1511, 3854.4pt x 5139.2pt>
 File: IMG/arnes_rs485.jpg Graphic file (type jpg)
 <use IMG/arnes_rs485.jpg>
 Package pdftex.def Info: IMG/arnes_rs485.jpg  used on input line 1832.
@@ -2349,8 +2384,8 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[51 <./IMG/arnes_rs422.jpg> <./IMG/arnes_rs485.jpg>]
-<IMG/arnes_can.jpg, id=1477, 3854.4pt x 5139.2pt>
+[52 <./IMG/arnes_rs422.jpg> <./IMG/arnes_rs485.jpg>]
+<IMG/arnes_can.jpg, id=1518, 3854.4pt x 5139.2pt>
 File: IMG/arnes_can.jpg Graphic file (type jpg)
 <use IMG/arnes_can.jpg>
 Package pdftex.def Info: IMG/arnes_can.jpg  used on input line 1846.
@@ -2370,7 +2405,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[52 <./IMG/arnes_can.jpg>]
+[53 <./IMG/arnes_can.jpg>]
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
@@ -2384,7 +2419,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[53]
+[54]
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
@@ -2398,21 +2433,15 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[54]
-File: portada/logosportada/logoetsit.png Graphic file (type png)
-<use portada/logosportada/logoetsit.png>
-Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
- 194.
-(pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
-
-
-Package fancyhdr Warning: \headheight is too small (12.0pt): 
-(fancyhdr)                Make it at least 31.03018pt, for example:
-(fancyhdr)                \setlength{\headheight}{31.03018pt}.
-(fancyhdr)                You might also make \topmargin smaller:
-(fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
-
 [55]
+<IMG/Desarrollo/diagrama_arquitectura_mcdma.pdf, id=1542, 702.4112pt x 337.0020
+4pt>
+File: IMG/Desarrollo/diagrama_arquitectura_mcdma.pdf Graphic file (type pdf)
+<use IMG/Desarrollo/diagrama_arquitectura_mcdma.pdf>
+Package pdftex.def Info: IMG/Desarrollo/diagrama_arquitectura_mcdma.pdf  used o
+n input line 164.
+(pdftex.def)             Requested size: 689.9802pt x 331.05165pt.
+
 Overfull \hbox (2.72746pt too wide) in paragraph at lines 207--213
 \OT1/cmr/m/n/12 por-que las l^^S^^Pneas son ocho. Se di-se~n^^So por tan-to un 
 blo-que pro-pio, \OT1/cmtt/m/n/12 TX[]ISR[]EOF[]HANDLER.vhd\OT1/cmr/m/n/12 ,
@@ -2421,7 +2450,7 @@ blo-que pro-pio, \OT1/cmtt/m/n/12 TX[]ISR[]EOF[]HANDLER.vhd\OT1/cmr/m/n/12 ,
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
- 259.
+ 213.
 (pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
@@ -2434,7 +2463,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
- 321.
+ 213.
 (pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
 
 
@@ -2444,11 +2473,13 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[57]
+[57 <./IMG/Desarrollo/diagrama_arquitectura_mcdma.pdf>]
+Underfull \vbox (badness 1418) has occurred while \output is active []
+
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
- 370.
+ 279.
 (pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
 
 
@@ -2462,7 +2493,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
- 434.
+ 330.
 (pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
 
 
@@ -2476,7 +2507,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
- 501.
+ 382.
 (pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
 
 
@@ -2486,11 +2517,11 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[60])
+[60]
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
- 244.
+ 445.
 (pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
 
 
@@ -2501,9 +2532,37 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
 [61]
+File: portada/logosportada/logoetsit.png Graphic file (type png)
+<use portada/logosportada/logoetsit.png>
+Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
+ 509.
+(pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 31.03018pt, for example:
+(fancyhdr)                \setlength{\headheight}{31.03018pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
+
+[62])
+File: portada/logosportada/logoetsit.png Graphic file (type png)
+<use portada/logosportada/logoetsit.png>
+Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
+ 245.
+(pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 31.03018pt, for example:
+(fancyhdr)                \setlength{\headheight}{31.03018pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
+
+[63]
 Cap\'{\i }tulo 4.
 (capitulos/cap4/validacion_hardware.tex
-<IMG/sistema_montado.jpg, id=1590, 5139.2pt x 3854.4pt>
+<IMG/sistema_montado.jpg, id=1667, 5139.2pt x 3854.4pt>
 File: IMG/sistema_montado.jpg Graphic file (type jpg)
 <use IMG/sistema_montado.jpg>
 Package pdftex.def Info: IMG/sistema_montado.jpg  used on input line 22.
@@ -2521,7 +2580,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[62 <./IMG/sistema_montado.jpg>]
+[64 <./IMG/sistema_montado.jpg>]
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
@@ -2535,26 +2594,26 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[63]
-<IMG/slew/rs485_flanco_rapido.png, id=1641, 803.0pt x 481.8pt>
+[65]
+<IMG/slew/rs485_flanco_rapido.png, id=1718, 803.0pt x 481.8pt>
 File: IMG/slew/rs485_flanco_rapido.png Graphic file (type png)
 <use IMG/slew/rs485_flanco_rapido.png>
 Package pdftex.def Info: IMG/slew/rs485_flanco_rapido.png  used on input line 1
 56.
 (pdftex.def)             Requested size: 218.51521pt x 131.10962pt.
-<IMG/slew/rs485_flanco_lento.png, id=1642, 803.0pt x 481.8pt>
+<IMG/slew/rs485_flanco_lento.png, id=1719, 803.0pt x 481.8pt>
 File: IMG/slew/rs485_flanco_lento.png Graphic file (type png)
 <use IMG/slew/rs485_flanco_lento.png>
 Package pdftex.def Info: IMG/slew/rs485_flanco_lento.png  used on input line 16
 2.
 (pdftex.def)             Requested size: 218.51521pt x 131.10962pt.
-<IMG/slew/rs485_bajada_rapida.png, id=1643, 803.0pt x 481.8pt>
+<IMG/slew/rs485_bajada_rapida.png, id=1720, 803.0pt x 481.8pt>
 File: IMG/slew/rs485_bajada_rapida.png Graphic file (type png)
 <use IMG/slew/rs485_bajada_rapida.png>
 Package pdftex.def Info: IMG/slew/rs485_bajada_rapida.png  used on input line 1
 70.
 (pdftex.def)             Requested size: 218.51521pt x 131.10962pt.
-<IMG/slew/rs485_bajada_lenta.png, id=1644, 803.0pt x 481.8pt>
+<IMG/slew/rs485_bajada_lenta.png, id=1721, 803.0pt x 481.8pt>
 File: IMG/slew/rs485_bajada_lenta.png Graphic file (type png)
 <use IMG/slew/rs485_bajada_lenta.png>
 Package pdftex.def Info: IMG/slew/rs485_bajada_lenta.png  used on input line 17
@@ -2576,7 +2635,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[64]
+[66]
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
@@ -2590,15 +2649,15 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[65 <./IMG/slew/rs485_flanco_rapido.png (PNG copy)> <./IMG/slew/rs485_flanco_le
+[67 <./IMG/slew/rs485_flanco_rapido.png (PNG copy)> <./IMG/slew/rs485_flanco_le
 nto.png (PNG copy)> <./IMG/slew/rs485_bajada_rapida.png (PNG copy)> <./IMG/slew
 /rs485_bajada_lenta.png (PNG copy)>]
-<IMG/can_sin_term.png, id=1706, 803.0pt x 481.8pt>
+<IMG/can_sin_term.png, id=1784, 803.0pt x 481.8pt>
 File: IMG/can_sin_term.png Graphic file (type png)
 <use IMG/can_sin_term.png>
 Package pdftex.def Info: IMG/can_sin_term.png  used on input line 220.
 (pdftex.def)             Requested size: 355.08981pt x 213.05864pt.
-<IMG/can_con_term.png, id=1707, 803.0pt x 481.8pt>
+<IMG/can_con_term.png, id=1785, 803.0pt x 481.8pt>
 File: IMG/can_con_term.png Graphic file (type png)
 <use IMG/can_con_term.png>
 Package pdftex.def Info: IMG/can_con_term.png  used on input line 227.
@@ -2616,7 +2675,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[66 <./IMG/can_sin_term.png (PNG copy)> <./IMG/can_con_term.png (PNG copy)>]
+[68 <./IMG/can_sin_term.png (PNG copy)> <./IMG/can_con_term.png (PNG copy)>]
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
@@ -2630,8 +2689,8 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[67]
-<IMG/cdhs_pwm_1khz.png, id=1758, 803.0pt x 481.8pt>
+[69]
+<IMG/cdhs_pwm_1khz.png, id=1835, 803.0pt x 481.8pt>
 File: IMG/cdhs_pwm_1khz.png Graphic file (type png)
 <use IMG/cdhs_pwm_1khz.png>
 Package pdftex.def Info: IMG/cdhs_pwm_1khz.png  used on input line 335.
@@ -2652,8 +2711,8 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[68 <./IMG/cdhs_pwm_1khz.png (PNG copy)>]
-<IMG/aocs_soldada.jpg, id=1790, 3854.4pt x 5139.2pt>
+[70 <./IMG/cdhs_pwm_1khz.png (PNG copy)>]
+<IMG/aocs_soldada.jpg, id=1867, 3854.4pt x 5139.2pt>
 File: IMG/aocs_soldada.jpg Graphic file (type jpg)
 <use IMG/aocs_soldada.jpg>
 Package pdftex.def Info: IMG/aocs_soldada.jpg  used on input line 355.
@@ -2676,7 +2735,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[69 <./IMG/aocs_soldada.jpg>]
+[71 <./IMG/aocs_soldada.jpg>]
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
@@ -2690,8 +2749,8 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[70]
-<IMG/aocs_pwm_motor.png, id=1863, 803.0pt x 481.8pt>
+[72]
+<IMG/aocs_pwm_motor.png, id=1941, 803.0pt x 481.8pt>
 File: IMG/aocs_pwm_motor.png Graphic file (type png)
 <use IMG/aocs_pwm_motor.png>
 Package pdftex.def Info: IMG/aocs_pwm_motor.png  used on input line 465.
@@ -2710,7 +2769,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[71 <./IMG/aocs_pwm_motor.png (PNG copy)>]
+[73 <./IMG/aocs_pwm_motor.png (PNG copy)>]
 Overfull \hbox (3.33076pt too wide) in paragraph at lines 41--45
 []\OT1/cmr/m/n/12 Las tres ar-qui-tec-tu-ras est^^San im-ple-men-ta-das so-bre 
 el mis-mo dis-po-si-ti-vo (XCZU9EG, 274080
@@ -2739,7 +2798,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[72]
+[74]
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
@@ -2753,7 +2812,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[73]
+[75]
 Package pgfplots info on input line 170: Using 'lua backend=false' for axis: x 
 coord trafo unsupported.
 File: portada/logosportada/logoetsit.png Graphic file (type png)
@@ -2769,7 +2828,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[74]
+[76]
 Package pgfplots info on input line 232: Using 'lua backend=false' for axis: x 
 coord trafo unsupported.
 Package pgfplots info on input line 290: Using 'lua backend=false' for axis: x 
@@ -2790,7 +2849,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[75]
+[77]
 Package pgfplots info on input line 352: Using 'lua backend=false' for axis: xm
 ode=log unsupported (yet).
 Package pgfplots info on input line 352: Using 'lua backend=false' for axis: ym
@@ -2811,7 +2870,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[76]
+[78]
 Overfull \hbox (28.94083pt too wide) in paragraph at lines 412--421
  [][] 
  []
@@ -2828,7 +2887,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[77]
+[79]
 Underfull \hbox (badness 10000) in paragraph at lines 461--462
 []|\OT1/cmr/bx/sc/12 11461 B/s
  []
@@ -2850,13 +2909,13 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[78]) (capitulos/cap4/pcb.tex
-<IMG/serial_pcb_jumpers.jpg, id=1934, 1606.0pt x 1204.5pt>
+[80]) (capitulos/cap4/pcb.tex
+<IMG/serial_pcb_jumpers.jpg, id=2011, 1606.0pt x 1204.5pt>
 File: IMG/serial_pcb_jumpers.jpg Graphic file (type jpg)
 <use IMG/serial_pcb_jumpers.jpg>
 Package pdftex.def Info: IMG/serial_pcb_jumpers.jpg  used on input line 40.
 (pdftex.def)             Requested size: 218.51521pt x 163.88702pt.
-<IMG/serial_pcb_zcu102.jpg, id=1935, 1204.5pt x 1606.0pt>
+<IMG/serial_pcb_zcu102.jpg, id=2012, 1204.5pt x 1606.0pt>
 File: IMG/serial_pcb_zcu102.jpg Graphic file (type jpg)
 <use IMG/serial_pcb_zcu102.jpg>
 Package pdftex.def Info: IMG/serial_pcb_zcu102.jpg  used on input line 46.
@@ -2877,7 +2936,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[79]
+[81]
 Underfull \hbox (badness 10000) in paragraph at lines 75--75
 []|\OT1/cmr/m/n/12 T4 Ve-lo-ci-dad
  []
@@ -2903,7 +2962,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[80 <./IMG/serial_pcb_jumpers.jpg> <./IMG/serial_pcb_zcu102.jpg>]
+[82 <./IMG/serial_pcb_jumpers.jpg> <./IMG/serial_pcb_zcu102.jpg>]
 Package pgfplots info on input line 120: Using 'lua backend=false' for axis: x 
 coord trafo unsupported.
 Package pgfplots info on input line 167: Using 'lua backend=false' for axis: xm
@@ -2921,7 +2980,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[81]
+[83]
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
@@ -2935,7 +2994,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[82]
+[84]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 File: portada/logosportada/logoetsit.png Graphic file (type png)
@@ -2951,11 +3010,11 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[83])
+[85])
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
- 250.
+ 251.
 (pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
 
 
@@ -2965,7 +3024,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[84]
+[86]
 Cap\'{\i }tulo 5.
 (capitulos/cap5/conclusiones.tex
 File: portada/logosportada/logoetsit.png Graphic file (type png)
@@ -2981,7 +3040,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[85]
+[87]
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
@@ -2995,7 +3054,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[86]) (capitulos/cap5/lineasfuturas.tex
+[88]) (capitulos/cap5/lineasfuturas.tex
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
@@ -3009,11 +3068,11 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[87])
+[89])
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
- 256.
+ 257.
 (pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
 
 
@@ -3023,7 +3082,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[88] (main.bbl
+[90] (main.bbl
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
@@ -3037,11 +3096,11 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[89])
+[91])
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
- 260.
+ 261.
 (pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
 
 
@@ -3051,7 +3110,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[90] (capitulos/anexos/anexo1.tex
+[92] (capitulos/anexos/anexo1.tex
 Overfull \hbox (6.60971pt too wide) in alignment at lines 14--18
  [] [] [] [] [] [] 
  []
@@ -3090,7 +3149,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[91
+[93
 
 ]
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -3108,37 +3167,37 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[92]
-ignored error: Infinite glue shrinkage found in box being split
-File: portada/logosportada/logoetsit.png Graphic file (type png)
-<use portada/logosportada/logoetsit.png>
-Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
- 194.
-(pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
-
-
-Package fancyhdr Warning: \headheight is too small (12.0pt): 
-(fancyhdr)                Make it at least 31.03018pt, for example:
-(fancyhdr)                \setlength{\headheight}{31.03018pt}.
-(fancyhdr)                You might also make \topmargin smaller:
-(fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
-
-[93]
-ignored error: Infinite glue shrinkage found in box being split
-File: portada/logosportada/logoetsit.png Graphic file (type png)
-<use portada/logosportada/logoetsit.png>
-Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
- 194.
-(pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
-
-
-Package fancyhdr Warning: \headheight is too small (12.0pt): 
-(fancyhdr)                Make it at least 31.03018pt, for example:
-(fancyhdr)                \setlength{\headheight}{31.03018pt}.
-(fancyhdr)                You might also make \topmargin smaller:
-(fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
-
 [94]
+ignored error: Infinite glue shrinkage found in box being split
+File: portada/logosportada/logoetsit.png Graphic file (type png)
+<use portada/logosportada/logoetsit.png>
+Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
+ 194.
+(pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 31.03018pt, for example:
+(fancyhdr)                \setlength{\headheight}{31.03018pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
+
+[95]
+ignored error: Infinite glue shrinkage found in box being split
+File: portada/logosportada/logoetsit.png Graphic file (type png)
+<use portada/logosportada/logoetsit.png>
+Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
+ 194.
+(pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 31.03018pt, for example:
+(fancyhdr)                \setlength{\headheight}{31.03018pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
+
+[96]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 File: portada/logosportada/logoetsit.png Graphic file (type png)
@@ -3154,7 +3213,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[95]
+[97]
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
@@ -3168,11 +3227,11 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[96])
+[98])
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
- 264.
+ 265.
 (pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
 
 
@@ -3182,11 +3241,11 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[97] (capitulos/anexos/anexoA.tex)
+[99] (capitulos/anexos/anexoA.tex)
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
- 267.
+ 268.
 (pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
 
 
@@ -3196,11 +3255,11 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[98]
+[100]
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
- 269.
+ 270.
 (pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
 
 
@@ -3210,11 +3269,11 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[99] (capitulos/anexos/anexoB.tex)
+[101] (capitulos/anexos/anexoB.tex)
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
- 272.
+ 273.
 (pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
 
 
@@ -3224,7 +3283,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[100] (main.aux
+[102] (main.aux
 LaTeX Info: Redefining \. on input line 12.
 LaTeX Info: Redefining \% on input line 12.
 )
@@ -3240,11 +3299,11 @@ Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: 6B3A1DF4D3AAA9E2E5478C15EDA87AFD;18435.
  ) 
 Here is how much of TeX's memory you used:
- 39517 strings out of 467871
- 888904 string characters out of 5418376
- 2029674 words of memory out of 5000000
- 66880 multiletter control sequences out of 15000+600000
- 642990 words of font info for 99 fonts, out of 8000000 for 9000
+ 39668 strings out of 467871
+ 891778 string characters out of 5418376
+ 2030627 words of memory out of 5000000
+ 67024 multiletter control sequences out of 15000+600000
+ 642822 words of font info for 98 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  99i,19n,108p,822b,2383s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/jaest/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/
@@ -3253,31 +3312,37 @@ fonts/cm/cmbx12.pfb><C:/Users/jaest/AppData/Local/Programs/MiKTeX/fonts/type1/p
 ublic/amsfonts/cm/cmbx8.pfb><C:/Users/jaest/AppData/Local/Programs/MiKTeX/fonts
 /type1/public/amsfonts/cm/cmbxti10.pfb><C:/Users/jaest/AppData/Local/Programs/M
 iKTeX/fonts/type1/public/amsfonts/cm/cmcsc10.pfb><C:/Users/jaest/AppData/Local/
-Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmitt10.pfb><C:/Users/jaest/AppD
-ata/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/j
-aest/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C
-:/Users/jaest/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi
-8.pfb><C:/Users/jaest/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts
-/cm/cmr10.pfb><C:/Users/jaest/AppData/Local/Programs/MiKTeX/fonts/type1/public/
-amsfonts/cm/cmr12.pfb><C:/Users/jaest/AppData/Local/Programs/MiKTeX/fonts/type1
-/public/amsfonts/cm/cmr6.pfb><C:/Users/jaest/AppData/Local/Programs/MiKTeX/font
-s/type1/public/amsfonts/cm/cmr7.pfb><C:/Users/jaest/AppData/Local/Programs/MiKT
-eX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/jaest/AppData/Local/Progra
-ms/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/jaest/AppData/Loc
-al/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy6.pfb><C:/Users/jaest/App
-Data/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Users/j
-aest/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:
-/Users/jaest/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmti1
-0.pfb><C:/Users/jaest/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts
-/cm/cmti12.pfb><C:/Users/jaest/AppData/Local/Programs/MiKTeX/fonts/type1/public
-/amsfonts/cm/cmtt10.pfb><C:/Users/jaest/AppData/Local/Programs/MiKTeX/fonts/typ
-e1/public/amsfonts/cm/cmtt12.pfb><C:/Users/jaest/AppData/Local/Programs/MiKTeX/
-fonts/type1/public/amsfonts/cm/cmtt8.pfb><C:/Users/jaest/AppData/Local/Programs
-/MiKTeX/fonts/type1/public/eurosym/feybr10.pfb><C:/Users/jaest/AppData/Local/Pr
-ograms/MiKTeX/fonts/type1/public/eurosym/feymr10.pfb>
-Output written on main.pdf (119 pages, 14073786 bytes).
+Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/jaest/AppDa
+ta/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/Users/ja
+est/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/
+Users/jaest/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.
+pfb><C:/Users/jaest/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/c
+m/cmr12.pfb><C:/Users/jaest/AppData/Local/Programs/MiKTeX/fonts/type1/public/am
+sfonts/cm/cmr6.pfb><C:/Users/jaest/AppData/Local/Programs/MiKTeX/fonts/type1/pu
+blic/amsfonts/cm/cmr7.pfb><C:/Users/jaest/AppData/Local/Programs/MiKTeX/fonts/t
+ype1/public/amsfonts/cm/cmr8.pfb><C:/Users/jaest/AppData/Local/Programs/MiKTeX/
+fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/jaest/AppData/Local/Program
+s/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy6.pfb><C:/Users/jaest/AppData/Local
+/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Users/jaest/AppDa
+ta/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Users/jae
+st/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmti10.pfb><C:/
+Users/jaest/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmti12
+.pfb><C:/Users/jaest/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/
+cm/cmtt10.pfb><C:/Users/jaest/AppData/Local/Programs/MiKTeX/fonts/type1/public/
+amsfonts/cm/cmtt12.pfb><C:/Users/jaest/AppData/Local/Programs/MiKTeX/fonts/type
+1/public/amsfonts/cm/cmtt8.pfb><C:/Users/jaest/AppData/Local/Programs/MiKTeX/fo
+nts/type1/public/eurosym/feybr10.pfb><C:/Users/jaest/AppData/Local/Programs/MiK
+TeX/fonts/type1/public/eurosym/feymr10.pfb><C:/Users/jaest/AppData/Local/Progra
+ms/MiKTeX/fonts/type1/public/lm/lmss8.pfb><C:/Users/jaest/AppData/Local/Program
+s/MiKTeX/fonts/type1/public/lm/lmss9.pfb><C:/Users/jaest/AppData/Local/Programs
+/MiKTeX/fonts/type1/public/lm/lmssbx10.pfb><C:/Users/jaest/AppData/Local/Progra
+ms/MiKTeX/fonts/type1/public/lm/lmsso8.pfb><C:/Users/jaest/AppData/Local/Progra
+ms/MiKTeX/fonts/type1/public/lm/lmsy7.pfb><C:/Users/jaest/AppData/Local/Program
+s/MiKTeX/fonts/type1/public/lm/lmtt8.pfb><C:/Users/jaest/AppData/Local/Programs
+/MiKTeX/fonts/type1/public/lm/lmtt9.pfb>
+Output written on main.pdf (121 pages, 14243631 bytes).
 PDF statistics:
- 2327 PDF objects out of 2487 (max. 8388607)
- 785 named destinations out of 1000 (max. 500000)
- 880 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 2409 PDF objects out of 2487 (max. 8388607)
+ 787 named destinations out of 1000 (max. 500000)
+ 890 words of extra memory for PDF output out of 10000 (max. 10000000)
 
