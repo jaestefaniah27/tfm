@@ -328,23 +328,11 @@ Los parámetros configurables son:
     \item Número de bits de datos (entre 5 y 9).
 \end{itemize}
 
-La figura~\ref{fig:transceptor_bloques} recoge cómo se conectan entre sí esos bloques dentro de un
-canal. Los apartados que siguen recorren cada uno de ellos en el mismo orden en que un dato los
+Los apartados que siguen recorren cada uno de esos bloques en el mismo orden en que un dato los
 atraviesa: primero la base de tiempos que comparten transmisor y receptor, después los dos caminos
-de datos, y por último los bloques que los acoplan al PS.
-
-\begin{sidewaysfigure}
-    \centering
-    \figpendiente{IMG/Desarrollo/diagrama_transceptor.pdf}{0.97\textheight}{diagrama de bloques
-    del transceptor serie --- NCO, transmisor, receptor, registro de desplazamiento y FIFO
-    dentro de \texttt{CONFIGURABLE\_SERIAL}, con los dos vectores de interfaz hacia el PS y
-    las líneas físicas TD/RD/DE/SLO hacia el transceptor de la PCB}
-    \caption{Diagrama de bloques de un canal del transceptor serie configurable. El NCO
-    proporciona la temporización de bit a transmisor y receptor; el receptor entrega los bits
-    muestreados al registro de desplazamiento, que los normaliza y los escribe en la FIFO, de
-    donde el PS los lee. La palabra de configuración es común a ambos sentidos.}
-    \label{fig:transceptor_bloques}
-\end{sidewaysfigure}
+de datos, y por último los bloques que los acoplan al PS. El
+apartado~\ref{sec:bloque_canal} cierra el recorrido con el diagrama de conjunto
+(figura~\ref{fig:transceptor_bloques}), una vez presentadas todas las piezas que aparecen en él.
 
 \subsection{Oscilador controlado numéricamente (NCO)}
 
@@ -798,7 +786,7 @@ sección~\ref{sec:transporte_desarrollo}, donde \texttt{Data\_read} lo conduce l
 registro, hacía que el receptor de DMA capturase varias veces la misma palabra de la FIFO. Con
 la lectura a nivel, la FIFO avanza exactamente en el ciclo en que el consumidor acepta el dato.
 
-\subsection{Bloque de canal}
+\subsection{Bloque de canal} \label{sec:bloque_canal}
 
 \texttt{CONFIGURABLE\_SERIAL.vhd} instancia el transmisor, el receptor, el registro de
 desplazamiento y la FIFO, y añade la lógica de acoplamiento entre ellos y con el PS:
@@ -827,6 +815,28 @@ desplazamiento y la FIFO, y añade la lógica de acoplamiento entre ellos y con 
     camino de recepción (FIFO vacía, escritura en FIFO, bit válido y línea registrada), empleada
     únicamente para el diagnóstico en simulación.
 \end{itemize}
+
+Con el canal ya completo, la figura~\ref{fig:transceptor_bloques} recoge el conjunto: los bloques
+descritos en los apartados anteriores, la lógica de acoplamiento que acaba de enumerarse y los
+puertos con los que el canal se presenta al exterior, agrupados por función. Se aprecia en ella
+que la palabra de configuración es común a los dos sentidos, que el camino de recepción encadena
+receptor, registro de desplazamiento y FIFO antes de llegar al PS, y que \texttt{SLO} no entra en
+la lógica: viaja del PS al pin del transceptor físico sin tocar el canal.
+
+\begin{sidewaysfigure}
+    \centering
+    \figpendiente{IMG/Desarrollo/diagrama_transceptor.pdf}{0.97\textheight}{diagrama de bloques
+    del transceptor serie --- NCO, transmisor, receptor, registro de desplazamiento y FIFO
+    dentro de \texttt{CONFIGURABLE\_SERIAL}, con sus puertos agrupados por función y
+    las líneas físicas TD/RD/DE/SLO hacia el transceptor de la PCB}
+    \caption{Diagrama de bloques de un canal del transceptor serie configurable, con los puertos
+    de \texttt{CONFIGURABLE\_SERIAL} agrupados por función. El NCO proporciona la temporización de
+    bit a transmisor y receptor; el receptor entrega los bits muestreados al registro de
+    desplazamiento, que los normaliza y los escribe en la FIFO, de donde el PS los lee. La palabra
+    de configuración es común a ambos sentidos, y \texttt{SLO} va del PS al pin del transceptor
+    físico sin pasar por la lógica.}
+    \label{fig:transceptor_bloques}
+\end{sidewaysfigure}
 
 \subsection{Bloque \textit{top} del transceptor}
 

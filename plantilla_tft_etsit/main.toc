@@ -93,18 +93,18 @@
 \contentsline {subsection}{\numberline {3.1.3}Establecimiento de un flujo de desarrollo completo}{13}{subsection.3.1.3}%
 \contentsline {section}{\numberline {3.2}Diseño del transceptor serie configurable (PL)}{18}{section.3.2}%
 \contentsline {subsection}{\numberline {3.2.1}Oscilador controlado numéricamente (NCO)}{19}{subsection.3.2.1}%
-\contentsline {subsection}{\numberline {3.2.2}Transmisor}{21}{subsection.3.2.2}%
-\contentsline {subsubsection}{Máquina de estados}{22}{section*.77}%
-\contentsline {subsubsection}{Lógica de apoyo a la máquina de estados}{23}{section*.79}%
-\contentsline {subsubsection}{Retardo de establecimiento del \textit {Driver Enable}}{24}{section*.80}%
-\contentsline {subsection}{\numberline {3.2.3}Receptor}{24}{subsection.3.2.3}%
-\contentsline {subsubsection}{Máquina de estados}{25}{section*.82}%
-\contentsline {subsubsection}{Lógica de apoyo a la máquina de estados}{26}{section*.83}%
-\contentsline {subsubsection}{Verificación del bit de inicio a mitad de período}{26}{section*.84}%
-\contentsline {subsection}{\numberline {3.2.4}Registro de desplazamiento}{26}{subsection.3.2.4}%
-\contentsline {subsection}{\numberline {3.2.5}FIFO}{27}{subsection.3.2.5}%
-\contentsline {subsection}{\numberline {3.2.6}Bloque de canal}{27}{subsection.3.2.6}%
-\contentsline {subsection}{\numberline {3.2.7}Bloque \textit {top} del transceptor}{28}{subsection.3.2.7}%
+\contentsline {subsection}{\numberline {3.2.2}Transmisor}{20}{subsection.3.2.2}%
+\contentsline {subsubsection}{Máquina de estados}{21}{section*.76}%
+\contentsline {subsubsection}{Lógica de apoyo a la máquina de estados}{22}{section*.78}%
+\contentsline {subsubsection}{Retardo de establecimiento del \textit {Driver Enable}}{23}{section*.79}%
+\contentsline {subsection}{\numberline {3.2.3}Receptor}{23}{subsection.3.2.3}%
+\contentsline {subsubsection}{Máquina de estados}{24}{section*.81}%
+\contentsline {subsubsection}{Lógica de apoyo a la máquina de estados}{25}{section*.82}%
+\contentsline {subsubsection}{Verificación del bit de inicio a mitad de período}{25}{section*.83}%
+\contentsline {subsection}{\numberline {3.2.4}Registro de desplazamiento}{25}{subsection.3.2.4}%
+\contentsline {subsection}{\numberline {3.2.5}FIFO}{26}{subsection.3.2.5}%
+\contentsline {subsection}{\numberline {3.2.6}Bloque de canal}{26}{subsection.3.2.6}%
+\contentsline {subsection}{\numberline {3.2.7}Bloque \textit {top} del transceptor}{27}{subsection.3.2.7}%
 \contentsline {subsubsection}{Envoltorios de nivel superior}{29}{section*.86}%
 \contentsline {subsection}{\numberline {3.2.8}Verificación en simulación del canal completo}{30}{subsection.3.2.8}%
 \contentsline {subsection}{\numberline {3.2.9}Bloque Zynq UltraScale+ MPSoC}{31}{subsection.3.2.9}%
