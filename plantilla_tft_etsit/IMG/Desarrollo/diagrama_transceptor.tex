@@ -1,5 +1,6 @@
 % ---------------------------------------------------------------------------
-% Diagrama de bloques de un canal del transceptor serie configurable.
+% Diagrama de bloques de un canal del transceptor serie configurable, con los
+% puertos de CONFIGURABLE_SERIAL expuestos y agrupados por función.
 % Fuente del PDF que incluye la memoria (capítulo 3).
 %
 % Compilar:  pdflatex diagrama_transceptor.tex
@@ -27,106 +28,159 @@
     ext/.style={draw=cExt!80!black, line width=0.9pt, rounded corners=2pt,
                 fill=cExt!10},
     aux/.style={draw=cRef, line width=0.6pt, rounded corners=2pt, fill=white},
-    sig/.style={-{Stealth[length=4.5pt]}, line width=0.7pt, cRef!85!black},
-    bus/.style={-{Stealth[length=6pt]}, line width=1.6pt, cRef!60!black},
-    stub/.style={-{Stealth[length=4pt]}, line width=0.7pt, cRef!85!black},
+    sig/.style={-{Stealth[length=4pt]}, line width=0.6pt, cRef!85!black},
+    plain/.style={line width=0.6pt, cRef!85!black},
+    ck/.style={-{Stealth[length=4pt]}, line width=0.55pt, cRef!65!black, dashed},
+    slo/.style={-{Stealth[length=4.5pt]}, line width=0.7pt, cIP!75!black, dashed},
+    bus/.style={-{Stealth[length=6pt]}, line width=1.5pt, cRef!60!black},
+    port/.style={font=\ttfamily\scriptsize, anchor=west},
+    portr/.style={font=\ttfamily\scriptsize, anchor=east},
+    grp/.style={font=\sffamily\scriptsize\bfseries, anchor=west,
+                text=cRef!60!black},
+    name/.style={font=\ttfamily\scriptsize, align=center},
     lbl/.style={font=\sffamily\scriptsize, inner sep=2pt},
     tlbl/.style={font=\ttfamily\scriptsize, inner sep=2pt},
-    name/.style={font=\ttfamily\scriptsize, align=center},
 ]
 
-% ===================== Envolvente del canal =====================
-\draw[draw=cRef!70, dashed, line width=0.8pt, rounded corners=5pt]
-      (3.30,0.40) rectangle (16.40,8.30);
-\node[name, anchor=north east, text=cRef!55!black] at (16.25,8.22)
-      {CONFIGURABLE\_SERIAL};
-
 % ===================== PS =====================
-\draw[ext] (0,1.20) rectangle (2.20,7.90);
-\node at (1.10,4.55) {\textbf{PS}};
+\draw[ext] (0,1.50) rectangle (3.00,10.60);
+\node at (1.50,6.05) {\textbf{PS}};
 
-% ===================== Transmisor =====================
-\draw[blk] (7.00,6.30) rectangle (11.00,7.60);
-\node[name] at (9.00,7.28) {TX\_CONFIGURABLE\_SERIAL};
-\draw[aux] (9.75,6.45) rectangle (10.88,6.95);
-\node[font=\ttfamily\scriptsize] at (10.31,6.70) {NCO};
+% ===================== Contorno del bloque de canal =====================
+\draw[blk] (6.00,1.50) rectangle (17.20,10.60);
+\node[name, anchor=north] at (11.60,10.48) {CONFIGURABLE\_SERIAL};
 
-% ===================== Receptor =====================
-\draw[blk] (7.00,2.10) rectangle (11.00,3.40);
-\node[name] at (9.00,3.08) {RX\_CONFIGURABLE\_SERIAL};
-\draw[aux] (9.75,2.25) rectangle (10.88,2.75);
-\node[font=\ttfamily\scriptsize] at (10.31,2.50) {NCO};
+% ===================== Puertos: sistema =====================
+\node[grp] at (6.15,10.05) {SISTEMA};
+\node[port] at (6.15,9.70) {Clk};
+\node[port] at (6.15,9.35) {Reset};
+\draw[sig] (3.00,9.70) -- (6.00,9.70);
+\draw[sig] (3.00,9.35) -- (6.00,9.35);
 
-% ===================== Registro de desplazamiento y FIFO =====================
-\draw[blk] (12.80,2.10) rectangle (15.10,3.30);
-\node[name] at (13.95,2.70) {ShiftRegister};
+% ===================== Puertos: configuración =====================
+\node[grp] at (6.15,8.95) {CONFIGURACIÓN};
+\node[port] at (6.15,8.60) {baud\_sel[5:0]};
+\node[port] at (6.15,8.25) {stop\_bit[1:0]};
+\node[port] at (6.15,7.90) {parity[2:0]};
+\node[port] at (6.15,7.55) {bit\_order};
+\node[port] at (6.15,7.20) {data\_bits[2:0]};
+\foreach \y in {8.60,8.25,7.90,7.55,7.20} \draw[sig] (3.00,\y) -- (6.00,\y);
 
-\draw[ip] (12.80,4.40) rectangle (15.10,5.40);
-\node[name] at (13.95,4.90) {FIFO};
+% ===================== Puertos: transmisión =====================
+\node[grp] at (6.15,6.80) {TX};
+\node[port] at (6.15,6.45) {Data\_in[8:0]};
+\node[port] at (6.15,6.10) {TX\_Send};
+\node[port] at (6.15,5.75) {TX\_RDY};
+\draw[sig] (3.00,6.45) -- (6.00,6.45);
+\draw[sig] (3.00,6.10) -- (6.00,6.10);
+\draw[sig] (6.00,5.75) -- (3.00,5.75);
 
-% ===================== Registro de la línea de entrada =====================
-\draw[aux] (11.15,0.95) rectangle (12.05,1.45);
-\node[lbl] at (11.60,1.20) {reg.};
+% ===================== Puertos: recepción =====================
+\node[grp] at (6.15,5.35) {RX};
+\node[port] at (6.15,5.00) {Data\_out[8:0]};
+\node[port] at (6.15,4.60) {Data\_read};
+\node[port] at (6.15,4.20) {Empty};
+\node[port] at (6.15,3.80) {Full};
+\node[port] at (6.15,3.45) {PAR\_ERROR};
+\node[port] at (6.15,3.10) {FRAME\_ERROR};
+\node[port] at (6.15,2.75) {ERROR\_OK};
+\draw[sig] (6.00,5.00) -- (3.00,5.00);
+\draw[sig] (3.00,4.60) -- (6.00,4.60);
+\draw[sig] (6.00,4.20) -- (3.00,4.20);
+\draw[sig] (6.00,3.80) -- (3.00,3.80);
+\draw[sig] (6.00,3.45) -- (3.00,3.45);
+\draw[sig] (6.00,3.10) -- (3.00,3.10);
+\draw[sig] (3.00,2.75) -- (6.00,2.75);
+
+% ===================== Puertos: línea física =====================
+\node[portr] at (17.05,6.60) {TD};
+\node[portr] at (17.05,6.20) {DE};
+\node[portr] at (17.05,2.25) {RD};
+
+% ===================== Bloques internos =====================
+\draw[blk] (9.00,5.50) rectangle (12.20,7.00);
+\node[name, anchor=north] at (10.60,6.90) {TX\_CONFIGURABLE\\\_SERIAL};
+\draw[aux] (11.20,5.65) rectangle (12.10,6.10);
+\node[font=\ttfamily\scriptsize] at (11.65,5.88) {NCO};
+
+\draw[blk] (12.00,2.00) rectangle (14.60,3.40);
+\node[name, anchor=north] at (13.30,3.30) {RX\_CONFIGURABLE\\\_SERIAL};
+\draw[aux] (13.60,2.15) rectangle (14.50,2.60);
+\node[font=\ttfamily\scriptsize] at (14.05,2.38) {NCO};
+
+\draw[blk] (12.00,4.00) rectangle (14.60,4.90);
+\node[name] at (13.30,4.45) {ShiftRegister};
+
+\draw[ip] (9.00,3.70) rectangle (11.00,5.20);
+\node[name] at (10.00,4.45) {FIFO};
+
+\draw[aux] (15.10,2.00) rectangle (15.90,2.50);
+\node[lbl] at (15.50,2.25) {reg.};
 
 % ===================== Transceptor físico y bus =====================
-\draw[ext] (17.50,3.00) rectangle (19.70,6.40);
-\node[align=center] at (18.60,4.70) {Transceptor\\físico};
-\draw[ext] (20.70,4.00) rectangle (22.30,5.40);
-\node[align=center] at (21.50,4.70) {Bus\\\texttt{A} / \texttt{B}};
+\draw[ext] (18.60,3.00) rectangle (20.80,7.00);
+\node[align=center] at (19.70,5.00) {Transceptor\\físico};
+\draw[ext] (21.80,4.30) rectangle (23.40,5.70);
+\node[align=center] at (22.60,5.00) {Bus\\\texttt{A} / \texttt{B}};
 
-% ===================== Vector de escritura y configuración =====================
-\draw[bus] (2.20,6.90) -- (4.60,6.90);
-\node[lbl, above, text=cRef!55!black] at (3.40,6.96) {config.\ 28~b};
-\draw[line width=0.7pt, cRef!85!black] (4.60,3.00) -- (4.60,7.10);
-\draw[stub] (4.60,7.10) -- (7.00,7.10);
-\draw[stub] (4.60,3.00) -- (7.00,3.00);
-\draw[stub] (4.60,4.60) -- (12.80,4.60);
-\node[tlbl, above] at (6.60,4.62) {\texttt{Data\_read}};
+% ===================== Reloj y reset hacia los bloques =====================
+\draw[plain, dashed, cRef!65!black] (7.90,9.70) -- (8.40,9.70);
+\draw[plain, dashed, cRef!65!black] (7.90,9.35) -- (8.40,9.35);
+\draw[plain, dashed, cRef!65!black] (8.40,9.35) -- (8.40,9.70);
+\draw[plain, dashed, cRef!65!black] (8.40,9.55) -- (16.40,9.55);
+\draw[ck] (10.00,9.55) -- (10.00,7.00);
+\draw[ck] (16.40,9.55) -- (16.40,3.40);
 
-% ===================== Vector de estado y lectura =====================
-\draw[line width=0.7pt, cRef!85!black] (15.10,4.90) -- (15.75,4.90)
-      -- (15.75,5.80) -- (4.60,5.80);
-\draw[bus] (4.60,5.80) -- (2.20,5.80);
-\node[lbl, above, text=cRef!55!black] at (3.40,5.86) {estado 14~b};
+% ===================== Configuración hacia los bloques =====================
+\foreach \y in {8.60,8.25,7.90,7.55,7.20} \draw[plain] (7.90,\y) -- (8.40,\y);
+\draw[plain] (8.40,7.20) -- (8.40,8.60);
+\draw[plain] (8.40,7.90) -- (16.80,7.90);
+\draw[sig] (10.60,7.90) -- (10.60,7.00);
+\draw[plain] (16.80,7.90) -- (16.80,2.55);
+\draw[sig] (16.80,4.70) -- (14.60,4.70);
+\draw[sig] (16.80,2.55) -- (14.60,2.55);
 
 % ===================== Camino de transmisión =====================
-\draw[sig] (11.00,7.20) -- (17.15,7.20) -- (17.15,5.90) -- (17.50,5.90);
-\node[tlbl, above] at (13.60,7.22) {\texttt{TD}};
-\draw[sig] (11.00,6.60) -- (16.80,6.60) -- (16.80,5.35) -- (17.50,5.35);
-\node[tlbl, above] at (13.60,6.62) {\texttt{DE}};
+\draw[sig] (7.90,6.45) -- (9.00,6.45);
+\draw[sig] (7.90,6.10) -- (9.00,6.10);
+\draw[sig] (9.00,5.75) -- (7.90,5.75);
+\draw[sig] (12.20,6.60) -- (18.60,6.60);
+\draw[sig] (12.20,6.20) -- (18.60,6.20);
 
 % ===================== Camino de recepción =====================
-\draw[sig] (17.50,3.60) -- (17.35,3.60) -- (17.35,1.20) -- (12.05,1.20);
-\node[tlbl, above] at (14.80,1.22) {\texttt{RD}};
-\draw[sig] (11.15,1.20) -- (7.60,1.20) -- (7.60,2.10);
+\draw[sig] (17.20,2.25) -- (15.90,2.25);
+\draw[sig] (15.10,2.25) -- (14.60,2.25);
+\draw[sig] (14.60,4.45) -- (15.50,4.45) -- (15.50,3.05) -- (14.60,3.05);
+\draw[sig] (13.30,3.40) -- (13.30,4.00);
+\node[tlbl, anchor=west] at (13.36,3.70) {\texttt{Valid}};
+\draw[sig] (12.00,4.45) -- (11.00,4.45);
+\node[tlbl, anchor=south] at (11.50,4.50) {\texttt{Q}};
+\draw[sig] (12.40,3.40) -- (12.40,3.80) -- (11.00,3.80);
+\node[tlbl, anchor=south] at (11.70,3.84) {\texttt{Store}};
 
-\draw[sig] (11.00,2.90) -- (12.80,2.90);
-\node[tlbl, above] at (11.90,2.92) {\texttt{Valid}};
+% ===================== Salidas del canal hacia los puertos =====================
+\draw[sig] (9.00,5.00) -- (7.90,5.00);
+\draw[sig] (7.90,4.60) -- (9.00,4.60);
+\draw[sig] (9.00,4.20) -- (7.90,4.20);
+\draw[sig] (9.00,3.80) -- (7.90,3.80);
+\draw[sig] (12.00,3.45) -- (7.90,3.45);
+\draw[sig] (12.00,3.10) -- (7.90,3.10);
+\draw[sig] (7.90,2.75) -- (12.00,2.75);
 
-\draw[sig] (13.95,3.30) -- (13.95,4.40);
-\node[tlbl, right] at (14.02,3.85) {\texttt{Q}};
+% ===================== Transceptor -> bus =====================
+\draw[bus] (20.80,5.00) -- (21.80,5.00);
 
-% realimentación de la palabra normalizada hacia el receptor
-\draw[sig] (13.30,2.10) -- (13.30,1.80) -- (10.20,1.80) -- (10.20,2.10);
-
-% escritura de la palabra completa en la FIFO
-\draw[sig] (11.00,3.25) -- (11.60,3.25) -- (11.60,5.00) -- (12.80,5.00);
-\node[tlbl, anchor=east] at (11.52,4.05) {\texttt{Store}};
-
-% ===================== Bus físico =====================
-\draw[bus] (19.70,4.70) -- (20.70,4.70);
-
-% ===================== SLO: del vector de configuración al pin =====================
-\draw[sig, dashed, cIP!75!black] (2.20,0.70) -- (18.60,0.70) -- (18.60,3.00);
-\node[tlbl, above, text=cIP!55!black] at (5.20,0.72) {\texttt{SLO}};
+% ===================== SLO: del PS al pin del transceptor =====================
+\draw[slo] (3.00,1.00) -- (19.70,1.00) -- (19.70,3.00);
+\node[tlbl, anchor=south, text=cIP!55!black] at (4.60,1.04) {\texttt{SLO}};
 
 % ===================== Leyenda =====================
-\draw[blk] (3.30,-0.35) rectangle (3.62,-0.13);
-\node[lbl, anchor=west] at (3.70,-0.24) {diseño propio};
-\draw[ip] (6.30,-0.35) rectangle (6.62,-0.13);
-\node[lbl, anchor=west] at (6.70,-0.24) {IP de Xilinx};
-\draw[ext] (9.20,-0.35) rectangle (9.52,-0.13);
-\node[lbl, anchor=west] at (9.60,-0.24) {fuera de la PL};
+\draw[blk] (6.00,0.35) rectangle (6.32,0.57);
+\node[lbl, anchor=west] at (6.40,0.46) {diseño propio};
+\draw[ip] (9.00,0.35) rectangle (9.32,0.57);
+\node[lbl, anchor=west] at (9.40,0.46) {IP de Xilinx};
+\draw[ext] (11.90,0.35) rectangle (12.22,0.57);
+\node[lbl, anchor=west] at (12.30,0.46) {fuera de la PL};
 
 \end{tikzpicture}
 \end{document}
