@@ -30,7 +30,10 @@
 \usepackage{longtable}
 \usepackage{tabularx}
 \usepackage{multirow}
-\usepackage{rotating}   % figuras apaisadas (diagramas de bloques anchos)
+% Figuras apaisadas (diagramas de bloques anchos). La opción figuresright fija el
+% sentido de giro: sin ella, rotating alterna según la página sea par o impar y
+% unas figuras se leen girando el papel a un lado y otras al contrario.
+\usepackage[figuresright]{rotating}
 
 % --- Gráficos de la comparativa de transportes (capítulo de resultados) ---
 \usepackage{pgfplots}
