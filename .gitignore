@@ -56,3 +56,21 @@ waf
 *~
 .vscode/
 .idea/
+tfm.code-workspace
+
+# Documentación de terceros: se cita en la memoria y se descarga del fabricante,
+# no se versiona aquí.
+tfm/00_docs/ug1182-zcu102-eval-bd.pdf
+
+# Copias duplicadas de ficheros que ya están versionados en su sitio:
+#   AOCS_SCH.pdf      = tfm/00_docs/pcbs/aocs/LINCE3_AOCS_V2.pdf
+#   CDHS_SCH.pdf      = tfm/00_docs/pcbs/cdhs/LINCE3_CDHS.pdf
+#   IMG/Desarrollo/   = plantilla_tft_etsit/IMG/Desarrollo/
+#   *_3d*.png         = plantilla_tft_etsit/IMG/pcbs/
+/AOCS_SCH.pdf
+/CDHS_SCH.pdf
+/IMG/Desarrollo/
+IMG/AOCS_osciloscopio/aocs_3d.png
+IMG/AOCS_osciloscopio/aocs_3d_1.png
+IMG/cdhs_osciloscopio/cdhs_3d.png
+IMG/cdhs_osciloscopio/cdhs_3d_1.png
