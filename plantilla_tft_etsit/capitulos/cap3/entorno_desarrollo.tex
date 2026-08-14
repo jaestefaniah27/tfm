@@ -333,9 +333,9 @@ canal. Los apartados que siguen recorren cada uno de ellos en el mismo orden en 
 atraviesa: primero la base de tiempos que comparten transmisor y receptor, después los dos caminos
 de datos, y por último los bloques que los acoplan al PS.
 
-\begin{figure}[H]
+\begin{sidewaysfigure}
     \centering
-    \figpendiente{IMG/Desarrollo/diagrama_transceptor.pdf}{\textwidth}{diagrama de bloques
+    \figpendiente{IMG/Desarrollo/diagrama_transceptor.pdf}{0.97\textheight}{diagrama de bloques
     del transceptor serie --- NCO, transmisor, receptor, registro de desplazamiento y FIFO
     dentro de \texttt{CONFIGURABLE\_SERIAL}, con los dos vectores de interfaz hacia el PS y
     las líneas físicas TD/RD/DE/SLO hacia el transceptor de la PCB}
@@ -344,7 +344,7 @@ de datos, y por último los bloques que los acoplan al PS.
     muestreados al registro de desplazamiento, que los normaliza y los escribe en la FIFO, de
     donde el PS los lee. La palabra de configuración es común a ambos sentidos.}
     \label{fig:transceptor_bloques}
-\end{figure}
+\end{sidewaysfigure}
 
 \subsection{Oscilador controlado numéricamente (NCO)}
 

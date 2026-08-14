@@ -154,9 +154,9 @@ distintas:
 De ahí la asimetría de la figura~\ref{fig:mcdma_bd}: un solo canal en el sentido de transmisión y
 catorce en el de recepción, sobre un mismo motor multicanal.
 
-\begin{figure}[H]
+\begin{sidewaysfigure}
     \centering
-    \figpendiente{IMG/Desarrollo/diagrama_arquitectura_mcdma.pdf}{\textwidth}{arquitectura
+    \figpendiente{IMG/Desarrollo/diagrama_arquitectura_mcdma.pdf}{0.97\textheight}{arquitectura
     completa de la solución final --- DDR y RTEMS en el PS; \texttt{axi\_mcdma} con 1 canal MM2S
     y 14 canales S2MM; conversores de anchura 32$\rightarrow$8 y 8$\rightarrow$32;
     \texttt{BRIDGE\_TX\_TOP} y \texttt{BRIDGE\_RX\_TOP}; los 14 transceptores serie;
@@ -167,7 +167,7 @@ catorce en el de recepción, sobre un mismo motor multicanal.
     VHDL repartiendo y recogiendo de los catorce transceptores. Es también la vista de conjunto
     del sistema completo, del \textit{buffer} en la DDR al pin del conector FMC.}
     \label{fig:mcdma_bd}
-\end{figure}
+\end{sidewaysfigure}
 
 \subsubsection{Camino de transmisión: un canal para catorce UART}
 
