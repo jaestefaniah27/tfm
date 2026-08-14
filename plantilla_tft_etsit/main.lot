@@ -4,37 +4,37 @@
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {3.1}{\ignorespaces Posiciones del selector de modo de arranque SW6 de la ZCU102. Adaptada de \cite {xilinx2023ug1182}.}}{15}{table.caption.74}%
-\contentsline {table}{\numberline {3.2}{\ignorespaces Puertos del transmisor \texttt {TX\_CONFIGURABLE\_SERIAL}.}}{19}{table.caption.75}%
-\contentsline {table}{\numberline {3.3}{\ignorespaces Puertos del receptor \texttt {RX\_CONFIGURABLE\_SERIAL}.}}{23}{table.caption.80}%
-\contentsline {table}{\numberline {3.4}{\ignorespaces Reparto de bits de los vectores de interfaz del bloque \texttt {CONFIGURABLE\_SERIAL\_TOP}.}}{27}{table.caption.84}%
-\contentsline {table}{\numberline {3.5}{\ignorespaces API pública del driver serie.}}{31}{table.caption.86}%
-\contentsline {table}{\numberline {3.6}{\ignorespaces Control complementario DE/RE en el THVD1424.}}{37}{table.caption.99}%
-\contentsline {table}{\numberline {3.7}{\ignorespaces Las tres arquitecturas de transporte implementadas y comparadas.}}{45}{table.caption.126}%
-\contentsline {table}{\numberline {3.8}{\ignorespaces Mapa de registros del bloque \texttt {TX\_ISR\_EOF\_HANDLER} (base \texttt {0xA0001000}).}}{48}{table.caption.133}%
-\contentsline {table}{\numberline {3.9}{\ignorespaces Mapa de memoria de la variante MCDMA.}}{49}{table.caption.136}%
-\contentsline {table}{\numberline {3.10}{\ignorespaces Estructura del descriptor de buffer (BD) del MCDMA.}}{49}{table.caption.138}%
-\contentsline {table}{\numberline {3.11}{\ignorespaces Topología de buses reproducida por el módulo de \textit {loopback} de la PL.}}{51}{table.caption.139}%
+\contentsline {table}{\numberline {3.1}{\ignorespaces Posiciones del selector de modo de arranque SW6 de la ZCU102. Adaptada de \cite {xilinx2023ug1182}.}}{16}{table.caption.74}%
+\contentsline {table}{\numberline {3.2}{\ignorespaces Puertos del transmisor \texttt {TX\_CONFIGURABLE\_SERIAL}.}}{21}{table.caption.76}%
+\contentsline {table}{\numberline {3.3}{\ignorespaces Puertos del receptor \texttt {RX\_CONFIGURABLE\_SERIAL}.}}{24}{table.caption.81}%
+\contentsline {table}{\numberline {3.4}{\ignorespaces Reparto de bits de los vectores de interfaz del bloque \texttt {CONFIGURABLE\_SERIAL\_TOP}.}}{28}{table.caption.85}%
+\contentsline {table}{\numberline {3.5}{\ignorespaces API pública del driver serie.}}{33}{table.caption.87}%
+\contentsline {table}{\numberline {3.6}{\ignorespaces Control complementario DE/RE en el THVD1424.}}{41}{table.caption.100}%
+\contentsline {table}{\numberline {3.7}{\ignorespaces Las tres arquitecturas de transporte implementadas y comparadas.}}{53}{table.caption.128}%
+\contentsline {table}{\numberline {3.8}{\ignorespaces Mapa de registros del bloque \texttt {TX\_ISR\_EOF\_HANDLER} (base \texttt {0xA0001000}).}}{56}{table.caption.135}%
+\contentsline {table}{\numberline {3.9}{\ignorespaces Mapa de memoria de la variante MCDMA.}}{57}{table.caption.138}%
+\contentsline {table}{\numberline {3.10}{\ignorespaces Estructura del descriptor de buffer (BD) del MCDMA.}}{57}{table.caption.140}%
+\contentsline {table}{\numberline {3.11}{\ignorespaces Topología de buses reproducida por el módulo de \textit {loopback} de la PL.}}{60}{table.caption.141}%
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {4.1}{\ignorespaces Ocupación de la lógica programable de las tres variantes sobre el XCZU9EG.}}{60}{table.caption.152}%
-\contentsline {table}{\numberline {4.2}{\ignorespaces Huella de software del driver de cada variante (tamaño de \texttt {.text} y recursos RTEMS reservados en ejecución).}}{61}{table.caption.155}%
-\contentsline {table}{\numberline {4.3}{\ignorespaces Interrupciones por kilobyte transferido.}}{62}{table.caption.157}%
-\contentsline {table}{\numberline {4.4}{\ignorespaces Latencia de entrega de un frame de 11 bytes, del envío en el maestro a la recepción completa en el esclavo (115\,200 8N1).}}{63}{table.caption.160}%
-\contentsline {table}{\numberline {4.5}{\ignorespaces \textit {Throughput} en B/s. El porcentaje es sobre el techo físico de la línea (11\,520 B/s).}}{63}{table.caption.163}%
-\contentsline {table}{\numberline {4.6}{\ignorespaces \textit {Throughput} (B/s) frente a la velocidad de línea (baudios). La variante DMA14 se omite por carecer de lazo de recepción.}}{64}{table.caption.166}%
-\contentsline {table}{\numberline {4.7}{\ignorespaces Rechazo de frames corruptos (T7) y comportamiento en desbordamiento del \textit {ring} de software (T5).}}{65}{table.caption.169}%
-\contentsline {table}{\numberline {4.8}{\ignorespaces Síntesis de la comparativa. En negrita, el mejor valor de cada fila.}}{66}{table.caption.171}%
-\contentsline {table}{\numberline {4.9}{\ignorespaces Topología de buses de la PCB de comunicación serie.}}{67}{table.caption.172}%
-\contentsline {table}{\numberline {4.10}{\ignorespaces Resultado de los nueve tests de caracterización de la PCB.}}{69}{table.caption.175}%
-\contentsline {table}{\numberline {4.11}{\ignorespaces Integridad del bus multipunto (T3) frente a la velocidad, con SLO~=~0. El escalón entre 460~kbps y 1~Mbps es nítido.}}{70}{table.caption.180}%
-\contentsline {table}{\numberline {4.12}{\ignorespaces Tasa de error en régimen permanente (T9), 10~s de tráfico continuo por bus.}}{72}{table.caption.182}%
-\addvspace {10\p@ }
-\addvspace {10\p@ }
-\contentsline {table}{\numberline {5.1}{\ignorespaces Mapa de señales entre la placa LINCE Comunicación Serial y el conector FMC HPC0 (P2) de la ZCU102.}}{80}{table.5.1}%
-\contentsline {table}{\numberline {5.2}{\ignorespaces Mapa de señales entre la placa CDHS y el conector FMC HPC0 de la ZCU102.}}{81}{table.caption.188}%
-\contentsline {table}{\numberline {5.3}{\ignorespaces Mapa de señales entre la placa AOCS y el conector FMC HPC0 de la ZCU102.}}{82}{table.caption.190}%
-\contentsline {table}{\numberline {5.4}{\ignorespaces Tabla NCO: frecuencias de baudrate soportadas y error medido (extracto, modo \textit {full-bit}).}}{83}{table.caption.192}%
-\contentsline {table}{\numberline {5.5}{\ignorespaces Distribución de las líneas de código desarrolladas en el trabajo.}}{84}{table.caption.194}%
+\contentsline {table}{\numberline {4.1}{\ignorespaces Ocupación de la lógica programable de las tres variantes sobre el XCZU9EG.}}{72}{table.caption.152}%
+\contentsline {table}{\numberline {4.2}{\ignorespaces Huella de software del driver de cada variante (tamaño de \texttt {.text} y recursos RTEMS reservados en ejecución).}}{73}{table.caption.155}%
+\contentsline {table}{\numberline {4.3}{\ignorespaces Interrupciones por kilobyte transferido.}}{74}{table.caption.157}%
+\contentsline {table}{\numberline {4.4}{\ignorespaces Latencia de entrega de un frame de 11 bytes, del envío en el maestro a la recepción completa en el esclavo (115\,200 8N1).}}{75}{table.caption.160}%
+\contentsline {table}{\numberline {4.5}{\ignorespaces \textit {Throughput} en B/s. El porcentaje es sobre el techo físico de la línea (11\,520 B/s).}}{75}{table.caption.163}%
+\contentsline {table}{\numberline {4.6}{\ignorespaces \textit {Throughput} (B/s) frente a la velocidad de línea (baudios). La variante DMA14 se omite por carecer de lazo de recepción.}}{76}{table.caption.166}%
+\contentsline {table}{\numberline {4.7}{\ignorespaces Rechazo de frames corruptos (T7) y comportamiento en desbordamiento del \textit {ring} de software (T5).}}{77}{table.caption.169}%
+\contentsline {table}{\numberline {4.8}{\ignorespaces Síntesis de la comparativa. En negrita, el mejor valor de cada fila.}}{78}{table.caption.171}%
+\contentsline {table}{\numberline {4.9}{\ignorespaces Topología de buses de la PCB de comunicación serie.}}{79}{table.caption.172}%
+\contentsline {table}{\numberline {4.10}{\ignorespaces Resultado de los nueve tests de caracterización de la PCB.}}{81}{table.caption.175}%
+\contentsline {table}{\numberline {4.11}{\ignorespaces Integridad del bus multipunto (T3) frente a la velocidad, con SLO~=~0. El escalón entre 460~kbps y 1~Mbps es nítido.}}{82}{table.caption.180}%
+\contentsline {table}{\numberline {4.12}{\ignorespaces Tasa de error en régimen permanente (T9), 10~s de tráfico continuo por bus.}}{84}{table.caption.182}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {5.6}{\ignorespaces Presupuesto económico}}{87}{table.caption.197}%
+\contentsline {table}{\numberline {5.1}{\ignorespaces Mapa de señales entre la placa LINCE Comunicación Serial y el conector FMC HPC0 (P2) de la ZCU102.}}{92}{table.5.1}%
+\contentsline {table}{\numberline {5.2}{\ignorespaces Mapa de señales entre la placa CDHS y el conector FMC HPC0 de la ZCU102.}}{93}{table.caption.188}%
+\contentsline {table}{\numberline {5.3}{\ignorespaces Mapa de señales entre la revisión V2 de la placa AOCS y el conector FMC HPC0 de la ZCU102.}}{93}{table.5.3}%
+\contentsline {table}{\numberline {5.4}{\ignorespaces Tabla NCO: las 29 velocidades del rango de uso ejercitadas en simulación, con sus incrementos de síntesis y el error medido (modo \textit {full-bit}).}}{96}{table.caption.191}%
+\contentsline {table}{\numberline {5.5}{\ignorespaces Distribución de las líneas de código desarrolladas en el trabajo.}}{97}{table.caption.193}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {5.6}{\ignorespaces Presupuesto económico}}{100}{table.caption.196}%

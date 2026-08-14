@@ -2,9 +2,9 @@ En este capítulo se recogen los resultados de la validación hardware del siste
 organizados en tres bloques según la placa validada: la sección~\ref{sec:validacion_cdhs} cubre
 las pruebas realizadas con la placa CDHS, la sección~\ref{sec:validacion_aocs} las realizadas con
 la placa AOCS, y la sección~\ref{sec:validacion_propia} recoge la validación de la placa de
-comunicación serie ---la comparativa de las tres arquitecturas de transporte
+comunicación serie: la comparativa de las tres arquitecturas de transporte
 PS--PL y la caracterización eléctrica de la placa ya fabricada, sobre sus catorce
-transceptores---. Las tres placas se conectan a la ZCU102 mediante FMC.
+transceptores. Las tres placas se conectan a la ZCU102 mediante FMC.
 
 % ===========================================================================
 \section{Validación CDHS} \label{sec:validacion_cdhs}
@@ -12,18 +12,16 @@ transceptores---. Las tres placas se conectan a la ZCU102 mediante FMC.
 
 \subsection{Montaje}
 
+La placa CDHS, cuyo aspecto tras la soldadura se recoge en la figura~\ref{fig:cdhs_soldada}, se
+conecta a la ZCU102 por el conector FMC HPC0. La figura~\ref{fig:sistema_montado} muestra el
+banco tal y como se utilizó durante toda la campaña, con la alimentación, la consola serie por
+USB y los arneses de \textit{loopback} conectados.
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth]{IMG/sistema_montado.jpg}
     \caption{Sistema completo montado: ZCU102 con la placa CDHS conectada al FMC.}
     \label{fig:sistema_montado}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.62\textwidth]{IMG/cdhs_soldada.jpg}
-    \caption{Placa CDHS con componentes montados (ambas caras).}
-    \label{fig:cdhs_foto}
 \end{figure}
 
 \subsection{Comunicaciones serie RS422/RS485} \label{sec:cdhs_rs}
@@ -45,29 +43,144 @@ continuación, la consola reportó \texttt{UART 00 [OK]}, \texttt{UART 01 [OK]},
 \texttt{UART 02 [OK]}.
 
 Las pruebas de \textit{loopback} mostraron que los mensajes enviados por UART 0 llegaban a
-UART 2 y viceversa, y los enviados por UART 1 llegaban correctamente. En las primeras
+UART 2 y viceversa, y los enviados por UART 1 llegaban correctamente. En algunas
 recepciones de esta captura aparecen caracteres corruptos (\texttt{?}), correspondientes a
 una iteración previa del diseño antes de aplicar la corrección de robustez del receptor
 descrita en el Capítulo~3 (verificación de \textit{start-bit} a mitad de período). Una
 vez implementada esa mejora en la FSM del receptor, los caracteres corruptos desaparecieron
-por completo en las pruebas posteriores.
+por completo en las pruebas posteriores. La traza completa de la sesión, desde el
+descubrimiento de los transceptores hasta el último intercambio, es la siguiente:
 
-\begin{lstlisting}[caption={Salida de terminal --- prueba RS422/RS485 con la placa CDHS (3 transceptores)}]
+\begin{lstlisting}[basicstyle=\ttfamily\scriptsize, caption={Salida completa del terminal --- prueba RS422/RS485 con la placa CDHS (3 transceptores)}]
+MMU_MAP: return from mmu_map_pl_axi_early()
 [TRANSCEIVER DEBUG] Detectados: 3 | Base: 0xA0000000 | INT: 0xA0003000
-UART 00 [OK]  UART 01 [OK]  UART 02 [OK]
-CMD> 0 HOLA MUNDO
+[TRANSCEIVER DEBUG]   - Transceptor 0: 0xA0000000
+[TRANSCEIVER DEBUG]   - Transceptor 1: 0xA0001000
+[TRANSCEIVER DEBUG]   - Transceptor 2: 0xA0002000
+
+=== ARRANQUE SISTEMA ZCU102 (5 UARTs) ===
+UART 00 [OK] Base: 0xA0000000
+UART 01 [OK] Base: 0xA0001000
+UART 02 [OK] Base: 0xA0002000
+[RX UART 00]: UART 2 Lista.
+
+=======================================================
+ CONSOLA DE CONTROL MULTI-TRANSCEPTOR
+-------------------------------------------------------
+ Formato: <ID> <MENSAJE> | <ID> SLO ON | <ID> SLO OFF
+ Ejemplos:
+   '0 Hola'      -> Envia 'Hola' por UART 0
+   'ALL Reset'   -> Envia 'Reset' por TODAS las UARTs
+   '2 SLO ON'    -> Activa el modo Slow Rate en UART 2
+   'ALL SLO OFF' -> Desactiva el modo Slow en TODAS
+=======================================================
+
+CMD>
+---- Sent utf8 encoded message: "0 hola" ----
+0 hola
 Tx -> UART 0: OK
-[RX UART 02]: HOLA MUNDO
-CMD> 2 HOLA MUNDO
+CMD> [RX UART 02]: hola
+---- Sent utf8 encoded message: "2 hola" ----
+2 hola
 Tx -> UART 2: OK
-[RX UART 00]: HOLA MUNDO
+CMD> [RX UART 00]: hola
+---- Sent utf8 encoded message: "0 hola" ----
+0 hola
+Tx -> UART 0: OK
+CMD> [RX UART 02]: hola
+---- Sent utf8 encoded message: "2 hola" ----
+2 hola
+Tx -> UART 2: OK
+CMD> [RX UART 00]: hola
+---- Sent utf8 encoded message: "0 hola" ----
+0 hola
+Tx -> UART 0: OK
+CMD> [RX UART 02]: ?hola
+---- Sent utf8 encoded message: "2 hola" ----
+2 hola
+Tx -> UART 2: OK
+CMD> [RX UART 00]: ?hola
+---- Sent utf8 encoded message: "0 hola" ----
+0 hola
+Tx -> UART 0: OK
+CMD> [RX UART 02]: ?hola
+---- Sent utf8 encoded message: "2 hola" ----
+2 hola
+Tx -> UART 2: OK
+CMD> [RX UART 00]: ?hola
+---- Sent utf8 encoded message: "0 hola" ----
+0 hola
+Tx -> UART 0: OK
+CMD> [RX UART 02]: hola
+---- Sent utf8 encoded message: "2 hola" ----
+2 hola
+Tx -> UART 2: OK
+CMD> [RX UART 00]: hola
+---- Sent utf8 encoded message: "0 HOLA MUNDO" ----
+0 HOLA MUNDO
+Tx -> UART 0: OK
+CMD> [RX UART 02]: HOLA MUNDO
+---- Sent utf8 encoded message: "1 HOLA MUNDO" ----
+1 HOLA MUNDO
+Tx -> UART 1: OK
+CMD>
+---- Sent utf8 encoded message: "2 HOLA MUNDO" ----
+2 HOLA MUNDO
+Tx -> UART 2: OK
+CMD> [RX UART 00]: HOLA MUNDO
 \end{lstlisting}
+
+Las líneas \texttt{---- Sent utf8 encoded message ----} las escribe el terminal del PC al enviar
+cada orden, no la aplicación en placa. El encabezado \texttt{(5 UARTs)} es una cadena fija de la
+aplicación de prueba, heredada de la campaña de la placa AOCS y no actualizada al recompilar; el
+número de canales realmente activos es el que reporta el descubrimiento dinámico en las líneas
+anteriores, tres en esta sesión. La traza se conserva íntegra en
+\texttt{tfm/\allowbreak 00\_docs/\allowbreak logs\_terminal/\allowbreak cdhs\_testing\_rs}.
+
+\subsubsection{Efecto del control de \textit{slew rate}}
+
+Sobre estos mismos canales se midieron con el osciloscopio los flancos de la línea diferencial
+con el control de \textit{slew rate} del THVD1424 deshabilitado y habilitado, que en esta placa
+se selecciona con el \textit{jumper} SLR de cada canal (P4 en la figura~\ref{fig:cdhs_rs}). La
+diferencia es de casi un orden de magnitud: con el limitador fuera, la transición ocupa unas
+pocas decenas de nanosegundos, mientras que con el limitador activo se estira hasta cerca de un
+cuarto de microsegundo (figura~\ref{fig:cdhs_slew}). Esa pendiente más suave es la que reduce las
+emisiones radiadas y la sensibilidad a las reflexiones en cables largos, y es también la que
+acota la velocidad máxima alcanzable, un compromiso que se cuantifica sobre la placa de
+comunicación serie en la sección~\ref{sec:pcb_slo}.
 
 \begin{figure}[H]
     \centering
-    \fbox{\parbox{0.85\textwidth}{\centering \textit{[Figura pendiente: captura completa del terminal \texttt{cdhs\_testing\_rs} disponible en \texttt{tfm/00\_docs/logs\_terminal/}]}\vspace{0.5cm}}}
-    \caption{Captura completa del terminal de pruebas RS en la placa CDHS.}
-    \label{fig:cdhs_rs_terminal}
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{IMG/slew/rs485_flanco_rapido.png}
+        \caption{Subida sin limitador (20~ns/div).}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{IMG/slew/rs485_flanco_lento.png}
+        \caption{Subida con limitador (100~ns/div).}
+    \end{subfigure}
+
+    \vspace{0.4cm}
+
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{IMG/slew/rs485_bajada_rapida.png}
+        \caption{Bajada sin limitador (20~ns/div).}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{IMG/slew/rs485_bajada_lenta.png}
+        \caption{Bajada con limitador (100~ns/div).}
+    \end{subfigure}
+    \caption{Flancos de la línea RS485 de la placa CDHS con y sin control de \textit{slew rate}.
+    Obsérvese que la base de tiempos de las capturas de la derecha es cinco veces mayor que la de
+    las de la izquierda: la transición pasa de unas pocas decenas de nanosegundos a varios
+    centenares.}
+    \label{fig:cdhs_slew}
 \end{figure}
 
 \subsection{Bus CAN}
@@ -98,8 +211,9 @@ extendido, manejo de tramas RTR y pruebas de interrupción por hardware. El resu
 
 Un resultado relevante adicional fue la verificación del efecto de las resistencias de
 terminación sobre la integridad de la señal CAN. Sin terminación, la señal presentaba
-reflexiones visibles que degradaban los flancos; con ambas resistencias de 60~$\Omega$
-conectadas, la forma de onda resultó limpia y bien definida.
+reflexiones visibles que degradaban los flancos (figura~\ref{fig:can_sin_term}); con ambas
+resistencias de 60~$\Omega$ conectadas, la forma de onda resultó limpia y bien definida
+(figura~\ref{fig:can_con_term}).
 
 \begin{figure}[H]
     \centering
@@ -143,18 +257,78 @@ ADS7950: CH0= 246  CH1=  43  CH2= 102  CH3=  22   <- de vuelta a 0 V
 Los canales CH0 ($\approx$245), CH1 ($\approx$43) y CH3 ($\approx$19) mostraron valores
 estables bajos durante todo el ensayo, correspondientes a las entradas no excitadas.
 
-\begin{figure}[H]
-    \centering
-    \fbox{\parbox{0.85\textwidth}{\centering \textit{[Figura pendiente: captura completa del terminal \texttt{cdhs\_testing\_adc.txt} disponible en \texttt{tfm/00\_docs/logs\_terminal/}]}\vspace{0.5cm}}}
-    \caption{Captura completa del terminal de lectura ADC (placa CDHS).}
-    \label{fig:cdhs_adc_terminal}
-\end{figure}
+El barrido completo, tal y como salió por el terminal, es el siguiente. Se aprecian los dos
+tramos de subida y bajada de la rampa aplicada a CH2, los dos escalones intermedios en los que la
+fuente se dejó fija y la estabilidad de los otros tres canales durante todo el ensayo:
+
+\begin{lstlisting}[basicstyle=\ttfamily\scriptsize, caption={Salida completa del terminal --- barrido de tensión sobre CH2 del ADS7950 (placa CDHS)}]
+ADS7950: CH0= 244  CH1=  43  CH2=   0  CH3=  19
+ADS7950: CH0= 243  CH1=  43  CH2=   0  CH3=  19
+ADS7950: CH0= 244  CH1=  43  CH2=   0  CH3=  19
+ADS7950: CH0= 245  CH1=  43  CH2=   0  CH3=  19
+ADS7950: CH0= 244  CH1=  43  CH2=   0  CH3=  19
+ADS7950: CH0= 245  CH1=  44  CH2=   0  CH3=  19
+ADS7950: CH0= 244  CH1=  43  CH2=1577  CH3=  19
+ADS7950: CH0= 245  CH1=  43  CH2=1577  CH3=  19
+ADS7950: CH0= 244  CH1=  43  CH2=1579  CH3=  19
+ADS7950: CH0= 245  CH1=  43  CH2=1582  CH3=  19
+ADS7950: CH0= 245  CH1=  43  CH2=1580  CH3=  20
+ADS7950: CH0= 245  CH1=  43  CH2=1827  CH3=  19
+ADS7950: CH0= 245  CH1=  43  CH2=2156  CH3=  20
+ADS7950: CH0= 245  CH1=  44  CH2=2501  CH3=  20
+ADS7950: CH0= 245  CH1=  43  CH2=2814  CH3=  20
+ADS7950: CH0= 246  CH1=  43  CH2=2934  CH3=  21
+ADS7950: CH0= 245  CH1=  43  CH2=3419  CH3=  21
+ADS7950: CH0= 245  CH1=  43  CH2=3565  CH3=  21
+ADS7950: CH0= 245  CH1=  43  CH2=3535  CH3=  22
+ADS7950: CH0= 245  CH1=  43  CH2=3536  CH3=  22
+ADS7950: CH0= 246  CH1=  43  CH2=3069  CH3=  22
+ADS7950: CH0= 246  CH1=  43  CH2=2770  CH3=  22
+ADS7950: CH0= 246  CH1=  43  CH2=2436  CH3=  22
+ADS7950: CH0= 247  CH1=  43  CH2=1896  CH3=  22
+ADS7950: CH0= 246  CH1=  43  CH2=1509  CH3=  22
+ADS7950: CH0= 246  CH1=  43  CH2=1276  CH3=  22
+ADS7950: CH0= 247  CH1=  43  CH2= 928  CH3=  22
+ADS7950: CH0= 246  CH1=  43  CH2= 433  CH3=  22
+ADS7950: CH0= 247  CH1=  43  CH2= 400  CH3=  22
+ADS7950: CH0= 247  CH1=  43  CH2= 583  CH3=  22
+ADS7950: CH0= 246  CH1=  43  CH2=1238  CH3=  22
+ADS7950: CH0= 247  CH1=  43  CH2=1808  CH3=  23
+ADS7950: CH0= 247  CH1=  43  CH2=1827  CH3=  23
+ADS7950: CH0= 247  CH1=  43  CH2=1826  CH3=  23
+ADS7950: CH0= 248  CH1=  43  CH2= 647  CH3=  23
+ADS7950: CH0= 248  CH1=  44  CH2= 245  CH3=  23
+ADS7950: CH0= 248  CH1=  43  CH2= 189  CH3=  23
+ADS7950: CH0= 248  CH1=  43  CH2= 166  CH3=  22
+ADS7950: CH0= 247  CH1=  43  CH2= 148  CH3=  23
+ADS7950: CH0= 248  CH1=  43  CH2= 130  CH3=  22
+ADS7950: CH0= 248  CH1=  43  CH2= 116  CH3=  22
+ADS7950: CH0= 248  CH1=  43  CH2= 102  CH3=  22
+ADS7950: CH0= 248  CH1=  43  CH2=1823  CH3=  23
+ADS7950: CH0= 247  CH1=  43  CH2=1821  CH3=  23
+ADS7950: CH0= 248  CH1=  43  CH2=1820  CH3=  23
+ADS7950: CH0= 248  CH1=  43  CH2=1825  CH3=  23
+ADS7950: CH0= 248  CH1=  43  CH2=1826  CH3=  23
+ADS7950: CH0= 250  CH1=  43  CH2=1826  CH3=  23
+ADS7950: CH0= 249  CH1=  43  CH2=1826  CH3=  23
+ADS7950: CH0= 249  CH1=  44  CH2=1827  CH3=  23
+ADS7950: CH0= 249  CH1=  43  CH2=1825  CH3=  23
+ADS7950: CH0= 249  CH1=  43  CH2=1826  CH3=  24
+ADS7950: CH0= 248  CH1=  43  CH2=1820  CH3=  24
+ADS7950: CH0= 249  CH1=  43  CH2= 390  CH3=  23
+ADS7950: CH0= 249  CH1=  43  CH2= 230  CH3=  23
+ADS7950: CH0= 250  CH1=  43  CH2= 189  CH3=  23
+\end{lstlisting}
+
+La traza se conserva en
+\texttt{tfm/\allowbreak 00\_docs/\allowbreak logs\_terminal/\allowbreak cdhs\_testing\_adc.txt}.
 
 \subsection{PWM (calentadores)}
 
 Las señales PWM generadas por el bloque \texttt{PWMx4\_auto\_test} se midieron con el
 osciloscopio sobre el conector J5 de la placa CDHS, verificando los cuatro canales: 10~kHz,
-5~kHz, 1~kHz y 100~Hz, todos con \textit{duty cycle} del 50\%.
+5~kHz, 1~kHz y 100~Hz, todos con \textit{duty cycle} del 50\%. La figura~\ref{fig:cdhs_pwm}
+recoge la medida del canal de 1~kHz, representativa de las cuatro.
 
 \begin{figure}[H]
     \centering
@@ -169,6 +343,13 @@ osciloscopio sobre el conector J5 de la placa CDHS, verificando los cuatro canal
 
 \subsection{Montaje}
 
+Se fabricaron dos unidades de la placa AOCS (figura~\ref{fig:aocs_foto}), y el banco de pruebas
+es el mismo descrito para la CDHS: la tarjeta se conecta a la ZCU102 por el FMC HPC0 y se opera
+desde la consola serie por USB. Las unidades fabricadas corresponden a la revisión anterior a
+la V2 documentada en la sección~\ref{sec:diseno_aocs}, con cinco canales serie y las líneas
+DE y RE cortocircuitadas; la V2 no llegó a fabricarse, de modo que todo lo que sigue mide la
+revisión de cinco canales.
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.62\textwidth]{IMG/aocs_soldada.jpg}
@@ -178,14 +359,14 @@ osciloscopio sobre el conector J5 de la placa CDHS, verificando los cuatro canal
 
 \subsection{Comunicaciones serie RS422/RS485}
 
-El procedimiento de prueba ---consola interactiva por USB y arneses de \textit{loopback}
-RS422/RS485--- es el mismo descrito para la placa CDHS (sección~\ref{sec:cdhs_rs}).
+El procedimiento de prueba (consola interactiva por USB y arneses de \textit{loopback}
+RS422/RS485) es el mismo descrito para la placa CDHS (sección~\ref{sec:cdhs_rs}).
 
 Con el \textit{bitstream} de 5 transceptores para la placa AOCS, el descubrimiento detectó
 correctamente 5 instancias (\texttt{0xA0000000}--\texttt{0xA0004000}, INTC en
 \texttt{0xA0005000}). Las pruebas de \textit{loopback} entre distintos pares de canales
----UART 0$\leftrightarrow$4, UART 0$\leftrightarrow$3, UART 0$\leftrightarrow$2,
-UART 0$\leftrightarrow$1--- resultaron todas correctas sin errores de \textit{framing}.
+(UART 0$\leftrightarrow$4, UART 0$\leftrightarrow$3, UART 0$\leftrightarrow$2,
+UART 0$\leftrightarrow$1) resultaron todas correctas sin errores de \textit{framing}.
 
 \begin{lstlisting}[caption={Salida de terminal --- prueba RS422/RS485 con la placa AOCS (5 transceptores)}]
 [TRANSCEIVER DEBUG] Detectados: 5 | Base: 0xA0000000 | INT: 0xA0005000
@@ -195,19 +376,89 @@ CMD> 0 HOLA  ->  [RX UART 03]: HOLA
 CMD> 0 HOLA  ->  [RX UART 01]: HOLA
 \end{lstlisting}
 
-\begin{figure}[H]
-    \centering
-    \fbox{\parbox{0.85\textwidth}{\centering \textit{[Figura pendiente: captura completa del terminal \texttt{aocs\_testing\_rs} disponible en \texttt{tfm/00\_docs/logs\_terminal/}]}\vspace{0.5cm}}}
-    \caption{Captura completa del terminal de pruebas RS en la placa AOCS.}
-    \label{fig:aocs_rs_terminal}
-\end{figure}
+La traza completa de la sesión, con el descubrimiento de los cinco transceptores y los cuatro
+pares de \textit{loopback} ejercitados, es la siguiente:
+
+\begin{lstlisting}[basicstyle=\ttfamily\scriptsize, caption={Salida completa del terminal --- prueba RS422/RS485 con la placa AOCS (5 transceptores)}]
+MMU_MAP: return from mmu_map_pl_axi_early()
+[TRANSCEIVER DEBUG] Detectados: 5 | Base: 0xA0000000 | INT: 0xA0005000
+[TRANSCEIVER DEBUG]   - Transceptor 0: 0xA0000000
+[TRANSCEIVER DEBUG]   - Transceptor 1: 0xA0001000
+[TRANSCEIVER DEBUG]   - Transceptor 2: 0xA0002000
+[TRANSCEIVER DEBUG]   - Transceptor 3: 0xA0003000
+[TRANSCEIVER DEBUG]   - Transceptor 4: 0xA0004000
+
+=== ARRANQUE SISTEMA ZCU102 (5 UARTs) ===
+UART 00 [OK] Base: 0xA0000000
+UART 01 [OK] Base: 0xA0001000
+UART 02 [OK] Base: 0xA0002000
+UART 03 [OK] Base: 0xA0003000
+UART 04 [OK] Base: 0xA0004000
+[RX UART 00]: UART 4 Lista.
+
+=======================================================
+ CONSOLA DE CONTROL MULTI-TRANSCEPTOR
+-------------------------------------------------------
+ Formato: <ID> <MENSAJE> | <ID> SLO ON | <ID> SLO OFF
+ Ejemplos:
+   '0 Hola'      -> Envia 'Hola' por UART 0
+   'ALL Reset'   -> Envia 'Reset' por TODAS las UARTs
+   '2 SLO ON'    -> Activa el modo Slow Rate en UART 2
+   'ALL SLO OFF' -> Desactiva el modo Slow en TODAS
+=======================================================
+
+CMD>
+---- Sent utf8 encoded message: "0 HOLA" ----
+0 HOLA
+Tx -> UART 0: OK
+CMD> [RX UART 04]: HOLA
+---- Sent utf8 encoded message: "4 HOLA" ----
+4 HOLA
+Tx -> UART 4: OK
+CMD> [RX UART 00]: HOLA
+---- Sent utf8 encoded message: "0 HOLA" ----
+0 HOLA
+Tx -> UART 0: OK
+CMD> [RX UART 03]: HOLA
+---- Sent utf8 encoded message: "3 HOLA" ----
+3 HOLA
+Tx -> UART 3: OK
+CMD> [RX UART 00]: HOLA
+---- Sent utf8 encoded message: "0 HOLA" ----
+0 HOLA
+Tx -> UART 0: OK
+CMD> [RX UART 02]: HOLA
+---- Sent utf8 encoded message: "2 HOLA" ----
+2 HOLA
+Tx -> UART 2: OK
+CMD> [RX UART 00]: HOLA
+---- Sent utf8 encoded message: "0 HOLA" ----
+0 HOLA
+Tx -> UART 0: OK
+CMD> [RX UART 01]: HOLA
+---- Sent utf8 encoded message: "1 HOLA" ----
+1 HOLA
+Tx -> UART 1: OK
+CMD> [RX UART 00]: HOLA
+\end{lstlisting}
+
+A diferencia de la captura de la placa CDHS, aquí no aparece ningún carácter corrupto: esta
+sesión ya se ejecutó con la verificación de \textit{start-bit} a mitad de período incorporada al
+receptor. La traza se conserva en
+\texttt{tfm/\allowbreak 00\_docs/\allowbreak logs\_terminal/\allowbreak aocs\_testing\_rs.txt}.
 
 \subsection{PWM (puentes en H)}
 
 Para la placa AOCS, el bloque VHDL de control de motores generó señales PWM alternando
 la dirección de giro cada pocos segundos (línea 1 activa con línea 2 a 0, y a continuación
 línea 1 a 0 con línea 2 activa), permitiendo verificar el control de puentes en H con una
-fuente de alimentación externa conectada a los bornes banana.
+fuente de alimentación externa conectada a los bornes banana. La figura~\ref{fig:aocs_pwm}
+muestra el par de señales complementarias medido en el conector J2.
+
+La medida también dejó al descubierto el error de conexión del eje Z descrito en la
+sección~\ref{sec:diseno_aocs}: ese eje no entregaba señal en el conector porque las entradas de
+su puente en H colgaban de dos salidas del adaptador de nivel cuyas entradas están atadas a
+masa. Es un fallo de la placa, no del firmware, y la revisión V2 lo corrige.
 
 \begin{figure}[H]
     \centering

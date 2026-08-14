@@ -13,9 +13,9 @@ interrupción, y con catorce canales el procesador no da abasto.
 Esa observación reorientó la última fase del trabajo hacia una pregunta concreta: \textit{¿cuál
 es la arquitectura de transporte PS--PL adecuada para catorce líneas serie sobre este MPSoC?}
 Para responderla con datos y no con estimaciones se implementaron \textbf{tres arquitecturas
-completas} y se midieron las tres con el mismo programa de pruebas. El transceptor serie de la
-sección anterior es idéntico en las tres; lo único que cambia es el transporte y el driver
-\texttt{transceiver.c/h} que lo maneja.
+completas}, resumidas en la tabla~\ref{tab:tres_variantes}, y se midieron las tres con el mismo
+programa de pruebas. El transceptor serie de la sección anterior es idéntico en las tres; lo único
+que cambia es el transporte y el driver \texttt{transceiver.c/h} que lo maneja.
 
 \begin{table}[H]
     \centering
@@ -46,7 +46,7 @@ referencia contra la que se mide todo lo demás. El IP \texttt{MULTI\_SERIAL\_CO
 catorce canales bajo una única interfaz AXI-Lite; cada canal expone un registro de escritura
 (dato de transmisión, bits de control y configuración de protocolo) y un registro de lectura
 (dato recibido y banderas de estado). Un AXI INTC concentra las veintiocho fuentes de
-interrupción ---RX y TX de cada canal--- en una sola línea hacia el PS.
+interrupción (RX y TX de cada canal) en una sola línea hacia el PS.
 
 Su virtud es la simplicidad: es la variante con menos lógica, no necesita ningún mapeo especial
 de la MMU y no tiene que preocuparse por la coherencia de caché, porque todos los accesos son
@@ -57,11 +57,11 @@ que drena el FIFO hardware byte a byte. En transmisión, la ISR escribe el sigui
 vez que el transmisor queda libre.
 
 El coste medido es de \textbf{1250 interrupciones por kilobyte} transferido. Con eso, el
-\textit{throughput} de un canal se estanca en torno al 30\,\% del techo físico de la línea, y
----lo que es más revelador--- \textbf{no mejora al subir la velocidad}: de 115\,200 a 4~Mbaudios
+\textit{throughput} de un canal se estanca en torno al 30\,\% del techo físico de la línea y,
+lo que es más revelador, \textbf{no mejora al subir la velocidad}: de 115\,200 a 4~Mbaudios
 el rendimiento apenas pasa de 3471 a 4907~B/s, porque el cuello de botella ya no es la línea
 serie sino el manejo de interrupciones. El sistema está en el régimen de \textit{interrupt
-livelock} descrito en el marco teórico.
+livelock} descrito en la sección~\ref{sec:teoria_livelock}.
 
 % ---------------------------------------------------------------------------
 \subsection{Variante B --- catorce AXI DMA}
@@ -102,11 +102,11 @@ escala, por dos razones que solo se ven al implementarlo:
 
 \textbf{El coste en lógica.} Catorce motores DMA completos ocupan \textbf{40\,217 LUT}, un
 14,7\,\% del dispositivo: 2,8 veces más lógica que la solución multicanal, para el mismo número
-de canales. La cifra por canal ---2873 LUT/canal frente a los 1014 del MCDMA--- expresa
+de canales. La cifra por canal, 2873 LUT/canal frente a los 1014 del MCDMA, expresa
 directamente lo que cuesta replicar en vez de compartir. Y ese coste no es solo de hoy: hipoteca
 el endurecimiento futuro del diseño, porque una triplicación modular (TMR, \textit{Triple Modular
-Redundancy}) de la lógica ---la técnica habitual para tolerar los efectos de la radiación en
-órbita--- multiplicaría por tres esa huella y la llevaría a cerca de la mitad del dispositivo,
+Redundancy}) de la lógica, que es la técnica habitual para tolerar los efectos de la radiación en
+órbita, multiplicaría por tres esa huella y la llevaría a cerca de la mitad del dispositivo,
 mientras que sobre la variante multicanal sigue siendo asumible.
 
 \textbf{El límite de las interrupciones.} Cada \texttt{axi\_dma} expone dos líneas de
@@ -128,8 +128,8 @@ disponibles hacían la decisión sencilla: con el coste en lógica y el límite 
 interrupción sobre la mesa, esta arquitectura estaba descartada como solución final con
 independencia de lo que midiera su recepción. Se optó por no seguir depurándola y dedicar el
 esfuerzo al diseño de la variante MCDMA. Sus cifras de recepción se hacen constar como no
-disponibles en los resultados; lo que sí es válido de su corrida ---y es lo que sostiene el
-argumento--- es el coste de hardware, la huella de memoria y las interrupciones de transmisión.
+disponibles en los resultados; lo que sí es válido de su corrida, y es lo que sostiene el
+argumento, es el coste de hardware, la huella de memoria y las interrupciones de transmisión.
 
 % ---------------------------------------------------------------------------
 \subsection{Variante C --- AXI MCDMA con puente VHDL} \label{sec:variante_mcdma}
@@ -151,13 +151,21 @@ distintas:
     catorce canales S2MM.
 \end{itemize}
 
+De ahí la asimetría de la figura~\ref{fig:mcdma_bd}: un solo canal en el sentido de transmisión y
+catorce en el de recepción, sobre un mismo motor multicanal.
+
 \begin{figure}[H]
     \centering
-    \fbox{\parbox{0.92\textwidth}{\centering \textit{[Figura pendiente: diagrama de bloques de la
-    variante MCDMA --- MM2S (1 canal) $\rightarrow$ conversor 32$\rightarrow$8 $\rightarrow$
-    BRIDGE\_TX\_TOP $\rightarrow$ 14 UART; 14 UART $\rightarrow$ BRIDGE\_RX\_TOP $\rightarrow$
-    conversor 8$\rightarrow$32 $\rightarrow$ S2MM (14 canales)]}\vspace{0.6cm}}}
-    \caption{Arquitectura asimétrica de la variante MCDMA: un canal de transmisión y catorce de recepción.}
+    \figpendiente{IMG/Desarrollo/diagrama_arquitectura_mcdma.pdf}{\textwidth}{arquitectura
+    completa de la solución final --- DDR y RTEMS en el PS; \texttt{axi\_mcdma} con 1 canal MM2S
+    y 14 canales S2MM; conversores de anchura 32$\rightarrow$8 y 8$\rightarrow$32;
+    \texttt{BRIDGE\_TX\_TOP} y \texttt{BRIDGE\_RX\_TOP}; los 14 transceptores serie;
+    \texttt{TX\_ISR\_EOF\_HANDLER} y las tres líneas de interrupción; y las líneas
+    TD/RD/DE/SLO hacia la PCB}
+    \caption{Arquitectura de la variante MCDMA, que es la solución final del trabajo: un único
+    canal de transmisión y catorce de recepción sobre el mismo motor multicanal, con el puente
+    VHDL repartiendo y recogiendo de los catorce transceptores. Es también la vista de conjunto
+    del sistema completo, del \textit{buffer} en la DDR al pin del conector FMC.}
     \label{fig:mcdma_bd}
 \end{figure}
 
@@ -197,11 +205,11 @@ dirección esa diferencia importa: no se puede soltar el bus antes de que el úl
 salido.
 
 Sacar los catorce pulsos de fin de trama a catorce líneas de interrupción no es una opción
----las líneas son ocho---. Se diseñó por tanto un bloque propio,
+porque las líneas son ocho. Se diseñó por tanto un bloque propio,
 \texttt{TX\_ISR\_EOF\_HANDLER.vhd}, que aplica el patrón de \textbf{registro \textit{sticky} más
 una única interrupción}: engancha el pulso de fin de trama de cada \textit{worker} en un bit de
 un registro, lo expone por AXI-Lite y genera una sola interrupción de nivel. Su mapa de
-registros es:
+registros es el de la tabla~\ref{tab:tx_isr_regs}:
 
 \begin{table}[H]
     \centering
@@ -235,7 +243,7 @@ recoge los catorce flujos y los presenta al MCDMA como un único \textit{stream}
     atiende a otro.
     \item Un \textbf{DEMUX} recorre las catorce FIFO.
     \item El bloque \textbf{DRAIN} vacía la FIFO seleccionada hacia el \textit{stream} de salida,
-    cierra el paquete con \texttt{TLAST} y ---esto es lo esencial--- fija el
+    cierra el paquete con \texttt{TLAST} y, sobre todo, fija el
     \textbf{\texttt{TDEST}} con el número de canal de procedencia.
 \end{itemize}
 
@@ -250,6 +258,9 @@ ráfaga) o cuando se alcanza el tope duro de longitud del generic \texttt{MAX\_P
 impuesta por el IP, y su razón se explica más abajo.
 
 \subsubsection{Mapa de memoria y de interrupciones}
+
+Los tres bloques que el PS debe alcanzar se sitúan en el mapa de memoria como recoge la
+tabla~\ref{tab:mcdma_map}.
 
 \begin{table}[H]
     \centering
@@ -275,8 +286,8 @@ sola línea, y la ISR escanea los registros de estado para saber qué canales ha
 
 El MCDMA opera siempre en modo \textit{scatter-gather}, de modo que el driver de esta variante
 no escribe direcciones en registros, sino que \textbf{construye descriptores en memoria}. Cada
-BD ocupa 64~bytes alineados a 64, y el driver mantiene un anillo de un solo descriptor por canal,
-cuyo puntero al siguiente apunta a sí mismo:
+BD ocupa 64~bytes alineados a 64, con la estructura de la tabla~\ref{tab:mcdma_bd}, y el driver
+mantiene un anillo de un solo descriptor por canal, cuyo puntero al siguiente apunta a sí mismo:
 
 \begin{table}[H]
     \centering
@@ -318,7 +329,7 @@ metodología de verificación que se aplicó de forma sistemática a lo largo de
     regresión quedara acotada a la última pieza introducida.
     \item \textbf{Batería de pruebas automáticas en placa.} La aplicación de \textit{benchmark}
     (sección~\ref{sec:bench_loopback}) actúa como prueba de regresión del sistema completo: una
-    campaña de treinta y seis comprobaciones cuyo resultado ---cuántas pasan y cuáles fallan---
+    campaña de treinta y seis comprobaciones cuyo resultado, cuántas pasan y cuáles fallan,
     dirigía la siguiente iteración.
 \end{enumerate}
 
@@ -335,8 +346,8 @@ no hay bit de estado, ni interrupción, ni descriptor marcado; el motor simpleme
 aceptar datos y el canal enmudece a mitad de una transferencia. Esa ausencia total de
 observabilidad desde el software hace que depurar sobre la placa sea inviable, y obligó a
 \textbf{reproducir el escenario en simulación}. Fueron necesarias numerosas iteraciones de
-\textit{testbench} ---inyectando contrapresión, paquetes de distinto tamaño y ráfagas
-solapadas--- hasta poder observar el \textit{handshake} congelándose ciclo a ciclo e identificar
+\textit{testbench}, inyectando contrapresión, paquetes de distinto tamaño y ráfagas
+solapadas, hasta poder observar el \textit{handshake} congelándose ciclo a ciclo e identificar
 las dos condiciones que lo provocaban.
 
 De esas simulaciones salieron las dos \textbf{invariantes estructurales} que la lógica del puente
@@ -344,12 +355,13 @@ garantiza hoy por construcción:
 
 \begin{itemize}
     \item \textbf{Tamaño de paquete acotado.} El motor de recepción está configurado en modo
-    \textit{store-and-forward}, de modo que acumula el paquete AXI-Stream completo en un
-    \textit{buffer} interno antes de volcarlo a la DDR; un paquete mayor que ese \textit{buffer}
-    lo bloquea indefinidamente, a la espera de un \texttt{TLAST} que ya no puede llegar. El bloque
-    \texttt{DRAIN} impone por ello un tope duro \texttt{MAX\_PKT~=~256}, además de cerrar el
-    paquete cuando la FIFO se vacía. El tope por longitud no es redundante: hace que la invariante
-    sea estructural y no dependa de que el drenado gane siempre la carrera a la línea serie.
+    \textit{store-and-forward} (\texttt{c\_include\_s2mm\_sf~=~1}), de modo que acumula el paquete
+    AXI-Stream completo en un \textit{buffer} interno de \textbf{512~bytes} antes de volcarlo a la
+    DDR; un paquete mayor que ese \textit{buffer} lo bloquea indefinidamente, a la espera de un
+    \texttt{TLAST} que ya no puede llegar. El bloque \texttt{DRAIN} impone por ello un tope duro
+    \texttt{MAX\_PKT~=~256}, la mitad del \textit{buffer}, además de cerrar el paquete cuando la
+    FIFO se vacía. El tope por longitud no es redundante: hace que la invariante sea estructural y
+    no dependa de que el drenado gane siempre la carrera a la línea serie.
     \item \textbf{\texttt{TLAST} registrado.} La señal de fin de paquete no puede ser
     combinacional sobre el estado de «FIFO vacía» mientras hay un dato ofrecido. Si un byte nuevo
     llegara durante una espera por contrapresión, tumbaría el \texttt{TLAST} ya presentado,
@@ -357,14 +369,60 @@ garantiza hoy por construcción:
     el byte se ofrece.
 \end{itemize}
 
+Con ambas incorporadas, el \textit{testbench} del puente de recepción,
+\texttt{tb\_bridge\_rx.vhd}, pasa la batería completa. Sus cuatro pruebas están escogidas para
+cubrir justamente los casos que provocaban el bloqueo: un canal aislado, tres canales
+entremezclados, un paquete de 256~bytes que fuerza el cierre por longitud y dos ráfagas seguidas
+sobre el mismo canal. Un \textit{scoreboard} comprueba byte a byte el \texttt{TDEST} de la
+cabecera, que el canal esté en rango y que el dato coincida con el inyectado:
+
+\begin{lstlisting}[basicstyle=\ttfamily\scriptsize, caption={Salida de la simulación de \texttt{tb\_bridge\_rx.vhd}}]
+-- Reset liberado --
+T1: canal unico ch2 (3 bytes, timeout)
+T2: multi-canal ch0/ch5/ch13 (1 byte c/u, timeout)
+T3: 256 bytes ch1, prog_full auto-trigger
+T4: back-to-back ch7 (2 eventos de timeout)
+------------------------------------------------------------
+Checks totales  : 802
+Errores         : 0
+Pendientes exp  : 0
+------------------------------------------------------------
+SIM_RESULT: PASS
+\end{lstlisting}
+
+El contador de \textit{pendientes} a cero es tan relevante como el de errores: significa que no
+quedó ni un byte inyectado sin salir por el \textit{stream}, que es exactamente el síntoma del
+bloqueo que se estaba persiguiendo.
+
+Por encima de esa prueba de bloque, \texttt{tb\_system\_e2e.vhd} cierra el lazo completo en
+simulación (MCDMA $\rightarrow$ puente de transmisión $\rightarrow$ transceptor serie
+$\rightarrow$ realimentación de la línea $\rightarrow$ puente de recepción $\rightarrow$ MCDMA),
+configurando los canales a 921\,600~8N1 y comprobando que cada byte reaparece etiquetado con su
+canal de origen:
+
+\begin{lstlisting}[basicstyle=\ttfamily\scriptsize, caption={Salida de la simulación del sistema completo, \texttt{tb\_system\_e2e.vhd}}]
+[CONFIG] Escribiendo 921600 8N1 en canales 0 y 1...
+[TEST-1] TX->CH0 loopback: 0xA5, 0x3C ...
+[TEST-1] PASS
+[TEST-2] TX->CH0(0xDE) y CH1(0xAD) simultaneo...
+[TEST-2] PASS
+[TEST-3] Inyeccion serie directa CH1 <- 0x55 ...
+[TEST-3] PASS
+SIM_RESULT: PASS
+\end{lstlisting}
+
+Es la prueba que da confianza para bajar a placa: si el TEST-2 pasa, el demultiplexado por
+\texttt{TDEST} funciona con dos canales hablando a la vez, que es la condición que en placa se
+manifestaba como «todo el tráfico acaba en el canal cero».
+
 Un último aprendizaje, de flujo de trabajo más que de diseño, merece mención porque invalidó
 durante días la interpretación de los experimentos: el bloque que engloba el puente y los
 transceptores está integrado como \textit{module reference}, y Vivado \textbf{cachea su
 \textit{checkpoint}} de síntesis fuera de contexto. Editar el VHDL y relanzar la implementación
 no cambia el \textit{bitstream}: el flujo termina sin aviso, cierra \textit{timing} y escribe un
-\texttt{.bit} con el RTL antiguo. La comprobación quedó incorporada al procedimiento ---verificar
+\texttt{.bit} con el RTL antiguo. La comprobación quedó incorporada al procedimiento: verificar
 que el \textit{hash} del \texttt{BOOT.bin} cambia antes de dar por bueno un \textit{bitstream}
-nuevo---, y es un buen recordatorio de que una metodología de pruebas solo es fiable si se valida
+nuevo. Es un buen recordatorio de que una metodología de pruebas solo es fiable si se valida
 también que lo que se está probando es realmente lo que se ha escrito.
 
 Con estas correcciones el driver quedó estable: la campaña completa pasó de \textbf{0 de 36} a
@@ -382,7 +440,8 @@ de la integridad física de las líneas, factores que varían entre montajes y c
 comparación del transporte, que es lo que se quiere aislar.
 
 La solución fue \textbf{cerrar los buses dentro de la propia FPGA}. Un módulo de \textit{loopback}
-insertado en la PL reproduce la topología de buses que la PCB implementa en cobre:
+insertado en la PL reproduce la topología de buses que la PCB implementa en cobre, recogida en la
+tabla~\ref{tab:loopback_buses}:
 
 \begin{table}[H]
     \centering
@@ -408,7 +467,33 @@ cada byte transmitido se contaría dos veces en los contadores de recepción y l
 desbordamiento mediría el doble de pérdidas. Los tres buses están además aislados entre sí, para
 que la prueba de transmisión concurrente mida solapamiento real y no diafonía.
 
-El módulo se verifica con su propio \textit{testbench} (dieciséis comprobaciones) y se inserta en
+El módulo se verifica con su propio \textit{testbench}, que comprueba en dieciséis puntos las tres
+propiedades de las que depende la validez de toda la comparativa: que en reposo las catorce líneas
+están en alto, que un maestro llega a todos los esclavos de su bus pero \textbf{no a sí mismo}, y
+que ningún bus se oye desde otro:
+
+\begin{lstlisting}[basicstyle=\ttfamily\scriptsize, caption={Salida de la simulación de \texttt{tb\_bench\_loopback.v}}]
+  ok  reposo rd = 1
+  ok  rd[1] sigue a td[0] = 0
+  ok  rd[6] sigue a td[0] = 0
+  ok  rd[0] no se oye a si mismo = 1
+  ok  rd[8] aislado del bus A = 1
+  ok  rd[12] aislado del bus A = 1
+  ok  bus A: rd[1] = 0
+  ok  bus B: rd[8] = 0
+  ok  bus C: rd[12] = 0
+  ok  maestro A mudo a si mismo = 1
+  ok  maestro B mudo a si mismo = 1
+  ok  maestro C mudo a si mismo = 1
+  ok  multidrop rd[1..6] todos a 0 = 0
+  ok  respuesta: rd[0] oye a td[1] = 0
+  ok  respuesta: rd[2] tambien la oye (multidrop) = 0
+  ok  respuesta no cruza al bus B = 1
+
+TB OK: 0 fallos
+\end{lstlisting}
+
+Verificado el módulo, se inserta en
 cada una de las tres variantes mediante un \textit{script} TCL que desconecta la red que unía cada
 pin físico de recepción con su transceptor y la alimenta desde el \textit{loopback}. Las líneas de
 transmisión siguen llegando a los pines, de modo que los \textit{constraints} de la placa siguen
@@ -425,6 +510,6 @@ falsas, porque el envío es bloqueante en la variante MCDMA y no bloqueante en l
 Conviene delimitar qué mide este banco y qué no. Con el lazo dentro de la FPGA, la señal no
 atraviesa los transceptores RS-485 ni el cableado, de modo que lo que se mide es exactamente el
 \textbf{coste del transporte PS--PL}, que es el objeto de la comparativa. Lo que \textbf{no} se
-mide es la integridad física del bus ---reflexiones, terminación, tiempos de vuelta del control
-de dirección, ruido---; para eso hace falta la PCB. En particular, el barrido de velocidad da
+mide es la integridad física del bus (reflexiones, terminación, tiempos de vuelta del control
+de dirección, ruido); para eso hace falta la PCB. En particular, el barrido de velocidad da
 aquí mejores cifras de las que dará en cobre.

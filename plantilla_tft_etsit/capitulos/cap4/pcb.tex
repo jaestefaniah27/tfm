@@ -30,6 +30,9 @@ La topología física de la placa, fijada por los \textit{jumpers}, es la siguie
     \label{tab:pcb_topologia}
 \end{table}
 
+La figura~\ref{fig:pcb_montaje} muestra la placa con esos \textit{jumpers} ya colocados y montada
+sobre la ZCU102, que es la configuración con la que se tomaron todas las medidas de esta sección.
+
 \begin{figure}[H]
     \centering
     \begin{subfigure}[t]{0.48\textwidth}
@@ -57,6 +60,9 @@ entre sí, mientras que en los buses punto a punto los esclavos solo oyen al mae
 \subsubsection{Batería de pruebas de caracterización}
 % ---------------------------------------------------------------------------
 
+La campaña consta de nueve pruebas, cuyo resultado resume la tabla~\ref{tab:pcb_resumen}. Los
+apartados siguientes desarrollan las que necesitan explicación.
+
 \begin{table}[H]
     \centering
     \begin{tabular}{p{3.1cm} p{11.4cm}}
@@ -70,7 +76,7 @@ entre sí, mientras que en los buses punto a punto los esclavos solo oyen al mae
         T5 Limitador SLO & Con el bit SLO a 1, los tres buses llegan \textbf{limpios a 4~Mbps}. \\
         T6 Vuelta del bus & \textit{Guard time} mínimo de \textbf{0~$\mu$s}: el control de dirección del transceptor suelta la línea a tiempo y no hace falta guarda en software. \\
         T7 Diafonía & \textbf{0 bytes de fuga} del bus A hacia los buses B y C. \\
-        T8 Colisión & La trama sale corrupta ---como debe--- y el bus \textbf{se recupera}: el intercambio siguiente es limpio. \\
+        T8 Colisión & La trama sale corrupta, como debe, y el bus \textbf{se recupera}: el intercambio siguiente es limpio. \\
         T9 Estabilidad & 10~s de tráfico continuo: bus A a 460~kbps, BER de 147~ppm; buses B y C a 1~Mbps, \textbf{BER de 0}. \\
         \hline
     \end{tabular}
@@ -179,7 +185,7 @@ multipunto, el más exigente de los tres, para ambos valores del bit.
         \end{axis}
     \end{tikzpicture}
     \caption{Tasa de error del bus A (RS-485 multipunto, 7 nodos) frente a la velocidad de línea,
-    con y sin el limitador de \textit{slew}. Con el limitador activo ---el valor por defecto--- el
+    con y sin el limitador de \textit{slew}. Con el limitador activo, que es el valor por defecto, el
     enlace se degrada a partir de 460~kbps y colapsa por completo a 2~Mbps, coherente con el máximo
     nominal de 250~kbps del chip en ese modo; desactivándolo la tasa de error es nula en todo el
     barrido. Los puntos de 3 y 4~Mbps no existen en la curva de SLO~=~0 porque el barrido se
@@ -197,8 +203,8 @@ siete nodos conectados a un bus compartido cargan más la línea y generan más 
 enlace punto a punto. La diferencia se mantiene en la parte alta del barrido incluso con el bit SLO
 a 1, por lo que es independiente del efecto descrito en la sección anterior.
 
-El test T3 lo cuantifica: registra cuántos de los seis esclavos reciben la trama del maestro
-\textbf{íntegra} a cada velocidad.
+El test T3 lo cuantifica en la tabla~\ref{tab:pcb_multidrop}: registra cuántos de los seis esclavos
+reciben la trama del maestro \textbf{íntegra} a cada velocidad.
 
 \begin{table}[H]
     \centering
@@ -242,8 +248,8 @@ respuestas llegan íntegras \textbf{ya con guarda nula}: el control de direcció
 transceptor libera la línea a tiempo, por lo que un protocolo construido sobre este nivel no
 necesita añadir guarda por software.
 
-\textbf{Colisión (T8).} Cuando dos esclavos emiten simultáneamente, la trama resulta corrupta ---por
-el AND cableado de los drivers---, pero el bus \textbf{se recupera} y el intercambio siguiente es
+\textbf{Colisión (T8).} Cuando dos esclavos emiten simultáneamente, la trama resulta corrupta por
+el AND cableado de los drivers, pero el bus \textbf{se recupera} y el intercambio siguiente es
 correcto. Ningún driver permanece conduciendo de forma indefinida.
 
 \textbf{Estabilidad sostenida (T9).} Diez segundos de tráfico continuo por bus, a la velocidad máxima

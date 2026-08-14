@@ -28,8 +28,8 @@ módulo de \textit{loopback}}: su autodiagnóstico detectó que el lazo de recep
 y, en consecuencia, no llegó ningún byte. Como se explica en la
 sección~\ref{sec:transporte_desarrollo}, se decidió no invertir más tiempo en depurarlo, porque
 el coste en lógica y el límite de líneas de interrupción ya descartaban esta arquitectura como
-solución final. Todo lo que depende de recibir ---latencia, \textit{throughput}, multipunto,
-desbordamiento, recuperación--- sale a cero en esa variante, y ese cero \textbf{no mide el
+solución final. Todo lo que depende de recibir (latencia, \textit{throughput}, multipunto,
+desbordamiento, recuperación) sale a cero en esa variante, y ese cero \textbf{no mide el
 transporte}: mide la ausencia de lazo. Se hace constar con un guion en las tablas. Lo que sí es
 plenamente válido de esa corrida, y lo que sostiene el argumento sobre esta variante, es el coste
 de hardware, la huella de memoria y el coste en interrupciones de la transmisión.
@@ -39,8 +39,9 @@ de hardware, la huella de memoria y el coste en interrupciones de la transmisió
 % ---------------------------------------------------------------------------
 
 Las tres arquitecturas están implementadas sobre el mismo dispositivo (XCZU9EG, 274\,080 LUT,
-548\,160 registros y 912 bloques de RAM), de modo que las cifras salen directamente de los
-informes de utilización de Vivado y son comparables sin normalización alguna.
+548\,160 registros y 912 bloques de RAM), de modo que las cifras de la tabla~\ref{tab:bench_hw}
+salen directamente de los informes de utilización de Vivado y son comparables sin normalización
+alguna.
 
 \begin{table}[H]
     \centering
@@ -88,8 +89,8 @@ compararlas de un vistazo.
 La cifra que resume la comparación es la última columna de la tabla. El banco de catorce AXI DMA cuesta
 \textbf{2,8 veces más lógica que el MCDMA} para exactamente el mismo número de canales, porque
 replica catorce motores completos en lugar de compartir uno multicanal. La variante GPIO es, con
-diferencia, la más pequeña ---y así debe ser: apenas contiene los transceptores y un puñado de
-registros---, pero ese ahorro de lógica no es gratuito: lo paga la CPU, como se ve más abajo.
+diferencia, la más pequeña, y así debe ser, porque apenas contiene los transceptores y un puñado
+de registros. Ese ahorro de lógica no es gratuito: lo paga la CPU, como se ve más abajo.
 
 El margen de \textit{timing} (WNS) es positivo y holgado en las tres, de modo que ninguna cierra
 al límite y las diferencias de rendimiento no son atribuibles a la implementación física.
@@ -97,6 +98,9 @@ al límite y las diferencias de rendimiento no son atribuibles a la implementaci
 % ---------------------------------------------------------------------------
 \subsubsection{Coste de software}
 % ---------------------------------------------------------------------------
+
+La tabla~\ref{tab:bench_sw} recoge lo que cuesta cada variante del lado del PS: el tamaño del
+código del driver y los recursos que reserva en ejecución.
 
 \begin{table}[H]
     \centering
@@ -113,13 +117,13 @@ al límite y las diferencias de rendimiento no son atribuibles a la implementaci
     \label{tab:bench_sw}
 \end{table}
 
-La memoria total reservada es prácticamente la misma en las tres ---en torno a 112--120~KB,
-dominada por los \textit{buffers} circulares de 4~KB por canal---, aunque su origen difiere: la
+La memoria total reservada es prácticamente la misma en las tres, en torno a 112--120~KB,
+dominada por los \textit{buffers} circulares de 4~KB por canal, aunque su origen difiere: la
 variante GPIO los pide con \texttt{malloc} y las de DMA los reservan estáticamente, porque el
 motor necesita direcciones fijas y alineadas.
 
 La diferencia significativa está en las \textbf{primitivas de RTEMS}. La variante GPIO necesita
-\textbf{una tarea de recepción por canal} ---catorce tareas y veintiocho semáforos--- porque cada
+\textbf{una tarea de recepción por canal} (catorce tareas y veintiocho semáforos) porque cada
 canal drena su propio FIFO hardware de forma independiente. Las dos variantes con DMA se apañan
 con \textbf{una sola tarea de despacho}, ya que el motor entrega paquetes completos y la ISR solo
 tiene que señalizar quién ha terminado. Trece tareas menos es trece cambios de contexto menos, y
@@ -130,7 +134,8 @@ trece pilas menos.
 % ---------------------------------------------------------------------------
 
 Esta es la métrica que explica todas las demás. Cuenta cuántas veces se expropia la CPU por cada
-kilobyte movido, acumulado sobre la sesión completa de pruebas.
+kilobyte movido, acumulado sobre la sesión completa de pruebas. La tabla~\ref{tab:bench_irq}
+recoge el desglose y la figura~\ref{fig:bench_irq} lo representa a escala.
 
 \begin{table}[H]
     \centering
@@ -189,7 +194,8 @@ atendiendo el bus a estar disponible para la aplicación.
 % ---------------------------------------------------------------------------
 
 Tiempo desde justo antes de la llamada de envío hasta que el receptor tiene el frame de 11 bytes
-completo, sobre 50 muestras.
+completo, sobre 50 muestras. Los estadísticos están en la tabla~\ref{tab:bench_latencia} y la
+comparación se recoge en la figura~\ref{fig:bench_latencia}.
 
 \begin{table}[H]
     \centering
@@ -235,7 +241,7 @@ completo, sobre 50 muestras.
 
 El MCDMA es \textbf{tres veces más rápido} que el GPIO, y con una dispersión muy baja: la
 diferencia entre la mediana y el máximo es de 6~$\mu$s sobre 50 muestras, lo que indica un
-comportamiento notablemente determinista ---una propiedad especialmente valiosa en un sistema de
+comportamiento notablemente determinista, una propiedad especialmente valiosa en un sistema de
 tiempo real embarcado.
 
 % ---------------------------------------------------------------------------
@@ -244,7 +250,8 @@ tiempo real embarcado.
 
 A 115\,200 baudios en formato 8N1, cada byte ocupa 10 bits de línea, de modo que el techo físico
 de un canal es de \textbf{11\,520 B/s}. Esa es la referencia contra la que hay que leer la
-primera columna.
+primera columna de la tabla~\ref{tab:bench_throughput}, y la que aparece como línea de trazos en
+la figura~\ref{fig:bench_throughput}.
 
 \begin{table}[H]
     \centering
@@ -308,7 +315,9 @@ GPIO, y lo hace sin perder un solo byte.
 % ---------------------------------------------------------------------------
 
 La prueba más reveladora de todas. Se reprograman los catorce transceptores a cada velocidad y se
-mide un bloque de 1~KB en cada punto.
+mide un bloque de 1~KB en cada punto. La tabla~\ref{tab:bench_baudios} recoge los siete puntos del
+barrido y la figura~\ref{fig:bench_baudios} los representa en escala logarítmica, donde la
+diferencia de comportamiento entre ambas arquitecturas es inmediata.
 
 \begin{table}[H]
     \centering
@@ -395,7 +404,8 @@ saturación del GPIO no produce corrupción, solo pérdida de rendimiento.
 
 Dos pruebas adicionales verifican que la ganancia de rendimiento no se paga con fragilidad: el
 envío de tres frames corruptos seguidos de uno válido (T7) y el envío de 8~KB sin que la
-aplicación vacíe un \textit{ring} de 4~KB (T5), diseñado explícitamente para desbordar.
+aplicación vacíe un \textit{ring} de 4~KB (T5), diseñado explícitamente para desbordar. La
+tabla~\ref{tab:bench_robustez} recoge el resultado de ambas.
 
 \begin{table}[H]
     \centering
@@ -416,15 +426,15 @@ Ambas variantes rechazan los tres frames corruptos y siguen aceptando el frame v
 el error no deja el driver en un estado inconsistente.
 
 La columna de bytes descartados merece una aclaración, porque se presta a leerse al revés. \textbf{No
-son errores de transporte} ---esos son cero en las tres variantes---: cuentan un byte cada vez que
+son errores de transporte}, que son cero en las tres variantes: cuentan un byte cada vez que
 un dato llega correctamente pero \textbf{no cabe en el \textit{ring} de software porque nadie lo ha
 leído}. La mayor parte procede de la prueba T5, cuyo propósito es justamente ese, y el resto de los
 canales que nadie lee en las pruebas de un solo maestro: al ser un bus multipunto, los seis
 receptores reciben cada bloque.
 
 Por eso el número del MCDMA es \textit{mayor} que el del GPIO, y eso es una buena noticia y no una
-mala: en la variante GPIO el propio cuello de botella de interrupciones frena la entrega ---el
-\textit{ring} se llena más despacio y desborda menos---, mientras que el MCDMA entrega a la
+mala: en la variante GPIO el propio cuello de botella de interrupciones frena la entrega, de modo
+que el \textit{ring} se llena más despacio y desborda menos, mientras que el MCDMA entrega a la
 velocidad de la línea todo lo que ésta produce y, en consecuencia, sobra más en los
 \textit{buffers} que la aplicación de prueba deliberadamente no vacía. \textbf{Un contador de
 descartes alto es aquí la firma de un transporte sano, no de uno defectuoso.} Conviene recordar
@@ -436,6 +446,9 @@ comparables.
 % ---------------------------------------------------------------------------
 \subsubsection{Discusión: qué arquitectura y por qué}
 % ---------------------------------------------------------------------------
+
+La tabla~\ref{tab:bench_resumen} reúne en una sola vista las magnitudes de los apartados
+anteriores.
 
 \begin{table}[H]
     \centering
@@ -459,13 +472,13 @@ comparables.
 La conclusión que sostienen los datos es que \textbf{el MCDMA con puente VHDL es la arquitectura
 adecuada para este sistema}, y que su ventaja no procede de ser «más rápido» en un sentido vago,
 sino de una causa concreta y medible: \textbf{mueve paquetes en lugar de bytes}. Las 1250
-interrupciones por kilobyte de la variante GPIO se convierten en 3, y todo lo demás ---la
-latencia tres veces menor, el 99\,\% del techo de línea, la escalabilidad con la velocidad--- es
+interrupciones por kilobyte de la variante GPIO se convierten en 3, y todo lo demás (la
+latencia tres veces menor, el 99\,\% del techo de línea, la escalabilidad con la velocidad) es
 consecuencia de eso.
 
 La variante DMA14 es instructiva precisamente por lo que demuestra que \textbf{no} hay que hacer.
 Fue el primer intento de mejorar la arquitectura frente al AXI GPIO, y resuelve el problema
-correcto ---quitar a la CPU de en medio--- pero por el camino equivocado: replicar catorce
+correcto, quitar a la CPU de en medio, pero por el camino equivocado: replicar catorce
 motores cuesta 2,8 veces más lógica y, sobre todo, exige veintiocho líneas de interrupción cuando
 el silicio solo ofrece ocho. La arquitectura no escala, y el límite no es del diseño sino del
 dispositivo. A ello se suma un argumento de futuro: un 14,7\,\% del dispositivo es una hipoteca
