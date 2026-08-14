@@ -92,9 +92,9 @@
 \draw[sig] (3.00,2.75) -- (6.00,2.75);
 
 % ===================== Puertos: línea física =====================
-\node[portr] at (17.10,6.66) {TD};
-\node[portr] at (17.10,6.26) {DE};
-\node[portr] at (17.15,2.31) {RD};
+\node[port, anchor=south west] at (17.30,6.66) {TD};
+\node[port, anchor=south west] at (17.30,6.26) {DE};
+\node[port, anchor=south] at (18.10,3.66) {RD};
 
 % ===================== Bloques internos =====================
 \draw[blk] (9.90,5.30) rectangle (13.10,6.80);
@@ -102,8 +102,8 @@
 \draw[aux] (12.10,5.45) rectangle (13.00,5.90);
 \node[font=\ttfamily\scriptsize] at (12.55,5.68) {NCO};
 
-\draw[blk] (12.90,2.00) rectangle (15.50,3.40);
-\node[name, anchor=north] at (14.20,3.30) {RX\_CONFIGURABLE\\\_SERIAL};
+\draw[blk] (12.90,2.00) rectangle (15.50,3.60);
+\node[name, anchor=north] at (14.20,3.50) {RX\_CONFIGURABLE\\\_SERIAL};
 \draw[aux] (14.50,2.15) rectangle (15.40,2.60);
 \node[font=\ttfamily\scriptsize] at (14.95,2.38) {NCO};
 
@@ -146,12 +146,12 @@
 \draw[sig] (18.60,3.60) -- (17.60,3.60) -- (17.60,2.25) -- (16.75,2.25);
 \draw[sig] (15.95,2.25) -- (15.50,2.25);
 \draw[sig] (15.50,4.45) -- (16.20,4.45) -- (16.20,3.05) -- (15.50,3.05);
-\draw[sig] (14.20,3.40) -- (14.20,4.00);
-\node[tlbl, anchor=west] at (14.26,3.70) {\texttt{Valid}};
+\draw[sig] (14.20,3.60) -- (14.20,4.00);
+\node[tlbl, anchor=west] at (14.26,3.78) {\texttt{Valid}};
 \draw[sig] (12.90,4.45) -- (11.90,4.45);
 \node[tlbl, anchor=south] at (12.40,4.50) {\texttt{Q}};
-\draw[sig] (13.30,3.40) -- (13.30,3.80) -- (11.90,3.80);
-\node[tlbl, anchor=south] at (12.75,3.84) {\texttt{Store}};
+\draw[sig] (13.30,3.60) -- (13.30,3.85) -- (11.90,3.85);
+\node[tlbl, anchor=south] at (12.40,3.89) {\texttt{Store}};
 
 % ===================== Salidas del canal hacia los puertos =====================
 \draw[sig] (9.90,5.00) -- (8.75,5.00);
