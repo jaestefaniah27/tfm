@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.7.22)  14 AUG 2026 23:01
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.7.22)  14 AUG 2026 23:29
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1051,26 +1051,26 @@ Package babel Info: 'spanish' activates 'spanish' shorthands.
 )
 \openout1 = `main.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 195.
-LaTeX Font Info:    ... okay on input line 195.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 195.
-LaTeX Font Info:    ... okay on input line 195.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 195.
-LaTeX Font Info:    ... okay on input line 195.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 195.
-LaTeX Font Info:    ... okay on input line 195.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 195.
-LaTeX Font Info:    ... okay on input line 195.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 195.
-LaTeX Font Info:    ... okay on input line 195.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 195.
-LaTeX Font Info:    ... okay on input line 195.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 195.
-LaTeX Font Info:    ... okay on input line 195.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 195.
-LaTeX Font Info:    ... okay on input line 195.
-LaTeX Info: Redefining \. on input line 195.
-LaTeX Info: Redefining \% on input line 195.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 198.
+LaTeX Font Info:    ... okay on input line 198.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 198.
+LaTeX Font Info:    ... okay on input line 198.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 198.
+LaTeX Font Info:    ... okay on input line 198.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 198.
+LaTeX Font Info:    ... okay on input line 198.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 198.
+LaTeX Font Info:    ... okay on input line 198.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 198.
+LaTeX Font Info:    ... okay on input line 198.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 198.
+LaTeX Font Info:    ... okay on input line 198.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 198.
+LaTeX Font Info:    ... okay on input line 198.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 198.
+LaTeX Font Info:    ... okay on input line 198.
+LaTeX Info: Redefining \. on input line 198.
+LaTeX Info: Redefining \% on input line 198.
 
 (C:\Users\jaest\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.mk
 ii
@@ -1108,7 +1108,7 @@ Package: ltcaption 2021/01/08 v1.4c longtable captions (AR)
 Package caption Info: rotating package is loaded.
 Package caption Info: wrapfig package is loaded.
 Package caption Info: End \AtBeginDocument code.
-Package hyperref Info: Link coloring ON on input line 195.
+Package hyperref Info: Link coloring ON on input line 198.
 
 (main.out) (main.out)
 \@outlinefile=\write4
@@ -1198,7 +1198,7 @@ l.60 \normalsize{M
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
- 212.
+ 215.
 (pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
 
 
@@ -1212,7 +1212,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
- 216.
+ 219.
 (pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
 
 
@@ -1275,7 +1275,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
- 220.
+ 223.
 (pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
 
 
@@ -1359,7 +1359,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
- 225.
+ 228.
 (pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
 
 
@@ -1415,7 +1415,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
- 229.
+ 232.
 (pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
 
 
@@ -1477,7 +1477,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
- 235.
+ 238.
 (pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
 
 
@@ -1579,7 +1579,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
- 240.
+ 243.
 (pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
 
 
@@ -2549,7 +2549,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
- 245.
+ 248.
 (pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
 
 
@@ -3014,7 +3014,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
- 251.
+ 254.
 (pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
 
 
@@ -3072,7 +3072,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
- 257.
+ 260.
 (pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
 
 
@@ -3100,7 +3100,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
- 261.
+ 264.
 (pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
 
 
@@ -3231,7 +3231,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
- 265.
+ 268.
 (pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
 
 
@@ -3245,7 +3245,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
- 268.
+ 271.
 (pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
 
 
@@ -3259,7 +3259,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
- 270.
+ 273.
 (pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
 
 
@@ -3273,7 +3273,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
- 273.
+ 276.
 (pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
 
 
@@ -3301,7 +3301,7 @@ Package rerunfilecheck Info: File `main.out' has not changed.
 Here is how much of TeX's memory you used:
  39668 strings out of 467871
  891778 string characters out of 5418376
- 2030627 words of memory out of 5000000
+ 2031651 words of memory out of 5000000
  67024 multiletter control sequences out of 15000+600000
  642822 words of font info for 98 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -3340,7 +3340,7 @@ ms/MiKTeX/fonts/type1/public/lm/lmsso8.pfb><C:/Users/jaest/AppData/Local/Progra
 ms/MiKTeX/fonts/type1/public/lm/lmsy7.pfb><C:/Users/jaest/AppData/Local/Program
 s/MiKTeX/fonts/type1/public/lm/lmtt8.pfb><C:/Users/jaest/AppData/Local/Programs
 /MiKTeX/fonts/type1/public/lm/lmtt9.pfb>
-Output written on main.pdf (121 pages, 14243631 bytes).
+Output written on main.pdf (121 pages, 14243628 bytes).
 PDF statistics:
  2409 PDF objects out of 2487 (max. 8388607)
  787 named destinations out of 1000 (max. 500000)
