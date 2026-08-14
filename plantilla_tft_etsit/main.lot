@@ -5,8 +5,8 @@
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \contentsline {table}{\numberline {3.1}{\ignorespaces Posiciones del selector de modo de arranque SW6 de la ZCU102. Adaptada de \cite {xilinx2023ug1182}.}}{16}{table.caption.74}%
-\contentsline {table}{\numberline {3.2}{\ignorespaces Puertos del transmisor \texttt {TX\_CONFIGURABLE\_SERIAL}.}}{22}{table.caption.76}%
-\contentsline {table}{\numberline {3.3}{\ignorespaces Puertos del receptor \texttt {RX\_CONFIGURABLE\_SERIAL}.}}{25}{table.caption.81}%
+\contentsline {table}{\numberline {3.2}{\ignorespaces Puertos del transmisor \texttt {TX\_CONFIGURABLE\_SERIAL}.}}{21}{table.caption.75}%
+\contentsline {table}{\numberline {3.3}{\ignorespaces Puertos del receptor \texttt {RX\_CONFIGURABLE\_SERIAL}.}}{24}{table.caption.80}%
 \contentsline {table}{\numberline {3.4}{\ignorespaces Reparto de bits de los vectores de interfaz del bloque \texttt {CONFIGURABLE\_SERIAL\_TOP}.}}{29}{table.caption.85}%
 \contentsline {table}{\numberline {3.5}{\ignorespaces API pública del driver serie.}}{34}{table.caption.87}%
 \contentsline {table}{\numberline {3.6}{\ignorespaces Control complementario DE/RE en el THVD1424.}}{42}{table.caption.100}%
