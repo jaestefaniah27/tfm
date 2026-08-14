@@ -1,76 +1,41 @@
 \section{Líneas futuras}
 
-A partir del trabajo realizado, se identifican las siguientes líneas de continuación:
+De todo lo que el trabajo deja abierto, tres líneas destacan sobre las demás por ser las que
+condicionan que esta plataforma pueda llegar a volar.
 
-\textbf{Validación SpaceWire.} La interfaz SpaceWire de la placa AOCS quedó fuera del alcance por
-su alta complejidad técnica: la placa expone la capa física LVDS, pero ejercitarla exige
-implementar en la lógica programable la codificación \textit{data-strobe}, la máquina de estados
-de establecimiento del enlace y los niveles superiores del estándar. Completar esta validación es
-el paso inmediato más relevante, ya que SpaceWire es el protocolo de alta velocidad previsto para
-los enlaces de mayor ancho de banda del satélite.
+\textbf{Completar SpaceWire, desde la capa física hasta un controlador propio.} Es la única
+interfaz de las placas que no llegó a validarse. La tarjeta AOCS expone los dos enlaces con su
+señalización LVDS, sus repetidores y sus pares igualados en longitud, de modo que el trabajo
+pendiente está íntegramente en la lógica programable y el software: la codificación
+\textit{data-strobe}, la máquina de estados de establecimiento y recuperación del enlace, y los
+niveles de paquete y de red del estándar. El camino razonable es el mismo que siguió el transceptor
+serie de este trabajo: implementar el controlador desde cero en VHDL, verificarlo por simulación
+bloque a bloque y exponerlo al PS mediante el transporte MCDMA ya desarrollado, que admite canales
+adicionales sin rediseño. Es el paso más relevante a corto plazo, porque SpaceWire es el protocolo
+previsto para los enlaces de mayor ancho de banda del satélite.
 
-\textbf{Corregir el valor por defecto del bit SLO y operar la plataforma a 4~Mbps.} La
-caracterización de la PCB (sección~\ref{sec:pcb_slo}) demuestra que el limitador de \textit{slew} de
-los transceptores está activo con la configuración por defecto, y que desactivándolo los tres buses
-pasan de 460~kbps--1~Mbps a 4~Mbps limpios. El cambio es de una línea, pero arrastra tres tareas: hay
-que \textbf{renombrar la macro} en \texttt{transceiver.h}, que es la que indujo el error;
-\textbf{invertir el valor por defecto} del driver, hoy todavía en el modo lento; y \textbf{repetir la
-campaña de estabilidad} a 4~Mbps, donde el bus multipunto ---el más cargado--- tendrá menos margen
-que los dos enlaces punto a punto.
-
-\textbf{Aprovechar el limitador de slew para lo que sirve.} Una vez entendido que el modo lento es el
-que reduce las emisiones electromagnéticas a costa de ancho de banda, el bit deja de ser una fuente
-de confusión y pasa a ser una herramienta: permite elegir, canal a canal y en caliente, entre un
-enlace rápido y uno de baja emisión. En un satélite, donde la compatibilidad electromagnética es un
-requisito duro, es una palanca que merece la pena caracterizar de forma explícita, midiendo la
-emisión radiada en ambos modos.
-
-\textbf{Reducir la tasa de error del bus multipunto.} El bus A sostiene 147~ppm a 460~kbps, frente
-al cero absoluto de los dos buses RS-422. La cifra es baja y coherente con siete nodos colgados de
-una línea compartida, pero merece la pena investigar si se debe a la terminación, a los
-\textit{stubs} de derivación o simplemente a estar operando cerca del límite de velocidad del bus
-en la configuración por defecto.
-
-\textbf{Completar la medida de la variante DMA14.} El módulo de \textit{loopback} no llegó a
-funcionar sobre la arquitectura de catorce controladores DMA, y se optó por no seguir
-depurándolo y dedicar el tiempo a la variante MCDMA, de modo que sus cifras de recepción no son
-comparables y en las tablas del capítulo de resultados aparecen como no disponibles. Retomar esa
-depuración y repetir la captura con el lazo cerrado cerraría la comparativa por completo. No se
-espera que cambie la conclusión ---el argumento contra esa arquitectura es de recursos y de
-líneas de interrupción, no de rendimiento--- pero sí completaría el dato.
-
-\textbf{Endurecimiento frente a radiación: replicar la variante MCDMA con TMR.} La lógica
-programable comercial es susceptible a los efectos de la radiación en órbita ---en particular a
-los \textit{single event upsets} (SEU), que alteran el contenido de biestables y de la memoria de
-configuración---, y la técnica habitual de mitigación es la triplicación modular redundante (TMR):
-tres copias de la lógica y módulos votadores que enmascaran el fallo de cualquiera de ellas. La
-línea de trabajo concreta es replicar el proyecto de la variante MCDMA triplicando su lógica
-propia ---el puente VHDL y los transceptores serie---, incorporar los votadores necesarios y
-demostrar que el sistema sigue superando la misma campaña de treinta y seis comprobaciones. El
-presupuesto de área lo permite: triplicar el 5,2\,\% de ocupación del MCDMA mantiene el diseño en
-torno al 16\,\% del dispositivo, mientras que la misma operación sobre la variante DMA14 rondaría
-el 44\,\% y la haría inviable ---es el argumento de futuro que ya pesó en su descarte
+\textbf{Endurecer la variante MCDMA mediante triplicación modular (TMR).} La lógica programable
+comercial es susceptible a los efectos de la radiación en órbita, en particular a los
+\textit{single event upsets} (SEU), que alteran el contenido de los biestables y de la memoria de
+configuración. La técnica habitual de mitigación es la triplicación modular redundante: tres copias
+de la lógica y módulos votadores que enmascaran el fallo de cualquiera de ellas. La línea de
+trabajo concreta es replicar el proyecto de la variante MCDMA triplicando su lógica propia (el
+puente VHDL y los transceptores serie), incorporar los votadores necesarios y demostrar que el
+sistema sigue superando la misma campaña de treinta y seis comprobaciones. El presupuesto de área
+lo permite, y esa fue una de las razones de escoger esta arquitectura: triplicar el 5,2\,\% de
+ocupación del MCDMA mantiene el diseño en torno al 16\,\% del dispositivo, mientras que la misma
+operación sobre la variante DMA14 rondaría el 44\,\% y la haría inviable
 (sección~\ref{sec:resultados_benchmark}).
 
-\textbf{Eliminar el \textit{store-and-forward} del canal de recepción del MCDMA.} El límite de
-512~bytes por paquete que impone la configuración actual del IP obliga al bloque de drenado de la
-PL a trocear los bloques a 256~bytes. Regenerar el \texttt{axi\_mcdma} con
-\texttt{c\_include\_s2mm\_sf~=~0} eliminaría esa restricción y permitiría paquetes de longitud
-arbitraria, con una reducción adicional del número de interrupciones en transferencias largas.
-
-\textbf{Explotar el margen de CPU liberado.} La consecuencia práctica más interesante del cambio de
-transporte es que el procesador ha quedado libre: se ha pasado de 1250 a 3 interrupciones por
-kilobyte. Ese margen es precisamente lo que necesita el software de vuelo para ejecutar las tareas
-de control y gestión de datos del OBC mientras los catorce enlaces serie funcionan a plena
-velocidad. Cuantificar la carga de CPU real del sistema completo, con la aplicación de vuelo
-corriendo en paralelo al tráfico serie, es el siguiente paso natural de la caracterización.
-
-\textbf{Integración con el stack de software de vuelo de Sener.} El driver y las PCBs han sido
-diseñados con los requisitos de Indra/Sener como guía. El siguiente paso natural es la
-integración del driver en el stack de software de vuelo de Sener y la realización de pruebas
-de validación conjuntas en entorno \textit{Hardware-in-the-Loop}.
-
-\textbf{Soporte de protocolos adicionales.} La arquitectura modular del transceptor VHDL facilita
-la incorporación de nuevos modos de operación. Una extensión interesante sería añadir
-soporte nativo del protocolo MIL-STD-1553, ampliamente utilizado en sistemas espaciales de
-mayor herencia.
+\textbf{Investigar arquitecturas tolerantes a radiación más allá del TMR.} La triplicación protege
+la lógica de usuario, pero no agota el problema: en una FPGA basada en SRAM, la memoria de
+configuración es tan vulnerable como los biestables, y un SEU en ella altera el propio circuito y
+no solo su estado. La continuación natural es estudiar y comparar el resto de mecanismos
+disponibles sobre este mismo diseño: el \textit{scrubbing} periódico de la memoria de
+configuración, la protección con código corrector de las memorias y de los \textit{buffers} en la
+DDR, las máquinas de estados con codificación segura y recuperación a un estado conocido, los
+temporizadores de guarda que reinicien un canal bloqueado sin arrastrar al resto, y la
+comparación con el uso de dispositivos cualificados o tolerantes a radiación por construcción.
+El objetivo es cuantificar qué combinación de técnicas ofrece la mejor relación entre cobertura
+frente a SEU, área ocupada y penalización en rendimiento, para el perfil de órbita baja del
+proyecto LINCE.

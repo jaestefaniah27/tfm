@@ -95,4 +95,41 @@ con el \texttt{TDEST} del canal que lo originó, de modo que el periférico o el
 interfaces AXI-Stream para dar servicio a los $N$ periféricos, frente a las $N$ instancias
 independientes que exigiría el \texttt{axi\_dma}.
 
+\subsection{El coste de la interrupción y el régimen de \textit{livelock}}
+\label{sec:teoria_livelock}
+
+La razón por la que la elección de transporte determina el rendimiento del conjunto no está en el
+ancho de banda del bus, que sobra en todos los casos, sino en \textbf{cuántas veces se expropia al
+procesador}. Atender una interrupción no es gratis: exige salvar el contexto de la tarea en curso,
+saltar al vector correspondiente, ejecutar la rutina de servicio, reconocer la fuente en el
+controlador y restaurar el contexto. Ese coste es prácticamente constante, del orden de unos pocos
+microsegundos en un procesador empotrado, y \textbf{no depende del número de bytes que la
+interrupción transporte}.
+
+De ahí se sigue el comportamiento característico de un sistema que interrumpe una vez por byte. Si
+$C$ es el coste de atender una interrupción y $T_b$ el tiempo que la línea tarda en entregar un
+byte, el procesador solo puede seguir el ritmo del enlace mientras $C < T_b$. Al aumentar la
+velocidad de línea, $T_b$ se reduce mientras $C$ permanece fijo, de modo que existe una velocidad a
+partir de la cual el sistema deja de mejorar: todo el tiempo de CPU se consume en entrar y salir de
+la rutina de servicio, y subir el baudrate no aporta un solo byte adicional a la aplicación. Con
+$N$ enlaces simultáneos el umbral se alcanza $N$ veces antes, porque el coste se acumula sobre el
+mismo procesador.
+
+Este fenómeno se conoce como \textbf{\textit{interrupt livelock}} y fue caracterizado por Mogul y
+Ramakrishnan en el contexto de las interfaces de red \cite{mogul1997livelock}: por encima de cierta
+tasa de llegada, el rendimiento útil de un sistema dirigido por interrupción no se estanca
+simplemente, sino que puede llegar a \textbf{degradarse}, porque la máquina dedica todo su tiempo a
+atender interrupciones y ninguno a procesar lo que esas interrupciones han traído. El sistema no se
+bloquea (sigue respondiendo a la línea) pero no progresa, que es exactamente lo que distingue el
+\textit{livelock} del interbloqueo clásico.
+
+Las dos técnicas habituales de mitigación son las mismas que se aplican en este trabajo:
+\textbf{desplazar el trabajo fuera del contexto de interrupción} hacia una tarea planificable
+(\textit{deferred interrupt processing}), que es lo que hace el driver descrito en la
+sección~\ref{sec:driver_rtems}, y sobre todo \textbf{cambiar la unidad de notificación}, pasando de
+interrumpir por byte a interrumpir por paquete, que es precisamente lo que aporta el acceso directo
+a memoria. La comparativa del capítulo de resultados
+(sección~\ref{sec:resultados_benchmark}) mide ese salto de forma directa, en interrupciones por
+kilobyte transferido.
+
 

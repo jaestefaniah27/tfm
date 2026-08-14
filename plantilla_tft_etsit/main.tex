@@ -77,6 +77,19 @@
   },
 }
 
+% --- Figuras aún no disponibles ---------------------------------------------
+% \figpendiente{ruta}{ancho}{descripción}: si el fichero existe lo inserta como
+% una figura normal; si todavía no está, dibuja un recuadro con la descripción y
+% la ruta esperada, de modo que el documento siga compilando. Basta con dejar el
+% fichero en su sitio para que la figura aparezca sin tocar el .tex.
+\newcommand{\figpendiente}[3]{%
+  \IfFileExists{#1}%
+    {\includegraphics[width=#2]{#1}}%
+    {\fbox{\parbox{0.92\textwidth}{\centering\vspace{0.45cm}%
+       \textit{[Figura pendiente: #3]}\\[0.25cm]%
+       {\small\texttt{\detokenize{#1}}}\vspace{0.45cm}}}}%
+}
+
 % --- Configuración de listings para código ---
 \lstset{
   basicstyle=\ttfamily\small,
@@ -245,16 +258,16 @@
 \bibliography{biblio}
 
 \backmatter
-\chapter{Anexo 1: Mapas de señales y tabla NCO}
+\chapter{Anexo A: Mapas de señales, tabla del NCO y volumen de código}
     \import{capitulos/anexos/}{anexo1.tex}
 
 \newpage
-\chapter{Anexo A: Aspectos éticos, económicos, sociales y ambientales}
+\chapter{Anexo B: Aspectos éticos, económicos, sociales y ambientales}
     \import{capitulos/anexos/}{anexoA.tex}
 
 
 \newpage
-\chapter{Anexo B: Presupuesto económico}
+\chapter{Anexo C: Presupuesto económico}
     \import{capitulos/anexos/}{anexoB.tex}
 \newpage
 

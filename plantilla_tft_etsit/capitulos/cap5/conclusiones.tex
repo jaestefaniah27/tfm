@@ -1,79 +1,108 @@
 \section{Conclusiones}
 
-El objetivo principal de este trabajo era desarrollar una plataforma funcional de comunicación
-con periféricos serie sobre el MPSoC Zynq UltraScale+ ZCU102, adaptada a los requisitos
-del proyecto LINCE. A lo largo del desarrollo se han obtenido los siguientes resultados:
+El objetivo principal de este trabajo era desarrollar una plataforma funcional y validada de
+comunicación con periféricos serie sobre el MPSoC Zynq UltraScale+ ZCU102, que sirviera de base
+para el ordenador de a bordo del proyecto LINCE. Ese objetivo se desglosó en la
+sección~\ref{objetivos} en seis objetivos específicos, y las conclusiones se ordenan aquí
+siguiéndolos uno a uno, para poder declarar en cada caso qué se ha conseguido y con qué evidencia.
 
-El transceptor serie configurable diseñado en VHDL funciona correctamente sobre la lógica
-programable del ZCU102. Soporta los estándares RS422 y RS485 con configuración completa
-de protocolo en tiempo de ejecución, y el NCO de 32 bits que genera su temporización, validado
-velocidad a velocidad con un \textit{testbench} dedicado, presenta un error de baudrate nulo o
-inferior a 1~ppm en la mayoría de las velocidades estándar y de 120~ppm en el peor punto del
-rango, dos órdenes de magnitud por debajo de la tolerancia habitual de un receptor UART.
+\textbf{El primer objetivo, diseñar un transceptor serie configurable en VHDL, se ha cumplido.}
+El bloque desarrollado opera sobre los estándares RS422 y RS485 y admite la configuración completa
+del formato de trama en tiempo de ejecución: velocidad entre 50 y 4.000.000 de baudios sobre una
+tabla de 54 entradas, de 5 a 9 bits de datos, cinco modos de paridad, tres campos de parada
+(incluido el de 1,5 bits) y los dos órdenes de bit. Su base de tiempos, un NCO de 32 bits validado
+velocidad a velocidad con un \textit{testbench} dedicado, presenta un error nulo o inferior a
+1~ppm en la mayoría de las velocidades estándar y de 120~ppm en el peor punto del rango, dos
+órdenes de magnitud por debajo de la tolerancia habitual de un receptor UART. El canal completo
+supera además el barrido exhaustivo de las 150 configuraciones posibles, 450 tramas comparadas dato
+a dato sin un solo error (sección~\ref{sec:verificacion_canal}), y catorce instancias del bloque
+funcionan de forma simultánea sobre la placa.
 
-El driver desarrollado para RTEMS abstrae el hardware de forma efectiva y permite gestionar
-hasta 14 instancias simultáneas del transceptor mediante una arquitectura orientada a
-interrupciones. La separación entre la ISR maestra y las tareas \textit{worker} garantiza tiempos de
-latencia mínimos en la atención de interrupciones, manteniendo el determinismo propio de
-un sistema de tiempo real.
-
-El estudio del transporte de datos entre el PS y la PL constituye la aportación de mayor
-recorrido del trabajo. Se implementaron y midieron \textbf{tres arquitecturas completas}
----AXI GPIO, catorce AXI DMA y un AXI MCDMA con puente VHDL propio--- sobre el mismo
-transceptor y con el mismo programa de pruebas, y la comparación es concluyente: la
-arquitectura basada en AXI GPIO, que era la de partida, \textbf{interrumpe al procesador una
-vez por cada byte} (1250 interrupciones por kilobyte), lo que la deja en el 30\,\% del techo
-físico de la línea y, sobre todo, la vuelve insensible a la velocidad del enlace: de 115\,200 a
-4~Mbaudios su rendimiento apenas mejora un 41\,\%, porque el cuello de botella no está en la
-línea sino en la CPU.
-
-La solución final ---un MCDMA multicanal con un puente en VHDL que multiplexa los catorce
-canales--- baja a \textbf{3 interrupciones por kilobyte}, alcanza el \textbf{99\,\% del techo
+\textbf{El segundo objetivo, diseñar la arquitectura de transporte entre la lógica programable y
+el sistema de procesamiento, es el de mayor recorrido del trabajo y se ha cumplido con datos
+propios.} No se seleccionó una alternativa sobre el papel: se implementaron y midieron
+\textbf{tres arquitecturas completas} (AXI GPIO, catorce AXI DMA y un AXI MCDMA con puente VHDL
+propio) sobre el mismo transceptor y con el mismo programa de pruebas. La comparación es
+concluyente. La arquitectura de partida, basada en AXI GPIO, \textbf{interrumpe al procesador una
+vez por cada byte} (1250 interrupciones por kilobyte), lo que la deja en el 30\,\% del techo físico
+de la línea y, sobre todo, la vuelve insensible a la velocidad del enlace: de 115\,200 a
+4~Mbaudios su rendimiento apenas mejora un 41\,\%, porque el cuello de botella no está en la línea
+sino en la CPU. La solución final, un MCDMA multicanal con un puente en VHDL que multiplexa los
+catorce canales, baja a \textbf{3 interrupciones por kilobyte}, alcanza el \textbf{99\,\% del techo
 físico} de la línea, reduce la latencia a un tercio y, a diferencia de la anterior, escala
-linealmente con la velocidad hasta los 344~KB/s a 4~Mbaudios. El camino intermedio ---replicar
-catorce controladores DMA--- se hizo funcionar en placa, pero resultó inviable no por
-rendimiento sino por recursos: cuesta 2,8 veces más lógica y exige veintiocho líneas de
-interrupción cuando el MPSoC solo ofrece ocho, un consumo de área incompatible, además, con una
-futura triplicación TMR de la lógica para tolerancia a la radiación. Ese límite del silicio es
-lo que justificó el diseño del puente propio.
+linealmente con la velocidad hasta los 345~kB/s a 4~Mbaudios. El camino intermedio, replicar
+catorce controladores DMA, se hizo funcionar en placa pero resultó inviable no por rendimiento sino
+por recursos: cuesta 2,8 veces más lógica y exige veintiocho líneas de interrupción cuando el MPSoC
+solo ofrece ocho, un consumo de área incompatible, además, con una futura triplicación TMR de la
+lógica para tolerancia a la radiación. Ese límite del silicio es lo que justificó el diseño del
+puente propio.
 
-Se diseñaron y fabricaron \textbf{tres} tarjetas de circuito impreso, todas ellas en el propio
-laboratorio mediante proceso de soldadura por reflujo con \textit{stencil}. Las dos que responden
-a especificación externa ---la placa CDHS y la placa AOCS--- cumplen los requisitos impuestos por
-Indra a través de Sener y han permitido validar el sistema de comunicaciones en un entorno
-hardware real.
+\textbf{El tercer objetivo, un driver completo en C sobre RTEMS 7, se ha cumplido en sus tres
+versiones.} El driver abstrae por completo el acceso al hardware tras una API pública de cinco
+funciones, descubre en arranque cuántos transceptores hay instanciados en el \textit{bitstream}
+(de modo que el mismo binario sirve para cualquier configuración, de un canal a catorce) y gestiona
+la comunicación orientada a interrupciones sin bloquear al procesador. La separación entre la ISR
+maestra y las tareas \textit{worker} mantiene mínimo el tiempo en contexto de interrupción y
+preserva el determinismo propio de un sistema de tiempo real. Se escribió una versión del driver
+para cada arquitectura de transporte, lo que permitió que la comparativa del segundo objetivo
+midiera transportes y no implementaciones desiguales.
 
-La placa de comunicación serie, con sus catorce transceptores
-RS-485/RS-422, se caracterizó eléctricamente con una batería de nueve tests que
-recorren la polarización de reposo, el mapa de conectividad real, la integridad del bus
-multipunto, la velocidad máxima de cada bus, la diafonía, la colisión y la estabilidad sostenida.
-La placa supera todos: cero bytes espurios en reposo, cero fugas entre buses, recuperación limpia
-tras una colisión y tasa de error nula en los dos buses RS-422 tras diez segundos de tráfico
-continuo. De esa campaña salió además un hallazgo con consecuencias prácticas inmediatas: la placa
-venía funcionando con el \textbf{limitador de \textit{slew} de los transceptores activado} sin que
-nadie lo supiera. El pin \texttt{SLO} del LTC2865 es un habilitador de modo lento \textbf{activo a
-nivel bajo} ---con él a 0 el driver queda capado a 250~kbps nominales---, y el valor por defecto del
-software era precisamente 0, pese a que la macro correspondiente se llamaba «SLO desactivado». El
-hardware no estaba mal: era el nombre de la macro el que inducía a error. Desactivando de verdad el
+\textbf{El cuarto objetivo, diseñar y fabricar una placa que ejercitara los catorce transceptores
+sobre topologías realistas, se ha cumplido y la placa se ha caracterizado eléctricamente.} Sus
+catorce canales se reparten en un bus RS-485 multipunto de siete nodos y dos buses RS-422
+\textit{master/slave}, configurables por \textit{jumper} sin recablear. La batería de nueve tests
+recorre la polarización de reposo, el mapa de conectividad real, la integridad del bus multipunto,
+la velocidad máxima de cada bus, la diafonía, la colisión y la estabilidad sostenida, y la placa
+los supera todos: cero bytes espurios en reposo, cero fugas entre buses, recuperación limpia tras
+una colisión y tasa de error nula en los dos buses RS-422 tras diez segundos de tráfico continuo.
+De esa campaña salió además un hallazgo con consecuencias prácticas inmediatas: la placa venía
+funcionando con el \textbf{limitador de \textit{slew} de los transceptores activado} sin que nadie
+lo supiera. El pin \texttt{SLO} del LTC2865 es un habilitador de modo lento \textbf{activo a nivel
+bajo} (con él a 0 el driver queda capado a 250~kbps nominales), y el valor por defecto del software
+era precisamente 0, pese a que la macro correspondiente se llamaba «SLO desactivado». El hardware
+no estaba mal: era el nombre de la macro el que inducía a error. Desactivando de verdad el
 limitador, los tres buses pasan de 460~kbps--1~Mbps a \textbf{4~Mbps limpios}, con tasa de error
-nula: cuatro veces más velocidad sin tocar una sola pista de cobre ni resintetizar nada.
+nula: cuatro veces más velocidad sin tocar una sola pista de cobre ni resintetizar nada. Queda
+pendiente la corrección, trivial, de invertir ese valor por defecto y renombrar la macro que lo
+provocó.
 
-La validación experimental ha confirmado el correcto funcionamiento de las interfaces RS422,
-RS485 y CAN de la placa CDHS, así como de las interfaces RS422 y RS485 de la placa AOCS.
-En el caso del bus CAN, se comprobó experimentalmente la importancia de las resistencias
-de terminación para la integridad de la señal diferencial. El driver SPI del ADC ADS7950
-produjo lecturas coherentes con la tensión de entrada aplicada, validando la cadena de
-adquisición analógica de la placa CDHS.
+\textbf{El quinto objetivo, diseñar y fabricar las dos placas de expansión bajo especificación de
+Indra, se ha cumplido.} La placa CDHS expone CAN redundante, tres canales RS422/RS485, cuatro
+líneas de PWM para calentadores y un ADC de termistores sobre seis conectores D-Sub-9; la placa
+AOCS, los canales serie, el control de motores por PWM y dos enlaces SpaceWire sobre ocho. Las tres
+tarjetas del trabajo se fabricaron en el propio laboratorio mediante soldadura por reflujo con
+\textit{stencil}, y todas resultaron fabricables a la primera por haberse diseñado directamente
+contra las capacidades de proceso del fabricante. La restricción de 1,8~V del carril VADJ del FMC
+condicionó la selección de componentes y obligó a descartar las piezas con herencia de vuelo, una
+decisión que se declara explícitamente: las tarjetas son hardware de validación funcional, no
+hardware de vuelo. De la caracterización de la placa AOCS salió un error de conexión en el eje Z
+del bloque de motores, que la revisión V2 del esquemático corrige.
+
+\textbf{El sexto objetivo, integrar y validar el sistema completo, se ha cumplido salvo en una
+interfaz.} La validación experimental confirma el funcionamiento de las interfaces RS422 y RS485 de
+las placas CDHS y AOCS, del bus CAN de la CDHS (26 de 26 pruebas superadas, incluida la
+comprobación del efecto de las resistencias de terminación sobre la integridad de la señal
+diferencial), del ADC por SPI, cuyas lecturas siguen linealmente la tensión aplicada, y de las
+señales de PWM de ambas placas. La única interfaz que quedó sin validar es \textbf{SpaceWire}, por
+una razón declarada desde el inicio: la placa expone la capa física LVDS, pero ejercitarla exige
+implementar en la lógica programable la codificación \textit{data-strobe}, la máquina de estados
+del enlace y los niveles superiores del estándar, un desarrollo que por sí solo excede el alcance
+de este trabajo. Con menor peso, tampoco se completó la medida de recepción de la variante DMA14,
+descartada por recursos antes de depurar su lazo de prueba, ni se llegó a fabricar la revisión V2
+de la placa AOCS.
 
 En términos de volumen, el trabajo ha producido \textbf{20.188 líneas de código} de autoría propia
----excluyendo todo lo generado automáticamente por las herramientas y el código de terceros---,
+(excluyendo todo lo generado automáticamente por las herramientas y el código de terceros),
 repartidas entre el RTL del transceptor y el puente, sus \textit{testbenches}, el driver de RTEMS,
 las aplicaciones de prueba y las herramientas de automatización del flujo. El desglose completo se
-recoge en el anexo (tabla~\ref{tab:loc}), y su distribución refleja las dos decisiones
+recoge en la tabla~\ref{tab:loc} del Anexo~A, y su distribución refleja las dos decisiones
 metodológicas que vertebraron el desarrollo: el código de verificación pesa prácticamente lo mismo
 que el hardware que verifica, y la automatización del flujo, con un 40\,\% del total, es la mayor
 partida individual del trabajo.
 
-En conjunto, el trabajo ha servido como contribución directa al proyecto LINCE,
-proporcionando al laboratorio B105 una base funcional y documentada para el subsistema
-de comunicaciones del ordenador de a bordo del satélite.
+En conjunto, los seis objetivos específicos quedan cubiertos y el objetivo principal, con ellos: el
+resultado es una plataforma funcional, medida y documentada, con una arquitectura de transporte
+escogida sobre datos propios y no sobre estimaciones, y con el margen de CPU y de área que el
+software de vuelo necesitará. El trabajo constituye así una contribución directa al proyecto LINCE
+y deja al laboratorio B105 una base sobre la que construir el subsistema de comunicaciones del
+ordenador de a bordo del satélite.

@@ -86,6 +86,11 @@ S.~M. Parkes.
   Guide}.
 \newblock AMD/Xilinx, 2022.
 
+\bibitem{mogul1997livelock}
+Jeffrey~C. Mogul and K.~K. Ramakrishnan.
+\newblock Eliminating receive livelock in an interrupt-driven kernel.
+\newblock {\em ACM Transactions on Computer Systems}, 15(3):217--252, 1997.
+
 \bibitem{rtems_quickstart}
 {RTEMS Project}.
 \newblock {\em {RTEMS User Manual} (RTEMS 7) --- Cap.~2: Quick Start}.
