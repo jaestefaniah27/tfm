@@ -74,3 +74,11 @@ IMG/AOCS_osciloscopio/aocs_3d.png
 IMG/AOCS_osciloscopio/aocs_3d_1.png
 IMG/cdhs_osciloscopio/cdhs_3d.png
 IMG/cdhs_osciloscopio/cdhs_3d_1.png
+
+# Artefactos de compilación de los diagramas TikZ de la memoria: solo se versiona
+# el .tex fuente y el .pdf resultante, que es el que incluye main.tex.
+plantilla_tft_etsit/IMG/Desarrollo/*.aux
+plantilla_tft_etsit/IMG/Desarrollo/*.log
+plantilla_tft_etsit/IMG/Desarrollo/*.fls
+plantilla_tft_etsit/IMG/Desarrollo/*.fdb_latexmk
+plantilla_tft_etsit/IMG/Desarrollo/*.synctex.gz
