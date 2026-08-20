@@ -38,15 +38,26 @@ Medido sobre el repositorio el 2026-08-20:
 |---|---|
 | Ficheros `.tex` de contenido | 13 (5 capítulos + 3 anexos) |
 | Palabras totales | 38.980 |
-| Apartados (`\section` y `\subsection`) | ~137 |
-| Media por apartado | ~285 palabras, ~2 min de audio |
+| Encabezados totales | 136 |
+| — de ellos `\section` | 22 |
+| — `\subsection` | 55 |
+| — `\subsubsection` | 54 |
+| — `\section*` (anexo A) | 5 |
+| Media por encabezado | ~285 palabras, ~2 min de audio |
 | Duración total estimada a 160 ppm | ~4 h 05 min |
 | Acrónimos ya catalogados en `pre/acronimos.tex` | 73 |
-| Bloques visuales (`lstlisting`, `tabular`, `figure`, `axis`) | 83 |
+| Bloques visuales | 85 |
+| — `figure` y `sidewaysfigure` | 33 |
+| — `tabular` y `longtable` | 30 |
+| — `lstlisting` | 15 |
+| — `axis` (pgfplots) | 7 |
 | Etiquetas resolubles en `main.aux` (`\newlabel`) | 81 |
 
 El fichero más denso es `capitulos/cap3/entorno_desarrollo.tex`: 14.959 palabras,
-41 apartados y 28 bloques visuales. Es el piloto.
+66 encabezados y 28 bloques visuales. Es el piloto.
+
+Dos ficheros no tienen ningún encabezado: `anexos/anexoA.tex` con 1.837 palabras y
+`anexos/anexoB.tex` con 854. El troceado tiene que contemplarlos.
 
 ## 3. Decisiones de arquitectura
 
@@ -127,9 +138,19 @@ Vive en `tools/audiorev/` y se ejecuta igual en el PC que en el servidor.
 `input` para obtener el orden canónico del documento. Se conserva para cada
 fragmento su origen, es decir, el fichero y la línea.
 
-**2. Estructuración.** El documento se parte en unidades por `\section` y
-`\subsection`. El capítulo se toma de `main.tex`, que es donde están los
-`\chapter`. Cada unidad recibe un `unit_id` estable y hereda la ruta de su `.tex`.
+**2. Estructuración.** El documento se parte en unidades por cada encabezado, sea
+`\section`, `\subsection`, `\subsubsection` o `\section*`. El texto que precede al
+primer encabezado hijo pertenece a la unidad del padre. El capítulo se toma de
+`main.tex`, que es donde están los `\chapter`. Cada unidad recibe un `unit_id`
+estable y hereda la ruta de su `.tex`.
+
+Dos reglas de troceado cubren los casos límite medidos en el apartado 2:
+
+- Una unidad sin ningún encabezado, como `anexoA.tex` con sus 1.837 palabras, se
+  parte en trozos de unos 450 palabras por frontera de párrafo, numerados
+  `anexo-b-p01`, `anexo-b-p02` y así sucesivamente.
+- Una unidad que supere las 600 palabras se parte igual, para que ningún apartado
+  pase de unos cuatro minutos.
 
 **3. Normalización para la voz.** Reglas, en orden de aplicación:
 
