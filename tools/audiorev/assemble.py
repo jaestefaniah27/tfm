@@ -34,15 +34,19 @@ def concat(wav_paths: list[Path], out_path: Path) -> None:
     """Une los WAV en un único opus, sin recodificar dos veces."""
     out_path.parent.mkdir(parents=True, exist_ok=True)
     listing = build_concat_file(wav_paths, out_path.with_suffix(".txt"))
-    result = subprocess.run(
-        [
-            "ffmpeg", "-y", "-hide_banner", "-loglevel", "error",
-            "-f", "concat", "-safe", "0", "-i", str(listing),
-            "-c:a", "libopus", "-b:a", "32k", "-application", "voip",
-            str(out_path),
-        ],
-        capture_output=True,
-    )
-    if result.returncode != 0:
-        raise RuntimeError(f"ffmpeg falló: {result.stderr.decode('utf-8', 'replace')}")
-    listing.unlink(missing_ok=True)
+    try:
+        result = subprocess.run(
+            [
+                "ffmpeg", "-y", "-hide_banner", "-loglevel", "error",
+                "-f", "concat", "-safe", "0", "-i", str(listing),
+                "-c:a", "libopus", "-b:a", "32k", "-application", "voip",
+                str(out_path),
+            ],
+            capture_output=True,
+        )
+        if result.returncode != 0:
+            raise RuntimeError(
+                f"ffmpeg falló: {result.stderr.decode('utf-8', 'replace')}"
+            )
+    finally:
+        listing.unlink(missing_ok=True)
