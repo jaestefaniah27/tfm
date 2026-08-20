@@ -120,7 +120,7 @@ sección~\ref{sec:bench_loopback} exige insertar el módulo de \textit{loopback}
 cada variante, y sobre esta el lazo de recepción no llegó a operar: el autodiagnóstico del banco
 lo señaló como abierto y todos los tests que dependen de recibir salieron a cero. Con el coste en
 lógica y el límite de líneas de interrupción ya medidos, la arquitectura quedaba descartada como
-solución final con independencia de lo que midiera su recepción, de modo que la depuración no se
+solución final con independencia de lo que midiera su recepción, por lo que la depuración no se
 llevó más allá y el esfuerzo se dedicó al diseño de la variante MCDMA. Sus cifras de recepción
 constan como no disponibles en los resultados; las válidas de esa corrida son el coste de
 hardware, la huella de memoria y las interrupciones de transmisión.
@@ -315,7 +315,7 @@ metodología de verificación aplicada de forma sistemática a lo largo del trab
     \textit{loopback} tienen bancos de prueba dedicados que ejercitan el protocolo AXI-Stream y
     la topología de buses, respectivamente.
     \item \textbf{Integración incremental.} Cada bloque validado se incorporaba al diseño de
-    bloques y se comprobaba de nuevo en placa antes de añadir el siguiente, de modo que cualquier
+    bloques y se comprobaba de nuevo en placa antes de añadir el siguiente, para que cualquier
     regresión quedara acotada a la última pieza introducida.
     \item \textbf{Batería de pruebas automáticas en placa.} La aplicación de \textit{benchmark}
     (sección~\ref{sec:bench_loopback}) actúa como prueba de regresión del sistema completo: una
@@ -481,7 +481,7 @@ TB OK: 0 fallos
 Verificado el módulo, se inserta en
 cada una de las tres variantes mediante un \textit{script} TCL que desconecta la red que unía cada
 pin físico de recepción con su transceptor y la alimenta desde el \textit{loopback}. Las líneas de
-transmisión siguen llegando a los pines, de modo que los \textit{constraints} de la placa siguen
+transmisión siguen llegando a los pines, con lo que los \textit{constraints} de la placa siguen
 siendo válidos y ninguna asignación de pines cambia.
 
 Sobre este banco se ejecuta \texttt{bench\_main.c}, el mismo programa en las tres variantes, con

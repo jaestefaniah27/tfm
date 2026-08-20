@@ -36,7 +36,7 @@ hardware, la huella de memoria y el coste en interrupciones de la transmisión.
 % ---------------------------------------------------------------------------
 
 Las tres arquitecturas están implementadas sobre el mismo dispositivo (XCZU9EG, 274\,080 LUT,
-548\,160 registros y 912 bloques de RAM), de modo que las cifras de la tabla~\ref{tab:bench_hw}
+548\,160 registros y 912 bloques de RAM), por lo que las cifras de la tabla~\ref{tab:bench_hw}
 salen directamente de los informes de utilización de Vivado y son comparables sin normalización
 alguna.
 
@@ -87,7 +87,7 @@ La cifra que resume la comparación es la última columna de la tabla. El banco 
 replica catorce motores completos en lugar de compartir uno multicanal. La variante GPIO es la más
 pequeña, porque apenas contiene los transceptores y unos pocos registros.
 
-El margen de \textit{timing} (WNS) es positivo y holgado en las tres, de modo que ninguna cierra
+El margen de \textit{timing} (WNS) es positivo y holgado en las tres, por lo que ninguna cierra
 al límite y las diferencias de rendimiento no son atribuibles a la implementación física.
 
 % ---------------------------------------------------------------------------
@@ -241,7 +241,7 @@ tiempo real embarcado.
 \subsubsection{\textit{Throughput}}
 % ---------------------------------------------------------------------------
 
-A 115\,200 baudios en formato 8N1, cada byte ocupa 10 bits de línea, de modo que el techo físico
+A 115\,200 baudios en formato 8N1, cada byte ocupa 10 bits de línea, por lo que el techo físico
 de un canal es de \textbf{11\,520 B/s}. Esa es la referencia contra la que hay que leer la
 primera columna de la tabla~\ref{tab:bench_throughput}, sobre la que está calculado su porcentaje,
 y la que aparece como línea de trazos en la figura~\ref{fig:bench_throughput}.
@@ -423,7 +423,7 @@ cuyo propósito es justamente ese, y el resto de los canales que nadie lee en la
 solo maestro: al ser un bus multipunto, los seis receptores reciben cada bloque.
 
 El número del MCDMA es \textit{mayor} que el del GPIO por la velocidad de entrega, no por un
-defecto. En la variante GPIO el cuello de botella de interrupciones frena la entrega, de modo que
+defecto. En la variante GPIO el cuello de botella de interrupciones frena la entrega, con lo que
 el \textit{ring} se llena más despacio y desborda menos; el MCDMA entrega a la velocidad de la
 línea todo lo que ésta produce y, en consecuencia, sobra más en los \textit{buffers} que la
 aplicación de prueba deliberadamente no vacía. \textbf{Un contador de descartes alto corresponde
