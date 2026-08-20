@@ -164,7 +164,7 @@ periférico el rango \texttt{0xA0000000}--\texttt{0xA01FFFFF}, donde Vivado ha s
 Este mapeado se realiza nada más arrancar \texttt{Init}, ya que RTEMS desconoce a priori las
 direcciones de la PL y, sin él, el primer acceso a los GPIO aborta la ejecución.
 
-\textbf{Carga en la tarjeta SD y arranque de la placa.} \label{sec:carga_sd}
+\textbf{Carga en la tarjeta SD y arranque de la placa.}
 Los dos ficheros se copian en la partición FAT de una tarjeta SD, que se inserta en el zócalo
 \texttt{J100} de la placa~\cite{xilinx2023ug1182}. El \texttt{BOOT.bin} es el que el MPSoC ejecuta
 nada más alimentarse: inicializa el PS, carga el \textit{bitstream} en la PL y encadena el resto
@@ -1210,7 +1210,7 @@ selección de componentes atendiendo a tolerancia a radiación, \textit{outgassi
 térmica, y muy probablemente replantear el nivel lógico de la interfaz para poder acceder al
 catálogo cualificado.
 
-\subsection{Reglas de diseño y proceso de fabricación} \label{sec:reglas_diseno}
+\subsection{Reglas de diseño y proceso de fabricación}
 
 El diseño de las tres placas se realizó en \textbf{Altium Designer}, y el primer paso en cualquiera
 de los tres proyectos, antes de colocar un solo componente, fue \textbf{establecer las reglas de
