@@ -49,8 +49,8 @@ componente, pero queda declarada.
 circuito impreso físicas (dos unidades de cada uno de los tres diseños), con más de doscientos
 componentes montados y conectores metálicos, además de las revisiones descartadas durante el
 desarrollo. Todo ello es residuo de aparatos eléctricos y electrónicos en el sentido de la
-Directiva 2012/19/UE \cite{ue2012weee}, y los componentes seleccionados cumplen la Directiva
-2011/65/UE de restricción de sustancias peligrosas \cite{ue2011rohs}, que es la razón por la que la
+Directiva 2012/19/UE~\cite{ue2012weee}, y los componentes seleccionados cumplen la Directiva
+2011/65/UE de restricción de sustancias peligrosas~\cite{ue2011rohs}, que es la razón por la que la
 lista de materiales especifica encapsulados y acabados libres de plomo. El enfoque NewSpace
 adoptado por el proyecto, basado en componentes comerciales (COTS) en lugar de piezas cualificadas
 para espacio, reduce el coste y el plazo pero acorta la vida útil esperada del hardware y aumenta
@@ -109,7 +109,7 @@ la que más consume de las tres en términos absolutos.
 
 \textbf{Interpretación.} El resultado no es una casualidad de la implementación: es la consecuencia
 directa de haber quitado a la CPU de la ruta de datos. La arquitectura GPIO interrumpe al
-procesador 1250 veces por kilobyte recibido, y cada una de esas interrupciones es un ciclo de
+procesador 1\,250 veces por kilobyte recibido, y cada una de esas interrupciones es un ciclo de
 guardado y restauración de contexto que consume energía sin transportar información. El MCDMA baja
 a 3 interrupciones por kilobyte. La lógica programable añadida (el puente VHDL y el controlador
 multicanal) cuesta 0,10~W adicionales, pero libera a un procesador de cuatro núcleos que consume
@@ -128,7 +128,7 @@ al 16\,\% del dispositivo, mientras que la misma operación sobre la variante de
 rondaría el 44\,\% y resultaría inviable. Ese margen es lo que hace posible endurecer el sistema
 frente a los \textit{single event upsets}, y un satélite que sobrevive a un evento de radiación en
 lugar de perderse es un satélite que no hay que sustituir: se evitan un lanzamiento y un objeto
-adicional en una órbita ya congestionada \cite{esa_environment_report}.
+adicional en una órbita ya congestionada~\cite{esa_environment_report}.
 
 \textbf{Limitaciones del análisis.} Las cifras de potencia proceden de la estimación del
 implementador de Vivado y no de una medida sobre el carril de alimentación de la placa, de modo que
@@ -161,9 +161,9 @@ hardware y aumenta la frecuencia de sustitución. En el lado positivo, la arquit
 seleccionada es 3,2 veces más eficiente por byte transportado que la de partida y deja margen de
 área suficiente para endurecer el diseño frente a radiación, lo que alarga la vida operativa
 esperada del satélite y reduce la necesidad de lanzamientos de reposición. La selección de
-componentes se ha ceñido a la Directiva RoHS \cite{ue2011rohs}, y las placas descartadas deben
+componentes se ha ceñido a la Directiva RoHS~\cite{ue2011rohs}, y las placas descartadas deben
 gestionarse como residuo de aparatos eléctricos y electrónicos a través del canal habilitado por el
-laboratorio, conforme a la Directiva RAEE \cite{ue2012weee}.
+laboratorio, conforme a la Directiva RAEE~\cite{ue2012weee}.
 
 Desde el punto de vista \textbf{ético y de gestión}, el criterio seguido a lo largo de la memoria
 ha sido declarar las limitaciones en lugar de omitirlas: las tarjetas se identifican explícitamente

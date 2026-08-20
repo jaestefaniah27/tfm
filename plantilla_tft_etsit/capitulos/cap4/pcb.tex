@@ -13,7 +13,8 @@ La campaña se ejecuta sobre el transporte MCDMA, que constituye la solución fi
 \textit{bitstream} del banco de pruebas los pines de recepción quedan desconectados de los
 transceptores, por lo que la PCB no intervendría en la medida.
 
-La topología física de la placa, fijada por los \textit{jumpers}, es la siguiente:
+La topología física de la placa, fijada por los \textit{jumpers}, es la de la
+tabla~\ref{tab:pcb_topologia}:
 
 \begin{table}[H]
     \centering
@@ -238,7 +239,7 @@ cruces de cableado, lo que la matriz de conectividad de T2 confirma de forma ind
 enlaces no esperados.
 
 \textbf{Vuelta del bus (T6).} En \textit{half-duplex}, el esclavo no puede responder hasta que el
-maestro haya liberado la línea. Barriendo el tiempo de guarda de 0 a 1000~$\mu$s, las ocho
+maestro haya liberado la línea. Barriendo el tiempo de guarda de 0 a 1\,000~$\mu$s, las ocho
 respuestas llegan íntegras \textbf{ya con guarda nula}: el control de dirección que genera el propio
 transceptor libera la línea a tiempo, por lo que un protocolo construido sobre este nivel no
 necesita añadir guarda por software.

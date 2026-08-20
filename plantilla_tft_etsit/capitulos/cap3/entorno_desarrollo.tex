@@ -166,7 +166,7 @@ direcciones de la PL y, sin él, el primer acceso a los GPIO aborta la ejecució
 
 \textbf{Carga en la tarjeta SD y arranque de la placa.} \label{sec:carga_sd}
 Los dos ficheros se copian en la partición FAT de una tarjeta SD, que se inserta en el zócalo
-\texttt{J100} de la placa \cite{xilinx2023ug1182}. El \texttt{BOOT.bin} es el que el MPSoC ejecuta
+\texttt{J100} de la placa~\cite{xilinx2023ug1182}. El \texttt{BOOT.bin} es el que el MPSoC ejecuta
 nada más alimentarse: inicializa el PS, carga el \textit{bitstream} en la PL y encadena el resto
 de etapas hasta U-Boot, que a su vez carga el \texttt{rtems.img} en memoria y le cede el control.
 Si el ensayo solo ejercita la PL, el \texttt{BOOT.bin} basta por sí solo, ya que lleva dentro el
@@ -174,7 +174,7 @@ Si el ensayo solo ejercita la PL, el \texttt{BOOT.bin} basta por sí solo, ya qu
 
 Antes de encender la placa hay que colocar el selector de modo de arranque en la posición de
 tarjeta SD. Es el conmutador DIP \texttt{SW6}, la referencia 44 del plano de componentes de la
-ZCU102 \cite{xilinx2023ug1182}, cuyas posiciones recoge la tabla~\ref{tab:sw6}. Conviene tenerlo
+ZCU102~\cite{xilinx2023ug1182}, cuyas posiciones recoge la tabla~\ref{tab:sw6}. Conviene tenerlo
 presente porque la configuración de fábrica es \texttt{QSPI32}: sin cambiar el conmutador, la
 placa no arranca desde la tarjeta aunque los ficheros estén correctamente copiados.
 
@@ -216,7 +216,7 @@ por AXI) funcionaba de extremo a extremo. La salida se conserva en
 \texttt{tfm/\allowbreak 00\_docs/\allowbreak logs\_terminal/\allowbreak and\_gate\_output.txt}.
 
 Para facilitar el desarrollo rápido en la parte de RTEMS se desarrollaron dos herramientas,
-disponibles en \texttt{tfm/07\_tools/} dentro del repositorio del proyecto \cite{repo_tfm}. La primera,
+disponibles en \texttt{tfm/07\_tools/} dentro del repositorio del proyecto~\cite{repo_tfm}. La primera,
 \texttt{make\_img.sh}, automatiza la
 compilación: deduce el nombre de la aplicación del directorio desde el que se lanza, ejecuta
 \texttt{waf}\footnote{\texttt{waf} es el sistema de compilación que emplean las aplicaciones de
@@ -265,7 +265,7 @@ invertir su orden dentro del BIF o arrastrar un artefacto antiguo impide que la 
 y sin ninguna indicación del motivo. A ello se suma el tiempo de navegar por los asistentes
 gráficos de cada herramienta. Para eliminar ambos costes se desarrolló el script
 \texttt{generate\_boot.sh} (disponible en
-\texttt{tfm/06\_firmware/boot\_scripts/} del repositorio del proyecto \cite{repo_tfm}), un
+\texttt{tfm/06\_firmware/boot\_scripts/} del repositorio del proyecto~\cite{repo_tfm}), un
 \textit{wizard} interactivo en Bash que encadena todos estos pasos de forma desatendida. El script
 ofrece tres puntos de entrada según el estado en que se encuentre el trabajo: partir del proyecto
 de Vivado y generar \textit{bitstream} desde cero, partir de un proyecto con \textit{bitstream} ya
@@ -367,10 +367,10 @@ derive entre tramas. La salida \texttt{tick} está registrada, por lo que aparec
 después del desbordamiento.
 
 Para validar su funcionamiento se desarrolló un \textit{testbench} dedicado,
-\texttt{tb\_NCO.vhd}, que barre las \textbf{29 velocidades del rango de uso} (de 9600 a
+\texttt{tb\_NCO.vhd}, que barre las \textbf{29 velocidades del rango de uso} (de 9\,600 a
 3,6864~Mbaudios) en sus \textbf{dos modos} de temporización, y mide en cada punto la frecuencia
 real del \textit{tick} promediando 200 períodos tras descartar los diez primeros. Son 58 medidas
-independientes; las entradas de la tabla por debajo de 9600~baudios y la de 4~Mbaudios no se
+independientes; las entradas de la tabla por debajo de 9\,600~baudios y la de 4~Mbaudios no se
 ejercitan, por quedar la primera fuera del uso previsto y exigir la segunda un tiempo de simulación
 desproporcionado. La transcripción siguiente recoge el principio y el final de la campaña:
 
@@ -969,7 +969,7 @@ previamente; a partir de ahí, el script se encarga de añadir y conectar el res
 necesarios: un AXI GPIO de doble canal por transceptor, el controlador de interrupciones común, un
 bloque de solo lectura con los metadatos del sistema que consulta el driver y la asignación de
 direcciones en el mapa de memoria del PS. El script está en
-\texttt{tfm/01\_ip\_serie/scripts/} dentro del repositorio del proyecto \cite{repo_tfm}, y cada
+\texttt{tfm/01\_ip\_serie/scripts/} dentro del repositorio del proyecto~\cite{repo_tfm}, y cada
 proyecto de Vivado conserva su copia en el subdirectorio \texttt{scripts/} correspondiente.
 
 \subsection{Generación de proyecto con TCL}
@@ -1167,7 +1167,7 @@ necesario para validar el sistema en condiciones reales. El plan inicial era dis
 placa de comunicación serie para ejercitar múltiples líneas a la vez. Posteriormente, el proyecto LINCE requirió
 dos tarjetas adicionales con especificaciones impuestas por Indra, la placa CDHS y la placa
 AOCS, para que Sener pudiera validar su firmware sobre la ZCU102. Los esquemáticos (PDF)
-y las BOM de las tres placas están disponibles en el repositorio del proyecto \cite{repo_tfm} bajo
+y las BOM de las tres placas están disponibles en el repositorio del proyecto~\cite{repo_tfm} bajo
 \texttt{tfm/00\_docs/pcbs/}.
 
 \subsection{Selección de componentes bajo la restricción de 1,8~V} \label{sec:seleccion_componentes}
@@ -1220,7 +1220,7 @@ las restricciones de fabricación en un error detectado en el momento de cometer
 rechazo del fabricante cuando el diseño ya está cerrado.
 
 El criterio adoptado fue ceñirse a las \textbf{capacidades del proceso de fabricación del fabricante
-seleccionado}, PCBWay \cite{pcbway_caps}, en lugar de definir un conjunto de reglas propio. Los
+seleccionado}, PCBWay~\cite{pcbway_caps}, en lugar de definir un conjunto de reglas propio. Los
 límites de su proceso estándar (anchuras y separaciones mínimas de pista, diámetro mínimo de
 taladro, anillo de vía y distancia mínima al borde de placa) son los que acotan lo que es
 fabricable a coste ordinario; apurarlos por debajo obliga a recurrir a procesos de precisión, que
@@ -1460,7 +1460,7 @@ las pruebas serie.
 Cuatro entradas analógicas de termistores (CH0--CH3) se digitalizan con el ADC SAR de
 12 bits \textbf{ADS7950QDBTRQ1}, comunicado al procesador por SPI a 1,8~V. La circuitería
 analógica opera a 3,3~V; ambos carriles (+VBD a 1,8~V y +VA a 3,3~V) son independientes
-para evitar acoplos entre el dominio digital y el analógico \cite{ti2018ads7950}. Los
+para evitar acoplos entre el dominio digital y el analógico~\cite{ti2018ads7950}. Los
 termistores se conectan por J6.
 
 \subsubsection{Alimentación}
@@ -1626,13 +1626,13 @@ conserva por trazabilidad, pero está desactualizado incluso respecto a lo que s
 \subsection{Fabricación}
 
 Una vez validados los esquemáticos y completado el rutado de las PCBs, se encargaron las
-placas con stencil a \textbf{PCBWay}, y los componentes a \textbf{Mouser} y \textbf{DigiKey} según
+placas con \textit{stencil} a \textbf{PCBWay}, y los componentes a \textbf{Mouser} y \textbf{DigiKey} según
 disponibilidad. El proceso de montaje en el laboratorio siguió los pasos habituales de
 soldadura por reflujo SMD:
 
 \begin{enumerate}
     \item \textbf{Aplicación de pasta de soldadura.} Se fijó la placa a la mesa con placas de
-    idéntico grosor alrededor y cinta de pintor. Se colocó el stencil alineado y se extendió
+    idéntico grosor alrededor y cinta de pintor. Se colocó el \textit{stencil} alineado y se extendió
     la pasta con espátula.
     \item \textbf{Colocación de componentes.} Con pinzas de punta fina, se colocaron los
     componentes SMD sobre la pasta. Se montaron dos placas en paralelo para optimizar el
@@ -1753,7 +1753,7 @@ integrado en el PS mediante mapeado de registros en memoria (MMIO), siguiendo el
 registros descrito en el Manual de Referencia Técnico del Zynq UltraScale+
 \cite{xilinx2023ug1085}. El protocolo de comunicación con el ADC (formato de trama de
 16 bits, selección de canal en \textit{Manual Mode} y gestión de la latencia de conversión) se
-implementó conforme al \textit{datasheet} del ADS7950 \cite{ti2018ads7950}.
+implementó conforme al \textit{datasheet} del ADS7950~\cite{ti2018ads7950}.
 
 Para probar el CAN, se utilizó una aplicación desarrollada por Diego Ramos, compañero en
 el laboratorio B105 y en el proyecto LINCE. En su aplicación, se configuran las líneas de CAN

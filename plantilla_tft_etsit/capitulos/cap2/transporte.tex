@@ -18,7 +18,7 @@ sección~\ref{sec:transporte_desarrollo}.
 \subsection{Bus AXI}
 
 La comunicación entre el PS y la PL del Zynq UltraScale+ se realiza a través de puertos que
-implementan el estándar AMBA AXI4 de ARM \cite{arm2011axi4}. El estándar define tres
+implementan el estándar AMBA AXI4 de ARM~\cite{arm2011axi4}. El estándar define tres
 perfiles:
 
 \begin{itemize}
@@ -116,7 +116,7 @@ $N$ enlaces simultáneos el umbral se alcanza $N$ veces antes, porque el coste s
 mismo procesador.
 
 Este fenómeno se conoce como \textbf{\textit{interrupt livelock}} y fue caracterizado por Mogul y
-Ramakrishnan en el contexto de las interfaces de red \cite{mogul1997livelock}: por encima de cierta
+Ramakrishnan en el contexto de las interfaces de red~\cite{mogul1997livelock}: por encima de cierta
 tasa de llegada, el rendimiento útil de un sistema dirigido por interrupción no se estanca
 simplemente, sino que puede llegar a \textbf{degradarse}, porque la máquina dedica todo su tiempo a
 atender interrupciones y ninguno a procesar lo que esas interrupciones han traído. El sistema no se
