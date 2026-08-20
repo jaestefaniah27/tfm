@@ -1,0 +1,86 @@
+# Pronunciación de acrónimos para la síntesis de voz.
+#
+# La clave es el acrónimo tal y como aparece en el LaTeX; el valor es lo que se
+# le pasa al motor de voz. El fichero se siembra automáticamente deletreando
+# cada acrónimo letra a letra, que es lo correcto para AOCS o CDHS pero no para
+# los que se leen como una palabra. Corrige a mano esos casos:
+#
+#   CAN: can
+#   RTEMS: ar tems
+#   COTS: cots
+#
+# Después de tocar este fichero hay que regenerar el audio de las unidades
+# afectadas; la caché por hash se encarga de no rehacer el resto.
+ADC: a de ce
+AMBA: a eme be a
+AOCS: a o ce ese
+API: a pe i
+ARM: arm
+AXI: a equis i
+BD: be de
+BER: be e erre
+BOM: bom
+BRAM: bram
+BSP: be ese pe
+CAN: can
+CDHS: ce de hache ese
+CMRR: ce eme erre erre
+COTS: cots
+CPU: ce pe u
+DDR: de de erre
+DMA: de eme a
+DSP: de ese pe
+DTB: de te be
+EMI: e eme i
+ESA: e ese a
+ESD: e ese de
+ETSIT: e te ese i te
+FIFO: efe i efe o
+FMC: efe eme ce
+FPGA: efe pe ge a
+FSBL: efe ese be ele
+FSM: efe ese eme
+GIC: ge i ce
+GPIO: ge pe i o
+HDL: hache de ele
+INTC: i ene te ce
+IRQ: i erre cu
+ISR: i ese erre
+LEO: ele e o
+LINCE: ele i ene ce e
+LSB: ele ese be
+LUT: ele u te
+LVDS: ele uve de ese
+MCDMA: eme ce de eme a
+MM2S: eme eme dos ese
+MMIO: eme eme i o
+MMU: eme eme u
+MPSoC: eme pe ese o ce
+MSB: eme ese be
+NCO: ene ce o
+OBC: o be ce
+PCB: pe ce be
+PERTE: pe e erre te e
+PL: pe ele
+PMUFW: pe eme u efe uve doble
+PS: pe ese
+PWM: pe uve doble eme
+RTEMS: ar tems
+RTOS: erre te o ese
+S2MM: ese dos eme eme
+SEU: ese e u
+SG: ese ge
+SLO: ese ele o
+SMD: ese eme de
+SPI: ese pe i
+TCL: te ce ele
+TFM: te efe eme
+TMR: te eme erre
+TVS: te uve ese
+UART: u a erre te
+UPM: u pe eme
+USB: usb
+VADJ: uve a de jota
+VHDL: uve hache de ele
+WNS: uve doble ene ese
+XSA: equis ese a
