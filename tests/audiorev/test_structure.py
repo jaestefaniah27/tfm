@@ -1,3 +1,5 @@
+import re
+
 from tools.audiorev.model import SourceLine
 from tools.audiorev.structure import slugify, split_units, rechunk
 
@@ -111,3 +113,34 @@ def test_chapter_number_falls_back_to_counter_when_no_cap_fragment():
     units = split_units(lines)
     assert units[0].chapter == 2
     assert units[0].unit_id.startswith("c02-")
+
+
+def test_colliding_titles_are_disambiguated_by_parent_not_by_ordinal():
+    # Dos subsecciones hijas con el mismo título bajo dos padres distintos:
+    # el unit_id debe cualificarse con el slug del padre, no con un ordinal
+    # de aparición (eso haría que insertar un apartado antes cambiara el id
+    # de otro y se invalidara su audio ya generado).
+    units = split_units(
+        _lines(
+            r"""
+\chapter{Desarrollo}
+\subsection{Diseño de la placa CDHS}
+Texto.
+\subsubsection{Alimentación}
+Uno.
+\subsection{Diseño de la placa AOCS}
+Texto.
+\subsubsection{Alimentación}
+Dos.
+"""
+        )
+    )
+    aliment = [u for u in units if u.title == "Alimentación"]
+    assert len(aliment) == 2
+    ids = {u.unit_id for u in aliment}
+    assert len(ids) == 2
+    for uid in ids:
+        # Ninguno debe terminar en un ordinal desnudo tipo "...-alimentacion-2".
+        assert not re.search(r"-\d+$", uid)
+    assert any("cdhs" in uid for uid in ids)
+    assert any("aocs" in uid for uid in ids)

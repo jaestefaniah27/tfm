@@ -45,11 +45,15 @@ def split_units(lines: list[SourceLine]) -> list[Unit]:
     chapter_num = 0
     chapter_title = ""
     current: Unit | None = None
-    # Algunos apartados repiten título dentro del mismo fichero (p.ej. varias
-    # subsecciones llamadas "Alimentación" bajo distintos padres). Se añade un
-    # sufijo por orden de aparición solo cuando hay colisión, para no romper
-    # la estabilidad del caso normal (un único título por fichero).
-    seen: dict[str, int] = {}
+    # Pila de encabezados abiertos (level, slug) para poder cualificar por
+    # ancestro cuando dos apartados del mismo fichero comparten título.
+    ancestry: list[tuple[int, str]] = []
+    # base_id -> lista de (unit, prefijo "cNN-stem", slug del título,
+    # slug del padre inmediato o None), en orden de aparición. Se resuelve
+    # al final para desambiguar por ancestro en vez de por posición (ver
+    # _disambiguate): el `unit_id` no debe depender de en qué orden
+    # aparecen los apartados hermanos, solo de su ancestro.
+    by_base_id: dict[str, list[tuple[Unit, str, str, str | None]]] = {}
 
     for line in lines:
         chap = _CHAPTER.search(line.text)
@@ -62,20 +66,28 @@ def split_units(lines: list[SourceLine]) -> list[Unit]:
         if head:
             kind, raw_title = head.group(1), head.group(2)
             title = _strip(raw_title)
+            level = _LEVEL[kind]
+            title_slug = slugify(title)
             stem = PurePosixPath(line.tex_file).stem
-            base_id = f"c{_chapter_number(line.tex_file, chapter_num):02d}-{slugify(stem)}-{slugify(title)}"
-            seen[base_id] = seen.get(base_id, 0) + 1
-            unit_id = base_id if seen[base_id] == 1 else f"{base_id}-{seen[base_id]}"
+
+            while ancestry and ancestry[-1][0] >= level:
+                ancestry.pop()
+            parent_slug = ancestry[-1][1] if ancestry else None
+            ancestry.append((level, title_slug))
+
+            prefix = f"c{_chapter_number(line.tex_file, chapter_num):02d}-{slugify(stem)}"
+            base_id = f"{prefix}-{title_slug}"
             current = Unit(
-                unit_id=unit_id,
+                unit_id=base_id,
                 chapter=_chapter_number(line.tex_file, chapter_num),
                 chapter_title=chapter_title,
-                level=_LEVEL[kind],
+                level=level,
                 title=title,
                 tex_file=line.tex_file,
                 tex_lines=(line.lineno, line.lineno),
             )
             units.append(current)
+            by_base_id.setdefault(base_id, []).append((current, prefix, title_slug, parent_slug))
             continue
 
         if current is not None and line.text.strip():
@@ -84,7 +96,41 @@ def split_units(lines: list[SourceLine]) -> list[Unit]:
         elif current is not None:
             current.lines.append(line)
 
+    _disambiguate(by_base_id)
     return units
+
+
+def _disambiguate(by_base_id: dict[str, list[tuple[Unit, str, str, str | None]]]) -> None:
+    """Resuelve colisiones de `unit_id` cualificando por el ancestro más cercano.
+
+    El identificador no puede depender de la posición del apartado en el
+    documento (invalidaría la caché de audio si alguien inserta un apartado
+    antes), así que la colisión se rompe con el slug del encabezado padre
+    inmediato (el `\\subsection` que contiene al `\\subsubsection`, etc.),
+    no con un ordinal de aparición. Solo si dos apartados colisionan también
+    tras cualificar por ancestro —o no tienen ancestro— se recurre a un
+    ordinal como último recurso.
+    """
+    for base_id, entries in by_base_id.items():
+        if len(entries) == 1:
+            continue
+
+        qualified: dict[str, list[Unit]] = {}
+        for unit, prefix, title_slug, parent_slug in entries:
+            if parent_slug is None:
+                qualified_id = base_id
+            else:
+                tail = f"{parent_slug}-{title_slug}"[:_SLUG_MAX].rstrip("-")
+                qualified_id = f"{prefix}-{tail}"
+            qualified.setdefault(qualified_id, []).append(unit)
+
+        for qualified_id, group in qualified.items():
+            if len(group) == 1:
+                group[0].unit_id = qualified_id
+                continue
+            # Sigue colisionando (mismo padre, o sin padre): último recurso.
+            for n, unit in enumerate(group, start=1):
+                unit.unit_id = f"{qualified_id}-{n}"
 
 
 def _strip(title: str) -> str:
