@@ -28,9 +28,15 @@ _HEADER = """\
 # cada acrónimo letra a letra, que es lo correcto para AOCS o CDHS pero no para
 # los que se leen como una palabra. Corrige a mano esos casos:
 #
+#   AMBA: amba
+#   ARM: arm
+#   BOM: bom
+#   BRAM: bram
 #   CAN: can
-#   RTEMS: ar tems
 #   COTS: cots
+#   FIFO: fifo
+#   LEO: leo
+#   RTEMS: ar tems
 #
 # Después de tocar este fichero hay que regenerar el audio de las unidades
 # afectadas; la caché por hash se encarga de no rehacer el resto.
