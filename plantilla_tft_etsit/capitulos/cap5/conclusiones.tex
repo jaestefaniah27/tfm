@@ -55,28 +55,26 @@ recorre la polarización de reposo, el mapa de conectividad real, la integridad 
 la velocidad máxima de cada bus, la diafonía, la colisión y la estabilidad sostenida, y la placa
 los supera todos: cero bytes espurios en reposo, cero fugas entre buses, recuperación limpia tras
 una colisión y tasa de error nula en los dos buses RS-422 tras diez segundos de tráfico continuo.
-De esa campaña salió además un hallazgo con consecuencias prácticas inmediatas: la placa venía
-funcionando con el \textbf{limitador de \textit{slew} de los transceptores activado} sin que nadie
-lo supiera. El pin \texttt{SLO} del LTC2865 es un habilitador de modo lento \textbf{activo a nivel
-bajo} (con él a 0 el driver queda capado a 250~kbps nominales), y el valor por defecto del software
-era precisamente 0, pese a que la macro correspondiente se llamaba «SLO desactivado». El hardware
-no estaba mal: era el nombre de la macro el que inducía a error. Desactivando de verdad el
-limitador, los tres buses pasan de 460~kbps--1~Mbps a \textbf{4~Mbps limpios}, con tasa de error
-nula: cuatro veces más velocidad sin tocar una sola pista de cobre ni resintetizar nada. Queda
-pendiente la corrección, trivial, de invertir ese valor por defecto y renombrar la macro que lo
-provocó.
+La campaña acotó además el efecto del \textbf{limitador de \textit{slew rate}} de los
+transceptores. El pin \texttt{SLO} del LTC2865 es un habilitador de modo lento \textbf{activo a
+nivel bajo}: con él a 0, que es el valor por defecto del software, el driver queda limitado a los
+250~kbps nominales del chip en ese modo, pese a que la macro correspondiente se llama «SLO
+desactivado». Con el limitador desactivado (\texttt{SLO}~=~1), los tres buses pasan de
+460~kbps--1~Mbps a \textbf{4~Mbps} con tasa de error nula: cuatro veces más velocidad sin
+modificar el cobre ni resintetizar la lógica. Queda pendiente invertir ese valor por defecto y
+renombrar la macro.
 
 \textbf{El quinto objetivo, diseñar y fabricar las dos placas de expansión bajo especificación de
 Indra, se ha cumplido.} La placa CDHS expone CAN redundante, tres canales RS422/RS485, cuatro
 líneas de PWM para calentadores y un ADC de termistores sobre seis conectores D-Sub-9; la placa
 AOCS, los canales serie, el control de motores por PWM y dos enlaces SpaceWire sobre ocho. Las tres
 tarjetas del trabajo se fabricaron en el propio laboratorio mediante soldadura por reflujo con
-\textit{stencil}, y todas resultaron fabricables a la primera por haberse diseñado directamente
-contra las capacidades de proceso del fabricante. La restricción de 1,8~V del carril VADJ del FMC
+\textit{stencil}, y las tres se montaron sin retrabajos por haberse diseñado directamente contra
+las capacidades de proceso del fabricante. La restricción de 1,8~V del carril VADJ del FMC
 condicionó la selección de componentes y obligó a descartar las piezas con herencia de vuelo, una
 decisión que se declara explícitamente: las tarjetas son hardware de validación funcional, no
-hardware de vuelo. De la caracterización de la placa AOCS salió un error de conexión en el eje Z
-del bloque de motores, que la revisión V2 del esquemático corrige.
+hardware de vuelo. La placa AOCS presenta además un error de conexión en el eje Z del bloque de
+motores, corregido en la revisión V2 del esquemático.
 
 \textbf{El sexto objetivo, integrar y validar el sistema completo, se ha cumplido salvo en una
 interfaz.} La validación experimental confirma el funcionamiento de las interfaces RS422 y RS485 de
