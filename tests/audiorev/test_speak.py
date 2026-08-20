@@ -75,3 +75,17 @@ def test_plain_keeps_the_words_without_spelling_acronyms():
 
 def test_collapses_whitespace():
     assert spoken("Uno   dos\n\ntres.") == "Uno dos tres."
+
+
+def test_paragraph_heading_keeps_its_text():
+    assert spoken(r"\paragraph{Puntos de prueba.} La revisión sigue.") == (
+        "Puntos de prueba. La revisión sigue."
+    )
+    assert plain(r"\paragraph{Puntos de prueba.} La revisión sigue.") == (
+        "Puntos de prueba. La revisión sigue."
+    )
+
+
+def test_label_is_still_dropped_entirely():
+    assert "label" not in spoken(r"Texto\label{sec:validacion_cdhs} siguiente.")
+    assert "sec" not in spoken(r"Texto\label{sec:validacion_cdhs} siguiente.")

@@ -7,6 +7,8 @@ from .refs import spoken_ref
 _UNITS = [
     (r"\bV\b", "voltios"),
     (r"\bmV\b", "milivoltios"),
+    # lookahead para no confundir la "A" de amperios con la letra "A" suelta
+    # (p. ej. un ítem de lista "A)" o la inicial de un nombre) en medio de una frase
     (r"\bA\b(?=\s|$|\.)", "amperios"),
     (r"\bmA\b", "miliamperios"),
     (r"\bMHz\b", "megahercios"),
@@ -24,7 +26,7 @@ _UNITS = [
     (r"\bmm\b", "milímetros"),
 ]
 
-_FORMAT = re.compile(r"\\(?:textit|textbf|emph|texttt|textsc|underline)\s*\{([^{}]*)\}")
+_FORMAT = re.compile(r"\\(?:textit|textbf|emph|texttt|textsc|underline|paragraph|subparagraph)\s*\{([^{}]*)\}")
 _REF = re.compile(r"\\(?:ref|autoref|eqref)\{([^}]+)\}")
 _CITE = re.compile(r"\\cite\{[^}]*\}")
 _FOOTNOTE = re.compile(r"\\footnote\{([^{}]*)\}")
@@ -34,6 +36,9 @@ _BLOCK = re.compile(r"%%BLOCK:\d+%%")
 _COMMENT = re.compile(r"(?<!\\)%.*$", re.MULTILINE)
 _SIMPLE_MATH = re.compile(r"^[A-Za-z0-9\s=+\-*/,.()<>]+$")
 _ANY_COMMAND = re.compile(r"\\[a-zA-Z]+\*?(\[[^\]]*\])?(\{[^{}]*\})?")
+# Detección puramente ortográfica (mayúsculas seguidas): acepta falsos positivos
+# como palabras en mayúsculas o números romanos, que el .lower() de más abajo
+# deja igualmente legibles.
 _ACRONYM = re.compile(r"\b[A-Z][A-Z0-9]{1,9}\b")
 
 
