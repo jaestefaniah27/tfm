@@ -38,7 +38,7 @@ sobre la ZCU102, que es la configuración con la que se tomaron todas las medida
     \begin{subfigure}[t]{0.48\textwidth}
         \centering
         \includegraphics[width=\textwidth]{IMG/serial_pcb_jumpers.jpg}
-        \caption{Vista superior: conectores D-Sub-9 y \textit{jumpers} de topología.}
+        \caption{Vista superior de la placa.}
     \end{subfigure}
     \hfill
     \begin{subfigure}[t]{0.48\textwidth}
@@ -46,8 +46,7 @@ sobre la ZCU102, que es la configuración con la que se tomaron todas las medida
         \includegraphics[width=\textwidth]{IMG/serial_pcb_zcu102.jpg}
         \caption{Placa montada en el conector FMC HPC0 de la ZCU102.}
     \end{subfigure}
-    \caption{PCB de comunicación serie configurada para la campaña de caracterización, con los
-    \textit{jumpers} fijando la topología de la tabla~\ref{tab:pcb_topologia}.}
+    \caption{PCB de comunicación serie en la campaña de caracterización.}
     \label{fig:pcb_montaje}
 \end{figure}
 
@@ -123,11 +122,7 @@ figura~\ref{fig:pcb_slo}.
         \legend{Limitador activo (SLO = 0\, por defecto), Limitador desactivado (SLO = 1)}
         \end{axis}
     \end{tikzpicture}
-    \caption{Velocidad máxima con tasa de error nula en cada bus de la PCB, según el valor del bit
-    SLO. El pin \texttt{SLO} del LTC2865 es un habilitador de modo lento activo a nivel bajo: con el
-    valor por defecto (0) el limitador de \textit{slew rate} está activo y limita el driver a
-    250~kbps nominales, con lo que el bus multipunto alcanza 460~kbps. Desactivándolo (1), los tres
-    buses operan de forma limpia a 4~Mbps.}
+    \caption{Velocidad máxima sin errores en cada bus según el valor del bit SLO.}
     \label{fig:pcb_slo}
 \end{figure}
 
@@ -144,7 +139,12 @@ el valor por defecto (0) el driver queda limitado a 250~kbps nominales, y con el
 se desactiva y el driver alcanza hasta 20~Mbps.
 
 El efecto se observa en las pruebas. La figura~\ref{fig:pcb_ber} muestra la tasa de error del bus
-multipunto, el más exigente de los tres, para ambos valores del bit.
+multipunto (bus A, RS-485 con 7 nodos), el más exigente de los tres, para ambos valores del bit. Con
+el limitador activo, que es el valor por defecto, el enlace se degrada a partir de 460~kbps y colapsa
+por completo a 2~Mbps, coherente con el máximo nominal de 250~kbps del chip en ese modo;
+desactivándolo, la tasa de error es nula en todo el barrido. Los puntos de 3 y 4~Mbps no existen en
+la curva de SLO~=~0 porque el barrido se interrumpe en cuanto un punto no deja pasar ningún byte
+correcto.
 
 \begin{figure}[htbp]
     \centering
@@ -184,12 +184,8 @@ multipunto, el más exigente de los tres, para ambos valores del bit.
             at (axis cs:11000,150000) {BER 0 en todo el barrido, hasta 4~Mbps};
         \end{axis}
     \end{tikzpicture}
-    \caption{Tasa de error del bus A (RS-485 multipunto, 7 nodos) frente a la velocidad de línea,
-    con y sin el limitador de \textit{slew}. Con el limitador activo, que es el valor por defecto, el
-    enlace se degrada a partir de 460~kbps y colapsa por completo a 2~Mbps, coherente con el máximo
-    nominal de 250~kbps del chip en ese modo; desactivándolo la tasa de error es nula en todo el
-    barrido. Los puntos de 3 y 4~Mbps no existen en la curva de SLO~=~0 porque el barrido se
-    interrumpe en cuanto un punto no deja pasar un solo byte correcto.}
+    \caption{Tasa de error del bus multipunto frente a la velocidad, con y sin limitador de
+    \textit{slew}.}
     \label{fig:pcb_ber}
 \end{figure}
 
@@ -216,8 +212,7 @@ reciben la trama del maestro \textbf{íntegra} a cada velocidad.
         Esclavos parciales       & 0 & 0 & 0 & 1 & 6 \\
         \hline
     \end{tabular}
-    \caption{Integridad del bus multipunto (T3) frente a la velocidad, con SLO~=~0. El escalón entre
-    460~kbps y 1~Mbps es nítido.}
+    \caption{Integridad del bus multipunto (T3) frente a la velocidad, con SLO~=~0.}
     \label{tab:pcb_multidrop}
 \end{table}
 

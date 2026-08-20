@@ -112,10 +112,25 @@ El cambio es de **registro, titulación y longitud**, no de rigor:
 - `capitulos/cap4/pcb.tex` — revisión completa de registro, títulos y concisión;
   reducción del apartado del slew rate a la explicación del hardware + efecto medido;
   figuras del slew rate a `[htbp]`.
+- `capitulos/cap4/benchmark.tex` — título «Selección de la arquitectura de transporte»;
+  eliminadas las aperturas efectistas («Los números hablan por sí solos», «La prueba más
+  reveladora de todas»), la frase «no era una optimización, era la única vía» y los
+  «menos/más es mejor» repetidos; tabla de síntesis a `llll` + `\small` para evitar el
+  cortado de palabras en las columnas.
+- `capitulos/cap4/validacion_hardware.tex` — «dejó al descubierto» y «conviene advertir»
+  reescritos como hecho medido.
+- `capitulos/cap3/transporte.tex` — entrada directa de la sección; títulos «Lo que se
+  aprendió: el precio de replicar», «Camino de transmisión: …», «El driver: …» cerrados;
+  poda de la narrativa de depuración («no funcionó a la primera», «un último aprendizaje…
+  merece mención», moralejas finales).
+- `capitulos/cap3/entorno_desarrollo.tex` — apartado del flujo de desarrollo reescrito como
+  hechos (fuera «costó bastante tiempo», «resultaba tedioso», «apareció un segundo
+  problema»); «trampa que se destapó» del pin SLO convertida en dato del datasheet; títulos
+  con dos puntos cerrados; «Decisiones de diseño destacadas» → «Decisiones de diseño».
+- `cap2/transporte.tex` y `cap5/conclusiones.tex` — litotes «un solo byte/error» →
+  «ningún byte/error».
 
 ## Pendiente de aplicar
 
-- `capitulos/cap4/benchmark.tex` — título «Discusión: qué arquitectura y por qué»;
-  frases como «no era una optimización, era la única vía»; puentes narrativos entre
-  subsecciones.
-- Resto de capítulos (cap3, etc.) — pasada de registro y poda de puentes narrativos.
+- Nada abierto de esta guía. Al añadir texto nuevo, revisar contra las secciones 1--6 y
+  anotar aquí lo que quede pendiente.

@@ -135,4 +135,23 @@ Reinhold~P. Weicker.
 \newblock {\em {Zynq UltraScale+ MPSoC} Technical Reference Manual}.
 \newblock AMD/Xilinx, 2023.
 
+\bibitem{ue2012weee}
+{Parlamento Europeo y Consejo de la Unión Europea}.
+\newblock Directiva 2012/19/{UE} sobre residuos de aparatos eléctricos y
+  electrónicos ({RAEE}).
+\newblock Diario Oficial de la Unión Europea, L 197/38, 2012.
+
+\bibitem{ue2011rohs}
+{Parlamento Europeo y Consejo de la Unión Europea}.
+\newblock Directiva 2011/65/{UE} sobre restricciones a la utilización de
+  determinadas sustancias peligrosas en aparatos eléctricos y electrónicos
+  ({RoHS}).
+\newblock Diario Oficial de la Unión Europea, L 174/88, 2011.
+
+\bibitem{esa_environment_report}
+{ESA Space Debris Office}.
+\newblock {ESA}'s annual space environment report.
+\newblock Technical Report GEN-DB-LOG-00288-OPS-SD, European Space Agency,
+  2025.
+
 \end{thebibliography}

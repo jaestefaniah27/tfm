@@ -90,8 +90,7 @@ figura~\ref{fig:block_design_and}.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{IMG/Desarrollo/block_design_and.png}
-    \caption{\textit{Block Design} del ejemplo de la puerta AND: bloque Zynq UltraScale+ MPSoC,
-    los dos AXI GPIO y el módulo VHDL \texttt{AND\_GATE}.}
+    \caption{\textit{Block Design} del ejemplo de la puerta AND.}
     \label{fig:block_design_and}
 \end{figure}
 
@@ -142,8 +141,7 @@ Los componentes que forman la imagen, en orden, son:
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{IMG/Desarrollo/vitis_boot_image.png}
-    \caption{Generador de imágenes de arranque de Vitis, con los componentes que conforman el
-    \texttt{BOOT.bin}.}
+    \caption{Generador de imágenes de arranque de Vitis.}
     \label{fig:vitis_boot_image}
 \end{figure}
 
@@ -191,8 +189,8 @@ placa no arranca desde la tarjeta aunque los ficheros estén correctamente copia
         \textbf{Tarjeta SD}       & 1110 & \textbf{OFF, OFF, OFF, ON} \\
         \hline
     \end{tabular}
-    \caption{Posiciones del selector de modo de arranque SW6 de la ZCU102. Adaptada
-    de \cite{xilinx2023ug1182}.}
+    \caption{Posiciones del selector de modo de arranque SW6 de la ZCU102
+    \cite{xilinx2023ug1182}.}
     \label{tab:sw6}
 \end{table}
 
@@ -244,37 +242,29 @@ serie: los trocea, los numera y comprueba que cada trozo llega sin errores.} con
 mismo formato que usa un USB corriente, de la que la ZCU102 lee los ficheros de arranque.} de
 la SD mediante
 \texttt{fatwrite}; ambos son comandos de la consola de U-Boot.
-Opcionalmente puede enviar también el \texttt{BOOT.bin}, pero en la práctica no se utilizó porque este archivo resultaba ser demasiado grande y la conexión por USB-serial muy lenta. De esta manera, cada vez que se quería probar un cambio en la
+Opcionalmente puede enviar también el \texttt{BOOT.bin}, pero no se utilizó porque el archivo es grande y la conexión USB-serial, lenta. De esta manera, cada vez que se quería probar un cambio en la
 aplicación de RTEMS bastaba con ejecutar este único script y reiniciar la ZCU pulsando su
 botón de ResetCPU, que reinicia el sistema de procesamiento sin cortar la alimentación de la placa.
 
+La puesta en marcha del flujo requirió varias iteraciones. Cada intento implica sintetizar el
+diseño en Vivado, crear y compilar la plataforma en Vitis, crear y compilar la aplicación,
+generar la imagen de arranque, compilar la imagen de RTEMS, copiar los ficheros a la tarjeta SD y
+arrancar la placa; una iteración completa lleva varios minutos y, cuando la placa no arranca, el
+sistema no ofrece ninguna indicación del motivo.
 
-
-
-
-Conviene señalar que poner en marcha todo este flujo costó bastante tiempo. Cada intento
-implicaba sintetizar el diseño en Vivado, crear y compilar la plataforma en Vitis, crear y compilar
-la aplicación, generar la imagen de arranque, compilar la imagen de RTEMS, copiar todo a la
-tarjeta SD y arrancar la placa. Una iteración completa llevaba bastantes minutos y, cuando la
-placa no arrancaba, no había ninguna indicación clara del motivo, así que había que volver atrás
-y probar otra combinación de componentes o de parámetros. Solo después de varios intentos se
-dio con la configuración que funciona.
-
-Una vez conseguido el primer arranque correcto apareció un segundo problema: al modificar el
-diseño VHDL y repetir el proceso, el sistema seguía comportándose como antes del cambio. La
-causa era que Vitis reutiliza artefactos ya compilados de la plataforma y de la aplicación, de
-modo que un .xsa nuevo no siempre se propagaba a la imagen final. Limpiar y recompilar no
-resultó fiable, así que se optó por la solución directa: crear una plataforma y una aplicación
-nuevas para cada cambio en la PL. Es más lento, pero garantiza que la imagen generada
-corresponde realmente al hardware que se acaba de sintetizar.
+A ello se añade que Vitis reutiliza artefactos ya compilados de la plataforma y de la aplicación,
+de modo que un .xsa nuevo no siempre se propaga a la imagen final y el sistema se comporta como
+antes del cambio en el VHDL. Limpiar y recompilar no da un resultado fiable, por lo que el
+procedimiento adoptado es crear una plataforma y una aplicación nuevas para cada cambio en la PL:
+es más lento, pero garantiza que la imagen generada corresponde al hardware recién sintetizado.
 
 \textbf{Automatización de la generación de la imagen.} Repetir a mano toda esta secuencia en
 cada iteración del diseño (exportar el XSA, crear y compilar la plataforma en Vitis, compilar el
-FSBL y ensamblar el BOOT.BIN) resultaba tedioso y, sobre todo, propenso al error humano: basta
-olvidar un componente, invertir su orden dentro del BIF o arrastrar un artefacto antiguo para que
-la placa no arranque sin dar ninguna pista del motivo. A eso se sumaba el tiempo puramente
-logístico de ir abriendo cada aplicación gráfica y navegar por sus asistentes. Para eliminar ambos
-problemas se desarrolló el script \texttt{generate\_boot.sh} (disponible en
+FSBL y ensamblar el BOOT.BIN) es largo y propenso al error humano: olvidar un componente,
+invertir su orden dentro del BIF o arrastrar un artefacto antiguo impide que la placa arranque,
+y sin ninguna indicación del motivo. A ello se suma el tiempo de navegar por los asistentes
+gráficos de cada herramienta. Para eliminar ambos costes se desarrolló el script
+\texttt{generate\_boot.sh} (disponible en
 \texttt{tfm/06\_firmware/boot\_scripts/} del repositorio del proyecto \cite{repo_tfm}), un
 \textit{wizard} interactivo en Bash que encadena todos estos pasos de forma desatendida. El script
 ofrece tres puntos de entrada según el estado en que se encuentre el trabajo: partir del proyecto
@@ -282,12 +272,11 @@ de Vivado y generar \textit{bitstream} desde cero, partir de un proyecto con \te
 generado y solo exportar el XSA, o partir directamente de un XSA ya exportado. A partir de ahí
 invoca Vitis en modo script mediante su API Python para crear la plataforma y compilar el FSBL, y
 llama a \texttt{bootgen} para ensamblar el BOOT.BIN final con los componentes de arranque
-precompilados (PMUFW, BL31, U-Boot, DTB). Esto redujo el tiempo de iteración hardware
-$\rightarrow$ imagen de varios minutos de clics a una sola ejecución de terminal, y garantiza que
-la imagen generada corresponde siempre al hardware que se acaba de sintetizar.
+precompilados (PMUFW, BL31, U-Boot, DTB). El tiempo de iteración hardware $\rightarrow$ imagen
+pasa así de varios minutos de interacción gráfica a una sola ejecución de terminal, y la imagen
+generada corresponde siempre al hardware recién sintetizado.
 
-Una vez verificado que esta metodología de desarrollo funcionaba correctamente, se
-estableció como el proceso estándar a seguir para los próximos desarrollos.
+Este flujo quedó establecido como procedimiento estándar para el resto del trabajo.
 
 % ---------------------------------------------------------------------------
 \section{Diseño del transceptor serie configurable (PL)}
@@ -385,7 +374,7 @@ independientes; las entradas de la tabla por debajo de 9600~baudios y la de 4~Mb
 ejercitan, por quedar la primera fuera del uso previsto y exigir la segunda un tiempo de simulación
 desproporcionado. La transcripción siguiente recoge el principio y el final de la campaña:
 
-\begin{lstlisting}[basicstyle=\ttfamily\scriptsize, caption={Salida de la simulación de \texttt{tb\_NCO.vhd} (extracto: primera, intermedia y última velocidad del barrido)}]
+\begin{lstlisting}[basicstyle=\ttfamily\scriptsize, caption={Salida de la simulación de \texttt{tb\_NCO.vhd} (extracto)}]
 ---- Configuracion: 9600 half=0 baud=9600 ----
 CFG=9600 expected=9600.0 Hz  measured=9600.002000 Hz  err=0.002000 Hz (0.2 ppm)
 ---- Configuracion: 9600 half=1 baud=9600 ----
@@ -493,7 +482,13 @@ comportamiento se organiza en siete estados:
 La figura~\ref{fig:cronograma_trama} recoge la secuencia completa de una trama sobre la línea, con
 la relación temporal entre los tres elementos que gobiernan el enlace: la ventana de \texttt{DE},
 los \textit{ticks} con los que el transmisor delimita cada bit y los instantes en los que el
-receptor muestrea.
+receptor muestrea. La configuración representada es de 8 bits de datos, paridad par, un bit de
+parada y orden LSB \textit{first}, con el dato \texttt{0x53}. El transmisor consume un \textit{tick}
+por frontera de bit y pasa al doble de frecuencia en el campo de parada, donde cuenta semiperiodos.
+El receptor, tras alinear su fase medio bit después del flanco de inicio, muestrea en el centro de
+cada bit; el primer muestreo, en el centro del bit de inicio, es el que descarta los falsos inicios
+de trama. Las zonas sombreadas \texttt{PreDE} y \texttt{PostDE} no están dibujadas a escala: duran
+100~$\mu$s frente a los 8,7~$\mu$s del tiempo de bit a 115\,200~baudios.
 
 \begin{figure}[H]
     \centering
@@ -569,14 +564,7 @@ receptor muestrea.
 
     \end{tikzpicture}}%
     \shorthandon{<>}
-    \caption{Cronograma de una trama completa, con la configuración 8 bits de datos, paridad par,
-    un bit de parada y orden LSB \textit{first} (dato \texttt{0x53}). El transmisor consume un
-    \textit{tick} por frontera de bit y pasa al doble de frecuencia en el campo de parada, donde
-    cuenta semiperiodos. El receptor, tras alinear su fase medio bit después del flanco de inicio,
-    muestrea en el centro de cada bit; el primer muestreo, en el centro del bit de inicio, es el que
-    descarta los falsos inicios de trama. Las zonas sombreadas \texttt{PreDE} y \texttt{PostDE} no
-    están a escala: duran 100~$\mu$s frente a los 8,7~$\mu$s del tiempo de bit a
-    115\,200~baudios.}
+    \caption{Cronograma de una trama completa en configuración 8E1, LSB \textit{first}.}
     \label{fig:cronograma_trama}
 \end{figure}
 
@@ -829,12 +817,7 @@ la lógica: viaja del PS al pin del transceptor físico sin tocar el canal.
     del transceptor serie --- NCO, transmisor, receptor, registro de desplazamiento y FIFO
     dentro de \texttt{CONFIGURABLE\_SERIAL}, con sus puertos agrupados por función y
     las líneas físicas TD/RD/DE/SLO hacia el transceptor de la PCB}
-    \caption{Diagrama de bloques de un canal del transceptor serie configurable, con los puertos
-    de \texttt{CONFIGURABLE\_SERIAL} agrupados por función. El NCO proporciona la temporización de
-    bit a transmisor y receptor; el receptor entrega los bits muestreados al registro de
-    desplazamiento, que los normaliza y los escribe en la FIFO, de donde el PS los lee. La palabra
-    de configuración es común a ambos sentidos, y \texttt{SLO} va del PS al pin del transceptor
-    físico sin pasar por la lógica.}
+    \caption{Diagrama de bloques de un canal del transceptor serie configurable.}
     \label{fig:transceptor_bloques}
 \end{sidewaysfigure}
 
@@ -875,8 +858,8 @@ descrito en la sección siguiente, se recoge en la tabla~\ref{tab:mapa_bits_top}
         13    & \texttt{TX\_RDY}      & Transmisor libre. \\
         \hline
     \end{tabular}
-    \caption{Reparto de bits de los vectores de interfaz del bloque
-    \texttt{CONFIGURABLE\_SERIAL\_TOP}.}
+    \caption[Reparto de bits de los vectores de interfaz]{Reparto de bits de los vectores de
+    interfaz del bloque \texttt{CONFIGURABLE\_SERIAL\_TOP}.}
     \label{tab:mapa_bits_top}
 \end{table}
 
@@ -928,7 +911,7 @@ cinco anchuras de palabra (5 a 9 bits) $\times$ dos órdenes de bit $\times$ tre
 tramas de contenido distinto en cada una. En total, \textbf{450 tramas} comparadas dato a dato
 entre lo enviado y lo recibido:
 
-\begin{lstlisting}[basicstyle=\ttfamily\scriptsize, caption={Salida de la simulación de \texttt{tb\_CONFIGURABLE\_SERIAL\_TOP.vhd} (extracto: primeras y últimas configuraciones del barrido)}]
+\begin{lstlisting}[basicstyle=\ttfamily\scriptsize, caption={Salida de la simulación de \texttt{tb\_CONFIGURABLE\_SERIAL\_TOP.vhd} (extracto)}]
 ==== TB START: TX->RX loopback tests ====
 ==== sending byte ====
 PASS cfg bits=5 order='0' stop=1 par=0 sent=11 rec=11
@@ -969,7 +952,7 @@ bloque IP Zynq UltraScale+ antes de añadir el resto de elementos, ya que se apl
 configuraciones de relojes y alimentación cruciales para el correcto funcionamiento de la PL.
 
 % ---------------------------------------------------------------------------
-\section{Herramientas para facilitar el desarrollo del transceptor (PL)}
+\section{Herramientas de apoyo al desarrollo del transceptor}
 % ---------------------------------------------------------------------------
 
 \subsection{Generación de transceivers con TCL}
@@ -1025,7 +1008,7 @@ que tocar cada byte. Este límite motivó el rediseño completo del transporte e
 trabajo, con las tres arquitecturas implementadas y su comparativa, se aborda en la
 sección~\ref{sec:transporte_desarrollo}.
 
-\subsection{Interfaz hardware: mapa de registros}
+\subsection{Mapa de registros de la interfaz hardware}
 
 Cada instancia del transceptor ocupa una región de 4~KB del espacio de memoria del
 procesador, estructurada como un AXI GPIO de doble canal:
@@ -1080,7 +1063,7 @@ número de transceptores (hasta el máximo soportado de 14), cubriendo configura
 van desde un único canal hasta la instalación completa. La alternativa de \textit{hardcodear} las
 direcciones habría requerido recompilar la aplicación para cada variante del \textit{bitstream}.
 
-\subsection{Modelo de interrupciones: ISR maestra y tareas worker}
+\subsection{Modelo de interrupciones con ISR maestra y tareas \textit{worker}}
 
 El diseño de la gestión de interrupciones adopta el patrón \textit{deferred interrupt processing}
 recomendado para RTEMS. Se instala una única ISR en el vector 121 (\texttt{Master\_ISR}) que
@@ -1089,8 +1072,9 @@ siguiente modo:
 
 \begin{enumerate}
     \item Lee el registro de interrupciones pendientes (INTC\_ISR).
-    \item Para cada transceptor con interrupción RX activa: reconoce la interrupción
-    (INTC\_IAR), deshabilita temporalmente la línea (INTC\_CIE) y envía el evento
+    \item Para cada transceptor con la interrupción de recepción activa: la reconoce en el
+    registro \texttt{INTC\_IAR}, deshabilita temporalmente la línea con \texttt{INTC\_CIE} y
+    envía el evento
     \texttt{RTEMS\_EVENT\_0} a la tarea \textit{worker} correspondiente.
     \item Para cada transceptor con interrupción TX activa: extrae el siguiente byte del
     \textit{buffer} circular de transmisión, lo escribe en el registro de control pulsando
@@ -1131,12 +1115,13 @@ tabla~\ref{tab:api}:
 
 \begin{table}[H]
     \centering
-    \begin{tabular}{ll}
+    \small
+    \begin{tabular}{@{}l p{0.40\textwidth}@{}}
         \hline
         \textbf{Función} & \textbf{Descripción} \\
         \hline
         \texttt{Transceiver\_Global\_INIT()} & Descubrimiento hardware e inicialización del INTC. \\
-        \texttt{Transceiver\_Init(dev, id, cfg)} & Inicializa la instancia \texttt{dev} con el id y configuración. \\
+        \texttt{Transceiver\_Init(dev, id, cfg)} & Inicializa la instancia \texttt{dev} con el id y la configuración. \\
         \texttt{Transceiver\_SetRxCallback(dev, cb, arg)} & Registra \textit{callback} de recepción. \\
         \texttt{Transceiver\_Read(dev, buf, maxlen)} & Extrae hasta \texttt{maxlen} bytes del buffer RX. \\
         \texttt{Transceiver\_SendString(dev, s)} & Encola la cadena \texttt{s} y arranca la transmisión. \\
@@ -1146,7 +1131,7 @@ tabla~\ref{tab:api}:
     \label{tab:api}
 \end{table}
 
-\subsection{Decisiones de diseño destacadas}
+\subsection{Decisiones de diseño}
 
 \textbf{Buffer circular frente a copia directa en ISR.} Dado que RTEMS no permite operaciones de
 copia de longitud arbitraria en contexto de interrupción sin afectar la latencia del sistema, se
@@ -1168,10 +1153,10 @@ interrupción, evitando búsquedas costosas en contexto de ISR.
 en VHDL}: se limita a propagarse hasta el pin \texttt{SLO} del chip transceptor de la PCB, que es
 quien realmente limita la velocidad de flanco de sus salidas diferenciales. Un flanco más lento
 reduce el contenido espectral de alta frecuencia y mejora la compatibilidad electromagnética, a
-costa de limitar la velocidad máxima del enlace. Conviene advertir desde ya de una trampa que se
-destapó al caracterizar la placa (sección~\ref{sec:resultados_pcb}): en el transceptor empleado el
-pin es un habilitador de modo lento \textbf{activo a nivel bajo}, de modo que el nombre de la macro
-en \texttt{transceiver.h} induce a error y el valor por defecto deja el limitador \textit{activado}.
+costa de limitar la velocidad máxima del enlace. En el transceptor empleado ese pin es un
+habilitador de modo lento \textbf{activo a nivel bajo}, de modo que el nombre de la macro en
+\texttt{transceiver.h} induce a error y el valor por defecto deja el limitador \textit{activado};
+su efecto sobre la velocidad máxima se cuantifica en la sección~\ref{sec:resultados_pcb}.
 
 % ---------------------------------------------------------------------------
 \section{Diseño hardware}
@@ -1185,10 +1170,9 @@ AOCS, para que Sener pudiera validar su firmware sobre la ZCU102. Los esquemáti
 y las BOM de las tres placas están disponibles en el repositorio del proyecto \cite{repo_tfm} bajo
 \texttt{tfm/00\_docs/pcbs/}.
 
-\subsection{Selección de componentes: la restricción de 1,8 V} \label{sec:seleccion_componentes}
+\subsection{Selección de componentes bajo la restricción de 1,8~V} \label{sec:seleccion_componentes}
 
-Antes de describir cada placa conviene exponer la restricción que condicionó la selección de
-componentes de las tres, porque no es una decisión de conveniencia sino un límite impuesto por la
+La selección de componentes de las tres placas está condicionada por un límite eléctrico de la
 plataforma.
 
 Los bancos de entrada/salida del conector FMC HPC empleados por estas tarjetas operan a
@@ -1202,11 +1186,11 @@ nativo a 1,8~V.
 
 El primer criterio de búsqueda fue la \textbf{herencia de vuelo}: se exploró la posibilidad de
 emplear componentes ya utilizados en misiones espaciales, cualificados o con historial de vuelo
-demostrado, por ser la opción preferible desde el punto de vista de la fiabilidad. La búsqueda
-resultó infructuosa. Los transceptores de bus con herencia de vuelo disponibles en catálogo operan
+demostrado, por ser la opción preferible desde el punto de vista de la fiabilidad. La búsqueda no
+dio resultado. Los transceptores de bus con herencia de vuelo disponibles en catálogo operan
 con niveles lógicos de 3,3~V o 5~V, herederos de una generación tecnológica anterior, y no se
 encontró ninguno cuya interfaz digital fuera compatible con 1,8~V. La restricción de la plataforma
-y el catálogo de componentes cualificados para espacio resultaron, sencillamente, incompatibles.
+y el catálogo de componentes cualificados para espacio resultaron incompatibles.
 
 La consecuencia es una decisión de diseño coherente con la filosofía NewSpace descrita en la
 introducción: se recurrió a \textbf{componentes comerciales}, seleccionando dentro de ellos el
@@ -1219,7 +1203,7 @@ bus CAN y el conversor analógico-digital \texttt{ADS7950QDBTRQ1} de la placa CD
 criterio, igual que el transceptor \texttt{THVD1424RGTR} de los canales serie de las placas CDHS y
 AOCS, elegido por soportar \textit{VIO} de 1,8~V de forma nativa.
 
-Esta elección tiene un coste que conviene declarar: las tarjetas diseñadas son \textbf{hardware de
+Esta elección tiene un coste: las tarjetas diseñadas son \textbf{hardware de
 validación funcional, no hardware de vuelo}. Permiten verificar el subsistema de comunicaciones en
 condiciones eléctricas realistas, que es su propósito, pero un modelo de vuelo exigiría rehacer la
 selección de componentes atendiendo a tolerancia a radiación, \textit{outgassing} y cualificación
@@ -1285,13 +1269,11 @@ fabricada, a uno y otro lado del conector FMC.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth]{IMG/serial_pcb_top.jpg}
-    \caption{Arquitectura general de la placa de comunicación serie: los siete drivers RS422
-    (Driver7--Driver13, arriba), el conector FMC (P2, izquierda) y los siete drivers RS485
-    (Driver0--Driver6, abajo).}
+    \caption{Arquitectura general de la placa de comunicación serie.}
     \label{fig:placa_serial_top}
 \end{figure}
 
-\subsubsection{Topología RS485: bus compartido configurable por jumper}
+\subsubsection{Topología RS485 con bus compartido configurable por \textit{jumper}}
 
 La decisión de diseño más relevante de esta placa es el mecanismo de bus compartido RS485
 sin necesidad de recablear. Cada driver RS485 tiene un conector Dupont de 3 pines
@@ -1312,7 +1294,7 @@ el Driver 6 mediante un \textit{jumper} de selección de hardware. Dependiendo d
 un único tipo de conector con cableado de satélite sin duplicar el número de conectores en
 la placa.
 
-\subsubsection{Topología RS422: master/slave configurable por jumper}
+\subsubsection{Topología RS422 maestro/esclavo configurable por \textit{jumper}}
 
 Para RS422, cada driver \textit{slave} dispone de un conector con las líneas TX cruzadas a RX
 (TX-Y+/TX-Z$-$ conectadas a RX del bus), replicando la conexión estándar punto a punto
@@ -1346,10 +1328,7 @@ render de la figura~\ref{fig:cdhs_3d}.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth, page=1]{IMG/pcbs/LINCE3_CDHS.pdf}
-    \caption{Hoja de nivel superior del esquemático de la placa CDHS: el bloque de conectores
-    D-Sub-9 (J1--J6) a la izquierda, los bloques funcionales en el centro (CAN en J1, los tres
-    canales RS en J2--J4, el adaptador de nivel de las PWM en J5 y el ADC de termistores en J6) y
-    el conector FMC hacia el MPSoC a la derecha.}
+    \caption{Hoja de nivel superior del esquemático de la placa CDHS.}
     \label{fig:cdhs_top}
 \end{figure}
 
@@ -1358,19 +1337,15 @@ render de la figura~\ref{fig:cdhs_3d}.
     \begin{subfigure}[t]{0.48\textwidth}
         \centering
         \includegraphics[width=\textwidth]{IMG/pcbs/cdhs_3d_top.png}
-        \caption{Cara de conectores: los seis D-Sub-9 (J1--J6), los \textit{jumpers} de
-        terminación del CAN y los de configuración H/F, SLR y terminación de los tres canales
-        RS, con el módulo DC/DC PS1 en el borde izquierdo.}
+        \caption{Cara de conectores.}
     \end{subfigure}
     \hfill
     \begin{subfigure}[t]{0.48\textwidth}
         \centering
         \includegraphics[width=\textwidth]{IMG/pcbs/cdhs_3d_bot.png}
-        \caption{Cara de componentes: los tres transceptores RS422/RS485, los dos del bus CAN,
-        el adaptador de nivel de las PWM, el ADC de termistores y el conector FMC (P7).}
+        \caption{Cara de componentes.}
     \end{subfigure}
-    \caption{Render 3D de la placa CDHS, con la serigrafía de bloques que identifica cada
-    subsistema sobre el conector por el que sale.}
+    \caption{Render 3D de la placa CDHS.}
     \label{fig:cdhs_3d}
 \end{figure}
 
@@ -1410,18 +1385,16 @@ figura~\ref{fig:cdhs_can} recoge el circuito completo de los dos canales.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth, page=3]{IMG/pcbs/LINCE3_CDHS.pdf}
-    \caption{Subsistema CAN de la placa CDHS: los dos transceptores TCAN1044AVDRQ1 (nominal y
-    redundante), los diodos de protección ESDCAN24-2BLY, la terminación conmutable por
-    \textit{jumper} y los condensadores de desacoplo.}
+    \caption{Subsistema CAN de la placa CDHS.}
     \label{fig:cdhs_can}
 \end{figure}
 
 \subsubsection{Subsistema RS422/RS485}
 
 Se disponen tres canales serie idénticos e independientes (RS1, RS2, RS3), cada uno con el
-transceptor \textbf{THVD1424RGTR}. Este integrado llegó como sugerencia de un compañero del
-proyecto LINCE en una reunión de seguimiento, posterior al diseño de la placa de comunicación
-serie propia, y resultó ser una opción mejor que el LTC2865 empleado en aquella: además de
+transceptor \textbf{THVD1424RGTR}. Este integrado, sugerido dentro del proyecto LINCE con
+posterioridad al diseño de la placa de comunicación serie propia, mejora al LTC2865 empleado en
+aquella: además de
 soportar VIO de 1,8~V, incorpora resistencias de terminación internas conmutables y permite
 seleccionar entre modo \textit{Half-Duplex} y \textit{Full-Duplex} sin cambiar el hardware, por
 lo que se adoptó para las dos tarjetas oficiales. La configuración se expone mediante
@@ -1432,7 +1405,7 @@ terminación internas). Los tres canales salen por los conectores J2, J3 y J4.
 Tanto las líneas RX como las TX de cada canal llevan un par de diodos TVS
 \textbf{SM712-02HTG} conectados entre las líneas diferenciales y el plano de masa.
 
-\paragraph{Decisión de diseño: cortocircuito DE--RE.}
+\paragraph{Cortocircuito DE--RE.}
 El THVD1424 expone dos pines de control independientes: \textbf{DE} (\textit{Driver Enable}, activo en
 alto) habilita el transmisor, y \textbf{RE} (\textit{Receiver Enable}, activo en bajo) habilita el receptor.
 En el esquemático, ambos pines están conectados a la misma señal de control procedente del
@@ -1464,10 +1437,7 @@ de configuración, es el de la figura~\ref{fig:cdhs_rs}.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth, page=4]{IMG/pcbs/LINCE3_CDHS.pdf}
-    \caption{Canal RS de la placa CDHS con THVD1424RGTR: el cortocircuito DE--RE en el lado
-    lógico, los diodos TVS SM712-02HTG sobre las cuatro líneas diferenciales y los cuatro
-    \textit{jumpers} de configuración (H/F en P3, SLR en P4 y las terminaciones internas en
-    P5 y P6).}
+    \caption{Canal RS de la placa CDHS con el THVD1424RGTR.}
     \label{fig:cdhs_rs}
 \end{figure}
 
@@ -1533,10 +1503,7 @@ MOT-PWM.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth, page=1]{IMG/pcbs/LINCE3_AOCS_V2.pdf}
-    \caption{Hoja de nivel superior del esquemático de la placa AOCS: seis canales RS
-    repartidos entre cinco conectores (J1, J3, J5 y J8 con un canal cada uno, y J4 con dos en
-    la hoja \texttt{RSx2}), el bloque de PWM de motores en J2 y los dos enlaces SpaceWire en
-    J6 y J7, todos ellos entre el bloque de conectores D-Sub-9 y el conector FMC.}
+    \caption{Hoja de nivel superior del esquemático de la placa AOCS.}
     \label{fig:aocs_top}
 \end{figure}
 
@@ -1545,20 +1512,15 @@ MOT-PWM.
     \begin{subfigure}[t]{0.48\textwidth}
         \centering
         \includegraphics[width=\textwidth]{IMG/pcbs/aocs_3d_top.png}
-        \caption{Cara de conectores: los ocho D-Sub-9, los \textit{jumpers} de configuración
-        de cada canal RS, los puntos de prueba de las líneas lógicas y los dos bornes banana
-        de alimentación de los motores (J9 y J10).}
+        \caption{Cara de conectores.}
     \end{subfigure}
     \hfill
     \begin{subfigure}[t]{0.48\textwidth}
         \centering
         \includegraphics[width=\textwidth]{IMG/pcbs/aocs_3d_bot.png}
-        \caption{Cara de componentes: los transceptores THVD1424RGTR de los canales RS, los
-        repetidores LVDS de SpaceWire, la etapa de motores y el conector FMC (P1).}
+        \caption{Cara de componentes.}
     \end{subfigure}
-    \caption{Render 3D de la revisión V2 de la placa AOCS. La serigrafía identifica cada
-    bloque sobre el conector por el que sale, y los puntos de prueba quedan accesibles junto a
-    los \textit{jumpers} en la cara de conectores.}
+    \caption{Render 3D de la revisión V2 de la placa AOCS.}
     \label{fig:aocs_3d}
 \end{figure}
 
@@ -1614,10 +1576,7 @@ diferencial.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth, page=6]{IMG/pcbs/LINCE3_AOCS_V2.pdf}
-    \caption{Subsistema SpaceWire de la placa AOCS: cada enlace atraviesa dos repetidores LVDS
-    DS90CP22M, uno por sentido de la comunicación (U7 y U9 para SPW1, U8 y U10 para SPW2). Cada
-    enlace lleva sus cuatro pares diferenciales (DIN, SIN, SOUT y DOUT) protegidos con diodos
-    TVS.}
+    \caption{Subsistema SpaceWire de la placa AOCS.}
     \label{fig:aocs_spw}
 \end{figure}
 
@@ -1643,8 +1602,8 @@ por mucho que la PL generase la señal: las dos líneas que la transportaban ter
 salidas del adaptador sin conectar, y las que llegaban al puente en H estaban permanentemente
 a cero.
 
-Es un fallo característico de esta clase de tarjetas y conviene señalar por qué no lo detecta
-ninguna comprobación automática: el diseño es eléctricamente correcto, no incumple ninguna
+Ninguna comprobación automática detecta este fallo: el diseño es eléctricamente correcto, no
+incumple ninguna
 regla de Altium y el comprobador de conectividad no ve nada anómalo, porque las dos salidas
 sobrantes son terminaciones válidas y las entradas a masa son una conexión legítima. Solo se
 manifiesta al medir el eje Z en el conector. La V2 reencamina las entradas de U6 a B2Y y B1Y,
@@ -1690,9 +1649,7 @@ montadas al salir del horno, que son las que se emplean en toda la campaña de v
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.62\textwidth]{IMG/cdhs_soldada.jpg}
-    \caption{Placa CDHS tras el proceso de soldadura, con las dos caras a la vista: arriba la
-    cara de conectores D-Sub-9 y \textit{jumpers} de configuración, y abajo la cara de
-    componentes con los transceptores, el adaptador de nivel, el ADC y el conector FMC.}
+    \caption{Placa CDHS tras el proceso de soldadura.}
     \label{fig:cdhs_soldada}
 \end{figure}
 
@@ -1766,8 +1723,8 @@ de \texttt{main()}. La secuencia de inicialización es:
 \begin{enumerate}
     \item \texttt{mmu\_map\_pl\_axi\_early()}: mapea en la MMU la región del PL para acceso \textit{bare-metal}.
     \item \texttt{Transceiver\_Global\_INIT()}: descubre el hardware e instala la ISR maestra.
-    \item Bucle de inicialización: \texttt{Transceiver\_Init()}, \texttt{Transceiver\_SetRxCallback()} y
-    \texttt{Transceiver\_SendString("UART N Lista.\textbackslash r\textbackslash n")} para cada UART.
+    \item Bucle de inicialización: para cada UART se invoca \texttt{Transceiver\_Init()}, se
+    registra su \textit{callback} de recepción y se envía el mensaje de disponibilidad del canal.
     \item Creación y lanzamiento de \texttt{Tx\_Console\_Task}.
     \item \texttt{rtems\_task\_delete(RTEMS\_SELF)}: la tarea Init se elimina a sí misma; el
     kernel queda con las \textit{worker tasks} + la tarea de consola.
@@ -1818,7 +1775,7 @@ implementar en la lógica programable la codificación \textit{data-strobe}, la 
 de establecimiento y recuperación del enlace y los niveles de paquete y red, un desarrollo que
 por sí solo excede el alcance de este trabajo.
 
-\subsection{Validación de hardware: arneses y equipamiento}
+\subsection{Arneses y equipamiento de validación}
 
 \subsubsection{Arnés para verificar comunicaciones RS422}
 
