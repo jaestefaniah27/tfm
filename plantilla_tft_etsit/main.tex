@@ -147,6 +147,12 @@
 
 \renewcommand{\arraystretch}{1.3}
 
+% Margen de emergencia para el ajuste de línea: permite a TeX estirar los espacios
+% de un párrafo antes que dejar una línea sobresaliendo del margen. Evita tener que
+% reescribir los párrafos que contienen identificadores largos en \texttt (nombres de
+% registro, rutas y direcciones), que no admiten división silábica.
+\emergencystretch=3em
+
 %Dimensiones
 \textwidth = 16cm
 \textheight = 25cm

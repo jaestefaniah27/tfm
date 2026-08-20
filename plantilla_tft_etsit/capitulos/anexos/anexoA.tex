@@ -22,22 +22,155 @@ sistema operativo de tiempo real. Este tipo de tecnología tiene implicaciones r
 \Large{\textsc{\textcolor{nar}{B.2 Descripción de impactos relevantes relacionados con el proyecto}}} \par
 \vspace{0.3cm}
 \normalsize{%
-\textit{[Pendiente de redacción --- describir impactos en: soberanía tecnológica espacial, doble uso
-civil/militar de la tecnología satelital, residuos electrónicos (PCBs), consumo energético de la
-FPGA, implicaciones de los sistemas de observación LEO.]}
+Los impactos relevantes del trabajo se agrupan en cuatro ámbitos.
+
+\textbf{Autonomía estratégica y tejido industrial (impacto económico y social).} LINCE se financia
+a través del PERTE Aeroespacial con el objetivo declarado de que España disponga de capacidad
+propia para producir en serie plataformas de microsatélite y sus cargas de pago. El subsistema de
+comunicaciones del ordenador de a bordo es uno de los bloques que, de no desarrollarse aquí, habría
+que adquirir a proveedores extracomunitarios sujetos a controles de exportación. Un transceptor
+serie escrito en VHDL propio, con su código fuente disponible y su comportamiento medido y
+documentado, es exactamente lo contrario de un componente opaco de terceros: puede auditarse,
+modificarse y volver a sintetizarse sin depender de licencias ni de autorizaciones externas. El
+efecto sobre el empleo cualificado y sobre la cadena de suministro nacional es el que persigue el
+propio PERTE.
+
+\textbf{Doble uso civil y militar.} Una plataforma de microsatélites LEO con capacidad de
+observación y de comunicaciones es tecnología de doble uso por definición: los mismos enlaces serie
+que transportan telemetría de un sensor térmico sirven a una carga de pago de vigilancia. El
+trabajo aquí desarrollado se sitúa en la capa más genérica posible del sistema (transporte de datos
+entre periféricos y procesador) y no incorpora ninguna funcionalidad específica de aplicación, pero
+sería deshonesto presentarlo como neutral: forma parte de un ordenador de a bordo cuyo uso final lo
+determina la carga de pago que se le conecte y el operador que la explote. La responsabilidad sobre
+ese uso recae en el marco regulatorio de exportación y en las decisiones del consorcio, no en el
+componente, pero conviene declararla.
+
+\textbf{Residuos electrónicos y ciclo de vida del hardware.} El trabajo ha producido seis placas de
+circuito impreso físicas (dos unidades de cada uno de los tres diseños), con más de doscientos
+componentes montados y conectores metálicos, además de las revisiones descartadas durante el
+desarrollo. Todo ello es residuo de aparatos eléctricos y electrónicos en el sentido de la
+Directiva 2012/19/UE \cite{ue2012weee}, y los componentes seleccionados cumplen la Directiva
+2011/65/UE de restricción de sustancias peligrosas \cite{ue2011rohs}, que es la razón por la que la
+lista de materiales especifica encapsulados y acabados libres de plomo. El enfoque NewSpace
+adoptado por el proyecto, basado en componentes comerciales (COTS) en lugar de piezas cualificadas
+para espacio, reduce el coste y el plazo pero acorta la vida útil esperada del hardware y aumenta
+la frecuencia de sustitución, con el consiguiente aumento del volumen de residuo por unidad de
+servicio prestado.
+
+\textbf{Consumo energético y presupuesto de potencia en órbita.} La lógica programable es el
+elemento del MPSoC cuyo consumo depende directamente de las decisiones de diseño tomadas en este
+trabajo: la estimación de Vivado da 3,52~W para la variante GPIO, 3,86~W para la de catorce
+controladores DMA y 3,62~W para la solución MCDMA finalmente seleccionada
+(tabla~\ref{tab:bench_hw}). En un microsatélite de 100--200~kg, alimentado por paneles solares y
+con un presupuesto de potencia cerrado, cada vatio de la aviónica es un vatio que no está
+disponible para la carga de pago. Este impacto se analiza en detalle en el apartado siguiente.
+
+\textbf{Sostenibilidad del entorno orbital.} LINCE produce microsatélites de órbita baja destinados
+a operar en constelación. La densidad de objetos en LEO es el principal problema de sostenibilidad
+del sector, documentado anualmente por la Oficina de Basura Espacial de la ESA
+\cite{esa_environment_report}, y toda decisión que acorte la vida operativa de un satélite (por
+ejemplo, un fallo de aviónica no recuperable) adelanta su sustitución y, con ella, un lanzamiento
+adicional y un objeto más en órbita.
 }
 \vspace{0.3cm}
 
 \Large{\textsc{\textcolor{nar}{B.3 Análisis detallado de alguno de los impactos}}} \par
 \vspace{0.3cm}
 \normalsize{%
-\textit{[Pendiente de redacción --- análisis en profundidad del impacto seleccionado.]}
+Se analiza en detalle el \textbf{impacto energético}, por ser el único de los anteriores sobre el
+que este trabajo aporta medidas propias y sobre el que las decisiones de diseño tomadas tienen
+efecto directo y cuantificable.
+
+\textbf{Planteamiento.} La magnitud relevante en un satélite no es la potencia instantánea que
+consume la aviónica, sino la \textbf{energía que cuesta entregar un byte útil}. Dos arquitecturas
+que consumen lo mismo no son equivalentes si una transporta el triple de datos con esa potencia. La
+comparativa del capítulo~4 permite calcular esa magnitud, porque mide sobre el mismo dispositivo,
+el mismo transceptor y el mismo programa de pruebas tanto la potencia estimada por la herramienta
+de implementación como el caudal realmente sostenido.
+
+\textbf{Datos.} Con seis receptores simultáneos sobre el bus multipunto, la variante GPIO sostiene
+20\,838~B/s con una potencia de 3,52~W y la variante MCDMA 68\,504~B/s con 3,62~W
+(sección~\ref{sec:resultados_benchmark}). La energía por byte transportado resulta ser:
+
+\begin{center}
+\begin{tabular}{lrrr}
+\hline
+\textbf{Variante} & \textbf{Potencia} & \textbf{Caudal sostenido} & \textbf{Energía por byte} \\
+\hline
+GPIO  & 3,52 W & 20\,838 B/s & 169 $\mu$J \\
+MCDMA & 3,62 W & 68\,504 B/s & 52,8 $\mu$J \\
+\hline
+\end{tabular}
+\end{center}
+
+La solución seleccionada consume 0,10~W más (un 2,8\,\%) y es \textbf{3,2 veces más eficiente por
+byte transportado}. La variante intermedia de catorce controladores DMA, con 3,86~W, es además
+la que más consume de las tres en términos absolutos.
+
+\textbf{Interpretación.} El resultado no es una casualidad de la implementación: es la consecuencia
+directa de haber quitado a la CPU de la ruta de datos. La arquitectura GPIO interrumpe al
+procesador 1250 veces por kilobyte recibido, y cada una de esas interrupciones es un ciclo de
+guardado y restauración de contexto que consume energía sin transportar información. El MCDMA baja
+a 3 interrupciones por kilobyte. La lógica programable añadida (el puente VHDL y el controlador
+multicanal) cuesta 0,10~W adicionales, pero libera a un procesador de cuatro núcleos que consume
+bastante más que eso cuando está ocupado atendiendo interrupciones en lugar de en espera de
+evento.
+
+\textbf{Consecuencias sobre el sistema completo.} El margen liberado es doble y ambos efectos
+tienen lectura ambiental. El primero es el margen de CPU: un procesador que no está atendiendo
+interrupciones puede permanecer en espera de evento, lo que reduce el consumo medio del sistema de
+procesamiento y, en un satélite alimentado por paneles solares, deja potencia disponible para la
+carga de pago o permite dimensionar a la baja el generador fotovoltaico y las baterías, con la
+consiguiente reducción de masa lanzada. El segundo es el margen de área: la solución seleccionada
+ocupa el 5,18\,\% de la lógica del dispositivo frente al 14,67\,\% de la alternativa replicada, de
+modo que su triplicación modular redundante para tolerancia a radiación mantiene el diseño en torno
+al 16\,\% del dispositivo, mientras que la misma operación sobre la variante de catorce DMA
+rondaría el 44\,\% y resultaría inviable. Ese margen es lo que hace posible endurecer el sistema
+frente a los \textit{single event upsets}, y un satélite que sobrevive a un evento de radiación en
+lugar de perderse es un satélite que no hay que sustituir: se evitan un lanzamiento y un objeto
+adicional en una órbita ya congestionada \cite{esa_environment_report}.
+
+\textbf{Limitaciones del análisis.} Las cifras de potencia proceden de la estimación del
+implementador de Vivado y no de una medida sobre el carril de alimentación de la placa, de modo que
+sirven para comparar variantes entre sí, que es su propósito aquí, pero no como valor absoluto de
+consumo. El cálculo tampoco incluye el consumo del sistema de procesamiento, que es donde el efecto
+descrito debería ser mayor y donde una medida instrumentada del carril del PS ampliaría de forma
+apreciable la diferencia observada.
 }
 \vspace{0.3cm}
 
 \Large{\textsc{\textcolor{nar}{B.4 Conclusiones}}} \par
 \vspace{0.3cm}
 \normalsize{%
-\textit{[Pendiente de redacción --- valoración del proyecto desde el punto de vista ético, social,
-económico y medioambiental.]}
+Desde el punto de vista \textbf{económico}, el trabajo contribuye a un objetivo declarado de
+política industrial: sustituir por desarrollo propio un bloque del ordenador de a bordo que de otro
+modo se adquiriría fuera de la Unión Europea. El coste directo del desarrollo, detallado en el
+Anexo~C, es de un orden de magnitud inferior al de la adquisición y cualificación de una solución
+comercial equivalente, y el resultado queda en el laboratorio como base reutilizable.
+
+Desde el punto de vista \textbf{social}, el impacto es indirecto pero real: la plataforma forma
+parte de una constelación de observación y comunicaciones cuya explotación afecta a la capacidad de
+vigilancia y a los servicios de comunicación disponibles. El trabajo se sitúa en una capa
+deliberadamente genérica del sistema, pero se declara aquí su condición de tecnología de doble uso
+en lugar de presentarlo como un componente neutral.
+
+Desde el punto de vista \textbf{medioambiental}, el balance tiene dos signos. En el lado negativo,
+el trabajo genera residuo electrónico (seis placas fabricadas más las revisiones descartadas) y se
+inscribe en un enfoque NewSpace basado en componentes comerciales que acorta la vida útil del
+hardware y aumenta la frecuencia de sustitución. En el lado positivo, la arquitectura de transporte
+seleccionada es 3,2 veces más eficiente por byte transportado que la de partida y deja margen de
+área suficiente para endurecer el diseño frente a radiación, lo que alarga la vida operativa
+esperada del satélite y reduce la necesidad de lanzamientos de reposición. La selección de
+componentes se ha ceñido a la Directiva RoHS \cite{ue2011rohs}, y las placas descartadas deben
+gestionarse como residuo de aparatos eléctricos y electrónicos a través del canal habilitado por el
+laboratorio, conforme a la Directiva RAEE \cite{ue2012weee}.
+
+Desde el punto de vista \textbf{ético y de gestión}, el criterio seguido a lo largo de la memoria
+ha sido declarar las limitaciones en lugar de omitirlas: las tarjetas se identifican explícitamente
+como hardware de validación funcional y no de vuelo, se documenta la interfaz que quedó sin validar
+(SpaceWire) y el motivo, se declaran las limitaciones de cada método de medida y se señalan los
+errores de diseño detectados y sus correcciones. Las decisiones de arquitectura se sostienen sobre
+medidas propias y reproducibles, con el código y los bancos de prueba publicados
+\cite{repo_tfm}, y no sobre estimaciones. Ese es el compromiso con la responsabilidad profesional
+que el ejercicio de la ingeniería exige y que este anexo pretende acreditar.
 }

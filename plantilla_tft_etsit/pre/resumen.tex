@@ -49,8 +49,42 @@ comunicaciones del ordenador de a bordo del satélite LINCE en el futuro.
 \Large{\textsc{\textcolor{nar}{Summary}}} \par
 \vspace{0.2cm}
 \normalsize{%
-% TODO: traducción al inglés (máximo 500 palabras)
-\textit{[Pendiente de redacción — máximo 500 palabras.]}
+This Master's Thesis presents the development of a peripheral communication platform on the Zynq
+UltraScale+ ZCU102 MPSoC, within the framework of the LINCE project, an initiative of the Spanish
+Aerospace PERTE led by Indra for the development of low Earth orbit microsatellites.
+
+The work covers five main areas.
+
+First, the design and implementation in VHDL of a highly configurable serial transceiver for the
+programmable logic of the MPSoC.
+
+Second, the development of a serial driver in C on the RTEMS real-time operating system running on
+the processing system of the MPSoC, which uses the serial transceiver developed and provides a
+public API that fully abstracts the hardware.
+
+Third, the design and manufacture of three expansion printed circuit boards for the ZCU102, which
+connect to it in order to extend its capabilities and widen the development window. The first board
+provides hardware support for 7 RS422 lines and 7 RS485 lines, which can be connected in shared
+buses configurable by hardware. The second board provides support for 3 selectable RS422 or RS485
+lines, two CAN lines, four PWM lines and four analogue lines. The third board provides support for
+five selectable RS422 or RS485 lines, three pairs of power lines for PWM motor control and two
+SpaceWire lines.
+
+Fourth, the study of data transport between the processing system and the programmable logic, which
+proved to be the determining factor in the overall performance of the system. Three complete
+architectures were implemented and measured on the same transceiver: one based on AXI GPIO, another
+with fourteen independent direct memory access (DMA) controllers, and a third one with a single
+multichannel controller (MCDMA) governed by a bridge designed in VHDL. The comparison shows that
+the first one interrupts the processor once per byte and reaches only 30\% of the physical limit of
+the line, whereas the third one reaches 99\% with four hundred times fewer interrupts.
+
+Fifth, the validation of the platform through the development of additional software and hardware
+tools, which made it possible to verify the correct operation of the serial driver and of the
+different features of the expansion boards.
+
+Taken as a whole, the work constitutes a functional and validated platform that the teams at Sener,
+Indra and the B105 laboratory can use in the future as a basis for the communications subsystem of
+the on-board computer of the LINCE satellite.
 }
 \vspace{0.9cm}
 
@@ -63,7 +97,5 @@ AXI, DMA, MCDMA, AXI-Stream, sistemas empotrados, tiempo real, satélite, ordena
 
 \Large{\textsc{\textcolor{nar}{Keywords}}} \par
 \vspace{0.2cm}
-\normalsize{%
-% TODO: palabras clave en inglés
-\textit{[Pendiente de redacción.]}
-} \par
+\normalsize{MPSoC, FPGA, VHDL, RTEMS, RS422, RS485, CAN, SpaceWire, serial driver, PCB,
+AXI, DMA, MCDMA, AXI-Stream, embedded systems, real time, satellite, on-board computer.} \par

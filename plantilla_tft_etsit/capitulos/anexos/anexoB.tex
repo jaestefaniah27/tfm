@@ -1,4 +1,28 @@
-El apartado ``Requisitos de las acreditaciones internacionales EUR-ACE y ABET'' de la Normativa de TFT de la ETSIT-UPM establece que ``\textit{La memoria del TFT del GITST, GIB y MUIT, y en general la de aquellas titulaciones que hayan obtenido o para las que se desee solicitar una acreditación internacional EUR-ACE o ABET, … debe incluir un presupuesto económico}''. A modo de ejemplo, la tabla del presupuesto de un proyecto podría ser la siguiente:
+El apartado ``Requisitos de las acreditaciones internacionales EUR-ACE y ABET'' de la Normativa de TFT de la ETSIT-UPM establece que ``\textit{La memoria del TFT del GITST, GIB y MUIT, y en general la de aquellas titulaciones que hayan obtenido o para las que se desee solicitar una acreditación internacional EUR-ACE o ABET, … debe incluir un presupuesto económico}''.
+
+El presupuesto de este trabajo se recoge en la tabla~\ref{presupuesto-economico}. Los criterios
+aplicados para elaborarlo son los siguientes:
+
+\begin{itemize}
+    \item \textbf{Mano de obra.} El trabajo se desarrolló a lo largo de veinte \textit{sprints} de
+    dos semanas (de octubre a julio), diez meses en total. El coste imputado es el real: la beca de
+    colaboración con la que se retribuyó al autor, de 500~\euro\ mensuales.
+
+    \item \textbf{Recursos materiales amortizables.} Equipamiento e instrumentación del laboratorio
+    y licencias de las herramientas de diseño, imputados en proporción a los meses de uso efectivo
+    sobre su periodo de amortización. Las licencias de Vivado ML Enterprise y Altium Designer se
+    amortizan a un año por tratarse de suscripciones anuales.
+
+    \item \textbf{Material fungible.} Componentes electrónicos y fabricación de las placas de
+    circuito impreso. Las cifras de componentes proceden directamente de las listas de materiales
+    de los tres diseños, para una tirada de dos unidades de cada placa, tomando el precio del
+    proveedor primario. Los costes de fabricación (placa de cuatro capas más \textit{stencil} en
+    PCBWay \cite{pcbway_caps}) son estimados.
+
+    \item \textbf{Gastos generales y beneficio industrial.} Se aplican los porcentajes habituales
+    del 15\,\% sobre el coste directo y del 6\,\% sobre la suma de costes directos e indirectos.
+    El IVA aplicable es del 21\,\%.
+\end{itemize}
 
 \begin{table}[H]
     \centering
@@ -6,106 +30,188 @@ El apartado ``Requisitos de las acreditaciones internacionales EUR-ACE y ABET'' 
 \begin{tabular}{lllllc}
 \cline{4-6}
 
-\multicolumn{3}{l|}{\textbf{COSTE DE MANO DE OBRA (coste directo)}} & 
-\multicolumn{1}{c|}{\textbf{Horas}} & \multicolumn{1}{c|}{\textbf{Precio/hora}} & 
-\multicolumn{1}{c|}{\textbf{Total}} \\ \cline{4-6} & & 
-
-\multicolumn{1}{l|}{} & 
-\multicolumn{1}{c|}{300} & 
-\multicolumn{1}{c|}{15 \euro} & 
-\multicolumn{1}{c|}{\textbf{4.500 \euro}} \\
-\cline{4-6} & & & & & 
-
-\multicolumn{1}{l}{} \\ \cline{3-6} 
-\multicolumn{2}{l|}{\textbf{COSTE DE RECURSOS MATERIALES (coste directo)}} & 
-\multicolumn{1}{c|}{\textbf{Precio de compra}} & 
-\multicolumn{1}{c|}{\textbf{Uso en meses}} & 
-\multicolumn{1}{c|}{\textbf{Amortización (en años)}} & 
-\multicolumn{1}{c|}{\textbf{Total}} \\ 
+\multicolumn{3}{l|}{\textbf{COSTE DE MANO DE OBRA (coste directo)}} &
+\multicolumn{1}{c|}{\textbf{Meses}} & \multicolumn{1}{c|}{\textbf{Importe mensual}} &
+\multicolumn{1}{c|}{\textbf{Total}} \\ \cline{4-6}
 \hline
 
-\multicolumn{2}{|l|}{Ordenador personal (Software incluido).......} & 
-\multicolumn{1}{c|}{1.500,00 \euro} & 
-\multicolumn{1}{c|}{6} & 
-\multicolumn{1}{c|}{5} & 
-\multicolumn{1}{c|}{150,00 \euro} \\ 
+\multicolumn{3}{|l|}{Becario de colaboración (desarrollo VHDL, firmware y PCB)} &
+\multicolumn{1}{c|}{10} &
+\multicolumn{1}{c|}{500,00 \euro} &
+\multicolumn{1}{c|}{\textbf{5.000,00 \euro}} \\
 \hline
 
-\multicolumn{2}{|l|}{Impresora láser} & 
-\multicolumn{1}{c|}{500,00 \euro} & 
-\multicolumn{1}{c|}{6} & 
-\multicolumn{1}{c|}{5} & 
-\multicolumn{1}{c|}{50,00 \euro} \\ 
-\hline
-
-\multicolumn{2}{|l|}{Otro equipamiento} &
-\multicolumn{1}{c|}{ } & 
-\multicolumn{1}{c|}{ } & 
-\multicolumn{1}{c|}{ } & 
-\multicolumn{1}{c|}{ } \\ 
-\hline
-
-& & & & & 
-\multicolumn{1}{l}{} \\ 
-\hline
-
-\multicolumn{5}{|l|}{\textbf{COSTE TOTAL DE RECURSOS MATERIALES}} & 
-\multicolumn{1}{c|}{\textbf{200,00 \euro}} \\ 
-\hline
-
-& & & & & 
-\multicolumn{1}{l}{} \\  
-\hline
-
-\multicolumn{1}{|l|}{\textbf{GASTOS GENERALES (costes indirectos)}} & 
-\multicolumn{1}{c|}{15 \%} & 
-\multicolumn{3}{c|}{sobre CD} & 
-\multicolumn{1}{c|}{\textbf{705,00 \euro}} \\ 
-\hline
-
-\multicolumn{1}{|l|}{\textbf{BENEFICIO INDUSTRIAL}} & 
-\multicolumn{1}{c|}{6 \%} & 
-\multicolumn{3}{c|}{sobre CD + CI} &
-\multicolumn{1}{c|}{\textbf{324,30 \euro}} \\ 
-\hline
-
-& & & & & 
-\multicolumn{1}{l}{} \\
-
-\multicolumn{6}{l}{\textbf{MATERIAL FUNGIBLE}} \\
-\hline 
-
-\multicolumn{5}{|l|}{Impresión} & 
-\multicolumn{1}{c|}{\textbf{100,00 \euro}} \\ 
-\hline 
-
-\multicolumn{5}{|l|}{Encuadernación} & 
-\multicolumn{1}{c|}{\textbf{300,00 \euro}} \\ 
-\hline
-
-& & & & & 
-\multicolumn{1}{l}{} \\
-\hline
-
-\multicolumn{5}{|l|}{\textbf{SUBTOTAL PRESUPUESTO}} & 
-\multicolumn{1}{c|}{\textbf{6.129,30 \euro}} \\ 
-\hline
-
-\multicolumn{4}{|l|}{\textbf{IVA APLICABLE}} & 
-\multicolumn{1}{c|}{21 \%} & 
-\multicolumn{1}{c|}{\textbf{1.287,15 \euro}} \\ 
+\multicolumn{5}{|l|}{\textbf{COSTE TOTAL DE MANO DE OBRA}} &
+\multicolumn{1}{c|}{\textbf{5.000,00 \euro}} \\
 \hline
 
 & & & & &
-\multicolumn{1}{l}{} \\ 
+\multicolumn{1}{l}{} \\ \cline{3-6}
+
+\multicolumn{2}{l|}{\textbf{COSTE DE RECURSOS MATERIALES (coste directo)}} &
+\multicolumn{1}{c|}{\textbf{Precio de compra}} &
+\multicolumn{1}{c|}{\textbf{Uso en meses}} &
+\multicolumn{1}{c|}{\textbf{Amortización (en años)}} &
+\multicolumn{1}{c|}{\textbf{Total}} \\
 \hline
 
-\multicolumn{5}{|l|}{\textbf{TOTAL PRESUPUESTO}} & 
-\multicolumn{1}{c|}{\textbf{7.416,45 \euro}} \\ 
+\multicolumn{2}{|l|}{Placa de desarrollo Xilinx ZCU102} &
+\multicolumn{1}{c|}{3.500,00 \euro} &
+\multicolumn{1}{c|}{10} &
+\multicolumn{1}{c|}{5} &
+\multicolumn{1}{c|}{583,33 \euro} \\
+\hline
+
+\multicolumn{2}{|l|}{Estación de trabajo (síntesis y diseño de PCB)} &
+\multicolumn{1}{c|}{1.800,00 \euro} &
+\multicolumn{1}{c|}{10} &
+\multicolumn{1}{c|}{5} &
+\multicolumn{1}{c|}{300,00 \euro} \\
+\hline
+
+\multicolumn{2}{|l|}{Osciloscopio digital de 4 canales} &
+\multicolumn{1}{c|}{2.500,00 \euro} &
+\multicolumn{1}{c|}{4} &
+\multicolumn{1}{c|}{8} &
+\multicolumn{1}{c|}{104,17 \euro} \\
+\hline
+
+\multicolumn{2}{|l|}{Analizador lógico USB} &
+\multicolumn{1}{c|}{400,00 \euro} &
+\multicolumn{1}{c|}{4} &
+\multicolumn{1}{c|}{5} &
+\multicolumn{1}{c|}{26,67 \euro} \\
+\hline
+
+\multicolumn{2}{|l|}{Fuente de alimentación de laboratorio} &
+\multicolumn{1}{c|}{600,00 \euro} &
+\multicolumn{1}{c|}{4} &
+\multicolumn{1}{c|}{8} &
+\multicolumn{1}{c|}{25,00 \euro} \\
+\hline
+
+\multicolumn{2}{|l|}{Estación de soldadura y horno de reflujo} &
+\multicolumn{1}{c|}{1.200,00 \euro} &
+\multicolumn{1}{c|}{3} &
+\multicolumn{1}{c|}{8} &
+\multicolumn{1}{c|}{37,50 \euro} \\
+\hline
+
+\multicolumn{2}{|l|}{Multímetro de mesa} &
+\multicolumn{1}{c|}{300,00 \euro} &
+\multicolumn{1}{c|}{3} &
+\multicolumn{1}{c|}{8} &
+\multicolumn{1}{c|}{9,38 \euro} \\
+\hline
+
+\multicolumn{2}{|l|}{Licencia Vivado ML Enterprise (anual)} &
+\multicolumn{1}{c|}{2.000,00 \euro} &
+\multicolumn{1}{c|}{10} &
+\multicolumn{1}{c|}{1} &
+\multicolumn{1}{c|}{1.666,67 \euro} \\
+\hline
+
+\multicolumn{2}{|l|}{Licencia Altium Designer (anual)} &
+\multicolumn{1}{c|}{3.000,00 \euro} &
+\multicolumn{1}{c|}{5} &
+\multicolumn{1}{c|}{1} &
+\multicolumn{1}{c|}{1.250,00 \euro} \\
+\hline
+
+\multicolumn{5}{|l|}{\textbf{COSTE TOTAL DE RECURSOS MATERIALES}} &
+\multicolumn{1}{c|}{\textbf{4.002,72 \euro}} \\
+\hline
+
+& & & & &
+\multicolumn{1}{l}{} \\
+\hline
+
+\multicolumn{5}{|l|}{\textbf{COSTE DIRECTO (CD) = mano de obra + recursos materiales}} &
+\multicolumn{1}{c|}{\textbf{9.002,72 \euro}} \\
+\hline
+
+& & & & &
+\multicolumn{1}{l}{} \\
+\hline
+
+\multicolumn{1}{|l|}{\textbf{GASTOS GENERALES (costes indirectos)}} &
+\multicolumn{1}{c|}{15 \%} &
+\multicolumn{3}{c|}{sobre CD} &
+\multicolumn{1}{c|}{\textbf{1.350,41 \euro}} \\
+\hline
+
+\multicolumn{1}{|l|}{\textbf{BENEFICIO INDUSTRIAL}} &
+\multicolumn{1}{c|}{6 \%} &
+\multicolumn{3}{c|}{sobre CD + CI} &
+\multicolumn{1}{c|}{\textbf{621,19 \euro}} \\
+\hline
+
+& & & & &
+\multicolumn{1}{l}{} \\
+
+\multicolumn{6}{l}{\textbf{MATERIAL FUNGIBLE}} \\
+\hline
+
+\multicolumn{5}{|l|}{Componentes de la placa de comunicación serie (2 unidades)} &
+\multicolumn{1}{c|}{\textbf{424,13 \euro}} \\
+\hline
+
+\multicolumn{5}{|l|}{Componentes de la placa CDHS (2 unidades)} &
+\multicolumn{1}{c|}{\textbf{116,77 \euro}} \\
+\hline
+
+\multicolumn{5}{|l|}{Componentes de la placa AOCS (2 unidades)} &
+\multicolumn{1}{c|}{\textbf{302,02 \euro}} \\
+\hline
+
+\multicolumn{5}{|l|}{Fabricación de las tres placas con \textit{stencil} (2 unidades de cada una)} &
+\multicolumn{1}{c|}{\textbf{420,00 \euro}} \\
+\hline
+
+\multicolumn{5}{|l|}{Cableado, conectores, tarjeta microSD y consumibles de soldadura} &
+\multicolumn{1}{c|}{\textbf{180,00 \euro}} \\
+\hline
+
+\multicolumn{5}{|l|}{\textbf{COSTE TOTAL DE MATERIAL FUNGIBLE}} &
+\multicolumn{1}{c|}{\textbf{1.442,92 \euro}} \\
+\hline
+
+& & & & &
+\multicolumn{1}{l}{} \\
+\hline
+
+\multicolumn{5}{|l|}{\textbf{SUBTOTAL PRESUPUESTO}} &
+\multicolumn{1}{c|}{\textbf{12.417,24 \euro}} \\
+\hline
+
+\multicolumn{4}{|l|}{\textbf{IVA APLICABLE}} &
+\multicolumn{1}{c|}{21 \%} &
+\multicolumn{1}{c|}{\textbf{2.607,62 \euro}} \\
+\hline
+
+& & & & &
+\multicolumn{1}{l}{} \\
+\hline
+
+\multicolumn{5}{|l|}{\textbf{TOTAL PRESUPUESTO}} &
+\multicolumn{1}{c|}{\textbf{15.024,86 \euro}} \\
 \hline
 
 \end{tabular}}
     \caption{Presupuesto económico}
     \label{presupuesto-economico}
-    
+
 \end{table}
+
+El coste total asciende a \textbf{quince mil veinticuatro euros con ochenta y seis céntimos}
+(15.024,86~\euro), IVA incluido. La mano de obra es la mayor partida individual, con un 40\,\% del
+subtotal, seguida de los recursos materiales amortizados con un 32\,\%, dentro de los cuales las
+licencias de las herramientas de diseño pesan más que el propio equipamiento; el hardware
+físicamente fabricado representa un 10\,\% del presupuesto.
+
+Conviene señalar que el coste de mano de obra imputado es el realmente incurrido, correspondiente a
+una beca de colaboración, y no el que tendría el mismo trabajo contratado a precio de mercado. Con
+una tarifa de ingeniero junior de 30~\euro/hora sobre una dedicación equivalente de 800~horas, la
+partida de mano de obra pasaría de 5.000~\euro\ a 24.000~\euro\ y el total del presupuesto se
+situaría en torno a los 43.000~\euro. Esa segunda cifra es la referencia adecuada para estimar lo
+que costaría reproducir este desarrollo en un entorno industrial.
