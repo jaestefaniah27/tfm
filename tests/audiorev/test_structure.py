@@ -144,3 +144,29 @@ Dos.
         assert not re.search(r"-\d+$", uid)
     assert any("cdhs" in uid for uid in ids)
     assert any("aocs" in uid for uid in ids)
+
+
+def test_heading_ignores_a_trailing_label_on_the_same_line():
+    units = split_units(
+        _lines(
+            r"""
+\chapter{Desarrollo}
+\subsection{Objetivos} \label{objetivos}
+Texto.
+"""
+        )
+    )
+    assert units[0].title == "Objetivos"
+
+
+def test_heading_title_survives_nested_braces():
+    units = split_units(
+        _lines(
+            r"""
+\chapter{Desarrollo}
+\subsubsection{Topología RS485 con bus compartido configurable por \textit{jumper}}
+Texto.
+"""
+        )
+    )
+    assert units[0].title == "Topología RS485 con bus compartido configurable por jumper"

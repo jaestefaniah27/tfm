@@ -6,11 +6,52 @@ from pathlib import PurePosixPath
 
 from .model import SourceLine, Unit
 
-_HEADING = re.compile(r"\\(section|subsection|subsubsection)\*?\{(.*)\}\s*$")
-_CHAPTER = re.compile(r"\\chapter\*?\{(.*)\}\s*$")
+_HEADING_CMD = re.compile(r"\\(section|subsection|subsubsection)\*?\{")
+_CHAPTER_CMD = re.compile(r"\\chapter\*?\{")
 _LEVEL = {"section": 1, "subsection": 2, "subsubsection": 3}
 _SLUG_MAX = 48
 _CAP_PATH = re.compile(r"(?:^|/)cap(\d+)(?:/|$)")
+
+
+def _balanced_group(text: str, open_idx: int) -> str | None:
+    r"""Devuelve el contenido de `{...}` que empieza en `open_idx`, contando
+    profundidad para respetar llaves anidadas (p.ej. `\textit{...}` dentro
+    del título). `None` si el grupo no cierra en la misma línea."""
+    depth = 0
+    for i in range(open_idx, len(text)):
+        if text[i] == "{":
+            depth += 1
+        elif text[i] == "}":
+            depth -= 1
+            if depth == 0:
+                return text[open_idx + 1 : i]
+    return None
+
+
+def _match_chapter(text: str) -> str | None:
+    r"""Extrae el título de un `\chapter{...}`, ignorando lo que venga
+    después del `}` de cierre (p.ej. un `\label{...}` en la misma línea)."""
+    m = _CHAPTER_CMD.search(text)
+    if not m:
+        return None
+    return _balanced_group(text, m.end() - 1)
+
+
+def _match_heading(text: str) -> tuple[str, str] | None:
+    r"""Extrae (kind, título) de un `\section`/`\subsection`/`\subsubsection`.
+
+    El título es el PRIMER grupo `{...}` balanceado tras el comando, no todo
+    lo que haya hasta la última llave de la línea: un `\label{...}` en la
+    misma línea no debe colarse en el título, y un título con llaves
+    anidadas (p.ej. `\textit{jumper}`) no debe truncarse en la primera `}`.
+    """
+    m = _HEADING_CMD.search(text)
+    if not m:
+        return None
+    title = _balanced_group(text, m.end() - 1)
+    if title is None:
+        return None
+    return m.group(1), title
 
 
 def slugify(title: str) -> str:
@@ -56,15 +97,15 @@ def split_units(lines: list[SourceLine]) -> list[Unit]:
     by_base_id: dict[str, list[tuple[Unit, str, str, str | None]]] = {}
 
     for line in lines:
-        chap = _CHAPTER.search(line.text)
-        if chap:
+        chap_title = _match_chapter(line.text)
+        if chap_title is not None:
             chapter_num += 1
-            chapter_title = _strip(chap.group(1))
+            chapter_title = _strip(chap_title)
             continue
 
-        head = _HEADING.search(line.text)
+        head = _match_heading(line.text)
         if head:
-            kind, raw_title = head.group(1), head.group(2)
+            kind, raw_title = head
             title = _strip(raw_title)
             level = _LEVEL[kind]
             title_slug = slugify(title)
