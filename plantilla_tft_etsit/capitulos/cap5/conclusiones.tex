@@ -24,7 +24,7 @@ propios.} No se seleccionó una alternativa sobre el papel: se implementaron y m
 \textbf{tres arquitecturas completas} (AXI GPIO, catorce AXI DMA y un AXI MCDMA con puente VHDL
 propio) sobre el mismo transceptor y con el mismo programa de pruebas. La comparación es
 concluyente. La arquitectura de partida, basada en AXI GPIO, \textbf{interrumpe al procesador una
-vez por cada byte} (1250 interrupciones por kilobyte), lo que la deja en el 30\,\% del techo físico
+vez por cada byte} (1\,250 interrupciones por kilobyte), lo que la deja en el 30\,\% del techo físico
 de la línea y, sobre todo, la vuelve insensible a la velocidad del enlace: de 115\,200 a
 4~Mbaudios su rendimiento apenas mejora un 41\,\%, porque el cuello de botella no está en la línea
 sino en la CPU. La solución final, un MCDMA multicanal con un puente en VHDL que multiplexa los

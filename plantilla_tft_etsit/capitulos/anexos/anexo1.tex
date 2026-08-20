@@ -7,7 +7,7 @@ a lo largo del trabajo.
 
 La tabla~\ref{tab:mapa_lince_serial} recoge el mapeado de los 14 drivers RS-485/RS-422 de la placa
 LINCE Comunicación Serial con el conector FMC HPC0 (P2) de la ZCU102. Cada driver expone las
-señales TX, RX, SLO y DE (esta última ausente en los drivers 7 y 11, que sólo disponen de
+señales TX, RX, SLO y DE (esta última ausente en los drivers 7 y 11, que solo disponen de
 control de dirección hardware).
 
 {\small
@@ -198,10 +198,10 @@ cortocircuitadas, y el conector J4 alberga dos canales (RS41 y RS42).
 
 La tabla del NCO del transceptor serie contiene \textbf{54 entradas}, de 50 a 4.000.000 de
 baudios. La tabla~\ref{tab:nco} recoge las \textbf{29 que ejercita el \textit{testbench}}
-\texttt{tb\_NCO.vhd}, que son las del rango de uso previsto (de 9600 a 3,6864~Mbaudios): para cada
+\texttt{tb\_NCO.vhd}, que son las del rango de uso previsto (de 9\,600 a 3,6864~Mbaudios): para cada
 una, los dos valores de incremento que la función de síntesis calcula (el nominal y el de doble
 frecuencia) y la frecuencia medida en simulación, con su error en ppm respecto a la nominal. Las
-entradas por debajo de 9600~baudios quedan fuera del uso previsto y la de 4~Mbaudios exige un
+entradas por debajo de 9\,600~baudios quedan fuera del uso previsto y la de 4~Mbaudios exige un
 tiempo de simulación desproporcionado, de modo que ninguna de ellas se barre.
 
 \begin{table}[H]

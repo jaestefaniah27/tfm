@@ -53,10 +53,10 @@ completo genera una interrupción; la ISR maestra despierta a la tarea \textit{w
 que drena el FIFO hardware byte a byte. En transmisión, la ISR escribe el siguiente byte cada
 vez que el transmisor queda libre.
 
-El coste medido es de \textbf{1250 interrupciones por kilobyte} transferido. Con eso, el
+El coste medido es de \textbf{1\,250 interrupciones por kilobyte} transferido. Con eso, el
 \textit{throughput} de un canal se estanca en torno al 30\,\% del techo físico de la línea y
 \textbf{no mejora al subir la velocidad}: de 115\,200 a 4~Mbaudios
-el rendimiento apenas pasa de 3471 a 4907~B/s, porque el cuello de botella ya no es la línea
+el rendimiento apenas pasa de 3\,471 a 4\,907~B/s, porque el cuello de botella ya no es la línea
 serie sino el manejo de interrupciones. El sistema está en el régimen de \textit{interrupt
 livelock} descrito en la sección~\ref{sec:teoria_livelock}.
 
@@ -94,11 +94,11 @@ un canal con un único \textit{buffer} activo:
 \subsubsection{Coste de la replicación de motores DMA}
 
 La variante opera en placa y en transmisión alcanza \textbf{3 interrupciones por kilobyte}, frente
-a las 1250 de la variante GPIO. El enfoque no escala, por dos razones:
+a las 1\,250 de la variante GPIO. El enfoque no escala, por dos razones:
 
 \textbf{El coste en lógica.} Catorce motores DMA completos ocupan \textbf{40\,217 LUT}, un
 14,7\,\% del dispositivo: 2,8 veces más lógica que la solución multicanal, para el mismo número
-de canales. La cifra por canal, 2873 LUT/canal frente a los 1014 del MCDMA, expresa
+de canales. La cifra por canal, 2\,873 LUT/canal frente a los 1\,014 del MCDMA, expresa
 directamente lo que cuesta replicar en vez de compartir. Ese coste condiciona además
 el endurecimiento futuro del diseño, porque una triplicación modular (TMR, \textit{Triple Modular
 Redundancy}) de la lógica, que es la técnica habitual para tolerar los efectos de la radiación en
@@ -421,7 +421,7 @@ cinco repeticiones sin pérdidas y el barrido de velocidad supera los siete punt
 % ---------------------------------------------------------------------------
 
 Comparar tres arquitecturas exige medirlas en igualdad de condiciones. El problema práctico es
-que una medida sobre la PCB real depende del cableado, de los jumpers de configuración de bus y
+que una medida sobre la PCB real depende del cableado, de los \textit{jumpers} de configuración de bus y
 de la integridad física de las líneas, factores que varían entre montajes y contaminan la
 comparación del transporte, que es lo que se quiere aislar.
 

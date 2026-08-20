@@ -176,7 +176,7 @@ por debajo de la resolución del gráfico. La cifra de DMA14 recoge solo la tran
 En la variante GPIO, el número de interrupciones de transmisión
 \textbf{coincide exactamente con el número de bytes transmitidos} (22\,161 y 22\,161): es la
 confirmación empírica de que el procesador toca cada byte. En recepción ocurre lo mismo, con un
-sobrecoste añadido por los eventos de estado. El resultado son \textbf{1250 interrupciones por
+sobrecoste añadido por los eventos de estado. El resultado son \textbf{1\,250 interrupciones por
 kilobyte}.
 
 El MCDMA mueve la misma cantidad de datos con \textbf{194 interrupciones de transmisión y 192 de
@@ -238,7 +238,7 @@ comportamiento notablemente determinista, una propiedad especialmente valiosa en
 tiempo real embarcado.
 
 % ---------------------------------------------------------------------------
-\subsubsection{Throughput}
+\subsubsection{\textit{Throughput}}
 % ---------------------------------------------------------------------------
 
 A 115\,200 baudios en formato 8N1, cada byte ocupa 10 bits de línea, de modo que el techo físico
@@ -374,7 +374,7 @@ El barrido delimita la naturaleza del límite de cada arquitectura:
 
 \begin{itemize}
     \item El \textbf{GPIO se satura}. Multiplicar la velocidad de línea por 35 (de 115\,200 a
-    4~Mbaudios) mejora el \textit{throughput} un 41\,\%, de 3471 a 4907~B/s. La curva es
+    4~Mbaudios) mejora el \textit{throughput} un 41\,\%, de 3\,471 a 4\,907~B/s. La curva es
     plana porque \textbf{el cuello de botella no es la línea, es la CPU}: el coste de una
     interrupción por byte no depende de lo rápido que vaya el bus. Por rápido que se haga el
     hardware serie, el sistema no aprovechará esa velocidad.
@@ -462,7 +462,7 @@ anteriores.
 
 Los datos sostienen que \textbf{el MCDMA con puente VHDL es la arquitectura adecuada para este
 sistema}. Su ventaja procede de una causa concreta y medible: \textbf{mueve paquetes en lugar de
-bytes}. Las 1250 interrupciones por kilobyte de la variante GPIO se convierten en 3, y todo lo
+bytes}. Las 1\,250 interrupciones por kilobyte de la variante GPIO se convierten en 3, y todo lo
 demás (la latencia tres veces menor, el 99\,\% del techo de línea, la escalabilidad con la
 velocidad) es consecuencia de eso.
 

@@ -5,7 +5,7 @@ Cargas de pago y plataformas Espaciales}), una iniciativa del PERTE Aeroespacial
 Indra que impulsa la producción en serie de plataformas de microsatélites (100--200 kg) y de sus
 cargas de pago para órbita baja (LEO), con el objetivo de reducir costes y plazos y consolidar la
 autonomía estratégica española en este segmento; su constelación demostradora, STARTICAL,
-validará en vuelo tecnologías críticas de comunicaciones y vigilancia \cite{indra2026lince}.
+validará en vuelo tecnologías críticas de comunicaciones y vigilancia~\cite{indra2026lince}.
 
 Dentro del consorcio, Sener participa como socio tecnológico: desarrolla y valida el firmware
 del OBC, y traslada a los demás participantes los requisitos técnicos que recibe de Indra,
@@ -127,7 +127,7 @@ calendario lo permitía, se corregía y se volvía a fabricar. Quedó fuera del 
 de la comunicación SpaceWire presente en la PCB AOCS, por su alta complejidad técnica.
 
 Durante el desarrollo de los bloques VHDL, se comprobó en todo momento el correcto funcionamiento de los mismos
-mediante simulaciones de testbench antes de integrarlos en el sistema completo.
+mediante simulaciones de \textit{testbench} antes de integrarlos en el sistema completo.
 Además, se realizaron simulaciones del sistema completo, las cuales permitieron encontrar y corregir
 algunos errores.
 
@@ -136,7 +136,7 @@ que agilizaron el flujo de trabajo permitiendo ahorrar tiempo en tareas repetiti
 
 Todo el trabajo desarrollado (código VHDL, aplicaciones y drivers de RTEMS, bancos de pruebas,
 diseños de las placas y scripts de automatización) se ha versionado en un único repositorio Git,
-disponible públicamente en GitHub \cite{repo_tfm}. Bajo el directorio \texttt{tfm/} se organiza
+disponible públicamente en GitHub~\cite{repo_tfm}. Bajo el directorio \texttt{tfm/} se organiza
 por bloques temáticos:
 \texttt{01\_ip\_serie} (transceptor serie en VHDL), \texttt{02\_transporte} (las tres
 arquitecturas de transporte), \texttt{03\_bench\_loopback} y \texttt{04\_pcb\_caracterizacion}
