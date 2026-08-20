@@ -252,9 +252,9 @@ generar la imagen de arranque, compilar la imagen de RTEMS, copiar los ficheros 
 arrancar la placa; una iteración completa lleva varios minutos y, cuando la placa no arranca, el
 sistema no ofrece ninguna indicación del motivo.
 
-A ello se añade que Vitis reutiliza artefactos ya compilados de la plataforma y de la aplicación,
-de modo que un .xsa nuevo no siempre se propaga a la imagen final y el sistema se comporta como
-antes del cambio en el VHDL. Limpiar y recompilar no da un resultado fiable, por lo que el
+A ello se añade que Vitis reutiliza artefactos ya compilados de la plataforma y de la aplicación:
+un .xsa nuevo no siempre se propaga a la imagen final y el sistema se comporta como antes del
+cambio en el VHDL. Limpiar y recompilar no da un resultado fiable, por lo que el
 procedimiento adoptado es crear una plataforma y una aplicación nuevas para cada cambio en la PL:
 es más lento, pero garantiza que la imagen generada corresponde al hardware recién sintetizado.
 
@@ -291,7 +291,7 @@ fundamentales son:
 
 \begin{itemize}
     \item \textbf{Oscilador controlado numéricamente} (\texttt{NCO.vhd}): proporciona la señal
-    de temporización de bit para las 54 velocidades soportadas, de modo que transmisor y
+    de temporización de bit para las 54 velocidades soportadas, para que transmisor y
     receptor puedan trabajar a cualquiera de ellas.
     \item \textbf{Transmisor} (\texttt{TX\_CONFIGURABLE\_SERIAL.vhd}): serializa y emite las
     tramas, y gobierna la señal de \textit{Driver Enable} del transceptor físico.
@@ -622,7 +622,7 @@ peor caso, es despreciable frente al tiempo de trama salvo a las velocidades má
 El receptor vigila la línea serie, recupera la temporización de bit a partir del flanco de inicio y
 entrega los bits muestreados al registro de desplazamiento, señalando al final si la trama es
 válida. Sus puertos se recogen en la tabla~\ref{tab:rx_puertos}; las cinco entradas de
-configuración son las mismas del transmisor y con idéntica codificación, de modo que ambos
+configuración son las mismas del transmisor y con idéntica codificación, por lo que ambos
 comparten la palabra de configuración del canal.
 
 \begin{table}[H]
@@ -866,7 +866,7 @@ descrito en la sección siguiente, se recoge en la tabla~\ref{tab:mapa_bits_top}
 Junto a esos dos vectores, el bloque expone las líneas físicas del canal (\texttt{TD},
 \texttt{RD}, \texttt{DE} y \texttt{SLO}) y una salida auxiliar de dos bits que duplica
 \texttt{TX\_RDY} y \texttt{Empty}. Esta última es la que se lleva al controlador de interrupciones,
-de modo que el PS pueda ser avisado tanto de la llegada de datos como de la disponibilidad del
+para que el PS pueda ser avisado tanto de la llegada de datos como de la disponibilidad del
 transmisor sin tener que sondear el vector de estado. La salida \texttt{SLO} es una conexión
 directa desde el bit~27 del vector de configuración hasta el pin del transceptor físico: no
 interviene en la lógica del transceptor en VHDL.
@@ -884,7 +884,7 @@ PS y la PL:
     cablean; es el bloque de catorce canales de la arquitectura basada en AXI GPIO.
 
     \item \texttt{SERIAL\_CHANNEL\_IP.vhd} envuelve un solo canal como IP independiente, con esos
-    mismos genéricos, de modo que los canales puedan instanciarse y conectarse uno a uno en el
+    mismos genéricos, para que los canales puedan instanciarse y conectarse uno a uno en el
     \textit{Block Design} en lugar de como un bloque monolítico.
 
     \item \texttt{UART\_AXIS\_TOP.vhd} sustituye la interfaz paralela por un registro de
@@ -996,7 +996,7 @@ independiente de la dirección física de cada instancia, se desarrollaron los f
 \texttt{transceiver.c} y \texttt{transceiver.h}.
 
 El diseño cubre tres requisitos fundamentales: (1) descubrimiento dinámico del hardware en
-tiempo de arranque, de modo que el mismo binario funcione con cualquier número de
+tiempo de arranque, para que el mismo binario funcione con cualquier número de
 transceptores instanciados en el \textit{bitstream}; (2) comunicación orientada a interrupciones
 para no bloquear el procesador durante la espera de datos; y (3) una API sencilla que
 permita a la aplicación enviar y recibir datos sin conocer los detalles del mapa de registros.
@@ -1215,7 +1215,7 @@ catálogo cualificado.
 El diseño de las tres placas se realizó en \textbf{Altium Designer}, y el primer paso en cualquiera
 de los tres proyectos, antes de colocar un solo componente, fue \textbf{establecer las reglas de
 diseño}. Es un paso que conviene no posponer: las reglas son el contrato que el comprobador de
-Altium verifica de forma continua durante el enrutado, de modo que fijarlas al principio convierte
+Altium verifica de forma continua durante el enrutado, por lo que fijarlas al principio convierte
 las restricciones de fabricación en un error detectado en el momento de cometerlo, en lugar de en un
 rechazo del fabricante cuando el diseño ya está cerrado.
 
@@ -1409,7 +1409,7 @@ Tanto las líneas RX como las TX de cada canal llevan un par de diodos TVS
 El THVD1424 expone dos pines de control independientes: \textbf{DE} (\textit{Driver Enable}, activo en
 alto) habilita el transmisor, y \textbf{RE} (\textit{Receiver Enable}, activo en bajo) habilita el receptor.
 En el esquemático, ambos pines están conectados a la misma señal de control procedente del
-MPSoC, de modo que una única línea digital controla simultáneamente transmisor y receptor
+MPSoC, con lo que una única línea digital controla simultáneamente transmisor y receptor
 de forma complementaria (tabla~\ref{tab:de_re}).
 
 \begin{table}[H]
