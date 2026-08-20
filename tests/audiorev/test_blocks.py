@@ -63,6 +63,35 @@ a & b \\
     assert blocks[0].caption == "Puertos"
 
 
+def test_uses_the_outer_caption_and_label_not_a_subfigure_ones():
+    src = _lines(
+        r"""
+\begin{figure}[H]
+\centering
+\begin{subfigure}[t]{0.48\textwidth}
+\centering
+\includegraphics[width=\textwidth]{IMG/a.jpg}
+\caption{Vista superior de la placa.}
+\label{fig:a}
+\end{subfigure}
+\hfill
+\begin{subfigure}[t]{0.48\textwidth}
+\centering
+\includegraphics[width=\textwidth]{IMG/b.jpg}
+\caption{Placa montada en el conector.}
+\label{fig:b}
+\end{subfigure}
+\caption{PCB de comunicación serie en la campaña de caracterización.}
+\label{fig:pcb_montaje}
+\end{figure}
+"""
+    )
+    kept, blocks = extract_blocks(src)
+    assert len(blocks) == 1
+    assert blocks[0].caption == "PCB de comunicación serie en la campaña de caracterización."
+    assert blocks[0].ref == "fig:pcb_montaje"
+
+
 def test_block_without_caption_or_label_does_not_raise():
     src = _lines(
         r"""

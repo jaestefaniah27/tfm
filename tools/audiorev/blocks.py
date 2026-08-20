@@ -24,6 +24,30 @@ _CAPTION = re.compile(r"\\caption\{(.*)\}")
 _LABEL = re.compile(r"\\label\{([^}]+)\}")
 
 
+def _own_caption_and_label(block_lines: list[SourceLine]) -> tuple[re.Match | None, re.Match | None]:
+    """Busca el `\\caption` y el `\\label` propios del bloque (profundidad 0),
+    ignorando los que pertenezcan a entornos anidados (p.ej. `subfigure`)."""
+    caption = None
+    label = None
+    depth = 0
+    # Las líneas primera y última son el propio \begin/\end del bloque:
+    # se excluyen para que la profundidad 0 represente el nivel del bloque.
+    for line in block_lines[1:-1]:
+        if caption is None and depth == 0:
+            m = _CAPTION.search(line.text)
+            if m:
+                caption = m
+        if label is None and depth == 0:
+            m = _LABEL.search(line.text)
+            if m:
+                label = m
+        for _ in _BEGIN.finditer(line.text):
+            depth += 1
+        for _ in _END.finditer(line.text):
+            depth -= 1
+    return caption, label
+
+
 def _strip_latex(text: str) -> str:
     text = re.sub(r"\\(?:textit|textbf|emph|texttt)\s*\{([^{}]*)\}", r"\1", text)
     return re.sub(r"\\[a-zA-Z]+\s*", "", text).strip()
@@ -68,8 +92,7 @@ def extract_blocks(lines: list[SourceLine]) -> tuple[list[SourceLine], list[Bloc
             j += 1
 
         raw = "\n".join(l.text for l in lines[i:j])
-        caption = _CAPTION.search(raw)
-        label = _LABEL.search(raw)
+        caption, label = _own_caption_and_label(lines[i:j])
         kind = _KIND[env]
         blocks.append(
             Block(
