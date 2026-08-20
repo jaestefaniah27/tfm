@@ -20,7 +20,7 @@ USB y los arneses de \textit{loopback} conectados.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth]{IMG/sistema_montado.jpg}
-    \caption{Sistema completo montado: ZCU102 con la placa CDHS conectada al FMC.}
+    \caption{Sistema completo montado: ZCU102 con la placa CDHS.}
     \label{fig:sistema_montado}
 \end{figure}
 
@@ -147,7 +147,8 @@ pocas decenas de nanosegundos, mientras que con el limitador activo se estira ha
 cuarto de microsegundo (figura~\ref{fig:cdhs_slew}). Esa pendiente más suave es la que reduce las
 emisiones radiadas y la sensibilidad a las reflexiones en cables largos, y es también la que
 acota la velocidad máxima alcanzable, un compromiso que se cuantifica sobre la placa de
-comunicación serie en la sección~\ref{sec:pcb_slo}.
+comunicación serie en la sección~\ref{sec:pcb_slo}. La base de tiempos de las capturas de la
+derecha es cinco veces mayor que la de las de la izquierda.
 
 \begin{figure}[H]
     \centering
@@ -176,10 +177,7 @@ comunicación serie en la sección~\ref{sec:pcb_slo}.
         \includegraphics[width=\textwidth]{IMG/slew/rs485_bajada_lenta.png}
         \caption{Bajada con limitador (100~ns/div).}
     \end{subfigure}
-    \caption{Flancos de la línea RS485 de la placa CDHS con y sin control de \textit{slew rate}.
-    Obsérvese que la base de tiempos de las capturas de la derecha es cinco veces mayor que la de
-    las de la izquierda: la transición pasa de unas pocas decenas de nanosegundos a varios
-    centenares.}
+    \caption{Flancos de la línea RS485 de la placa CDHS con y sin control de \textit{slew rate}.}
     \label{fig:cdhs_slew}
 \end{figure}
 
@@ -333,7 +331,7 @@ recoge la medida del canal de 1~kHz, representativa de las cuatro.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.78\textwidth]{IMG/cdhs_pwm_1khz.png}
-    \caption{Señal PWM medida en el conector J5 de la placa CDHS: canal de 1~kHz con \textit{duty cycle} del 50\%.}
+    \caption{Señal PWM en el conector J5 de la placa CDHS (1~kHz, 50\,\%).}
     \label{fig:cdhs_pwm}
 \end{figure}
 
@@ -353,7 +351,7 @@ revisión de cinco canales.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.62\textwidth]{IMG/aocs_soldada.jpg}
-    \caption{Placas AOCS con componentes montados (vista superior de las dos unidades fabricadas).}
+    \caption{Placas AOCS con componentes montados.}
     \label{fig:aocs_foto}
 \end{figure}
 
@@ -455,14 +453,14 @@ línea 1 a 0 con línea 2 activa), permitiendo verificar el control de puentes e
 fuente de alimentación externa conectada a los bornes banana. La figura~\ref{fig:aocs_pwm}
 muestra el par de señales complementarias medido en el conector J2.
 
-La medida también dejó al descubierto el error de conexión del eje Z descrito en la
-sección~\ref{sec:diseno_aocs}: ese eje no entregaba señal en el conector porque las entradas de
+La medida recoge además el error de conexión del eje Z descrito en la
+sección~\ref{sec:diseno_aocs}: ese eje no entrega señal en el conector porque las entradas de
 su puente en H colgaban de dos salidas del adaptador de nivel cuyas entradas están atadas a
 masa. Es un fallo de la placa, no del firmware, y la revisión V2 lo corrige.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.78\textwidth]{IMG/aocs_pwm_motor.png}
-    \caption{Señales PWM de control de motor en la placa AOCS (par complementario para puente en H).}
+    \caption{Señales PWM de control de motor en la placa AOCS.}
     \label{fig:aocs_pwm}
 \end{figure}

@@ -7,45 +7,45 @@ Reallocating 'name_of_file' (item size: 1) to 7 items.
 Database file #1: biblio.bib
 Warning--entry type for "ecss50spw" isn't style-file defined
 --line 111 of file biblio.bib
-You've used 23 entries,
+You've used 26 entries,
             1791 wiz_defined-function locations,
-            561 strings with 6688 characters,
-and the built_in function-call counts, 3226 in all, are:
-= -- 296
-> -- 96
-< -- 3
-+ -- 47
-- -- 24
-* -- 89
-:= -- 546
-add.period$ -- 75
-call.type$ -- 23
-change.case$ -- 15
+            573 strings with 7212 characters,
+and the built_in function-call counts, 3611 in all, are:
+= -- 330
+> -- 108
+< -- 4
++ -- 53
+- -- 27
+* -- 95
+:= -- 611
+add.period$ -- 84
+call.type$ -- 26
+change.case$ -- 18
 chr.to.int$ -- 0
-cite$ -- 23
-duplicate$ -- 151
-empty$ -- 382
-format.name$ -- 24
-if$ -- 730
+cite$ -- 26
+duplicate$ -- 168
+empty$ -- 430
+format.name$ -- 27
+if$ -- 819
 int.to.chr$ -- 0
-int.to.str$ -- 23
+int.to.str$ -- 26
 missing$ -- 4
-newline$ -- 124
-num.names$ -- 23
-pop$ -- 94
+newline$ -- 139
+num.names$ -- 26
+pop$ -- 108
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 0
-skip$ -- 42
+skip$ -- 49
 stack$ -- 0
 substring$ -- 56
-swap$ -- 30
-text.length$ -- 3
+swap$ -- 33
+text.length$ -- 4
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 0
 warning$ -- 0
-while$ -- 27
-width$ -- 25
-write$ -- 250
+while$ -- 30
+width$ -- 28
+write$ -- 281
 (There was 1 warning)
