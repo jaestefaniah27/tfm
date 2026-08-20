@@ -1,6 +1,7 @@
 import re
 
-from tools.audiorev.model import SourceLine
+from tools.audiorev.model import SourceLine, Unit
+from tools.audiorev import structure
 from tools.audiorev.structure import slugify, split_units, rechunk
 
 
@@ -170,3 +171,92 @@ Texto.
         )
     )
     assert units[0].title == "Topología RS485 con bus compartido configurable por jumper"
+
+
+
+def test_rechunk_never_exceeds_max_words_even_with_one_huge_paragraph():
+    # Un único párrafo muy por encima de max_words, sin puntuación que
+    # ofrezca fronteras de frase: rechunk debe trocearlo igualmente.
+    body = "palabra " * 700
+    units = split_units(
+        _lines(f"\\chapter{{Anexo B}}\n\\section{{Anexo}}\n{body}\n",
+               tex_file="capitulos/anexos/anexoA.tex")
+    )
+    chunks = rechunk(units, max_words=600, target_words=450)
+    assert len(chunks) >= 2
+    for c in chunks:
+        assert len(" ".join(l.text for l in c.lines).split()) <= 600
+
+
+def test_ancestry_does_not_leak_across_chapter_or_file_boundary():
+    # El segundo fichero abre directamente con un \subsection, sin
+    # \section propio: no debe heredar el ancestro del capítulo/fichero
+    # anterior.
+    lines = _lines(
+        "\\chapter{Uno}\n\\section{Padre}\n\\subsection{Hijo}\nTexto.\n",
+        tex_file="capitulos/cap1/uno.tex",
+    ) + _lines(
+        "\\chapter{Dos}\n\\subsection{Suelto}\nOtro texto.\n",
+        tex_file="capitulos/cap2/dos.tex",
+    )
+    units = split_units(lines)
+    suelto = next(u for u in units if u.title == "Suelto")
+    assert "padre" not in suelto.unit_id
+
+
+def test_global_uniqueness_survives_truncated_qualified_collision(monkeypatch):
+    # Se fuerza un _SLUG_MAX muy pequeño para que el id cualificado y
+    # truncado de una colisión coincida EXACTAMENTE con el id, ya
+    # reservado, de otro apartado que nunca colisionó. La desambiguación
+    # debe seguir garantizando unicidad global, no solo entre hermanos.
+    monkeypatch.setattr(structure, "_SLUG_MAX", 1)
+
+    a = Unit(unit_id="", chapter=3, chapter_title="X", level=2,
+             title="A", tex_file="f.tex", tex_lines=(1, 1))
+    b1 = Unit(unit_id="", chapter=3, chapter_title="X", level=3,
+              title="B", tex_file="f.tex", tex_lines=(2, 2))
+    b2 = Unit(unit_id="", chapter=3, chapter_title="X", level=3,
+              title="B", tex_file="f.tex", tex_lines=(3, 3))
+
+    base_id_a = "c03-f-a"
+    base_id_b = "c03-f-b"
+    by_base_id = {
+        base_id_a: [(a, "c03-f", "a", None)],
+        # Con _SLUG_MAX=1, "a-b"[:1] == "a", así que el id cualificado de
+        # b1/b2 sería "c03-f-a", idéntico al de `a`.
+        base_id_b: [
+            (b1, "c03-f", "b", "a"),
+            (b2, "c03-f", "b", "a"),
+        ],
+    }
+
+    structure._disambiguate(by_base_id)
+
+    ids = [a.unit_id, b1.unit_id, b2.unit_id]
+    assert len(set(ids)) == 3
+    assert a.unit_id == base_id_a
+
+
+def _word_count_for_test(unit):
+    return len(" ".join(l.text for l in unit.lines).split())
+
+
+def test_rechunk_over_the_real_tfm_respects_max_words_and_stays_unique(tex_root, repo_root):
+    from tools.audiorev.expand import expand
+
+    units = split_units(expand(tex_root / "main.tex", repo_root))
+    chunks = rechunk(units, max_words=600, target_words=450)
+
+    assert all(
+        len(" ".join(l.text for l in c.lines).split()) <= 600 for c in chunks
+    )
+    assert len({c.unit_id for c in chunks}) == len(chunks)
+
+    # Los anexos (sin encabezados propios) son la razón de ser de rechunk:
+    # al menos una unidad original superaba max_words y debe haberse
+    # partido en varios trozos "-p01", "-p02", ...
+    oversized = [u for u in units if _word_count_for_test(u) > 600]
+    assert oversized
+    for u in oversized:
+        pieces = [c for c in chunks if c.unit_id.startswith(f"{u.unit_id}-p")]
+        assert len(pieces) >= 2

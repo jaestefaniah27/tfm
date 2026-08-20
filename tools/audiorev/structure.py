@@ -88,7 +88,12 @@ def split_units(lines: list[SourceLine]) -> list[Unit]:
     current: Unit | None = None
     # Pila de encabezados abiertos (level, slug) para poder cualificar por
     # ancestro cuando dos apartados del mismo fichero comparten título.
+    # Se vacía al cambiar de capítulo o de fichero: un capítulo o anexo que
+    # empieza directamente en \subsection/\subsubsection (sin \section
+    # propio) no debe heredar el último ancestro del capítulo o fichero
+    # anterior, que sería un padre semánticamente incorrecto.
     ancestry: list[tuple[int, str]] = []
+    current_tex_file: str | None = None
     # base_id -> lista de (unit, prefijo "cNN-stem", slug del título,
     # slug del padre inmediato o None), en orden de aparición. Se resuelve
     # al final para desambiguar por ancestro en vez de por posición (ver
@@ -97,10 +102,15 @@ def split_units(lines: list[SourceLine]) -> list[Unit]:
     by_base_id: dict[str, list[tuple[Unit, str, str, str | None]]] = {}
 
     for line in lines:
+        if line.tex_file != current_tex_file:
+            current_tex_file = line.tex_file
+            ancestry.clear()
+
         chap_title = _match_chapter(line.text)
         if chap_title is not None:
             chapter_num += 1
             chapter_title = _strip(chap_title)
+            ancestry.clear()
             continue
 
         head = _match_heading(line.text)
@@ -151,27 +161,44 @@ def _disambiguate(by_base_id: dict[str, list[tuple[Unit, str, str, str | None]]]
     no con un ordinal de aparición. Solo si dos apartados colisionan también
     tras cualificar por ancestro —o no tienen ancestro— se recurre a un
     ordinal como último recurso.
+
+    La unicidad se comprueba contra el conjunto GLOBAL de identificadores ya
+    asignados en toda la memoria, no solo entre los hermanos que comparten
+    `base_id`: el recorte a `_SLUG_MAX` de un id cualificado podría, en
+    principio, coincidir con el id de un apartado que nunca colisionó, y eso
+    tiene que detectarse igualmente.
     """
+    used: set[str] = set()
+
+    # Los apartados que no colisionan reservan su id tal cual, sin cualificar.
+    for base_id, entries in by_base_id.items():
+        if len(entries) == 1:
+            unit = entries[0][0]
+            unit.unit_id = base_id
+            used.add(base_id)
+
     for base_id, entries in by_base_id.items():
         if len(entries) == 1:
             continue
 
-        qualified: dict[str, list[Unit]] = {}
         for unit, prefix, title_slug, parent_slug in entries:
             if parent_slug is None:
-                qualified_id = base_id
+                candidate = base_id
             else:
                 tail = f"{parent_slug}-{title_slug}"[:_SLUG_MAX].rstrip("-")
-                qualified_id = f"{prefix}-{tail}"
-            qualified.setdefault(qualified_id, []).append(unit)
+                candidate = f"{prefix}-{tail}"
 
-        for qualified_id, group in qualified.items():
-            if len(group) == 1:
-                group[0].unit_id = qualified_id
-                continue
-            # Sigue colisionando (mismo padre, o sin padre): último recurso.
-            for n, unit in enumerate(group, start=1):
-                unit.unit_id = f"{qualified_id}-{n}"
+            final_id = candidate
+            n = 1
+            while final_id in used:
+                # Sigue colisionando (mismo padre cualificado, sin padre, o
+                # choque con un id de otro apartado ya asignado): último
+                # recurso, un ordinal.
+                n += 1
+                final_id = f"{candidate}-{n}"
+
+            unit.unit_id = final_id
+            used.add(final_id)
 
 
 def _strip(title: str) -> str:
@@ -181,6 +208,46 @@ def _strip(title: str) -> str:
 
 def _word_count(unit: Unit) -> int:
     return len(" ".join(l.text for l in unit.lines).split())
+
+
+def _split_oversized_group(group: list[SourceLine], max_words: int) -> list[list[SourceLine]]:
+    """Trocea un párrafo que por sí solo ya supera max_words.
+
+    Se intenta primero por frontera de frase (`.`, `!`, `?`) para que el
+    corte sea legible; si una sola frase sigue superando max_words (o no
+    hay puntuación), se trocea directamente por palabras. El resultado
+    sintetiza SourceLine nuevas (mismo tex_file/lineno de origen que el
+    grupo) porque el corte puede caer en mitad de una línea real.
+    """
+    text = " ".join(l.text for l in group)
+    words = text.split()
+    if len(words) <= max_words:
+        return [group]
+
+    sentences = re.split(r"(?<=[.!?])\s+", text)
+    pieces_text: list[str] = []
+    current: list[str] = []
+
+    def _flush() -> None:
+        if current:
+            pieces_text.append(" ".join(current))
+            current.clear()
+
+    for sentence in sentences:
+        sentence_words = sentence.split()
+        if len(sentence_words) > max_words:
+            _flush()
+            for i in range(0, len(sentence_words), max_words):
+                pieces_text.append(" ".join(sentence_words[i : i + max_words]))
+            continue
+        if current and len(current) + len(sentence_words) > max_words:
+            _flush()
+        current.extend(sentence_words)
+    _flush()
+
+    tex_file = group[0].tex_file
+    lineno = group[0].lineno
+    return [[SourceLine(tex_file=tex_file, lineno=lineno, text=p)] for p in pieces_text]
 
 
 def rechunk(units: list[Unit], max_words: int = 600, target_words: int = 450) -> list[Unit]:
@@ -199,9 +266,23 @@ def rechunk(units: list[Unit], max_words: int = 600, target_words: int = 450) ->
                 groups[-1].append(line)
         groups = [g for g in groups if g]
 
+        # Un párrafo que por sí solo ya supere max_words se trocea antes de
+        # empaquetar, para que la garantía de "ningún trozo supera
+        # max_words" sea real y no dependa de que los párrafos del origen
+        # sean cortos.
+        expanded: list[list[SourceLine]] = []
+        for g in groups:
+            expanded.extend(_split_oversized_group(g, max_words))
+        groups = expanded
+
         chunk: list[SourceLine] = []
         pieces: list[list[SourceLine]] = []
         for group in groups:
+            chunk_words = len(" ".join(l.text for l in chunk).split())
+            group_words = len(" ".join(l.text for l in group).split())
+            if chunk and chunk_words + group_words > max_words:
+                pieces.append(chunk)
+                chunk = []
             chunk.extend(group)
             if len(" ".join(l.text for l in chunk).split()) >= target_words:
                 pieces.append(chunk)
