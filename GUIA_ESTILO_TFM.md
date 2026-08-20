@@ -129,6 +129,11 @@ El cambio es de **registro, titulación y longitud**, no de rigor:
   con dos puntos cerrados; «Decisiones de diseño destacadas» → «Decisiones de diseño».
 - `cap2/transporte.tex` y `cap5/conclusiones.tex` — litotes «un solo byte/error» →
   «ningún byte/error».
+- `cap5/conclusiones.tex` — el párrafo del slew rate estaba escrito como descubrimiento
+  («sin que nadie lo supiera», «capado», «el hardware no estaba mal»), justo el ejemplo
+  de la sección 2 de esta guía; reescrito como hecho, igual que en `cap4/pcb.tex`.
+- Barrido final de «conviene señalar/advertir/declarar», «resultó ser», «a la primera» y
+  «merece la pena» sobre los cinco capítulos y los tres anexos.
 
 ## Pendiente de aplicar
 

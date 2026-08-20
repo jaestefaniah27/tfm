@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.7.22)  20 AUG 2026 20:37
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.7.22)  20 AUG 2026 21:08
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -2098,7 +2098,7 @@ n: found PDF version <1.7>, but at most version <1.5> allowed
 File: IMG/pcbs/LINCE3_AOCS_V2.pdf Graphic file (type pdf)
 <use IMG/pcbs/LINCE3_AOCS_V2.pdf, page 1>
 Package pdftex.def Info: IMG/pcbs/LINCE3_AOCS_V2.pdf , page1 used on input line
- 1505.
+ 1504.
 (pdftex.def)             Requested size: 455.24408pt x 351.79211pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -2106,7 +2106,7 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
- 1509.
+ 1508.
 (pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
 
 
@@ -2120,17 +2120,17 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 <IMG/pcbs/aocs_3d_top.png, id=1263, 666.0885pt x 301.125pt>
 File: IMG/pcbs/aocs_3d_top.png Graphic file (type png)
 <use IMG/pcbs/aocs_3d_top.png>
-Package pdftex.def Info: IMG/pcbs/aocs_3d_top.png  used on input line 1514.
+Package pdftex.def Info: IMG/pcbs/aocs_3d_top.png  used on input line 1513.
 (pdftex.def)             Requested size: 218.51521pt x 98.78342pt.
 <IMG/pcbs/aocs_3d_bot.png, id=1264, 653.44125pt x 289.68225pt>
 File: IMG/pcbs/aocs_3d_bot.png Graphic file (type png)
 <use IMG/pcbs/aocs_3d_bot.png>
-Package pdftex.def Info: IMG/pcbs/aocs_3d_bot.png  used on input line 1520.
+Package pdftex.def Info: IMG/pcbs/aocs_3d_bot.png  used on input line 1519.
 (pdftex.def)             Requested size: 218.51521pt x 96.86844pt.
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
- 1547.
+ 1546.
 (pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
 
 
@@ -2149,7 +2149,7 @@ n: found PDF version <1.7>, but at most version <1.5> allowed
 File: IMG/pcbs/LINCE3_AOCS_V2.pdf Graphic file (type pdf)
 <use IMG/pcbs/LINCE3_AOCS_V2.pdf, page 6>
 Package pdftex.def Info: IMG/pcbs/LINCE3_AOCS_V2.pdf , page6 used on input line
- 1578.
+ 1577.
 (pdftex.def)             Requested size: 455.24408pt x 351.79211pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -2157,7 +2157,7 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
- 1582.
+ 1581.
 (pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
 
 
@@ -2171,7 +2171,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
- 1611.
+ 1610.
 (pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
 
 
@@ -2182,7 +2182,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
 [46 <./IMG/pcbs/LINCE3_AOCS_V2.pdf>]
-Underfull \hbox (badness 1215) in paragraph at lines 1619--1625
+Underfull \hbox (badness 1215) in paragraph at lines 1618--1624
 []\OT1/cmr/m/n/12 El ma-pa com-ple-to de se~nales en-tre la pla-ca AOCS y el co
 -nec-tor FMC se en-
  []
@@ -2190,7 +2190,7 @@ Underfull \hbox (badness 1215) in paragraph at lines 1619--1625
 <IMG/cdhs_soldada.jpg, id=1365, 3035.34pt x 4047.12pt>
 File: IMG/cdhs_soldada.jpg Graphic file (type jpg)
 <use IMG/cdhs_soldada.jpg>
-Package pdftex.def Info: IMG/cdhs_soldada.jpg  used on input line 1651.
+Package pdftex.def Info: IMG/cdhs_soldada.jpg  used on input line 1650.
 (pdftex.def)             Requested size: 282.2491pt x 376.32887pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -2198,7 +2198,7 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
- 1655.
+ 1654.
 (pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
 
 
@@ -2212,7 +2212,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 <IMG/aocs_soldada_caras.jpg, id=1374, 3854.4pt x 5139.2pt>
 File: IMG/aocs_soldada_caras.jpg Graphic file (type jpg)
 <use IMG/aocs_soldada_caras.jpg>
-Package pdftex.def Info: IMG/aocs_soldada_caras.jpg  used on input line 1658.
+Package pdftex.def Info: IMG/aocs_soldada_caras.jpg  used on input line 1657.
 (pdftex.def)             Requested size: 282.2491pt x 376.32692pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -2220,7 +2220,7 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
- 1662.
+ 1661.
 (pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
 
 
@@ -2234,7 +2234,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
- 1687.
+ 1686.
 (pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
 
 
@@ -2248,7 +2248,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
- 1744.
+ 1743.
 (pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
 
 
@@ -2262,12 +2262,12 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 <IMG/arnes_rs422.jpg, id=1411, 3854.4pt x 5139.2pt>
 File: IMG/arnes_rs422.jpg Graphic file (type jpg)
 <use IMG/arnes_rs422.jpg>
-Package pdftex.def Info: IMG/arnes_rs422.jpg  used on input line 1787.
+Package pdftex.def Info: IMG/arnes_rs422.jpg  used on input line 1786.
 (pdftex.def)             Requested size: 204.85844pt x 273.12912pt.
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
- 1791.
+ 1790.
 (pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
 
 
@@ -2281,7 +2281,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 <IMG/arnes_rs485.jpg, id=1421, 3854.4pt x 5139.2pt>
 File: IMG/arnes_rs485.jpg Graphic file (type jpg)
 <use IMG/arnes_rs485.jpg>
-Package pdftex.def Info: IMG/arnes_rs485.jpg  used on input line 1799.
+Package pdftex.def Info: IMG/arnes_rs485.jpg  used on input line 1798.
 (pdftex.def)             Requested size: 204.85844pt x 273.12912pt.
 
 Underfull \vbox (badness 4779) has occurred while \output is active []
@@ -2289,7 +2289,7 @@ Underfull \vbox (badness 4779) has occurred while \output is active []
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
- 1810.
+ 1809.
 (pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
 
 
@@ -2303,7 +2303,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 <IMG/arnes_can.jpg, id=1428, 3854.4pt x 5139.2pt>
 File: IMG/arnes_can.jpg Graphic file (type jpg)
 <use IMG/arnes_can.jpg>
-Package pdftex.def Info: IMG/arnes_can.jpg  used on input line 1813.
+Package pdftex.def Info: IMG/arnes_can.jpg  used on input line 1812.
 (pdftex.def)             Requested size: 204.85844pt x 273.12912pt.
 )
 (capitulos/cap3/transporte.tex
@@ -2913,7 +2913,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
- 93.
+ 91.
 (pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
 
 
@@ -2923,11 +2923,11 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[86]) (capitulos/cap5/lineasfuturas.tex
+[86]) (capitulos/cap5/lineasfuturas.tex)
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
- 29.
+ 265.
 (pdftex.def)             Requested size: 85.35826pt x 26.68015pt.
 
 
@@ -2937,7 +2937,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-19.03018pt}.
 
-[87])
+[87]
 File: portada/logosportada/logoetsit.png Graphic file (type png)
 <use portada/logosportada/logoetsit.png>
 Package pdftex.def Info: portada/logosportada/logoetsit.png  used on input line
@@ -3252,7 +3252,7 @@ s/MiKTeX/fonts/type1/public/lm/lmss9.pfb><C:/Users/jaest/AppData/Local/Programs
 ms/MiKTeX/fonts/type1/public/lm/lmsy7.pfb><C:/Users/jaest/AppData/Local/Program
 s/MiKTeX/fonts/type1/public/lm/lmtt8.pfb><C:/Users/jaest/AppData/Local/Programs
 /MiKTeX/fonts/type1/public/lm/lmtt9.pfb>
-Output written on main.pdf (120 pages, 14200012 bytes).
+Output written on main.pdf (120 pages, 14199510 bytes).
 PDF statistics:
  2324 PDF objects out of 2487 (max. 8388607)
  789 named destinations out of 1000 (max. 500000)
