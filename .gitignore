@@ -82,3 +82,6 @@ plantilla_tft_etsit/IMG/Desarrollo/*.log
 plantilla_tft_etsit/IMG/Desarrollo/*.fls
 plantilla_tft_etsit/IMG/Desarrollo/*.fdb_latexmk
 plantilla_tft_etsit/IMG/Desarrollo/*.synctex.gz
+
+# Salida generada por tools/audiorev (índices JSON y audio): no se versiona.
+out/
