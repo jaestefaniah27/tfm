@@ -45,6 +45,11 @@ def read_session(token: str) -> str | None:
 
 def require_user(request: Request) -> str:
     settings = get_settings()
+    if not settings.trust_proxy_user and not settings.password_hash:
+        # Sin contraseña configurada y sin proxy de confianza: el usuario
+        # decidió no poner ninguna barrera porque el enlace es privado y
+        # solo él lo conoce. Se entra directamente, sin pantalla de login.
+        return "jorge"
     if settings.trust_proxy_user:
         # Esto solo es seguro porque el proxy inverso fija y sobrescribe esta
         # cabecera antes de reenviar la petición; si la app quedara expuesta

@@ -109,6 +109,34 @@ def test_login_is_rate_limited_after_a_few_failures(client_with_password):
     main_module._login_fails.clear()
 
 
+def test_no_password_and_no_proxy_bypasses_auth_entirely(tmp_path, monkeypatch):
+    """Despliegue de un solo usuario en un dominio privado: sin
+    AUDIOREV_PASSWORD_HASH y sin AUDIOREV_TRUST_PROXY_USER, la API se abre
+    directamente, sin cookie ni cabecera de autorización."""
+    from fastapi.testclient import TestClient
+
+    monkeypatch.setenv("AUDIOREV_DATA_DIR", str(tmp_path))
+    monkeypatch.setenv("AUDIOREV_API_TOKEN", "token-de-prueba")
+    monkeypatch.setenv("AUDIOREV_SESSION_SECRET", "secreto-de-prueba")
+    monkeypatch.delenv("AUDIOREV_PASSWORD_HASH", raising=False)
+    monkeypatch.delenv("AUDIOREV_TRUST_PROXY_USER", raising=False)
+    from server.app.config import get_settings
+
+    get_settings.cache_clear()
+    from server.app.main import create_app
+
+    with TestClient(create_app()) as c:
+        r = c.get("/api/me")
+        assert r.status_code == 200
+        assert r.json() == {"user": "jorge"}
+        assert not c.cookies.get("audiorev_session")
+
+        # /login sigue existiendo (no es modo proxy), pero como no hay hash
+        # configurado, verify_password contra "" siempre da False: la ruta
+        # queda inofensiva y simplemente sin uso, no rota.
+        assert c.post("/login", json={"password": "cualquier-cosa"}).status_code == 401
+
+
 def test_a_successful_login_clears_the_failure_counter(client_with_password):
     from server.app import main as main_module
 

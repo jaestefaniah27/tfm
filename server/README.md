@@ -13,7 +13,7 @@ contenedor.
 |------------------------------|:-----------:|-------------------------------------|------------------------------------------------------------------------------|
 | `AUDIOREV_DATA_DIR`          | no          | `/data`                             | Directorio raíz de datos persistentes (índice, audio, base de datos, repo). |
 | `AUDIOREV_REPO_DIR`          | no          | `<data_dir>/repo`                   | Clon del repositorio LaTeX del TFM usado para regenerar el índice.          |
-| `AUDIOREV_PASSWORD_HASH`     | sí          | (vacío)                             | Hash Argon2 de la contraseña del único usuario.                             |
+| `AUDIOREV_PASSWORD_HASH`     | no          | (vacío)                             | Hash Argon2 de la contraseña del único usuario. **Opcional**: si se deja vacío (y `AUDIOREV_TRUST_PROXY_USER` tampoco está puesto), la app no pide contraseña y cualquiera con la URL entra directamente. Ver más abajo. |
 | `AUDIOREV_API_TOKEN`         | sí          | (vacío)                             | Token portador para endpoints de servicio (p. ej. `/api/reload`).           |
 | `AUDIOREV_SESSION_SECRET`    | sí          | (vacío)                             | Secreto para firmar la cookie de sesión.                                    |
 | `AUDIOREV_TRUST_PROXY_USER`  | no          | `None`                              | Cabecera de usuario de confianza si se despliega tras un proxy que autentica. |
@@ -94,11 +94,25 @@ bloque `reverse_proxy`, así que no hace falta ninguna `location` aparte para
 `POST /api/webhook/github`: en GitHub, configura la URL de entrega del
 webhook como `https://tfm-jorgerente.duckdns.org/api/webhook/github`.
 
+## ¿Hace falta contraseña?
+
+`AUDIOREV_PASSWORD_HASH` es **opcional**. Si no lo defines (y tampoco defines
+`AUDIOREV_TRUST_PROXY_USER`), el servidor no muestra ninguna pantalla de
+acceso: `/api/*` responde directamente a cualquiera que llegue a la URL, sin
+cookie ni cabecera. Esta es una decisión explícita para un despliegue de un
+solo usuario en un subdominio DuckDNS privado que nadie más conoce: no hay
+enlaces públicos ni buscadores que lo indexen, así que el riesgo asumido es
+que **cualquiera que consiga la URL exacta puede usar la app sin
+autenticarse**. Si en algún momento compartes el enlace, lo publicas en un
+dominio más descubrible, o simplemente prefieres una capa extra de
+seguridad, sigue configurando `AUDIOREV_PASSWORD_HASH` como se explica a
+continuación para recuperar la pantalla de login.
+
 ## Cómo generar la contraseña y los tokens
 
-`AUDIOREV_PASSWORD_HASH`, `AUDIOREV_API_TOKEN`, `AUDIOREV_SESSION_SECRET` y
-`AUDIOREV_WEBHOOK_SECRET` son secretos que generas tú, no los da ningún
-servicio externo:
+`AUDIOREV_PASSWORD_HASH` (opcional, ver arriba), `AUDIOREV_API_TOKEN`,
+`AUDIOREV_SESSION_SECRET` y `AUDIOREV_WEBHOOK_SECRET` son secretos que
+generas tú, no los da ningún servicio externo:
 
 ```bash
 # Hash Argon2 de la contraseña (usa la propia librería del servidor):
