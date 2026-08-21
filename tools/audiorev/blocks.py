@@ -2,6 +2,7 @@
 
 import html as htmlmod
 import re
+import sys
 
 from .model import Block, SourceLine
 
@@ -90,6 +91,17 @@ def extract_blocks(lines: list[SourceLine]) -> tuple[list[SourceLine], list[Bloc
             if end and end.group(1) == env:
                 depth -= 1
             j += 1
+
+        if depth > 0:
+            # El entorno no cierra: el bucle se comió el resto del documento
+            # en un único bloque gigante. Antes ocurría en silencio, y lo que
+            # se pierde es toda la prosa que venga detrás.
+            print(
+                f"audiorev: aviso: \\begin{{{env}}} sin cerrar en "
+                f"{lines[i].tex_file}:{lines[i].lineno}: el resto del documento "
+                f"se ha absorbido en ese bloque",
+                file=sys.stderr,
+            )
 
         raw = "\n".join(l.text for l in lines[i:j])
         caption, label = _own_caption_and_label(lines[i:j])

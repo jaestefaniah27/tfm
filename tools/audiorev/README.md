@@ -33,9 +33,11 @@ LaTeX.
 
 ## Instalar Piper y el modelo de voz
 
-El backend por defecto es [Piper](https://github.com/rhasspy/piper), que
-sintetiza localmente sin depender de ningún servicio externo. Instálalo y
-descarga la voz española `es_ES-davefx-medium`:
+El backend por defecto es
+[Piper](https://github.com/OHF-Voice/piper1-gpl) (el paquete `piper-tts` de
+PyPI, es decir *piper1-gpl*; no el binario antiguo en C++, cuyas opciones de
+línea de órdenes son distintas). Sintetiza localmente sin depender de ningún
+servicio externo. Instálalo y descarga la voz española `es_ES-davefx-medium`:
 
 ```bash
 pip install piper-tts
@@ -44,8 +46,10 @@ pip install piper-tts
 python -m piper.download_voices es_ES-davefx-medium
 ```
 
-Por defecto `tools/audiorev/tts.py` busca `es_ES-davefx-medium.onnx` en el
-directorio desde el que se ejecuta `piper`; si el modelo está en otra ruta,
+`tools/audiorev/tts.py` lo invoca como
+`piper -m <modelo> -f <fichero.wav>`, pasándole la frase por la entrada
+estándar. Por defecto busca `es_ES-davefx-medium.onnx` en el directorio
+desde el que se ejecuta `piper`; si el modelo está en otra ruta,
 indícalo con la variable de entorno `AUDIOREV_PIPER_MODEL`:
 
 ```bash

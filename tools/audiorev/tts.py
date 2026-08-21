@@ -3,7 +3,9 @@
 import io
 import os
 import subprocess
+import tempfile
 import wave
+from pathlib import Path
 from typing import Protocol
 
 SAMPLE_RATE = 22050
@@ -30,7 +32,20 @@ class FakeBackend:
 
 
 class PiperBackend:
-    """Síntesis local con Piper. Requiere el binario piper en el PATH."""
+    """Síntesis local con Piper (piper1-gpl, el paquete `piper-tts` de PyPI).
+
+    Es el Piper que documenta el README, y su CLI usa `-m/--model` y
+    `-f/--output-file` con GUION, no el `--output_file` con guion bajo del
+    viejo Piper en C++. Se escribe a un fichero temporal en vez de a la
+    salida estándar porque es la forma que ambos aceptan sin ambigüedad, y
+    lo que se devuelve es el WAV completo.
+    """
+
+    INSTALL_HINT = (
+        "Piper no está instalado o no está en el PATH. Instálalo con "
+        "`pip install piper-tts` y descarga la voz con "
+        "`python -m piper.download_voices es_ES-davefx-medium`."
+    )
 
     def __init__(self, model: str | None = None) -> None:
         self.model = model or os.environ.get(
@@ -38,13 +53,28 @@ class PiperBackend:
         )
 
     def synth(self, text: str) -> bytes:
-        result = subprocess.run(
-            ["piper", "--model", self.model, "--output_file", "-"],
-            input=text.encode("utf-8"),
-            capture_output=True,
-            check=True,
-        )
-        return result.stdout
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "frase.wav"
+            argv = ["piper", "-m", self.model, "-f", str(out)]
+            try:
+                result = subprocess.run(
+                    argv,
+                    input=text.encode("utf-8"),
+                    capture_output=True,
+                )
+            except FileNotFoundError as exc:
+                raise RuntimeError(self.INSTALL_HINT) from exc
+
+            if result.returncode != 0 or not out.exists():
+                # check=True escondía la queja de piper dentro de un
+                # CalledProcessError que solo lleva el código de salida: sin
+                # el stderr no hay forma de saber si falla el modelo, la voz
+                # o la frase.
+                raise RuntimeError(
+                    f"piper falló (código {result.returncode}) con la frase "
+                    f"{text[:80]!r}: {result.stderr.decode('utf-8', 'replace').strip()}"
+                )
+            return out.read_bytes()
 
 
 _BACKENDS = {"fake": FakeBackend, "piper": PiperBackend}

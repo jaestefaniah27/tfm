@@ -52,3 +52,13 @@ def test_expands_the_real_tfm(tex_root, repo_root):
     assert any("cap5/lineasfuturas.tex" in f for f in files)
     chapters = [l.text for l in lines if l.text.startswith("\\chapter{")]
     assert len(chapters) >= 8
+
+
+def test_a_missing_include_warns_instead_of_disappearing(tmp_path, capsys):
+    (tmp_path / "main.tex").write_text(
+        "Antes.\n\\input{capitulos/perdido}\nDespués.\n", encoding="utf-8"
+    )
+    lines = expand(tmp_path / "main.tex", tmp_path)
+    assert [l.text for l in lines] == ["Antes.", "Después."]
+    err = capsys.readouterr().err
+    assert "perdido" in err and "main.tex" in err

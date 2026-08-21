@@ -117,3 +117,20 @@ def test_spoken_cue_names_the_block_its_number_and_its_caption():
     # Sin \label resoluble se dice solo el tipo.
     sin_ref = Block(after_sentence=-1, type="code", caption="", ref=None, raw="", html="")
     assert spoken_cue(sin_ref, labels) == "listado, en pantalla."
+
+
+def test_an_unterminated_environment_warns(capsys):
+    from tools.audiorev.blocks import extract_blocks
+    from tools.audiorev.model import SourceLine
+
+    lines = [
+        SourceLine(tex_file="a.tex", lineno=n, text=t)
+        for n, t in enumerate(
+            [r"Prosa previa.", r"\begin{figure}", r"\caption{Sin cerrar}", "Prosa perdida."],
+            start=1,
+        )
+    ]
+    kept, blocks = extract_blocks(lines)
+    assert len(blocks) == 1
+    err = capsys.readouterr().err
+    assert "figure" in err and "a.tex:2" in err
