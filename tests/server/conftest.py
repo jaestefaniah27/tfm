@@ -14,6 +14,7 @@ def data_dir(tmp_path, monkeypatch) -> Path:
     monkeypatch.setenv("AUDIOREV_SESSION_SECRET", "secreto-de-prueba")
     monkeypatch.setenv("AUDIOREV_PASSWORD_HASH", "")
     monkeypatch.setenv("AUDIOREV_COOKIE_SECURE", "0")
+    monkeypatch.setenv("AUDIOREV_TRUST_PROXY_USER", "Remote-User")
     from server.app.config import get_settings
 
     get_settings.cache_clear()
@@ -22,7 +23,10 @@ def data_dir(tmp_path, monkeypatch) -> Path:
 
 @pytest.fixture
 def client(data_dir):
+    """Cliente ya autenticado (modo proxy) para probar las rutas que
+    requieren `require_user` sin repetir la cabecera en cada prueba."""
     from server.app.main import create_app
 
     with TestClient(create_app()) as c:
+        c.headers.update({"Remote-User": "jorge"})
         yield c

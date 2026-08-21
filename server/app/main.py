@@ -1,18 +1,31 @@
 """Aplicación FastAPI de AudioRev."""
 
+import re
+import sqlite3
+from datetime import datetime, timezone
+from typing import Literal
+
 from fastapi import Depends, FastAPI, HTTPException, Response
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
 from . import db as db_module
-from .auth import COOKIE, MAX_AGE, issue_session, require_user, verify_password
+from .auth import COOKIE, MAX_AGE, issue_session, require_api_token, require_user, verify_password
 from .config import get_settings
-from .index import load_index
+from .index import load_index, unit_payload
 
 VERSION = "0.1.0"
+
+_SAFE_ID = re.compile(r"^[a-z0-9][a-z0-9-]{0,120}$")
 
 
 class LoginBody(BaseModel):
     password: str
+
+
+class ProgressBody(BaseModel):
+    state: Literal["pendiente", "en_curso", "escuchado", "con_notas"]
+    position_s: float = 0.0
 
 
 def create_app() -> FastAPI:
@@ -57,6 +70,77 @@ def create_app() -> FastAPI:
     @app.get("/api/me")
     def me(user: str = Depends(require_user)) -> dict:
         return {"user": user}
+
+    @app.post("/api/reload")
+    def reload_index(_: None = Depends(require_api_token),
+                      conn: sqlite3.Connection = Depends(db_module.get_db)) -> dict:
+        n = load_index(conn, settings.index_dir)
+        return {"loaded": n}
+
+    @app.get("/api/units")
+    def list_units(user: str = Depends(require_user),
+                    conn: sqlite3.Connection = Depends(db_module.get_db)) -> dict:
+        rows = conn.execute(
+            """
+            SELECT u.*, COALESCE(p.state, 'pendiente') AS state,
+                   COALESCE(p.position_s, 0) AS position_s,
+                   (SELECT count(*) FROM notes n
+                     WHERE n.unit_id = u.unit_id AND n.state = 'pendiente') AS n_notes
+              FROM units u LEFT JOIN progress p ON p.unit_id = u.unit_id
+             ORDER BY u.ord
+            """
+        ).fetchall()
+
+        chapters: list[dict] = []
+        for row in rows:
+            item = dict(row)
+            if not chapters or chapters[-1]["chapter"] != item["chapter"]:
+                chapters.append({
+                    "chapter": item["chapter"],
+                    "chapter_title": item["chapter_title"],
+                    "units": [],
+                })
+            chapters[-1]["units"].append(item)
+
+        total = sum(r["duration_s"] or 0.0 for r in rows)
+        done = sum((r["duration_s"] or 0.0) for r in rows if r["state"] == "escuchado")
+        return {
+            "chapters": chapters,
+            "total_duration_s": total,
+            "listened_duration_s": done,
+        }
+
+    @app.get("/api/units/{unit_id}")
+    def get_unit(unit_id: str, user: str = Depends(require_user)) -> dict:
+        payload = unit_payload(settings.index_dir, unit_id)
+        if payload is None:
+            raise HTTPException(status_code=404, detail="Apartado desconocido")
+        return payload
+
+    @app.put("/api/progress/{unit_id}")
+    def put_progress(unit_id: str, body: ProgressBody, user: str = Depends(require_user),
+                      conn: sqlite3.Connection = Depends(db_module.get_db)) -> dict:
+        if not _SAFE_ID.match(unit_id):
+            raise HTTPException(status_code=400, detail="Identificador no válido")
+        conn.execute(
+            """
+            INSERT INTO progress (unit_id, state, position_s, updated_at)
+            VALUES (?, ?, ?, ?)
+            ON CONFLICT(unit_id) DO UPDATE SET
+              state=excluded.state, position_s=excluded.position_s, updated_at=excluded.updated_at
+            """,
+            (unit_id, body.state, body.position_s, datetime.now(timezone.utc).isoformat()),
+        )
+        return {"ok": True}
+
+    @app.get("/audio/{filename}")
+    def get_audio(filename: str, user: str = Depends(require_user)) -> FileResponse:
+        if not filename.endswith(".opus") or not _SAFE_ID.match(filename[:-5]):
+            raise HTTPException(status_code=400, detail="Nombre no válido")
+        path = settings.audio_dir / filename
+        if not path.exists():
+            raise HTTPException(status_code=404, detail="Audio no disponible")
+        return FileResponse(path, media_type="audio/ogg")
 
     return app
 
