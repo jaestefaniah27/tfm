@@ -57,17 +57,20 @@ def mark_stale_notes(conn: sqlite3.Connection, index_dir: Path) -> int:
     rows = conn.execute(
         "SELECT id, unit_id, sentence_hash FROM notes WHERE state = 'pendiente'"
     ).fetchall()
-    cache: dict[str, set[str]] = {}
+    # None => el índice de esa unidad todavía no existe (regeneración en
+    # curso); un set (posiblemente vacío) => el índice existe de verdad.
+    cache: dict[str, set[str] | None] = {}
 
     for row in rows:
         unit_id = row["unit_id"]
         if unit_id not in cache:
             payload = unit_payload(index_dir, unit_id)
             cache[unit_id] = (
-                {s["hash"] for s in payload.get("sentences", [])} if payload else set()
+                {s["hash"] for s in payload.get("sentences", [])}
+                if payload is not None else None
             )
         known = cache[unit_id]
-        if known and row["sentence_hash"] not in known:
+        if known is not None and row["sentence_hash"] not in known:
             conn.execute("UPDATE notes SET state = 'obsoleta' WHERE id = ?", (row["id"],))
             stale += 1
     return stale

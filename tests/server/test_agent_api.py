@@ -76,6 +76,22 @@ def test_a_note_whose_sentence_survives_stays_pending(client, data_dir):
         assert mark_stale_notes(conn, index_dir) == 0
 
 
+def test_a_regenerated_unit_left_with_zero_sentences_marks_its_notes_stale(client, data_dir):
+    from server.app import db as db_module
+    from server.app.index import mark_stale_notes
+
+    client.post("/api/notes", json=NOTE)
+    index_dir = data_dir / "index"
+    index_dir.mkdir(parents=True, exist_ok=True)
+    (index_dir / "c03-entorno-nco.json").write_text(json.dumps({
+        "unit_id": "c03-entorno-nco", "sentences": [], "blocks": [],
+    }), encoding="utf-8")
+
+    with db_module.session() as conn:
+        assert mark_stale_notes(conn, index_dir) == 1
+    assert client.get("/api/revisiones?estado=obsoleta", headers=AUTH).json()["revisiones"]
+
+
 def test_already_applied_notes_are_never_marked_obsolete(client, data_dir):
     from server.app import db as db_module
     from server.app.index import mark_stale_notes
