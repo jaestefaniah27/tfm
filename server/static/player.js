@@ -150,7 +150,16 @@ const Notes = (() => {
   async function sessionId() {
     let id = sessionStorage.getItem('audiorev_session_id');
     if (!id) {
-      id = (await AudioRev.api('/api/sessions', { method: 'POST' })).session_id;
+      try {
+        id = (await AudioRev.api('/api/sessions', { method: 'POST' })).session_id;
+      } catch (err) {
+        // Sin red: no hay forma de pedirle un identificador al servidor.
+        // Se genera uno aquí mismo para no bloquear la anotación; el
+        // servidor no distingue el origen del session_id (es sólo una
+        // cadena que agrupa notas), así que una vez enviada la nota tras
+        // recuperar la conexión funciona igual que uno emitido por él.
+        id = crypto.randomUUID();
+      }
       sessionStorage.setItem('audiorev_session_id', id);
     }
     return id;
@@ -178,24 +187,32 @@ const Notes = (() => {
     const comment = document.getElementById('comentario').value.trim();
     if (!tags.length && !comment) { close(); return; }
 
-    const payload = {
-      session_id: await sessionId(),
-      unit_id: Player.unit.unit_id,
-      sentence_idx: sentence.idx,
-      sentence_hash: sentence.hash,
-      sentence_text: sentence.text,
-      tex_file: Player.unit.tex_file,
-      tex_line: sentence.tex_line,
-      audio_ts: Player.audio.currentTime,
-      tags,
-      comment,
-    };
-
+    // `payload` se declara fuera del try (necesita seguir siendo visible en
+    // el catch) pero todo lo que necesita red -incluido obtener el
+    // session_id la primera vez que se anota en esta pestaña- se construye
+    // y envía dentro del mismo try: si falla en cualquier punto (sin
+    // cobertura desde el primer instante, o se pierde a media petición),
+    // cae al mismo catch y la nota se encola en vez de perderse.
+    let payload;
     try {
+      payload = {
+        session_id: await sessionId(),
+        unit_id: Player.unit.unit_id,
+        sentence_idx: sentence.idx,
+        sentence_hash: sentence.hash,
+        sentence_text: sentence.text,
+        tex_file: Player.unit.tex_file,
+        tex_line: sentence.tex_line,
+        audio_ts: Player.audio.currentTime,
+        tags,
+        comment,
+      };
       await AudioRev.api('/api/notes', { method: 'POST', body: JSON.stringify(payload) });
     } catch (err) {
       // Sin red: se encola en IndexedDB y se envía sola al recuperar
-      // conexión, para no perder la anotación.
+      // conexión, para no perder la anotación. Si el fallo fue el propio
+      // sessionId() (sin sesión aún y sin red), sessionId() ya generó y
+      // cacheó un id local antes de lanzar, así que `payload` está completo.
       await AudioRev.enqueue(payload);
     }
     close();

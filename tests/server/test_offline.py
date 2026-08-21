@@ -25,6 +25,28 @@ def test_the_queue_survives_without_network(client):
     assert "flushQueue" in body
 
 
+def test_saving_a_note_without_a_session_yet_still_falls_back_to_the_queue(client):
+    """No hay entorno de navegador en esta batería (sin jsdom/Playwright) para
+    disparar `Notes.save()` de verdad, así que se comprueba de forma
+    estructural que ya no puede perderse una nota cuando todavía no hay
+    `session_id` en caché: la llamada a `sessionId()` (que hace su propia
+    petición de red) debe quedar DENTRO del mismo `try` que envuelve el
+    `POST /api/notes` y cae al mismo `catch` que llama a `AudioRev.enqueue`,
+    en vez de poder lanzar antes de construir el `payload`."""
+    body = client.get("/player.js").text
+    save_start = body.index("async function save()")
+    save_body = body[save_start:body.index("\n  }\n", save_start)]
+
+    try_start = save_body.index("try {")
+    catch_start = save_body.index("} catch")
+    session_call = save_body.index("await sessionId()")
+
+    # await sessionId() debe invocarse después de abrir el try y antes del
+    # cierre que da paso al catch, nunca fuera de él.
+    assert try_start < session_call < catch_start
+    assert "AudioRev.enqueue" in save_body[catch_start:]
+
+
 def test_webhook_rejects_a_bad_signature(client, monkeypatch):
     monkeypatch.setenv("AUDIOREV_WEBHOOK_SECRET", "s3cr3t")
     from server.app.config import get_settings
