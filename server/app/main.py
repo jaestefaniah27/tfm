@@ -1,12 +1,16 @@
 """Aplicación FastAPI de AudioRev."""
 
+import hashlib
+import hmac
+import json
 import re
 import sqlite3
+import subprocess
 from datetime import date, datetime, timezone
 from typing import Literal
 
-from fastapi import Depends, FastAPI, HTTPException, Response, status
-from fastapi.responses import FileResponse
+from fastapi import BackgroundTasks, Depends, FastAPI, HTTPException, Request, Response, status
+from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field, model_validator
 
@@ -243,6 +247,50 @@ def create_app() -> FastAPI:
         loaded = load_index(conn, settings.index_dir)
         stale = mark_stale_notes(conn, settings.index_dir)
         return {"units": loaded, "obsoletas": stale}
+
+    def _regenerate_in_background() -> None:
+        """Se ejecuta tras un push a main: actualiza el clon, regenera el
+        audio y el índice, y marca como obsoletas las notas ancladas a
+        frases que hayan cambiado. Abre su propia conexión de corta
+        duración porque corre fuera de cualquier petición (BackgroundTasks
+        no tiene un Depends que la entregue)."""
+        # Si el clon aún no existe (por ejemplo en pruebas, donde no se
+        # prepara), se ignora en vez de tumbar la tarea de fondo: check=False
+        # ya cubre que el propio "git pull" falle, pero un cwd inexistente
+        # lanza OSError antes incluso de llegar a ejecutar el proceso.
+        if settings.repo_dir.exists():
+            subprocess.run(["git", "pull", "--ff-only"], cwd=settings.repo_dir, check=False)
+            subprocess.run(
+                ["python", "-m", "tools.audiorev.build", "--repo", str(settings.repo_dir),
+                 "--out", str(settings.index_dir), "--cache", str(settings.data_dir / "cache")],
+                check=False,
+            )
+        for name in settings.index_dir.glob("*.opus"):
+            name.replace(settings.audio_dir / name.name)
+        with db_module.session() as conn:
+            load_index(conn, settings.index_dir)
+            mark_stale_notes(conn, settings.index_dir)
+
+    @app.post("/api/webhook/github")
+    async def github_webhook(request: Request, tasks: BackgroundTasks) -> dict:
+        # No lleva require_user ni require_api_token: la propia firma HMAC
+        # es su autenticación. Se relee get_settings() (en vez de usar el
+        # `settings` cerrado sobre create_app) para que un secreto fijado
+        # después de arrancar la app —como en las pruebas— se tenga en
+        # cuenta sin reiniciar el proceso.
+        secret = get_settings().webhook_secret
+        body = await request.body()
+        given = request.headers.get("X-Hub-Signature-256", "")
+        expected = "sha256=" + hmac.new(secret.encode(), body, hashlib.sha256).hexdigest()
+        if not secret or not hmac.compare_digest(given, expected):
+            raise HTTPException(status_code=401, detail="Firma no válida")
+
+        payload = json.loads(body or b"{}")
+        if payload.get("ref") != "refs/heads/main":
+            return {"ignored": True}
+
+        tasks.add_task(_regenerate_in_background)
+        return JSONResponse(status_code=202, content={"queued": True})
 
     @app.get("/audio/{filename}")
     def get_audio(filename: str, user: str = Depends(require_user)) -> FileResponse:

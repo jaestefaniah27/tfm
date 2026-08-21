@@ -178,21 +178,26 @@ const Notes = (() => {
     const comment = document.getElementById('comentario').value.trim();
     if (!tags.length && !comment) { close(); return; }
 
-    await AudioRev.api('/api/notes', {
-      method: 'POST',
-      body: JSON.stringify({
-        session_id: await sessionId(),
-        unit_id: Player.unit.unit_id,
-        sentence_idx: sentence.idx,
-        sentence_hash: sentence.hash,
-        sentence_text: sentence.text,
-        tex_file: Player.unit.tex_file,
-        tex_line: sentence.tex_line,
-        audio_ts: Player.audio.currentTime,
-        tags,
-        comment,
-      }),
-    });
+    const payload = {
+      session_id: await sessionId(),
+      unit_id: Player.unit.unit_id,
+      sentence_idx: sentence.idx,
+      sentence_hash: sentence.hash,
+      sentence_text: sentence.text,
+      tex_file: Player.unit.tex_file,
+      tex_line: sentence.tex_line,
+      audio_ts: Player.audio.currentTime,
+      tags,
+      comment,
+    };
+
+    try {
+      await AudioRev.api('/api/notes', { method: 'POST', body: JSON.stringify(payload) });
+    } catch (err) {
+      // Sin red: se encola en IndexedDB y se envía sola al recuperar
+      // conexión, para no perder la anotación.
+      await AudioRev.enqueue(payload);
+    }
     close();
   }
 

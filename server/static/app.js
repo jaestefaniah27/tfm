@@ -76,7 +76,53 @@ const AudioRev = (() => {
     }
   }
 
-  return { api, fmtDuration, stateLabel, renderList };
+  // Cola de notas para cuando no hay red: se guardan en IndexedDB y se
+  // reintentan al recuperar conexión (evento 'online') o al llamar a
+  // flushQueue() a mano.
+  const QUEUE_DB = 'audiorev';
+  const QUEUE_STORE = 'pendientes';
+
+  function openQueue() {
+    return new Promise((resolve, reject) => {
+      const req = indexedDB.open(QUEUE_DB, 1);
+      req.onupgradeneeded = () =>
+        req.result.createObjectStore(QUEUE_STORE, { autoIncrement: true });
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+  }
+
+  async function enqueue(note) {
+    const db = await openQueue();
+    db.transaction(QUEUE_STORE, 'readwrite').objectStore(QUEUE_STORE).add(note);
+  }
+
+  async function flushQueue() {
+    const db = await openQueue();
+    const store = db.transaction(QUEUE_STORE, 'readwrite').objectStore(QUEUE_STORE);
+    const all = store.getAll();
+    all.onsuccess = async () => {
+      for (const note of all.result) {
+        try {
+          await api('/api/notes', { method: 'POST', body: JSON.stringify(note) });
+        } catch (err) { return; }
+      }
+      db.transaction(QUEUE_STORE, 'readwrite').objectStore(QUEUE_STORE).clear();
+    };
+  }
+
+  // Pide al service worker que precachee el JSON y el audio de un apartado
+  // para poder escucharlo y anotarlo sin cobertura.
+  function cacheUnit(unitId) {
+    if (navigator.serviceWorker.controller) {
+      navigator.serviceWorker.controller.postMessage({ type: 'cache-unit', unitId });
+    }
+  }
+
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
+  window.addEventListener('online', flushQueue);
+
+  return { api, fmtDuration, stateLabel, renderList, enqueue, flushQueue, cacheUnit };
 })();
 
 window.AudioRev = AudioRev;

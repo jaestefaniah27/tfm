@@ -20,6 +20,7 @@ contenedor.
 | `AUDIOREV_COOKIE_SECURE`     | no          | `True`                              | Si la cookie de sesión lleva el flag `Secure`. Ponlo a `0`/`false`/`no` sólo en pruebas locales por HTTP; en producción debe quedar en `True` porque se sirve por HTTPS. |
 | `AUDIOREV_PUBLIC_HOST`       | no          | `tfm-jorgerente.duckdns.org`        | Dominio público desde el que se sirve la app (usado por el manifest de la PWA y el webhook de GitHub). |
 | `AUDIOREV_TTS_BACKEND`       | no          | (según compose, `piper`)            | Motor de texto a voz usado al regenerar audio.                              |
+| `AUDIOREV_WEBHOOK_SECRET`    | sí          | (vacío)                             | Secreto compartido con el webhook de GitHub; firma en `X-Hub-Signature-256`. |
 
 ## Cómo ejecutarlo
 
@@ -58,6 +59,46 @@ los resuelve:
 Una vez emitido el certificado, verifica desde el móvil (fuera de la red
 local, con datos móviles) que `https://tfm-jorgerente.duckdns.org/healthz`
 responde `{"status":"ok",...}`.
+
+El `Caddyfile` reenvía todo el tráfico del dominio al contenedor con un único
+bloque `reverse_proxy`, así que no hace falta ninguna `location` aparte para
+`POST /api/webhook/github`: en GitHub, configura la URL de entrega del
+webhook como `https://tfm-jorgerente.duckdns.org/api/webhook/github`.
+
+## Cómo generar la contraseña y los tokens
+
+`AUDIOREV_PASSWORD_HASH`, `AUDIOREV_API_TOKEN`, `AUDIOREV_SESSION_SECRET` y
+`AUDIOREV_WEBHOOK_SECRET` son secretos que generas tú, no los da ningún
+servicio externo:
+
+```bash
+# Hash Argon2 de la contraseña (usa la propia librería del servidor):
+python3 -c "from argon2 import PasswordHasher; print(PasswordHasher().hash('tu-contraseña'))"
+
+# Token portador para /api/revisiones, /api/regenerar, etc.:
+python3 -c "import secrets; print(secrets.token_urlsafe(32))"
+
+# Secreto para firmar la cookie de sesión:
+python3 -c "import secrets; print(secrets.token_urlsafe(32))"
+
+# Secreto del webhook de GitHub (el mismo valor se pega en GitHub → Settings
+# → Webhooks → Secret, al configurar la entrega a POST /api/webhook/github
+# con content type application/json y el evento "push"):
+python3 -c "import secrets; print(secrets.token_urlsafe(32))"
+```
+
+Pega cada valor en `server/.env`. `AUDIOREV_WEBHOOK_SECRET` es lo único que
+autentica ese endpoint (no lleva sesión ni token portador): sin él configurado
+en ambos lados, todo push se rechaza con 401.
+
+## Instalar Piper y el modelo de voz
+
+El servidor no sintetiza directamente: delega en `tools.audiorev.build`, que
+es quien usa Piper. Instálalo y descarga el modelo `es_ES-davefx-medium`
+siguiendo `tools/audiorev/README.md` (sección "Instalar Piper y el modelo de
+voz"); ese mismo binario debe estar disponible en el `PATH` del contenedor o
+del entorno donde se ejecute `_regenerate_in_background` (imagen de
+`server/compose.yml`).
 
 ## Clave de despliegue para publicar revisiones
 

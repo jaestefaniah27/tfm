@@ -25,6 +25,7 @@ class Settings:
     trust_proxy_user: str | None
     cookie_secure: bool
     public_host: str
+    webhook_secret: str
 
     @property
     def index_dir(self) -> Path:
@@ -51,4 +52,5 @@ def get_settings() -> Settings:
         trust_proxy_user=os.environ.get("AUDIOREV_TRUST_PROXY_USER") or None,
         cookie_secure=_parse_bool(os.environ.get("AUDIOREV_COOKIE_SECURE", ""), True),
         public_host=os.environ.get("AUDIOREV_PUBLIC_HOST", "tfm-jorgerente.duckdns.org"),
+        webhook_secret=os.environ.get("AUDIOREV_WEBHOOK_SECRET", ""),
     )
