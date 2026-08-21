@@ -260,3 +260,92 @@ def test_rechunk_over_the_real_tfm_respects_max_words_and_stays_unique(tex_root,
     for u in oversized:
         pieces = [c for c in chunks if c.unit_id.startswith(f"{u.unit_id}-p")]
         assert len(pieces) >= 2
+
+
+def test_every_prose_line_of_the_real_tfm_belongs_to_exactly_one_unit(tex_root, repo_root):
+    # Invariante que cubre los dos fallos de archivado: la prosa que precede
+    # al primer encabezado de un fichero no puede quedarse fuera de toda
+    # unidad (era el caso de pre/resumen.tex, que se perdía entero) ni caer
+    # en una unidad de OTRO fichero (era el caso del primer párrafo de
+    # cap4/validacion_hardware.tex, archivado bajo cap3/transporte.tex).
+    from tools.audiorev.blocks import extract_blocks
+    from tools.audiorev.expand import expand
+
+    lines, _ = extract_blocks(expand(tex_root / "main.tex", repo_root))
+    units = split_units(lines)
+
+    # Una línea puede estar en varias unidades solo si es el mismo objeto
+    # repetido, cosa que no ocurre: se comprueba por identidad.
+    owner: dict[int, Unit] = {}
+    for unit in units:
+        for line in unit.lines:
+            assert id(line) not in owner, f"línea duplicada en dos unidades: {line}"
+            owner[id(line)] = unit
+
+    huerfanas: list[SourceLine] = []
+    descolocadas: list[SourceLine] = []
+    chapter_seen = False
+    for line in lines:
+        if structure._match_chapter(line.text) is not None:
+            chapter_seen = True
+            continue
+        if not chapter_seen or structure._match_heading(line.text):
+            continue  # preámbulo, portadas e índices, o el propio encabezado
+        if not line.text.strip() or not structure._is_content(line.text):
+            continue  # línea en blanco o pura maquetación (\newpage, \begin{center})
+        unit = owner.get(id(line))
+        if unit is None:
+            huerfanas.append(line)
+        elif unit.tex_file != line.tex_file:
+            descolocadas.append(line)
+
+    assert not huerfanas, f"{len(huerfanas)} líneas de prosa fuera de toda unidad: {huerfanas[:3]}"
+    assert not descolocadas, (
+        f"{len(descolocadas)} líneas archivadas bajo el tex_file equivocado: {descolocadas[:3]}"
+    )
+
+
+def test_prose_before_the_first_heading_of_a_file_opens_its_own_unit():
+    # Al cambiar de fichero, la unidad anterior se cierra: el párrafo de
+    # apertura del nuevo fichero no puede acabar en la última unidad del
+    # fichero anterior.
+    lines = _lines(
+        "\\chapter{Uno}\n\\section{Padre}\nTexto del uno.\n",
+        tex_file="capitulos/cap1/uno.tex",
+    ) + _lines(
+        "Párrafo de apertura del dos.\n\\section{Hijo}\nTexto del dos.\n",
+        tex_file="capitulos/cap2/dos.tex",
+    )
+    units = split_units(lines)
+    padre = next(u for u in units if u.title == "Padre")
+    assert not any("del dos" in l.text for l in padre.lines)
+
+    intro = next(u for u in units if u.unit_id == "c02-dos-intro")
+    assert intro.tex_file == "capitulos/cap2/dos.tex"
+    assert intro.chapter == 2
+    assert intro.level == 0
+    assert any("apertura del dos" in l.text for l in intro.lines)
+
+
+def test_a_file_with_an_empty_starred_chapter_and_no_heading_is_not_dropped():
+    # pre/resumen.tex: abre con \chapter*{} (título vacío) y no tiene ningún
+    # \section. Antes se descartaba entero y en silencio.
+    lines = _lines(
+        "\\chapter*{}\n\\addcontentsline{toc}{chapter}{Resumen}\nEl resumen de la memoria.\n",
+        tex_file="pre/resumen.tex",
+    )
+    units = split_units(lines)
+    assert len(units) == 1
+    assert units[0].tex_file == "pre/resumen.tex"
+    assert units[0].title == "Resumen"  # sin capítulo con nombre: el del fichero
+    assert any("resumen de la memoria" in l.text for l in units[0].lines)
+
+
+def test_pure_layout_before_a_heading_does_not_open_a_unit():
+    lines = _lines(
+        "\\chapter{Uno}\n\\newpage\n\\begin{center}\n\\tableofcontents\n\\end{center}\n"
+        "\\section{Padre}\nTexto.\n",
+        tex_file="capitulos/cap1/uno.tex",
+    )
+    units = split_units(lines)
+    assert [u.title for u in units] == ["Padre"]

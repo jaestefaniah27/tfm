@@ -11,6 +11,12 @@ _CHAPTER_CMD = re.compile(r"\\chapter\*?\{")
 _LEVEL = {"section": 1, "subsection": 2, "subsubsection": 3}
 _SLUG_MAX = 48
 _CAP_PATH = re.compile(r"(?:^|/)cap(\d+)(?:/|$)")
+_BLOCK_MARKER = re.compile(r"%%BLOCK:\d+%%")
+# Comando de LaTeX con sus argumentos opcionales y su primer grupo: se usa
+# solo para decidir si una línea tiene contenido propio (prosa) o es pura
+# maquetación (\newpage, \begin{center}, \tableofcontents...).
+_ANY_COMMAND = re.compile(r"\\[a-zA-Z]+\*?(?:\[[^\]]*\])?(?:\{[^{}]*\})?")
+
 
 
 def _balanced_group(text: str, open_idx: int) -> str | None:
@@ -52,6 +58,31 @@ def _match_heading(text: str) -> tuple[str, str] | None:
     if title is None:
         return None
     return m.group(1), title
+
+
+def _is_content(text: str) -> bool:
+    """¿Esta línea aporta contenido propio, o es pura maquetación?
+
+    Se usa para decidir si hay que abrir una unidad sintética: `\newpage`,
+    `\begin{center}` o `\tableofcontents` no son prosa y no deben crear una
+    unidad, pero el primer párrafo de un capítulo sí. Un marcador de bloque
+    visual cuenta como contenido: la tarjeta necesita una unidad donde vivir.
+    """
+    if _BLOCK_MARKER.search(text):
+        return True
+    stripped = re.sub(r"(?<!\\)%.*$", "", text)
+    previous = None
+    while previous != stripped:
+        previous = stripped
+        stripped = _ANY_COMMAND.sub(" ", stripped)
+    stripped = re.sub(r"[{}$~\\]", " ", stripped)
+    return bool(re.search(r"[0-9A-Za-zÁÉÍÓÚÜÑáéíóúüñ]{2,}", stripped))
+
+
+def _file_title(tex_file: str) -> str:
+    """Título de recambio para una unidad sintética sin capítulo con nombre."""
+    stem = PurePosixPath(tex_file).stem.replace("_", " ").replace("-", " ")
+    return stem[:1].upper() + stem[1:]
 
 
 def slugify(title: str) -> str:
@@ -101,16 +132,49 @@ def split_units(lines: list[SourceLine]) -> list[Unit]:
     # aparecen los apartados hermanos, solo de su ancestro.
     by_base_id: dict[str, list[tuple[Unit, str, str, str | None]]] = {}
 
+    # El texto anterior al primer encabezado de un fichero (o de un capítulo)
+    # NO pertenece a la última unidad del fichero anterior: se le abre una
+    # unidad sintética propia, con su `tex_file` y su capítulo correctos. Sin
+    # esto, la introducción de un capítulo se archiva bajo el capítulo previo
+    # y un fichero sin ningún encabezado —como `pre/resumen.tex`, que abre con
+    # `\chapter*{}`— se pierde entero y en silencio.
+    # La unidad sintética se abre de forma perezosa, al ver la primera línea
+    # con contenido, para no crear unidades vacías por cada fichero ni
+    # convertir en unidad la maquetación de `main.tex` (portadas, índices).
+    chapter_seen = False
+
+    def _open_synthetic(line: SourceLine) -> Unit:
+        chapter = _chapter_number(line.tex_file, chapter_num)
+        stem = PurePosixPath(line.tex_file).stem
+        prefix = f"c{chapter:02d}-{slugify(stem)}"
+        base_id = f"{prefix}-intro"
+        unit = Unit(
+            unit_id=base_id,
+            chapter=chapter,
+            chapter_title=chapter_title,
+            # Nivel 0: por encima de \section, que es el nivel 1.
+            level=0,
+            title=chapter_title or _file_title(line.tex_file),
+            tex_file=line.tex_file,
+            tex_lines=(line.lineno, line.lineno),
+        )
+        units.append(unit)
+        by_base_id.setdefault(base_id, []).append((unit, prefix, "intro", None))
+        return unit
+
     for line in lines:
         if line.tex_file != current_tex_file:
             current_tex_file = line.tex_file
             ancestry.clear()
+            current = None
 
         chap_title = _match_chapter(line.text)
         if chap_title is not None:
             chapter_num += 1
+            chapter_seen = True
             chapter_title = _strip(chap_title)
             ancestry.clear()
+            current = None
             continue
 
         head = _match_heading(line.text)
@@ -141,10 +205,15 @@ def split_units(lines: list[SourceLine]) -> list[Unit]:
             by_base_id.setdefault(base_id, []).append((current, prefix, title_slug, parent_slug))
             continue
 
-        if current is not None and line.text.strip():
+        if current is None:
+            if not chapter_seen or not _is_content(line.text):
+                continue
+            current = _open_synthetic(line)
+
+        if line.text.strip():
             current.lines.append(line)
             current.tex_lines = (current.tex_lines[0], line.lineno)
-        elif current is not None:
+        else:
             current.lines.append(line)
 
     _disambiguate(by_base_id)
