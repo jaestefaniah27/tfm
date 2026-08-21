@@ -38,13 +38,30 @@ self.addEventListener('fetch', (e) => {
 
   if (!cacheable || e.request.method !== 'GET') return;
 
-  e.respondWith(
-    caches.match(e.request).then((hit) =>
-      hit || fetch(e.request).then((res) => {
-        const copy = res.clone();
-        caches.open(CACHE).then((c) => c.put(e.request, copy));
-        return res;
+  function fetchAndCache() {
+    return fetch(e.request).then((res) => {
+      const copy = res.clone();
+      caches.open(CACHE).then((c) => c.put(e.request, copy));
+      return res;
+    });
+  }
+
+  // El JSON de un apartado cambia con cada regeneración: si se sirviera de
+  // caché para siempre, el móvil seguiría anclando notas a hashes de frase
+  // que el servidor ya no conoce (y que marcaría como obsoletas al
+  // llegar). Se responde con lo cacheado, pero se refresca siempre en
+  // segundo plano (stale-while-revalidate). El audio y la interfaz sí
+  // pueden servirse tal cual: son inmutables mientras dure la versión de
+  // la caché.
+  if (url.pathname.startsWith('/api/units/')) {
+    e.respondWith(
+      caches.match(e.request).then((hit) => {
+        const fresh = fetchAndCache().catch(() => hit);
+        return hit || fresh;
       })
-    )
-  );
+    );
+    return;
+  }
+
+  e.respondWith(caches.match(e.request).then((hit) => hit || fetchAndCache()));
 });

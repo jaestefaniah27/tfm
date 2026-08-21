@@ -221,6 +221,19 @@ summary {
   width: 100%;
 }
 
+/* Cierre y publicación de la sesión */
+.cerrar-sesion {
+  width: 100%;
+  margin-top: 8px;
+}
+
+.estado-sesion {
+  margin: 6px 0 0;
+  font-size: 0.9rem;
+  text-align: center;
+  min-height: 1.2em;
+}
+
 /* Hoja de notas (tarea 8) */
 .hoja {
   border: none;

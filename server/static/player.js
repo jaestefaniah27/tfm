@@ -82,6 +82,8 @@ const Player = (() => {
 
   function saveProgress(state) {
     const body = JSON.stringify({ state, position_s: audio.currentTime || 0 });
+    // sendBeacon SIEMPRE envía POST: el servidor acepta esa ruta además de
+    // PUT precisamente por esto (ver put_progress en main.py).
     navigator.sendBeacon
       ? navigator.sendBeacon(`/api/progress/${unit.unit_id}`, new Blob([body], { type: 'application/json' }))
       : AudioRev.api(`/api/progress/${unit.unit_id}`, { method: 'PUT', body });
@@ -147,8 +149,14 @@ const Notes = (() => {
   const form = document.getElementById('form-nota');
   let resumeAfter = false;
 
+  // localStorage y no sessionStorage: un navegador móvil descarta la
+  // pestaña en segundo plano a mitad de escucha y con ella el
+  // sessionStorage, partiendo la sesión de escucha en varias. La sesión se
+  // termina explícitamente con el botón "Cerrar sesión y publicar".
+  const SESSION_KEY = 'audiorev_session_id';
+
   async function sessionId() {
-    let id = sessionStorage.getItem('audiorev_session_id');
+    let id = localStorage.getItem(SESSION_KEY);
     if (!id) {
       try {
         id = (await AudioRev.api('/api/sessions', { method: 'POST' })).session_id;
@@ -160,9 +168,38 @@ const Notes = (() => {
         // recuperar la conexión funciona igual que uno emitido por él.
         id = crypto.randomUUID();
       }
-      sessionStorage.setItem('audiorev_session_id', id);
+      localStorage.setItem(SESSION_KEY, id);
     }
     return id;
+  }
+
+  // Cierre de sesión: publica las revisiones de la sesión actual en
+  // revisiones/ y las empuja a GitHub. Es la única forma desde el móvil de
+  // llamar a POST /api/sessions/{id}/publicar.
+  async function publish() {
+    const estado = document.getElementById('estado-sesion');
+    const boton = document.getElementById('cerrar-sesion');
+    const id = localStorage.getItem(SESSION_KEY);
+    if (!id) {
+      estado.textContent = 'No hay ninguna sesión abierta todavía.';
+      return;
+    }
+    boton.disabled = true;
+    estado.textContent = 'Publicando…';
+    try {
+      // Se vacía primero la cola: si quedan notas sin enviar, publicar
+      // ahora dejaría fuera del fichero las que aún están en IndexedDB.
+      await AudioRev.flushQueue();
+      const res = await AudioRev.api(`/api/sessions/${id}/publicar`, { method: 'POST' });
+      estado.textContent = `Sesión publicada en ${res.path} (${res.notes} revisiones).`;
+      localStorage.removeItem(SESSION_KEY);
+    } catch (err) {
+      estado.textContent = err && err.status === 503
+        ? 'No se pudo publicar: el servidor no pudo escribir o empujar al repositorio. La sesión sigue abierta.'
+        : 'No se pudo publicar la sesión. Comprueba la conexión e inténtalo de nuevo.';
+    } finally {
+      boton.disabled = false;
+    }
   }
 
   function open() {
@@ -224,8 +261,9 @@ const Notes = (() => {
   });
 
   document.getElementById('anotar').onclick = open;
+  document.getElementById('cerrar-sesion').onclick = publish;
 
-  return { open, close, save };
+  return { open, close, save, publish };
 })();
 
 window.Notes = Notes;
