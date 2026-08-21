@@ -2,7 +2,7 @@
 
 import re
 import sqlite3
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from typing import Literal
 
 from fastapi import Depends, FastAPI, HTTPException, Response, status
@@ -12,6 +12,7 @@ from pydantic import BaseModel, Field, model_validator
 
 from . import db as db_module
 from . import notes as notes_module
+from . import publish as publish_module
 from .auth import COOKIE, MAX_AGE, issue_session, require_api_token, require_user, verify_password
 from .config import get_settings
 from .index import load_index, unit_payload
@@ -186,6 +187,32 @@ def create_app() -> FastAPI:
         if not touched:
             raise HTTPException(status_code=404, detail="Revisión desconocida")
         return {"ok": True}
+
+    @app.post("/api/sessions/{session_id}/publicar")
+    def publish_session(session_id: str, user: str = Depends(require_user),
+                         conn: sqlite3.Connection = Depends(db_module.get_db)) -> dict:
+        session_notes = notes_module.list_notes(conn, session_id=session_id)
+        when = datetime.now(timezone.utc).isoformat(timespec="seconds")
+
+        same_day = conn.execute(
+            "SELECT count(*) FROM sessions WHERE closed_at LIKE ?", (f"{date.today()}%",)
+        ).fetchone()[0]
+        relative = f"revisiones/{date.today()}-sesion-{same_day + 1:02d}.md"
+        body = publish_module.render_markdown(session_notes, session_id, when)
+
+        try:
+            publish_module.write_and_push(
+                settings.repo_dir, relative, body,
+                f"Recoger {len(session_notes)} revisiones de la sesión del {date.today()}",
+            )
+        except RuntimeError as exc:
+            raise HTTPException(status_code=503, detail=f"No se pudo publicar: {exc}")
+
+        conn.execute(
+            "UPDATE sessions SET closed_at = ?, published_path = ? WHERE session_id = ?",
+            (when, relative, session_id),
+        )
+        return {"path": relative, "notes": len(session_notes)}
 
     @app.delete("/api/notes/{note_id}", status_code=204)
     def delete_note(note_id: int, user: str = Depends(require_user),

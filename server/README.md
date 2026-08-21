@@ -59,6 +59,38 @@ Una vez emitido el certificado, verifica desde el móvil (fuera de la red
 local, con datos móviles) que `https://tfm-jorgerente.duckdns.org/healthz`
 responde `{"status":"ok",...}`.
 
+## Clave de despliegue para publicar revisiones
+
+El endpoint `POST /api/sessions/{session_id}/publicar` escribe el fichero de
+revisiones bajo `revisiones/` en `AUDIOREV_REPO_DIR` y hace `git push`. Para
+que funcione, prepara a mano en el servidor (esto no lo hace el contenedor):
+
+1. Genera una clave de despliegue dedicada (sin passphrase) y, en GitHub,
+   añádela al repositorio como **deploy key con permiso de escritura**
+   restringido a este repositorio:
+
+   ```bash
+   ssh-keygen -t ed25519 -f ~/.ssh/audiorev_deploy -N ""
+   ```
+
+2. Clona el repositorio en la ruta a la que apunta `AUDIOREV_REPO_DIR`
+   (o `<data_dir>/repo` si no la defines) usando esa clave:
+
+   ```bash
+   git clone git@github.com:jaestefaniah27/tfm.git /var/lib/audiorev/repo
+   ```
+
+3. Configura la identidad del bot en ese clon:
+
+   ```bash
+   git -C /var/lib/audiorev/repo config user.name "AudioRev"
+   git -C /var/lib/audiorev/repo config user.email "audiorev@localhost"
+   ```
+
+4. Antes de confiar en el endpoint, comprueba a mano que el push funciona:
+   escribe un fichero de prueba bajo `revisiones/` en ese clon, haz commit y
+   `git push`, y confirma que llega a GitHub.
+
 ## Copia de seguridad del volumen de datos
 
 Todo el estado persistente vive en el volumen `audiorev-data` (montado en
