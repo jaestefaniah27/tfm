@@ -1,0 +1,23 @@
+services:
+  audiorev:
+    build:
+      context: ..
+      dockerfile: server/Dockerfile
+    restart: unless-stopped
+    environment:
+      AUDIOREV_DATA_DIR: /data
+      AUDIOREV_REPO_DIR: /data/repo
+      AUDIOREV_PASSWORD_HASH: ${AUDIOREV_PASSWORD_HASH}
+      AUDIOREV_API_TOKEN: ${AUDIOREV_API_TOKEN}
+      AUDIOREV_SESSION_SECRET: ${AUDIOREV_SESSION_SECRET}
+      AUDIOREV_TTS_BACKEND: piper
+      AUDIOREV_PUBLIC_HOST: ${AUDIOREV_PUBLIC_HOST:-tfm-jorgerente.duckdns.org}
+      AUDIOREV_COOKIE_SECURE: ${AUDIOREV_COOKIE_SECURE:-1}
+    volumes:
+      - audiorev-data:/data
+      - ${SSH_KEY_PATH}:/root/.ssh/id_ed25519:ro
+    ports:
+      - "127.0.0.1:8091:8000"
+
+volumes:
+  audiorev-data:

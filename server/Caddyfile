@@ -1,0 +1,20 @@
+# Reverse proxy para AudioRev.
+#
+# Caddy obtiene y renueva automáticamente el certificado TLS de Let's Encrypt
+# para el dominio indicado (requiere que los puertos 80 y 443 del host sean
+# accesibles desde Internet y que el dominio ya resuelva a esta máquina).
+
+tfm-jorgerente.duckdns.org {
+	reverse_proxy 127.0.0.1:8091 {
+		# Cabeceras habituales para que la app conozca el host/esquema/IP reales.
+		header_up Host {host}
+		header_up X-Real-IP {remote_host}
+		header_up X-Forwarded-For {remote_host}
+		header_up X-Forwarded-Proto {scheme}
+
+		# Sin límite de tamaño de respuesta ni de tiempo de espera: los ficheros
+		# de audio pueden ser grandes y las peticiones "Range" (reproducción con
+		# salto/adelanto) deben pasar sin alterarse.
+		flush_interval -1
+	}
+}

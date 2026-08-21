@@ -48,6 +48,9 @@ venv/
 rtems_waf/
 device-tree-xlnx/
 
+# Credenciales del servidor de AudioRev (no versionar)
+server/.env
+
 # Ejecutable waf
 waf
 
