@@ -7,6 +7,7 @@ from typing import Literal
 
 from fastapi import Depends, FastAPI, HTTPException, Response, status
 from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field, model_validator
 
 from . import db as db_module
@@ -201,6 +202,10 @@ def create_app() -> FastAPI:
         if not path.exists():
             raise HTTPException(status_code=404, detail="Audio no disponible")
         return FileResponse(path, media_type="audio/ogg")
+
+    # El frontend estático (lista, reproductor, hoja de notas) se sirve al
+    # final para no tapar ninguna ruta de la API definida más arriba.
+    app.mount("/", StaticFiles(directory="server/static", html=True), name="static")
 
     return app
 

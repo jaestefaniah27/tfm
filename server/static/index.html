@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1b1b1f">
+<title>AudioRev, revisión del TFM</title>
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header class="cabecera">
+  <h1>AudioRev</h1>
+  <p id="progreso" class="progreso">Cargando…</p>
+  <button id="seguir" class="principal" hidden>Seguir donde lo dejé</button>
+</header>
+<main id="lista" class="lista"></main>
+<script src="/app.js"></script>
+<script>AudioRev.renderList();</script>
+</body>
+</html>
