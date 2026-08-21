@@ -15,7 +15,7 @@ from . import notes as notes_module
 from . import publish as publish_module
 from .auth import COOKIE, MAX_AGE, issue_session, require_api_token, require_user, verify_password
 from .config import get_settings
-from .index import load_index, unit_payload
+from .index import load_index, mark_stale_notes, unit_payload
 
 VERSION = "0.1.0"
 
@@ -53,6 +53,10 @@ class NoteBody(BaseModel):
 class NotePatch(BaseModel):
     state: Literal["pendiente", "aplicada", "descartada", "obsoleta"] | None = None
     comment: str | None = None
+
+
+class EstadoBody(BaseModel):
+    estado: Literal["pendiente", "aplicada", "descartada", "obsoleta"]
 
 
 def create_app() -> FastAPI:
@@ -220,6 +224,25 @@ def create_app() -> FastAPI:
         if not notes_module.delete(conn, note_id):
             raise HTTPException(status_code=404, detail="Revisión desconocida")
         return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+    @app.get("/api/revisiones")
+    def agent_list(estado: str | None = None, _: None = Depends(require_api_token),
+                    conn: sqlite3.Connection = Depends(db_module.get_db)) -> dict:
+        return {"revisiones": notes_module.list_notes(conn, estado)}
+
+    @app.post("/api/revisiones/{note_id}/estado")
+    def agent_set_state(note_id: int, body: EstadoBody, _: None = Depends(require_api_token),
+                         conn: sqlite3.Connection = Depends(db_module.get_db)) -> dict:
+        if not notes_module.set_state(conn, note_id, body.estado):
+            raise HTTPException(status_code=404, detail="Revisión desconocida")
+        return {"ok": True}
+
+    @app.post("/api/regenerar")
+    def regenerate(_: None = Depends(require_api_token),
+                    conn: sqlite3.Connection = Depends(db_module.get_db)) -> dict:
+        loaded = load_index(conn, settings.index_dir)
+        stale = mark_stale_notes(conn, settings.index_dir)
+        return {"units": loaded, "obsoletas": stale}
 
     @app.get("/audio/{filename}")
     def get_audio(filename: str, user: str = Depends(require_user)) -> FileResponse:
