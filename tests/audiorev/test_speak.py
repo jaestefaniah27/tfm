@@ -23,7 +23,9 @@ def test_unwraps_formatting_commands():
 
 
 def test_resolves_references_by_kind():
-    assert spoken(r"Se ve en la \ref{fig:x}.") == "Se ve en la la figura 3.1."
+    # El artículo (y el sustantivo) que ya escribe el LaTeX se absorben: la
+    # expansión trae los suyos y antes se oía «la la figura 3.1».
+    assert spoken(r"Se ve en la \ref{fig:x}.") == "Se ve en la figura 3.1."
     assert spoken(r"Ver \ref{tab:y}.") == "Ver la tabla 4.2."
 
 
@@ -89,3 +91,22 @@ def test_paragraph_heading_keeps_its_text():
 def test_label_is_still_dropped_entirely():
     assert "label" not in spoken(r"Texto\label{sec:validacion_cdhs} siguiente.")
     assert "sec" not in spoken(r"Texto\label{sec:validacion_cdhs} siguiente.")
+
+
+def test_the_article_and_noun_before_a_ref_are_not_said_twice():
+    assert spoken(r"Como muestra la figura~\ref{fig:x}, el conector.") == (
+        "Como muestra la figura 3.1, el conector."
+    )
+    assert spoken(r"La tabla~\ref{tab:y} resume los datos.") == (
+        "La tabla 4.2 resume los datos."
+    )
+    # La mayúscula inicial sobrevive a la absorción.
+    assert spoken(r"\ref{fig:x} lo muestra.") == "la figura 3.1 lo muestra."
+    # Y no se toca lo que no es artículo ni sustantivo de referencia.
+    assert spoken(r"Ver la placa \ref{tab:y}.") == "Ver la placa la tabla 4.2."
+
+
+def test_texttt_underscore_is_a_brief_pause_only_in_the_spoken_text():
+    # Apartado 4.1 del diseño: el guion bajo no se lee como «guion bajo».
+    assert spoken(r"El registro \texttt{mi\_var} vale 3.") == "El registro mi, var vale 3."
+    assert plain(r"El registro \texttt{mi\_var} vale 3.") == "El registro mi_var vale 3."
