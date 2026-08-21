@@ -64,3 +64,25 @@ def test_writes_a_manifest_listing_every_unit(repo_root, tmp_path):
     manifest = json.loads((tmp_path / "manifest.json").read_text(encoding="utf-8"))
     assert manifest["units"]
     assert set(manifest["units"][0]) >= {"unit_id", "title", "chapter", "duration_s"}
+
+
+def test_percent_sign_does_not_truncate_the_rest_of_the_sentence(repo_root):
+    # entorno_desarrollo.tex: "... con duty cycle del 50\% a partir del
+    # reloj de 100~MHz de la FPGA: canal 0 a 10~kHz, ...". El "\%" no debe
+    # cortar la frase antes de "a partir del reloj".
+    units = build_units(repo_root)
+    hit = [s for u in units for s in u.sentences if "duty cycle del 50%" in s.spoken]
+    assert hit
+    assert any("a partir del reloj" in s.spoken for s in hit)
+
+
+def test_ref_resolves_to_a_number_not_the_word_referencia(repo_root):
+    # entorno_desarrollo.tex: "El diseño resultante es el de la
+    # figura~\ref{fig:block_design_and}.", y main.aux resuelve esa etiqueta
+    # a "3.1". El resultado hablado debe llevar ese número, no la palabra
+    # "referencia" con la que plain() (para pantalla) sustituye el \ref.
+    units = build_units(repo_root)
+    hit = [s for u in units for s in u.sentences if "El diseño resultante" in s.spoken]
+    assert hit
+    assert all("3.1" in s.spoken for s in hit)
+    assert all("referencia" not in s.spoken for s in hit)

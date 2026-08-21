@@ -68,6 +68,17 @@ def _finish(text: str) -> str:
     return re.sub(r"\s+", " ", text).strip()
 
 
+def strip_comments(text: str) -> str:
+    """Elimina los comentarios de LaTeX (% no escapado hasta fin de línea).
+
+    Se expone aparte porque build.py necesita partir el cuerpo en frases
+    ANTES de normalizar, y un comentario sin quitar desplazaría o rompería
+    esa segmentación; tanto plain() como to_spoken() siguen quitando sus
+    propios comentarios internamente para poder usarse de forma independiente.
+    """
+    return _COMMENT.sub("", text)
+
+
 def plain(text: str) -> str:
     """Texto para mostrar en pantalla: sin comandos, con los acrónimos intactos."""
     text = _strip_common(text)

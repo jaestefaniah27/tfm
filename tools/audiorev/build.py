@@ -2,6 +2,7 @@
 
 import argparse
 import json
+import re
 import sys
 from dataclasses import asdict
 from pathlib import Path
@@ -14,7 +15,7 @@ from .expand import expand
 from .model import Sentence, Unit
 from .refs import load_labels
 from .segment import split_sentences
-from .speak import plain, to_spoken
+from .speak import plain, strip_comments, to_spoken
 from .structure import rechunk, split_units
 from .tts import get_backend
 
@@ -33,14 +34,29 @@ def build_units(repo_root: Path) -> list[Unit]:
     for unit in units:
         body = "\n".join(l.text for l in unit.lines)
         first_line = unit.lines[0].lineno if unit.lines else unit.tex_lines[0]
-        for idx, raw in enumerate(split_sentences(plain(body))):
+        # plain() y to_spoken() son dos normalizadores INDEPENDIENTES del
+        # mismo LaTeX en bruto, no etapas de un pipeline: encadenarlos
+        # (segmentar sobre la salida de plain() y luego pasar eso a
+        # to_spoken()) destruye información que uno de los dos ya había
+        # consumido (p. ej. un "\%" que plain() vuelve "%" bare, y que el
+        # separador de comentarios de to_spoken() borra después). Por eso
+        # aquí se quitan los comentarios UNA sola vez, se segmenta ese
+        # cuerpo en bruto, y cada frase en bruto se pasa por separado a
+        # plain() y a to_spoken().
+        # El texto envuelve arbitrariamente a 80 columnas en el .tex; un
+        # salto de línea ahí no es un límite de frase, así que el
+        # espaciado se colapsa a un único espacio antes de segmentar (igual
+        # que ya hacía la vieja plain(body), que pasaba por _finish()).
+        # Esto no pierde información, solo normaliza el espaciado en bruto.
+        raw_body = re.sub(r"\s+", " ", strip_comments(body)).strip()
+        for idx, raw in enumerate(split_sentences(raw_body)):
             spoken = to_spoken(raw, labels, pron)
             if not spoken:
                 continue
             unit.sentences.append(
                 Sentence(
                     idx=len(unit.sentences),
-                    text=raw,
+                    text=plain(raw),
                     spoken=spoken,
                     hash=sentence_hash(spoken),
                     tex_line=first_line,
