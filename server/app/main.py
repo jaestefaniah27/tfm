@@ -3,8 +3,10 @@
 from fastapi import Depends, FastAPI, HTTPException, Response
 from pydantic import BaseModel
 
+from . import db as db_module
 from .auth import COOKIE, MAX_AGE, issue_session, require_user, verify_password
 from .config import get_settings
+from .index import load_index
 
 VERSION = "0.1.0"
 
@@ -19,6 +21,10 @@ def create_app() -> FastAPI:
     settings.audio_dir.mkdir(parents=True, exist_ok=True)
 
     app = FastAPI(title="AudioRev", version=VERSION, docs_url=None, redoc_url=None)
+
+    app.state.db = db_module.connect()
+    db_module.migrate(app.state.db)
+    load_index(app.state.db, settings.index_dir)
 
     @app.get("/healthz")
     def healthz() -> dict:
