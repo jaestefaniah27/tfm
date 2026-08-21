@@ -87,3 +87,33 @@ def test_proxy_mode_trusts_the_header_and_hides_login(tmp_path, monkeypatch):
         assert c.post("/login", json={"password": "x"}).status_code == 404
         assert c.get("/api/me", headers={"Remote-User": "jorge"}).status_code == 200
         assert c.get("/api/me").status_code == 401
+
+
+def test_login_is_rate_limited_after_a_few_failures(client_with_password):
+    """El spec pide límite de intentos en /login. Es un contador en memoria
+    por IP (aplicación de un solo usuario, no hace falta Redis)."""
+    from server.app import main as main_module
+
+    main_module._login_fails.clear()
+    for _ in range(main_module.LOGIN_MAX_FAILS):
+        assert client_with_password.post("/login", json={"password": "mala"}).status_code == 401
+
+    r = client_with_password.post("/login", json={"password": "mala"})
+    assert r.status_code == 429
+    assert "intentos" in r.json()["detail"]
+
+    # Con el límite agotado, ni siquiera la contraseña buena entra hasta que
+    # pase la ventana: el bloqueo es por IP, no por contraseña.
+    assert client_with_password.post(
+        "/login", json={"password": "clave-correcta"}).status_code == 429
+    main_module._login_fails.clear()
+
+
+def test_a_successful_login_clears_the_failure_counter(client_with_password):
+    from server.app import main as main_module
+
+    main_module._login_fails.clear()
+    client_with_password.post("/login", json={"password": "mala"})
+    assert client_with_password.post(
+        "/login", json={"password": "clave-correcta"}).status_code == 200
+    assert not main_module._login_fails

@@ -57,6 +57,18 @@ def test_progress_is_stored_and_returned(loaded):
     assert unit["position_s"] == 4.5
 
 
+def test_progress_is_also_stored_when_it_llega_por_post(loaded):
+    """`navigator.sendBeacon` (lo que usa el reproductor al pasar a segundo
+    plano) sólo sabe enviar POST: sin esta ruta el guardado del avance
+    moría en un 405 silencioso en cualquier navegador moderno."""
+    r = loaded.post("/api/progress/c03-entorno-u1",
+                    json={"state": "escuchado", "position_s": 9.25})
+    assert r.status_code == 200
+    unit = loaded.get("/api/units").json()["chapters"][0]["units"][0]
+    assert unit["state"] == "escuchado"
+    assert unit["position_s"] == 9.25
+
+
 def test_invalid_progress_state_is_rejected(loaded):
     r = loaded.put("/api/progress/c03-entorno-u1",
                    json={"state": "inventado", "position_s": 0})

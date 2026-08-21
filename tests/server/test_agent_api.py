@@ -106,3 +106,47 @@ def test_already_applied_notes_are_never_marked_obsolete(client, data_dir):
 
     with db_module.session() as conn:
         assert mark_stale_notes(conn, index_dir) == 0
+
+
+def test_regenerating_queues_the_same_work_as_the_webhook(client):
+    """`/api/regenerar` sólo recargaba el índice de disco: no regeneraba
+    nada, aunque APLICAR_REVISIONES.md la llama justo tras empujar el .tex
+    corregido esperando audio nuevo. Ahora encola la misma tarea de fondo
+    que el webhook y responde 202."""
+    r = client.post("/api/regenerar", headers=AUTH)
+    assert r.status_code == 202
+    assert r.json() == {"queued": True}
+
+
+def test_regenerating_without_the_token_is_rejected(client):
+    assert client.post("/api/regenerar").status_code == 401
+
+
+def test_a_failing_regeneration_step_is_logged(capfd, data_dir):
+    """El `check=False` mudo de antes hacía que cada regeneración fallara en
+    silencio: sin dependencias del pipeline o sin Piper no quedaba ni una
+    línea en `docker logs`."""
+    from server.app.main import _run_step
+
+    codigo = _run_step(["python3", "-c", "import sys; sys.stderr.write('boom'); sys.exit(3)"])
+    assert codigo == 3
+    assert "boom" in capfd.readouterr().out
+
+
+def test_two_regenerations_do_not_run_at_the_same_time(client, capfd, monkeypatch):
+    """Dos entregas seguidas del webhook compartirían clon, índice y caché
+    de TTS. Con una regeneración en curso, la siguiente se descarta y lo
+    deja dicho en el log, sin lanzar ningún proceso."""
+    from server.app import main as main_module
+
+    def prohibido(*a, **k):
+        raise AssertionError("no debería lanzarse ningún proceso")
+
+    monkeypatch.setattr(main_module.subprocess, "run", prohibido)
+    assert main_module._regen_lock.acquire(blocking=False)
+    try:
+        r = client.post("/api/regenerar", headers=AUTH)
+        assert r.status_code == 202
+    finally:
+        main_module._regen_lock.release()
+    assert "ya en curso" in capfd.readouterr().out

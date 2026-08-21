@@ -6,7 +6,11 @@ import json
 import re
 import sqlite3
 import subprocess
+import threading
+import time
+from collections import defaultdict, deque
 from datetime import date, datetime, timezone
+from pathlib import Path
 from typing import Literal
 
 from fastapi import BackgroundTasks, Depends, FastAPI, HTTPException, Request, Response, status
@@ -24,6 +28,64 @@ from .index import load_index, mark_stale_notes, unit_payload
 VERSION = "0.1.0"
 
 _SAFE_ID = re.compile(r"^[a-z0-9][a-z0-9-]{0,120}$")
+
+# Límite de intentos de /login: ventana deslizante en memoria, por IP. Es
+# una aplicación de un solo usuario, así que no necesita Redis ni ningún
+# almacén compartido; basta con recordar los fallos recientes del proceso.
+LOGIN_MAX_FAILS = 5
+LOGIN_WINDOW_S = 300.0
+_login_fails: dict[str, deque] = defaultdict(deque)
+_login_lock = threading.Lock()
+
+# Una sola regeneración a la vez en todo el proceso (ver
+# _regenerate_in_background).
+_regen_lock = threading.Lock()
+
+
+def _run_step(argv: list[str], cwd=None) -> int:
+    """Ejecuta un paso de la regeneración y DEJA RASTRO en la salida
+    estándar cuando falla, para que `docker logs` lo muestre.
+
+    Antes era un `subprocess.run(..., check=False)` mudo: si faltaban las
+    dependencias del pipeline o Piper, cada entrega del webhook fallaba al
+    instante y en silencio."""
+    result = subprocess.run(argv, cwd=cwd, capture_output=True, text=True)
+    if result.returncode != 0:
+        print(
+            f"[audiorev] falló {' '.join(argv)} (código {result.returncode}): "
+            f"{(result.stderr or result.stdout or '').strip()[:2000]}",
+            flush=True,
+        )
+    return result.returncode
+
+
+def _login_client_ip(request: Request) -> str:
+    """IP del cliente, respetando X-Forwarded-For porque siempre se sirve
+    detrás de Caddy (que la fija y sobrescribe)."""
+    forwarded = request.headers.get("X-Forwarded-For", "")
+    if forwarded:
+        return forwarded.split(",")[0].strip()
+    return request.client.host if request.client else "desconocido"
+
+
+def _login_blocked(ip: str) -> bool:
+    """True si esa IP ya ha agotado los intentos de la ventana actual."""
+    now = time.monotonic()
+    with _login_lock:
+        fails = _login_fails[ip]
+        while fails and now - fails[0] > LOGIN_WINDOW_S:
+            fails.popleft()
+        return len(fails) >= LOGIN_MAX_FAILS
+
+
+def _login_record_failure(ip: str) -> None:
+    with _login_lock:
+        _login_fails[ip].append(time.monotonic())
+
+
+def _login_reset(ip: str) -> None:
+    with _login_lock:
+        _login_fails.pop(ip, None)
 
 
 class LoginBody(BaseModel):
@@ -86,11 +148,19 @@ def create_app() -> FastAPI:
         return {"status": "ok", "version": VERSION}
 
     @app.post("/login")
-    def login(body: LoginBody, response: Response) -> dict:
+    def login(body: LoginBody, request: Request, response: Response) -> dict:
         if settings.trust_proxy_user:
             raise HTTPException(status_code=404, detail="No disponible en modo proxy")
+        ip = _login_client_ip(request)
+        if _login_blocked(ip):
+            raise HTTPException(
+                status_code=429,
+                detail="Demasiados intentos fallidos. Espera unos minutos.",
+            )
         if not verify_password(body.password, settings.password_hash):
+            _login_record_failure(ip)
             raise HTTPException(status_code=401, detail="Contraseña incorrecta")
+        _login_reset(ip)
         response.set_cookie(
             COOKIE, issue_session(), max_age=MAX_AGE,
             httponly=True, secure=settings.cookie_secure, samesite="lax", path="/",
@@ -152,7 +222,13 @@ def create_app() -> FastAPI:
             raise HTTPException(status_code=404, detail="Apartado desconocido")
         return payload
 
+    # Se acepta tanto PUT como POST con el mismo cuerpo y el mismo efecto:
+    # `navigator.sendBeacon` (lo que usa el reproductor para guardar el
+    # avance al pasar a segundo plano) SIEMPRE envía POST y no permite
+    # elegir el método, así que sin esta ruta todo guardado por beacon se
+    # perdía con un 405 silencioso.
     @app.put("/api/progress/{unit_id}")
+    @app.post("/api/progress/{unit_id}")
     def put_progress(unit_id: str, body: ProgressBody, user: str = Depends(require_user),
                       conn: sqlite3.Connection = Depends(db_module.get_db)) -> dict:
         if not _SAFE_ID.match(unit_id):
@@ -216,9 +292,18 @@ def create_app() -> FastAPI:
         except RuntimeError as exc:
             raise HTTPException(status_code=503, detail=f"No se pudo publicar: {exc}")
 
+        # UPSERT y no UPDATE: si la sesión se creó en el cliente (el
+        # `crypto.randomUUID()` de cuando se anota sin cobertura) nunca
+        # hubo fila en `sessions`, y un UPDATE se quedaba en un no-op
+        # silencioso que dejaba la sesión sin cerrar para siempre.
         conn.execute(
-            "UPDATE sessions SET closed_at = ?, published_path = ? WHERE session_id = ?",
-            (when, relative, session_id),
+            """
+            INSERT INTO sessions (session_id, started_at, closed_at, published_path)
+            VALUES (?, ?, ?, ?)
+            ON CONFLICT(session_id) DO UPDATE SET
+              closed_at=excluded.closed_at, published_path=excluded.published_path
+            """,
+            (session_id, when, when, relative),
         )
         return {"path": relative, "notes": len(session_notes)}
 
@@ -241,12 +326,17 @@ def create_app() -> FastAPI:
             raise HTTPException(status_code=404, detail="Revisión desconocida")
         return {"ok": True}
 
-    @app.post("/api/regenerar")
-    def regenerate(_: None = Depends(require_api_token),
-                    conn: sqlite3.Connection = Depends(db_module.get_db)) -> dict:
-        loaded = load_index(conn, settings.index_dir)
-        stale = mark_stale_notes(conn, settings.index_dir)
-        return {"units": loaded, "obsoletas": stale}
+    @app.post("/api/regenerar", status_code=202)
+    def regenerate(tasks: BackgroundTasks, _: None = Depends(require_api_token)) -> dict:
+        # Antes sólo recargaba el índice de disco: no regeneraba nada, pese
+        # a que APLICAR_REVISIONES.md la llama justo después de empujar el
+        # .tex corregido esperando audio nuevo. Ahora encola exactamente el
+        # mismo trabajo que el webhook (git pull + build + recarga + notas
+        # obsoletas) en vez de duplicar la invocación del pipeline. Se
+        # encola en segundo plano, como el webhook, porque una regeneración
+        # completa dura minutos y no cabe en una petición síncrona.
+        tasks.add_task(_regenerate_in_background)
+        return {"queued": True}
 
     def _regenerate_in_background() -> None:
         """Se ejecuta tras un push a main: actualiza el clon, regenera el
@@ -258,18 +348,32 @@ def create_app() -> FastAPI:
         # prepara), se ignora en vez de tumbar la tarea de fondo: check=False
         # ya cubre que el propio "git pull" falle, pero un cwd inexistente
         # lanza OSError antes incluso de llegar a ejecutar el proceso.
-        if settings.repo_dir.exists():
-            subprocess.run(["git", "pull", "--ff-only"], cwd=settings.repo_dir, check=False)
-            subprocess.run(
-                ["python", "-m", "tools.audiorev.build", "--repo", str(settings.repo_dir),
-                 "--out", str(settings.index_dir), "--cache", str(settings.data_dir / "cache")],
-                check=False,
-            )
-        for name in settings.index_dir.glob("*.opus"):
-            name.replace(settings.audio_dir / name.name)
-        with db_module.session() as conn:
-            load_index(conn, settings.index_dir)
-            mark_stale_notes(conn, settings.index_dir)
+        # Guardia contra regeneraciones simultáneas: dos entregas del
+        # webhook seguidas compartirían el mismo clon, el mismo índice y la
+        # misma caché de TTS. La segunda se descarta (no se encola: el
+        # trabajo es idempotente, la que está en curso ya recogerá el
+        # último estado del repositorio tras su `git pull`).
+        if not _regen_lock.acquire(blocking=False):
+            print("[audiorev] regeneración ya en curso, se omite esta entrega", flush=True)
+            return
+        try:
+            if settings.repo_dir.exists():
+                _run_step(["git", "pull", "--ff-only"], cwd=settings.repo_dir)
+                _run_step(
+                    ["python", "-m", "tools.audiorev.build", "--repo", str(settings.repo_dir),
+                     "--out", str(settings.index_dir),
+                     "--cache", str(settings.data_dir / "cache")],
+                )
+            else:
+                print(f"[audiorev] no existe el clon {settings.repo_dir}, no se regenera",
+                      flush=True)
+            for name in settings.index_dir.glob("*.opus"):
+                name.replace(settings.audio_dir / name.name)
+            with db_module.session() as conn:
+                load_index(conn, settings.index_dir)
+                mark_stale_notes(conn, settings.index_dir)
+        finally:
+            _regen_lock.release()
 
     @app.post("/api/webhook/github")
     async def github_webhook(request: Request, tasks: BackgroundTasks) -> dict:
@@ -303,7 +407,10 @@ def create_app() -> FastAPI:
 
     # El frontend estático (lista, reproductor, hoja de notas) se sirve al
     # final para no tapar ninguna ruta de la API definida más arriba.
-    app.mount("/", StaticFiles(directory="server/static", html=True), name="static")
+    # La ruta se resuelve a partir de este fichero, no del directorio de
+    # trabajo: el proceso no siempre arranca desde la raíz del repositorio.
+    static_dir = Path(__file__).resolve().parents[1] / "static"
+    app.mount("/", StaticFiles(directory=static_dir, html=True), name="static")
 
     return app
 
