@@ -32,6 +32,24 @@
   <button id="anotar" class="anotar">Anotar esta frase</button>
 </footer>
 
+<dialog id="hoja-notas" class="hoja">
+  <form method="dialog" id="form-nota">
+    <p class="frase-anclada" id="frase-anclada"></p>
+    <div class="etiquetas">
+      <label><input type="checkbox" name="tag" value="muy_largo"> Muy largo</label>
+      <label><input type="checkbox" name="tag" value="no_se_entiende"> No se entiende</label>
+      <label><input type="checkbox" name="tag" value="repetido"> Repetido</label>
+      <label><input type="checkbox" name="tag" value="falta_dato"> Falta dato</label>
+      <label><input type="checkbox" name="tag" value="reescribir"> Reescribir</label>
+    </div>
+    <textarea id="comentario" rows="4" placeholder="Qué cambiarías. Puedes dictarlo."></textarea>
+    <div class="fila">
+      <button value="cancelar" type="submit">Cancelar</button>
+      <button value="guardar" type="submit" class="principal">Guardar</button>
+    </div>
+  </form>
+</dialog>
+
 <script src="/app.js"></script>
 <script src="/player.js"></script>
 <script>Player.load(new URLSearchParams(location.search).get('u'));</script>

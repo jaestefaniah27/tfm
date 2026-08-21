@@ -133,3 +133,69 @@ const Player = (() => {
 })();
 
 window.Player = Player;
+
+const Notes = (() => {
+  const dialog = document.getElementById('hoja-notas');
+  const form = document.getElementById('form-nota');
+  let resumeAfter = false;
+
+  async function sessionId() {
+    let id = sessionStorage.getItem('audiorev_session_id');
+    if (!id) {
+      id = (await AudioRev.api('/api/sessions', { method: 'POST' })).session_id;
+      sessionStorage.setItem('audiorev_session_id', id);
+    }
+    return id;
+  }
+
+  function open() {
+    const sentence = Player.currentSentence();
+    if (!sentence) return;
+    resumeAfter = !Player.audio.paused;
+    Player.audio.pause();
+    document.getElementById('frase-anclada').textContent = sentence.text;
+    form.reset();
+    dialog.showModal();
+    document.getElementById('comentario').focus();
+  }
+
+  function close() {
+    dialog.close();
+    if (resumeAfter) Player.audio.play();
+  }
+
+  async function save() {
+    const sentence = Player.currentSentence();
+    const tags = [...form.querySelectorAll('input[name=tag]:checked')].map((i) => i.value);
+    const comment = document.getElementById('comentario').value.trim();
+    if (!tags.length && !comment) { close(); return; }
+
+    await AudioRev.api('/api/notes', {
+      method: 'POST',
+      body: JSON.stringify({
+        session_id: await sessionId(),
+        unit_id: Player.unit.unit_id,
+        sentence_idx: sentence.idx,
+        sentence_hash: sentence.hash,
+        sentence_text: sentence.text,
+        tex_file: Player.unit.tex_file,
+        tex_line: sentence.tex_line,
+        audio_ts: Player.audio.currentTime,
+        tags,
+        comment,
+      }),
+    });
+    close();
+  }
+
+  form.addEventListener('submit', (e) => {
+    if (e.submitter && e.submitter.value === 'guardar') { e.preventDefault(); save(); }
+    else close();
+  });
+
+  document.getElementById('anotar').onclick = open;
+
+  return { open, close, save };
+})();
+
+window.Notes = Notes;
