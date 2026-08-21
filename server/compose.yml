@@ -4,18 +4,27 @@ services:
       context: ..
       dockerfile: server/Dockerfile
     restart: unless-stopped
+    # Los secretos se pasan con env_file y NO con `environment: ${VAR}`.
+    # Compose interpola `$VAR` en los valores que sustituye dentro del
+    # propio YAML, así que un hash Argon2 como
+    # `$argon2id$v=19$m=65536,...` perdía `$argon2id`, `$v` y `$m` por el
+    # camino y el login fallaba siempre. Las claves de `env_file` se
+    # entregan al contenedor tal cual, sin esa sustitución.
+    env_file:
+      - .env
     environment:
+      # Valores fijos del despliegue (sin `$`, no hay nada que interpolar).
+      # Van después de env_file, así que tienen prioridad sobre lo que
+      # traiga .env para estas tres claves.
       AUDIOREV_DATA_DIR: /data
       AUDIOREV_REPO_DIR: /data/repo
-      AUDIOREV_PASSWORD_HASH: ${AUDIOREV_PASSWORD_HASH}
-      AUDIOREV_API_TOKEN: ${AUDIOREV_API_TOKEN}
-      AUDIOREV_SESSION_SECRET: ${AUDIOREV_SESSION_SECRET}
       AUDIOREV_TTS_BACKEND: piper
-      AUDIOREV_PUBLIC_HOST: ${AUDIOREV_PUBLIC_HOST:-tfm-jorgerente.duckdns.org}
-      AUDIOREV_COOKIE_SECURE: ${AUDIOREV_COOKIE_SECURE:-1}
     volumes:
       - audiorev-data:/data
-      - ${SSH_KEY_PATH}:/root/.ssh/id_ed25519:ro
+      # Clave de despliegue para `git push`. SSH_KEY_PATH es una variable
+      # del propio Compose (no la lee config.py): apunta al fichero de
+      # clave privada en el HOST. Ver server/README.md.
+      - ${SSH_KEY_PATH:-~/.ssh/audiorev_deploy}:/root/.ssh/id_ed25519:ro
     ports:
       - "127.0.0.1:8091:8000"
 
