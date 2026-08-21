@@ -9,7 +9,7 @@ from pathlib import Path
 
 from . import dic
 from .assemble import assign_timings, concat
-from .blocks import extract_blocks
+from .blocks import extract_blocks, spoken_cue
 from .cache import get_or_synth, sentence_hash
 from .expand import expand
 from .model import Sentence, Unit
@@ -22,6 +22,50 @@ from .tts import get_backend
 TEX_ROOT = "plantilla_tft_etsit"
 
 
+_BLOCK_MARKER = re.compile(r"%%BLOCK:(\d+)%%")
+
+
+def _raw_body(lines: list) -> tuple[str, list[int], list[tuple[int, int]]]:
+    """Une las líneas de una unidad en un cuerpo en bruto y conserva el origen.
+
+    Devuelve (cuerpo, línea de origen de cada carácter, marcadores). El cuerpo
+    lleva los comentarios quitados y el espaciado colapsado a un solo espacio
+    —el texto envuelve a 80 columnas en el .tex y ese salto no es un límite de
+    frase—, pero se construye carácter a carácter para poder decir, de cada
+    posición del cuerpo, en qué línea real del .tex está. Así `tex_line` es la
+    línea de CADA frase y no la primera de la unidad.
+
+    Los marcadores `%%BLOCK:n%%` no forman parte del cuerpo (el separador de
+    comentarios los borraría, porque empiezan por `%`): se sacan aparte como
+    (n, offset dentro del cuerpo) para poder situar el bloque entre las frases.
+    """
+    buf: list[str] = []
+    origen: list[int] = []
+    markers: list[tuple[int, int]] = []
+
+    def push(text: str, lineno: int) -> None:
+        for ch in text:
+            if ch.isspace():
+                if buf and buf[-1] != " ":
+                    buf.append(" ")
+                    origen.append(lineno)
+            else:
+                buf.append(ch)
+                origen.append(lineno)
+
+    for line in lines:
+        pos = 0
+        for m in _BLOCK_MARKER.finditer(line.text):
+            push(strip_comments(line.text[pos : m.start()]), line.lineno)
+            markers.append((int(m.group(1)), len(buf)))
+            pos = m.end()
+        push(strip_comments(line.text[pos:]), line.lineno)
+        push("\n", line.lineno)
+
+    body = "".join(buf).strip()
+    return body, origen, markers
+
+
 def build_units(repo_root: Path) -> list[Unit]:
     """Construye las unidades con sus frases, sin sintetizar nada."""
     tex_root = repo_root / TEX_ROOT
@@ -30,26 +74,67 @@ def build_units(repo_root: Path) -> list[Unit]:
 
     lines, blocks = extract_blocks(expand(tex_root / "main.tex", repo_root))
     units = rechunk(split_units(lines))
+    asignados: set[int] = set()
 
     for unit in units:
-        body = "\n".join(l.text for l in unit.lines)
-        first_line = unit.lines[0].lineno if unit.lines else unit.tex_lines[0]
+        body, origen, markers = _raw_body(unit.lines)
+
+        def linea_de(offset: int) -> int:
+            """Línea real del .tex en la que cae este offset del cuerpo."""
+            if not origen:
+                return unit.tex_lines[0]
+            return origen[min(offset, len(origen) - 1)]
+
+        def emitir_bloque(n: int, offset: int) -> None:
+            """Sitúa el bloque n y añade su aviso hablado («tabla 4.2, ..., en
+            pantalla», apartado 4 del diseño). `after_sentence` apunta a ese
+            aviso; solo vale -1 si el bloque precede a toda la prosa de la
+            unidad y no llegó a emitirse ningún aviso."""
+            if n in asignados or n >= len(blocks):
+                return
+            asignados.add(n)
+            block = blocks[n]
+            cue = spoken_cue(block, labels)
+            if cue:
+                unit.sentences.append(
+                    Sentence(
+                        idx=len(unit.sentences),
+                        text=cue,
+                        spoken=to_spoken(cue, labels, pron),
+                        hash=sentence_hash(to_spoken(cue, labels, pron)),
+                        tex_line=linea_de(offset),
+                        tex_raw="",
+                    )
+                )
+            block.after_sentence = len(unit.sentences) - 1
+            unit.blocks.append(block)
+
         # plain() y to_spoken() son dos normalizadores INDEPENDIENTES del
         # mismo LaTeX en bruto, no etapas de un pipeline: encadenarlos
         # (segmentar sobre la salida de plain() y luego pasar eso a
         # to_spoken()) destruye información que uno de los dos ya había
         # consumido (p. ej. un "\%" que plain() vuelve "%" bare, y que el
         # separador de comentarios de to_spoken() borra después). Por eso
-        # aquí se quitan los comentarios UNA sola vez, se segmenta ese
-        # cuerpo en bruto, y cada frase en bruto se pasa por separado a
-        # plain() y a to_spoken().
-        # El texto envuelve arbitrariamente a 80 columnas en el .tex; un
-        # salto de línea ahí no es un límite de frase, así que el
-        # espaciado se colapsa a un único espacio antes de segmentar (igual
-        # que ya hacía la vieja plain(body), que pasaba por _finish()).
-        # Esto no pierde información, solo normaliza el espaciado en bruto.
-        raw_body = re.sub(r"\s+", " ", strip_comments(body)).strip()
-        for idx, raw in enumerate(split_sentences(raw_body)):
+        # aquí se segmenta el cuerpo en bruto y cada frase en bruto se pasa
+        # por separado a plain() y a to_spoken().
+        cursor = 0
+        siguiente_marcador = 0
+        for raw in split_sentences(body):
+            pos = body.find(raw, cursor)
+            if pos < 0:
+                # La segmentación no devuelve el texto literal (no debería
+                # pasar): se usa el cursor, que es una cota inferior correcta.
+                pos = cursor
+            cursor = pos + len(raw)
+
+            while (
+                siguiente_marcador < len(markers)
+                and markers[siguiente_marcador][1] <= pos
+            ):
+                n, offset = markers[siguiente_marcador]
+                emitir_bloque(n, offset)
+                siguiente_marcador += 1
+
             spoken = to_spoken(raw, labels, pron)
             if not spoken:
                 continue
@@ -59,14 +144,13 @@ def build_units(repo_root: Path) -> list[Unit]:
                     text=plain(raw),
                     spoken=spoken,
                     hash=sentence_hash(spoken),
-                    tex_line=first_line,
+                    tex_line=linea_de(pos),
+                    tex_raw=raw,
                 )
             )
-        # Se usa enumerate en vez de blocks.index(b): list.index devuelve
-        # siempre la primera coincidencia, así que dos bloques idénticos
-        # (mismo raw/caption/etc.) colisionarían en el mismo índice y la
-        # asignación de bloques a unidades quedaría mal.
-        unit.blocks = [b for i, b in enumerate(blocks) if f"%%BLOCK:{i}%%" in body]
+
+        for n, offset in markers[siguiente_marcador:]:
+            emitir_bloque(n, offset)
     return units
 
 

@@ -113,3 +113,22 @@ def extract_blocks(lines: list[SourceLine]) -> tuple[list[SourceLine], list[Bloc
         )
         i = j
     return kept, blocks
+
+
+_CUE_NOUN = {"figure": "figura", "table": "tabla", "code": "listado", "plot": "gráfica"}
+
+
+def spoken_cue(block: Block, labels: dict[str, tuple[str, str]]) -> str:
+    """Aviso hablado que ocupa en el audio el sitio del bloque visual.
+
+    El apartado 4 del diseño lo describe así: «tabla 4.2, mapa de registros,
+    en pantalla». El número sale de resolver el `\\label` del bloque contra
+    `main.aux`; si no lo tiene, se dice solo el tipo.
+    """
+    noun = _CUE_NOUN.get(block.type, "bloque")
+    entry = labels.get(block.ref) if block.ref else None
+    partes = [f"{noun} {entry[0]}" if entry else noun]
+    if block.caption:
+        partes.append(block.caption.rstrip(" ."))
+    partes.append("en pantalla")
+    return ", ".join(partes) + "."

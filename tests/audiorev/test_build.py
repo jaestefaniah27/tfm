@@ -23,7 +23,9 @@ def test_unit_dict_has_the_shape_the_spec_promises(repo_root):
         "tex_file", "tex_lines", "duration_s", "sentences", "blocks",
     }
     s = d["sentences"][0]
-    assert set(s) == {"idx", "text", "spoken", "hash", "tex_line", "t_start", "t_end"}
+    assert set(s) == {
+            "idx", "text", "spoken", "hash", "tex_raw", "tex_line", "t_start", "t_end",
+        }
     assert "/" in d["tex_file"] and not d["tex_file"].startswith("/")
 
 
@@ -86,3 +88,60 @@ def test_ref_resolves_to_a_number_not_the_word_referencia(repo_root):
     assert hit
     assert all("3.1" in s.spoken for s in hit)
     assert all("referencia" not in s.spoken for s in hit)
+
+
+def test_sentences_carry_their_own_tex_line_not_the_first_of_the_unit(repo_root):
+    # El apartado 4.2 del diseño enseña un tex_lines de [326, 402] con una
+    # frase en la línea 328: tex_line es la línea de CADA frase.
+    units = [u for u in build_units(repo_root) if len(u.sentences) > 5]
+    multilinea = [u for u in units if u.tex_lines[1] - u.tex_lines[0] > 10]
+    assert multilinea
+    for unit in multilinea:
+        lineas = {s.tex_line for s in unit.sentences}
+        assert len(lineas) > 1, unit.unit_id
+        assert min(lineas) >= unit.tex_lines[0]
+        assert max(lineas) <= unit.tex_lines[1]
+        # Monótono: las frases van en el orden en que aparecen en el fichero.
+        seguidas = [s.tex_line for s in unit.sentences]
+        assert seguidas == sorted(seguidas), unit.unit_id
+
+
+def test_tex_raw_lets_a_sentence_be_found_back_in_its_own_tex_file(repo_root):
+    # Ancla primaria del apartado 3.3: la frase se busca por su texto, así que
+    # tiene que aparecer literalmente en el fichero del que salió. `text` no
+    # sirve: lleva los comandos quitados y los \ref resueltos.
+    import re
+
+    fuentes: dict[str, str] = {}
+
+    def normaliza(text: str) -> str:
+        return re.sub(r"\s+", " ", text)
+
+    total = encontradas = 0
+    for unit in build_units(repo_root):
+        if unit.tex_file not in fuentes:
+            fuentes[unit.tex_file] = normaliza(
+                (repo_root / unit.tex_file).read_text(encoding="utf-8")
+            )
+        for sentence in unit.sentences:
+            if not sentence.tex_raw:
+                continue  # aviso hablado de un bloque: no viene del .tex
+            total += 1
+            if sentence.tex_raw in fuentes[unit.tex_file]:
+                encontradas += 1
+
+    assert total > 1000
+    assert encontradas / total > 0.90, f"solo {encontradas}/{total} localizables"
+
+
+def test_blocks_of_a_unit_get_a_real_after_sentence(repo_root):
+    units = build_units(repo_root)
+    bloques = [(u, b) for u in units for b in u.blocks]
+    assert len(bloques) > 50
+    for unit, block in bloques:
+        assert 0 <= block.after_sentence < len(unit.sentences), unit.unit_id
+        # after_sentence apunta al aviso hablado del propio bloque.
+        aviso = unit.sentences[block.after_sentence]
+        assert aviso.text.endswith("en pantalla.")
+    # Y no todos caen en el mismo sitio.
+    assert len({b.after_sentence for _, b in bloques}) > 5

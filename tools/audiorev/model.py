@@ -31,6 +31,12 @@ class Sentence:
     spoken: str
     hash: str
     tex_line: int
+    # Frase tal cual está en el .tex (comandos incluidos, solo con el
+    # espaciado colapsado). Es el ancla primaria del apartado 3.3 del diseño:
+    # `text` lleva los comandos quitados y los \ref resueltos, así que casi
+    # nunca aparece literalmente en el fichero de origen. Vacío en las frases
+    # sintéticas (el aviso hablado de un bloque visual), que no vienen del .tex.
+    tex_raw: str = ""
     t_start: float = 0.0
     t_end: float = 0.0
 

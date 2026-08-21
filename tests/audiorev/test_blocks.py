@@ -103,3 +103,17 @@ a & b \\
     _, blocks = extract_blocks(src)
     assert blocks[0].caption == ""
     assert blocks[0].ref is None
+
+
+def test_spoken_cue_names_the_block_its_number_and_its_caption():
+    from tools.audiorev.blocks import spoken_cue
+    from tools.audiorev.model import Block
+
+    block = Block(after_sentence=-1, type="table", caption="Mapa de registros.",
+                  ref="tab:nco", raw="", html="")
+    labels = {"tab:nco": ("4.2", "table")}
+    assert spoken_cue(block, labels) == "tabla 4.2, Mapa de registros, en pantalla."
+
+    # Sin \label resoluble se dice solo el tipo.
+    sin_ref = Block(after_sentence=-1, type="code", caption="", ref=None, raw="", html="")
+    assert spoken_cue(sin_ref, labels) == "listado, en pantalla."
