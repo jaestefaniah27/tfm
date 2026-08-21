@@ -104,10 +104,23 @@ def _chapter_number(tex_file: str, chapters_seen: int) -> int:
     capítulo. La ruta `capitulos/capN/...` es la fuente de verdad cuando
     existe; solo se recurre al contador para ficheros sin ese fragmento
     (anexos y ficheros de `pre/`).
+
+    Dentro de ese fallback hay dos casos muy distintos que no pueden
+    compartir número: el frontmatter (`pre/resumen.tex`, `pre/greetings.tex`,
+    `pre/acronimos.tex`) va ANTES del primer capítulo numerado y el contador
+    lo hace coincidir con capítulos reales (1, 2, 3...), duplicándolos; los
+    anexos (`capitulos/anexos/...`), en cambio, van DESPUÉS de todos los
+    capítulos y el contador les da un número correcto y ya aceptado. La
+    regla que separa ambos sin necesidad de listar ficheros por nombre es la
+    ruta: todo lo que vive fuera de `capitulos/` es frontmatter y va al
+    capítulo 0; lo que vive dentro de `capitulos/` (como los anexos) sigue
+    usando el contador.
     """
     m = _CAP_PATH.search(tex_file)
     if m:
         return int(m.group(1))
+    if "capitulos/" not in tex_file:
+        return 0
     return chapters_seen
 
 

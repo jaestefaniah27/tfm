@@ -104,9 +104,54 @@ def test_structures_the_real_tfm(tex_root, repo_root):
     assert any(u.title.startswith("Oscilador controlado") for u in units)
 
 
+def test_real_tfm_chapters_form_consecutive_runs(tex_root, repo_root):
+    # Propiedad que necesita /api/units: agrupar por rachas consecutivas de
+    # `chapter` en el orden del manifiesto debe producir exactamente un grupo
+    # por número de capítulo distinto. Si el frontmatter (resumen, saludos,
+    # acrónimos) colisionara con capítulos numerados reales, esta propiedad
+    # se rompería (habría dos grupos para el mismo número de capítulo).
+    from tools.audiorev.expand import expand
+
+    units = split_units(expand(tex_root / "main.tex", repo_root))
+
+    groups = []
+    for u in units:
+        if not groups or groups[-1] != u.chapter:
+            groups.append(u.chapter)
+
+    assert len(set(groups)) == len(groups)
+
+
 def test_chapter_number_falls_back_to_counter_when_no_cap_fragment():
     # Ni los anexos (capitulos/anexos/) ni los ficheros de pre/ tienen fragmento capN
     # en su ruta, así que deben usar el contador de \chapter vistos.
+    lines = _lines(
+        "\\chapter{Introducción}\n\\chapter{Anexo A}\n\\section{Primero}\nTexto.\n",
+        tex_file="capitulos/anexos/anexoA.tex",
+    )
+    units = split_units(lines)
+    assert units[0].chapter == 2
+    assert units[0].unit_id.startswith("c02-")
+
+
+def test_front_matter_without_cap_fragment_gets_chapter_zero():
+    # pre/resumen.tex no tiene fragmento capN y va ANTES del primer capítulo
+    # numerado: es portada/frontmatter, no debe colisionar con el capítulo 1
+    # real, así que su número de capítulo es 0.
+    lines = _lines(
+        "\\chapter*{}\n\\addcontentsline{toc}{chapter}{Resumen}\nEl resumen.\n",
+        tex_file="pre/resumen.tex",
+    )
+    units = split_units(lines)
+    assert units[0].chapter == 0
+    assert units[0].unit_id.startswith("c00-")
+
+
+def test_annexes_still_use_the_running_counter_pinned():
+    # Los anexos (capitulos/anexos/), aunque tampoco tienen capN, SÍ están
+    # dentro de capitulos/: mantienen el comportamiento revisado y aceptado
+    # de derivar su número del contador de \chapter vistos. Se fija aquí
+    # para que un cambio futuro no lo mueva en silencio.
     lines = _lines(
         "\\chapter{Introducción}\n\\chapter{Anexo A}\n\\section{Primero}\nTexto.\n",
         tex_file="capitulos/anexos/anexoA.tex",
