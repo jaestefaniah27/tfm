@@ -37,5 +37,8 @@ def test_unknown_label_degrades_without_raising():
 
 def test_reads_the_real_aux_of_the_tfm(tex_root):
     labels = load_labels(tex_root / "main.aux")
+    # 79 y no las 81 entradas \newlabel del .aux: RF1 y RF2 usan una forma
+    # de un solo grupo, sin número y sin ancla de tipo, que no encaja con el
+    # patrón \newlabel{n}{{num}{pág}...} y no se puede resolver a nada.
     assert len(labels) == 79
     assert all(isinstance(v, tuple) and len(v) == 2 for v in labels.values())

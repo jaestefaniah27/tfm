@@ -31,6 +31,9 @@ def split_sentences(text: str) -> list[str]:
     """Devuelve las frases del texto, sin fragmentos vacíos."""
     if not text.strip():
         return []
+    # El centinela es un carácter de uso privado: si apareciera en la entrada,
+    # _restore lo convertiría en un punto y partiría la frase donde no toca.
+    assert _SENTINEL not in text, "el texto de entrada contiene el centinela U+E000"
     protected = _protect(text)
     pieces = _segmenter.segment(protected)
     return [_restore(p).strip() for p in pieces if _restore(p).strip()]
