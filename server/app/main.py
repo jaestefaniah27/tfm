@@ -22,9 +22,16 @@ def create_app() -> FastAPI:
 
     app = FastAPI(title="AudioRev", version=VERSION, docs_url=None, redoc_url=None)
 
-    app.state.db = db_module.connect()
-    db_module.migrate(app.state.db)
-    load_index(app.state.db, settings.index_dir)
+    # Conexión de arranque de corta vida: migra y carga el índice, y se
+    # cierra de inmediato. Las peticiones usan conexiones por petición
+    # (db.get_db / db.session), así que no queda ninguna conexión abierta
+    # de forma indefinida en app.state.
+    startup_conn = db_module.connect()
+    try:
+        db_module.migrate(startup_conn)
+        load_index(startup_conn, settings.index_dir)
+    finally:
+        startup_conn.close()
 
     @app.get("/healthz")
     def healthz() -> dict:

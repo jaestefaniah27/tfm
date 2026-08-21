@@ -46,6 +46,10 @@ def read_session(token: str) -> str | None:
 def require_user(request: Request) -> str:
     settings = get_settings()
     if settings.trust_proxy_user:
+        # Esto solo es seguro porque el proxy inverso fija y sobrescribe esta
+        # cabecera antes de reenviar la petición; si la app quedara expuesta
+        # directamente en este modo, cualquier cliente podría fijarla y
+        # suplantar al usuario.
         user = request.headers.get(settings.trust_proxy_user)
         if not user:
             raise HTTPException(status_code=401, detail="No autenticado")

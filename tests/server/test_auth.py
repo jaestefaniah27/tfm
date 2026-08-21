@@ -58,6 +58,9 @@ def test_logout_closes_the_session(client_with_password):
 
 @pytest.mark.xfail(reason="ruta creada en la tarea 10", strict=False)
 def test_bearer_token_opens_the_agent_api(client_with_password):
+    # TODO(tarea 10): reforzar la aserción para comprobar el cuerpo de la
+    # respuesta, no solo que el estado no sea 401 — tal como está, pasaría
+    # incluso con require_api_token completamente roto.
     r = client_with_password.get(
         "/api/revisiones", headers={"Authorization": "Bearer token-de-prueba"}
     )
