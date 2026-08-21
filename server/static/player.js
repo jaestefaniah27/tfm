@@ -65,7 +65,15 @@ const Player = (() => {
         summary.textContent = block.caption || `Bloque ${block.type}`;
         details.appendChild(summary);
         const body = document.createElement('div');
-        body.innerHTML = block.html || `<p>Contenido visual: ${block.caption}</p>`;
+        if (block.html) {
+          // El HTML de los bloques (figuras, tablas) lo genera el propio
+          // pipeline de audiorev; es contenido de confianza, no texto libre.
+          body.innerHTML = block.html;
+        } else {
+          const p = document.createElement('p');
+          p.textContent = `Contenido visual: ${block.caption}`;
+          body.appendChild(p);
+        }
         details.appendChild(body);
         main.appendChild(details);
       }

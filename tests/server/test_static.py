@@ -36,3 +36,13 @@ def test_an_earlier_route_is_not_shadowed_by_the_static_mount(client):
     r = client.get("/api/units")
     assert r.status_code == 200
     assert "chapters" in r.json()
+
+
+def test_app_js_does_not_inject_unit_title_as_html(client):
+    """Guarda de regresión: el título del apartado (texto libre venido de la
+    API) debe insertarse con textContent, nunca interpolado en una plantilla
+    que se asigna a innerHTML, para no abrir una vía de inyección de HTML/JS
+    si algún título llegara a contener '<' o '>'."""
+    body = client.get("/app.js").text
+    assert "${unit.title}" not in body
+    assert "titulo.textContent = unit.title" in body

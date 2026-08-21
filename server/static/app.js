@@ -56,11 +56,20 @@ const AudioRev = (() => {
         const a = document.createElement('a');
         a.className = `apartado estado-${unit.state} nivel-${unit.level}`;
         a.href = `/player.html?u=${unit.unit_id}`;
-        a.innerHTML =
-          `<span class="titulo">${unit.title}</span>` +
-          `<span class="meta">${fmtDuration(unit.duration_s)}` +
+        // Se construyen los nodos con textContent, no con innerHTML: el
+        // título y demás textos vienen de la API y no deben interpretarse
+        // nunca como HTML (evita una inyección si un título trajera '<').
+        const titulo = document.createElement('span');
+        titulo.className = 'titulo';
+        titulo.textContent = unit.title;
+        const meta = document.createElement('span');
+        meta.className = 'meta';
+        meta.textContent =
+          `${fmtDuration(unit.duration_s)}` +
           (unit.n_notes ? ` · ${unit.n_notes} revisiones` : '') +
-          ` · ${stateLabel(unit.state)}</span>`;
+          ` · ${stateLabel(unit.state)}`;
+        a.appendChild(titulo);
+        a.appendChild(meta);
         details.appendChild(a);
       }
       lista.appendChild(details);
