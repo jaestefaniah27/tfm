@@ -5,11 +5,12 @@ import sqlite3
 from datetime import datetime, timezone
 from typing import Literal
 
-from fastapi import Depends, FastAPI, HTTPException, Response
+from fastapi import Depends, FastAPI, HTTPException, Response, status
 from fastapi.responses import FileResponse
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, model_validator
 
 from . import db as db_module
+from . import notes as notes_module
 from .auth import COOKIE, MAX_AGE, issue_session, require_api_token, require_user, verify_password
 from .config import get_settings
 from .index import load_index, unit_payload
@@ -26,6 +27,30 @@ class LoginBody(BaseModel):
 class ProgressBody(BaseModel):
     state: Literal["pendiente", "en_curso", "escuchado", "con_notas"]
     position_s: float = 0.0
+
+
+class NoteBody(BaseModel):
+    session_id: str
+    unit_id: str
+    sentence_idx: int | None = None
+    sentence_hash: str | None = None
+    sentence_text: str = ""
+    tex_file: str = ""
+    tex_line: int | None = None
+    audio_ts: float = 0.0
+    tags: list[str] = Field(default_factory=list)
+    comment: str = ""
+
+    @model_validator(mode="after")
+    def needs_content(self):
+        if not self.comment.strip() and not self.tags:
+            raise ValueError("Una revisión necesita al menos un comentario o una etiqueta")
+        return self
+
+
+class NotePatch(BaseModel):
+    state: Literal["pendiente", "aplicada", "descartada", "obsoleta"] | None = None
+    comment: str | None = None
 
 
 def create_app() -> FastAPI:
@@ -132,6 +157,41 @@ def create_app() -> FastAPI:
             (unit_id, body.state, body.position_s, datetime.now(timezone.utc).isoformat()),
         )
         return {"ok": True}
+
+    @app.post("/api/sessions", status_code=201)
+    def new_session(user: str = Depends(require_user),
+                     conn: sqlite3.Connection = Depends(db_module.get_db)) -> dict:
+        return {"session_id": notes_module.open_session(conn)}
+
+    @app.post("/api/notes", status_code=201)
+    def post_note(body: NoteBody, user: str = Depends(require_user),
+                  conn: sqlite3.Connection = Depends(db_module.get_db)) -> dict:
+        return {"id": notes_module.create(conn, body.model_dump())}
+
+    @app.get("/api/notes")
+    def get_notes(estado: str | None = None, sesion: str | None = None,
+                  user: str = Depends(require_user),
+                  conn: sqlite3.Connection = Depends(db_module.get_db)) -> dict:
+        return {"notes": notes_module.list_notes(conn, estado, sesion)}
+
+    @app.patch("/api/notes/{note_id}")
+    def patch_note(note_id: int, body: NotePatch, user: str = Depends(require_user),
+                    conn: sqlite3.Connection = Depends(db_module.get_db)) -> dict:
+        touched = False
+        if body.state:
+            touched |= notes_module.set_state(conn, note_id, body.state)
+        if body.comment is not None:
+            touched |= notes_module.set_comment(conn, note_id, body.comment)
+        if not touched:
+            raise HTTPException(status_code=404, detail="Revisión desconocida")
+        return {"ok": True}
+
+    @app.delete("/api/notes/{note_id}", status_code=204)
+    def delete_note(note_id: int, user: str = Depends(require_user),
+                     conn: sqlite3.Connection = Depends(db_module.get_db)) -> Response:
+        if not notes_module.delete(conn, note_id):
+            raise HTTPException(status_code=404, detail="Revisión desconocida")
+        return Response(status_code=status.HTTP_204_NO_CONTENT)
 
     @app.get("/audio/{filename}")
     def get_audio(filename: str, user: str = Depends(require_user)) -> FileResponse:
