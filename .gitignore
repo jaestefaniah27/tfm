@@ -82,3 +82,17 @@ plantilla_tft_etsit/IMG/Desarrollo/*.log
 plantilla_tft_etsit/IMG/Desarrollo/*.fls
 plantilla_tft_etsit/IMG/Desarrollo/*.fdb_latexmk
 plantilla_tft_etsit/IMG/Desarrollo/*.synctex.gz
+
+# Configuración local del editor (no versionar)
+.claude/settings.local.json
+
+# Notas de trabajo, auditorías y planes intermedios: apuntes de proceso, no
+# forman parte del entregable y no deben ser públicos. Se conservan en local.
+/AUDITORIA_TFM.md
+/REVISION_HARDWARE.md
+/REVISION_MECANICA.md
+/NOTAS_MEMORIA.md
+/plan_arqu_dma.md
+/GUIA_ESTILO_TFM.md
+/TFM_JORGE_A_E.md
+/docs/
