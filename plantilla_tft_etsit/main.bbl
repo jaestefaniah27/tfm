@@ -4,8 +4,9 @@
 {AMD/Xilinx}.
 \newblock {\em {ZCU102} Evaluation Board User Guide}.
 \newblock AMD/Xilinx, 2023.
-\newblock Copia disponible en \texttt{tfm/00\_docs/ug1182-zcu102-eval-bd.pdf}
-  del repositorio del proyecto.
+\newblock \url{https://docs.amd.com/v/u/en-US/ug1182-zcu102-eval-bd}. Copia
+  disponible en \texttt{tfm/00\_docs/ug1182-zcu102-eval-bd.pdf} del repositorio
+  del proyecto.
 
 \bibitem{indra2026lince}
 {Indra}.
@@ -85,12 +86,14 @@ S.~M. Parkes.
 {AMD/Xilinx}.
 \newblock {\em {AXI DMA} v7.1 --- {LogiCORE IP} Product Guide}.
 \newblock AMD/Xilinx, 2022.
+\newblock \url{https://docs.xilinx.com/r/en-US/pg021_axi_dma}.
 
 \bibitem{xilinx2022pg288}
 {AMD/Xilinx}.
 \newblock {\em {AXI Multichannel DMA} (MCDMA) v1.1 --- {LogiCORE IP} Product
   Guide}.
 \newblock AMD/Xilinx, 2022.
+\newblock \url{https://docs.xilinx.com/r/en-US/pg288-axi-mcdma}.
 
 \bibitem{mogul1997livelock}
 Jeffrey~C. Mogul and K.~K. Ramakrishnan.
@@ -103,7 +106,7 @@ Jeffrey~C. Mogul and K.~K. Ramakrishnan.
 \newblock RTEMS Project, 2026.
 \newblock Guía paso a paso de instalación del \textit{toolchain} y
   compilación de los BSP mediante el {RTEMS Source Builder}. Consultado en
-  2026.
+  2026. \url{https://docs.rtems.org/docs/main/user/start/index.html}.
 
 \bibitem{rtems_rsb}
 {RTEMS Project}.
@@ -111,6 +114,7 @@ Jeffrey~C. Mogul and K.~K. Ramakrishnan.
   (RSB)}.
 \newblock RTEMS Project, 2026.
 \newblock Consultado en 2026.
+  \url{https://docs.rtems.org/docs/main/user/rsb/index.html}.
 
 \bibitem{weicker1984dhrystone}
 Reinhold~P. Weicker.
@@ -129,6 +133,7 @@ Reinhold~P. Weicker.
   3V to 5.5V {RS485/RS422} Transceivers}.
 \newblock Analog Devices (Linear Technology), 2013.
 \newblock Documento 2862345fc.
+  \url{https://www.analog.com/media/en/technical-documentation/data-sheets/2862345fc.pdf}.
 
 \bibitem{ti2018ads7950}
 {Texas Instruments}.
@@ -159,5 +164,6 @@ Reinhold~P. Weicker.
 \newblock {ESA}'s annual space environment report.
 \newblock Technical Report GEN-DB-LOG-00288-OPS-SD, European Space Agency,
   2025.
+\newblock \url{https://www.esa.int/Space_Safety/Space_Debris}.
 
 \end{thebibliography}

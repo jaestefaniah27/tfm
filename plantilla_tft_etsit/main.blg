@@ -9,16 +9,16 @@ Warning--entry type for "ecss50spw" isn't style-file defined
 --line 111 of file biblio.bib
 You've used 27 entries,
             1791 wiz_defined-function locations,
-            577 strings with 7332 characters,
-and the built_in function-call counts, 3749 in all, are:
-= -- 343
+            580 strings with 7758 characters,
+and the built_in function-call counts, 3776 in all, are:
+= -- 349
 > -- 112
 < -- 4
 + -- 55
 - -- 28
 * -- 96
-:= -- 633
-add.period$ -- 88
+:= -- 639
+add.period$ -- 91
 call.type$ -- 27
 change.case$ -- 19
 chr.to.int$ -- 0
@@ -26,13 +26,13 @@ cite$ -- 27
 duplicate$ -- 173
 empty$ -- 448
 format.name$ -- 28
-if$ -- 852
+if$ -- 858
 int.to.chr$ -- 0
 int.to.str$ -- 27
 missing$ -- 4
-newline$ -- 145
+newline$ -- 148
 num.names$ -- 27
-pop$ -- 114
+pop$ -- 111
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 0
@@ -47,5 +47,5 @@ type$ -- 0
 warning$ -- 0
 while$ -- 31
 width$ -- 29
-write$ -- 293
+write$ -- 299
 (There was 1 warning)

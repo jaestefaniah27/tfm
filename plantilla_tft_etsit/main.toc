@@ -98,124 +98,124 @@
 \contentsline {subsubsection}{AXI DMA (PG021)}{8}{section*.82}%
 \contentsline {subsubsection}{AXI MCDMA (PG288)}{9}{section*.83}%
 \contentsline {subsection}{\numberline {2.6.3}Coste de la interrupción}{9}{subsection.2.6.3}%
-\contentsline {chapter}{\numberline {3}Desarrollo}{10}{chapter.3}%
-\contentsline {section}{\numberline {3.1}Preparación del entorno de desarrollo}{10}{section.3.1}%
-\contentsline {subsection}{\numberline {3.1.1}Instalación de Vivado y Vitis}{10}{subsection.3.1.1}%
-\contentsline {subsection}{\numberline {3.1.2}Instalación de RTEMS}{10}{subsection.3.1.2}%
-\contentsline {subsection}{\numberline {3.1.3}Establecimiento de un flujo de desarrollo completo}{11}{subsection.3.1.3}%
-\contentsline {section}{\numberline {3.2}Diseño del transceptor serie configurable (PL)}{16}{section.3.2}%
-\contentsline {subsection}{\numberline {3.2.1}Oscilador controlado numéricamente (NCO)}{17}{subsection.3.2.1}%
-\contentsline {subsection}{\numberline {3.2.2}Transmisor}{18}{subsection.3.2.2}%
-\contentsline {subsubsection}{Máquina de estados}{19}{section*.88}%
-\contentsline {subsubsection}{Lógica de apoyo a la máquina de estados}{20}{section*.90}%
-\contentsline {subsubsection}{Retardo de establecimiento del \textit {Driver Enable}}{21}{section*.91}%
-\contentsline {subsection}{\numberline {3.2.3}Receptor}{21}{subsection.3.2.3}%
-\contentsline {subsubsection}{Máquina de estados}{22}{section*.93}%
-\contentsline {subsubsection}{Lógica de apoyo a la máquina de estados}{23}{section*.94}%
-\contentsline {subsubsection}{Verificación del bit de inicio a mitad de período}{23}{section*.95}%
-\contentsline {subsection}{\numberline {3.2.4}Registro de desplazamiento}{23}{subsection.3.2.4}%
-\contentsline {subsection}{\numberline {3.2.5}FIFO}{24}{subsection.3.2.5}%
-\contentsline {subsection}{\numberline {3.2.6}Bloque de canal}{24}{subsection.3.2.6}%
-\contentsline {subsection}{\numberline {3.2.7}Bloque \textit {top} del transceptor}{25}{subsection.3.2.7}%
-\contentsline {subsubsection}{Envoltorios de nivel superior}{27}{section*.98}%
-\contentsline {subsection}{\numberline {3.2.8}Verificación en simulación del canal completo}{28}{subsection.3.2.8}%
-\contentsline {subsection}{\numberline {3.2.9}Bloque Zynq UltraScale+ MPSoC}{29}{subsection.3.2.9}%
-\contentsline {section}{\numberline {3.3}Herramientas de apoyo al desarrollo del transceptor}{29}{section.3.3}%
-\contentsline {subsection}{\numberline {3.3.1}Generación de transceivers con TCL}{29}{subsection.3.3.1}%
-\contentsline {subsection}{\numberline {3.3.2}Generación de proyecto con TCL}{29}{subsection.3.3.2}%
-\contentsline {section}{\numberline {3.4}Diseño del driver serie en RTEMS (PS)}{29}{section.3.4}%
-\contentsline {subsection}{\numberline {3.4.1}Mapa de registros de la interfaz hardware}{30}{subsection.3.4.1}%
-\contentsline {subsection}{\numberline {3.4.2}Arquitectura software}{30}{subsection.3.4.2}%
-\contentsline {subsection}{\numberline {3.4.3}Descubrimiento dinámico del hardware}{31}{subsection.3.4.3}%
-\contentsline {subsection}{\numberline {3.4.4}Modelo de interrupciones con ISR maestra y tareas \textit {worker}}{31}{subsection.3.4.4}%
-\contentsline {subsection}{\numberline {3.4.5}Inicialización y configuración del hardware}{31}{subsection.3.4.5}%
-\contentsline {subsection}{\numberline {3.4.6}API pública}{32}{subsection.3.4.6}%
-\contentsline {subsection}{\numberline {3.4.7}Decisiones de diseño}{32}{subsection.3.4.7}%
-\contentsline {section}{\numberline {3.5}Diseño hardware}{33}{section.3.5}%
-\contentsline {subsection}{\numberline {3.5.1}Selección de componentes bajo la restricción de 1,8~V}{33}{subsection.3.5.1}%
-\contentsline {subsection}{\numberline {3.5.2}Reglas de diseño y proceso de fabricación}{34}{subsection.3.5.2}%
-\contentsline {subsection}{\numberline {3.5.3}Diseño de la placa de comunicación serie}{34}{subsection.3.5.3}%
-\contentsline {subsubsection}{Topología RS485 con bus compartido configurable por \textit {jumper}}{35}{section*.101}%
-\contentsline {subsubsection}{Selector de conector Micro-D para RS485}{35}{section*.102}%
-\contentsline {subsubsection}{Topología RS422 maestro/esclavo configurable por \textit {jumper}}{35}{section*.103}%
-\contentsline {subsubsection}{Alimentación}{36}{section*.104}%
-\contentsline {subsection}{\numberline {3.5.4}Diseño de la placa CDHS}{36}{subsection.3.5.4}%
-\contentsline {subsubsection}{Nivel de tensión y selección de componentes}{37}{section*.107}%
-\contentsline {subsubsection}{Subsistema CAN}{37}{section*.108}%
-\contentsline {subsubsection}{Subsistema RS422/RS485}{38}{section*.110}%
-\contentsline {paragraph}{Cortocircuito DE--RE.}{38}{section*.111}%
-\contentsline {subsubsection}{Subsistema PWM (calentadores)}{39}{section*.114}%
-\contentsline {subsubsection}{Subsistema ADC (termistores)}{40}{section*.115}%
-\contentsline {subsubsection}{Alimentación}{40}{section*.116}%
-\contentsline {subsubsection}{Conectores externos}{40}{section*.117}%
-\contentsline {subsection}{\numberline {3.5.5}Diseño de la placa AOCS}{40}{subsection.3.5.5}%
-\contentsline {subsubsection}{Subsistema RS422/RS485}{41}{section*.120}%
-\contentsline {paragraph}{Puntos de prueba.}{42}{section*.121}%
-\contentsline {subsubsection}{Subsistema SpaceWire}{42}{section*.122}%
-\contentsline {subsubsection}{Subsistema de control de motores (MOT-PWM)}{43}{section*.124}%
-\contentsline {paragraph}{Corrección de la revisión V2: el eje Z.}{43}{section*.125}%
-\contentsline {subsubsection}{Alimentación}{44}{section*.126}%
-\contentsline {subsection}{\numberline {3.5.6}Fabricación}{44}{subsection.3.5.6}%
-\contentsline {section}{\numberline {3.6}Desarrollo de herramientas de testing}{46}{section.3.6}%
-\contentsline {subsection}{\numberline {3.6.1}Aplicación de testing del driver serie en RTEMS}{46}{subsection.3.6.1}%
-\contentsline {subsubsection}{Configuración del sistema RTEMS --- \texttt {init.c}}{46}{section*.129}%
-\contentsline {subsubsection}{Aplicación de testing --- \texttt {main.c}}{47}{section*.130}%
-\contentsline {subsection}{\numberline {3.6.2}Aplicación de testing de las placas CDHS y AOCS}{48}{subsection.3.6.2}%
-\contentsline {subsubsection}{Ampliación en PL para soportar interfaces adicionales CDHS}{48}{section*.131}%
-\contentsline {subsubsection}{Ampliación para soportar interfaces adicionales AOCS}{48}{section*.132}%
-\contentsline {subsection}{\numberline {3.6.3}Arneses y equipamiento de validación}{48}{subsection.3.6.3}%
-\contentsline {subsubsection}{Arnés para verificar comunicaciones RS422}{48}{section*.133}%
-\contentsline {subsubsection}{Arnés para verificar comunicaciones RS485}{49}{section*.135}%
-\contentsline {subsubsection}{Arnés para verificar comunicaciones CAN}{50}{section*.137}%
-\contentsline {subsubsection}{Equipo de laboratorio utilizado}{50}{section*.139}%
-\contentsline {section}{\numberline {3.7}Arquitecturas de transporte PS--PL}{50}{section.3.7}%
-\contentsline {subsection}{\numberline {3.7.1}Variante A --- AXI GPIO (referencia)}{51}{subsection.3.7.1}%
-\contentsline {subsection}{\numberline {3.7.2}Variante B --- catorce AXI DMA}{51}{subsection.3.7.2}%
-\contentsline {subsubsection}{Adaptación del UART a AXI-Stream}{51}{section*.141}%
-\contentsline {subsubsection}{Operación}{52}{section*.142}%
-\contentsline {subsubsection}{Coste de la replicación de motores DMA}{52}{section*.143}%
-\contentsline {subsection}{\numberline {3.7.3}Variante C --- AXI MCDMA con puente VHDL}{52}{subsection.3.7.3}%
-\contentsline {subsubsection}{Camino de transmisión}{53}{section*.145}%
-\contentsline {subsubsection}{Notificación de fin de transmisión (\texttt {TX\_ISR\_EOF\_HANDLER})}{53}{section*.146}%
-\contentsline {subsubsection}{Camino de recepción y etiquetado por TDEST}{55}{section*.148}%
-\contentsline {subsubsection}{Mapa de memoria y de interrupciones}{55}{section*.149}%
-\contentsline {subsubsection}{Construcción de descriptores \textit {scatter-gather} en el driver}{56}{section*.151}%
-\contentsline {subsection}{\numberline {3.7.4}Verificación y depuración iterativa del driver}{56}{subsection.3.7.4}%
-\contentsline {subsection}{\numberline {3.7.5}Banco de pruebas de \textit {loopback} en la PL}{58}{subsection.3.7.5}%
-\contentsline {chapter}{\numberline {4}Resultados}{60}{chapter.4}%
-\contentsline {section}{\numberline {4.1}Validación CDHS}{60}{section.4.1}%
-\contentsline {subsection}{\numberline {4.1.1}Montaje}{60}{subsection.4.1.1}%
-\contentsline {subsection}{\numberline {4.1.2}Comunicaciones serie RS422/RS485}{61}{subsection.4.1.2}%
-\contentsline {subsubsection}{Efecto del control de \textit {slew rate}}{62}{section*.155}%
-\contentsline {subsection}{\numberline {4.1.3}Bus CAN}{63}{subsection.4.1.3}%
-\contentsline {subsection}{\numberline {4.1.4}ADC SPI (termistores)}{64}{subsection.4.1.4}%
-\contentsline {subsection}{\numberline {4.1.5}PWM (calentadores)}{66}{subsection.4.1.5}%
-\contentsline {section}{\numberline {4.2}Validación AOCS}{66}{section.4.2}%
-\contentsline {subsection}{\numberline {4.2.1}Montaje}{66}{subsection.4.2.1}%
-\contentsline {subsection}{\numberline {4.2.2}Comunicaciones serie RS422/RS485}{67}{subsection.4.2.2}%
-\contentsline {subsection}{\numberline {4.2.3}PWM (puentes en H)}{69}{subsection.4.2.3}%
-\contentsline {section}{\numberline {4.3}Validación de la placa de comunicación serie}{69}{section.4.3}%
-\contentsline {subsection}{\numberline {4.3.1}Verificación del driver con catorce transceptores}{69}{subsection.4.3.1}%
-\contentsline {subsection}{\numberline {4.3.2}Comparativa de las arquitecturas de transporte PS--PL}{69}{subsection.4.3.2}%
-\contentsline {paragraph}{Limitación del método de medida en la variante DMA14.}{70}{section*.162}%
-\contentsline {subsubsection}{Coste de hardware}{70}{section*.163}%
-\contentsline {subsubsection}{Coste de software}{71}{section*.166}%
-\contentsline {subsubsection}{Coste en interrupciones}{71}{section*.168}%
-\contentsline {subsubsection}{Latencia}{72}{section*.171}%
-\contentsline {subsubsection}{\textit {Throughput}}{73}{section*.174}%
-\contentsline {subsubsection}{Barrido de velocidad}{73}{section*.177}%
-\contentsline {subsubsection}{Robustez}{74}{section*.180}%
-\contentsline {subsubsection}{Selección de la arquitectura de transporte}{75}{section*.182}%
-\contentsline {subsection}{\numberline {4.3.3}Caracterización eléctrica de la placa de comunicación serie}{76}{subsection.4.3.3}%
-\contentsline {subsubsection}{Batería de pruebas de caracterización}{77}{section*.186}%
-\contentsline {subsubsection}{Efecto del limitador de slew rate sobre la velocidad máxima}{78}{section*.188}%
-\contentsline {subsubsection}{Comportamiento del bus multipunto}{79}{section*.191}%
-\contentsline {subsubsection}{Integridad, aislamiento y estabilidad}{80}{section*.193}%
-\contentsline {subsubsection}{Limitaciones del método de medida}{81}{section*.195}%
-\contentsline {chapter}{\numberline {5}Conclusiones y líneas futuras}{82}{chapter.5}%
-\contentsline {section}{\numberline {5.1}Conclusiones}{82}{section.5.1}%
-\contentsline {section}{\numberline {5.2}Líneas futuras}{84}{section.5.2}%
-\contentsline {chapter}{Bibliograf\'{\i }a}{86}{chapter*.196}%
+\contentsline {chapter}{\numberline {3}Desarrollo}{11}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Preparación del entorno de desarrollo}{11}{section.3.1}%
+\contentsline {subsection}{\numberline {3.1.1}Instalación de Vivado y Vitis}{11}{subsection.3.1.1}%
+\contentsline {subsection}{\numberline {3.1.2}Instalación de RTEMS}{11}{subsection.3.1.2}%
+\contentsline {subsection}{\numberline {3.1.3}Establecimiento de un flujo de desarrollo completo}{12}{subsection.3.1.3}%
+\contentsline {section}{\numberline {3.2}Diseño del transceptor serie configurable (PL)}{17}{section.3.2}%
+\contentsline {subsection}{\numberline {3.2.1}Oscilador controlado numéricamente (NCO)}{18}{subsection.3.2.1}%
+\contentsline {subsection}{\numberline {3.2.2}Transmisor}{19}{subsection.3.2.2}%
+\contentsline {subsubsection}{Máquina de estados}{20}{section*.88}%
+\contentsline {subsubsection}{Lógica de apoyo a la máquina de estados}{21}{section*.90}%
+\contentsline {subsubsection}{Retardo de establecimiento del \textit {Driver Enable}}{22}{section*.91}%
+\contentsline {subsection}{\numberline {3.2.3}Receptor}{22}{subsection.3.2.3}%
+\contentsline {subsubsection}{Máquina de estados}{23}{section*.93}%
+\contentsline {subsubsection}{Lógica de apoyo a la máquina de estados}{24}{section*.94}%
+\contentsline {subsubsection}{Verificación del bit de inicio a mitad de período}{24}{section*.95}%
+\contentsline {subsection}{\numberline {3.2.4}Registro de desplazamiento}{24}{subsection.3.2.4}%
+\contentsline {subsection}{\numberline {3.2.5}FIFO}{25}{subsection.3.2.5}%
+\contentsline {subsection}{\numberline {3.2.6}Bloque de canal}{25}{subsection.3.2.6}%
+\contentsline {subsection}{\numberline {3.2.7}Bloque \textit {top} del transceptor}{26}{subsection.3.2.7}%
+\contentsline {subsubsection}{Envoltorios de nivel superior}{28}{section*.98}%
+\contentsline {subsection}{\numberline {3.2.8}Verificación en simulación del canal completo}{29}{subsection.3.2.8}%
+\contentsline {subsection}{\numberline {3.2.9}Bloque Zynq UltraScale+ MPSoC}{30}{subsection.3.2.9}%
+\contentsline {section}{\numberline {3.3}Herramientas de apoyo al desarrollo del transceptor}{30}{section.3.3}%
+\contentsline {subsection}{\numberline {3.3.1}Generación de transceivers con TCL}{30}{subsection.3.3.1}%
+\contentsline {subsection}{\numberline {3.3.2}Generación de proyecto con TCL}{30}{subsection.3.3.2}%
+\contentsline {section}{\numberline {3.4}Diseño del driver serie en RTEMS (PS)}{30}{section.3.4}%
+\contentsline {subsection}{\numberline {3.4.1}Mapa de registros de la interfaz hardware}{31}{subsection.3.4.1}%
+\contentsline {subsection}{\numberline {3.4.2}Arquitectura software}{31}{subsection.3.4.2}%
+\contentsline {subsection}{\numberline {3.4.3}Descubrimiento dinámico del hardware}{32}{subsection.3.4.3}%
+\contentsline {subsection}{\numberline {3.4.4}Modelo de interrupciones con ISR maestra y tareas \textit {worker}}{32}{subsection.3.4.4}%
+\contentsline {subsection}{\numberline {3.4.5}Inicialización y configuración del hardware}{32}{subsection.3.4.5}%
+\contentsline {subsection}{\numberline {3.4.6}API pública}{33}{subsection.3.4.6}%
+\contentsline {subsection}{\numberline {3.4.7}Decisiones de diseño}{33}{subsection.3.4.7}%
+\contentsline {section}{\numberline {3.5}Diseño hardware}{34}{section.3.5}%
+\contentsline {subsection}{\numberline {3.5.1}Selección de componentes bajo la restricción de 1,8~V}{34}{subsection.3.5.1}%
+\contentsline {subsection}{\numberline {3.5.2}Reglas de diseño y proceso de fabricación}{35}{subsection.3.5.2}%
+\contentsline {subsection}{\numberline {3.5.3}Diseño de la placa de comunicación serie}{35}{subsection.3.5.3}%
+\contentsline {subsubsection}{Topología RS485 con bus compartido configurable por \textit {jumper}}{36}{section*.101}%
+\contentsline {subsubsection}{Selector de conector Micro-D para RS485}{36}{section*.102}%
+\contentsline {subsubsection}{Topología RS422 maestro/esclavo configurable por \textit {jumper}}{36}{section*.103}%
+\contentsline {subsubsection}{Alimentación}{37}{section*.104}%
+\contentsline {subsection}{\numberline {3.5.4}Diseño de la placa CDHS}{37}{subsection.3.5.4}%
+\contentsline {subsubsection}{Nivel de tensión y selección de componentes}{38}{section*.107}%
+\contentsline {subsubsection}{Subsistema CAN}{38}{section*.108}%
+\contentsline {subsubsection}{Subsistema RS422/RS485}{39}{section*.110}%
+\contentsline {paragraph}{Cortocircuito DE--RE.}{39}{section*.111}%
+\contentsline {subsubsection}{Subsistema PWM (calentadores)}{40}{section*.114}%
+\contentsline {subsubsection}{Subsistema ADC (termistores)}{41}{section*.115}%
+\contentsline {subsubsection}{Alimentación}{41}{section*.116}%
+\contentsline {subsubsection}{Conectores externos}{41}{section*.117}%
+\contentsline {subsection}{\numberline {3.5.5}Diseño de la placa AOCS}{41}{subsection.3.5.5}%
+\contentsline {subsubsection}{Subsistema RS422/RS485}{42}{section*.120}%
+\contentsline {paragraph}{Puntos de prueba.}{43}{section*.121}%
+\contentsline {subsubsection}{Subsistema SpaceWire}{43}{section*.122}%
+\contentsline {subsubsection}{Subsistema de control de motores (MOT-PWM)}{44}{section*.124}%
+\contentsline {paragraph}{Corrección de la revisión V2: el eje Z.}{44}{section*.125}%
+\contentsline {subsubsection}{Alimentación}{45}{section*.126}%
+\contentsline {subsection}{\numberline {3.5.6}Fabricación}{45}{subsection.3.5.6}%
+\contentsline {section}{\numberline {3.6}Desarrollo de herramientas de testing}{47}{section.3.6}%
+\contentsline {subsection}{\numberline {3.6.1}Aplicación de testing del driver serie en RTEMS}{47}{subsection.3.6.1}%
+\contentsline {subsubsection}{Configuración del sistema RTEMS --- \texttt {init.c}}{47}{section*.129}%
+\contentsline {subsubsection}{Aplicación de testing --- \texttt {main.c}}{48}{section*.130}%
+\contentsline {subsection}{\numberline {3.6.2}Aplicación de testing de las placas CDHS y AOCS}{49}{subsection.3.6.2}%
+\contentsline {subsubsection}{Ampliación en PL para soportar interfaces adicionales CDHS}{49}{section*.131}%
+\contentsline {subsubsection}{Ampliación para soportar interfaces adicionales AOCS}{49}{section*.132}%
+\contentsline {subsection}{\numberline {3.6.3}Arneses y equipamiento de validación}{49}{subsection.3.6.3}%
+\contentsline {subsubsection}{Arnés para verificar comunicaciones RS422}{49}{section*.133}%
+\contentsline {subsubsection}{Arnés para verificar comunicaciones RS485}{50}{section*.135}%
+\contentsline {subsubsection}{Arnés para verificar comunicaciones CAN}{51}{section*.137}%
+\contentsline {subsubsection}{Equipo de laboratorio utilizado}{51}{section*.139}%
+\contentsline {section}{\numberline {3.7}Arquitecturas de transporte PS--PL}{51}{section.3.7}%
+\contentsline {subsection}{\numberline {3.7.1}Variante A --- AXI GPIO (referencia)}{52}{subsection.3.7.1}%
+\contentsline {subsection}{\numberline {3.7.2}Variante B --- catorce AXI DMA}{52}{subsection.3.7.2}%
+\contentsline {subsubsection}{Adaptación del UART a AXI-Stream}{52}{section*.141}%
+\contentsline {subsubsection}{Operación}{53}{section*.142}%
+\contentsline {subsubsection}{Coste de la replicación de motores DMA}{53}{section*.143}%
+\contentsline {subsection}{\numberline {3.7.3}Variante C --- AXI MCDMA con puente VHDL}{53}{subsection.3.7.3}%
+\contentsline {subsubsection}{Camino de transmisión}{54}{section*.145}%
+\contentsline {subsubsection}{Notificación de fin de transmisión (\texttt {TX\_ISR\_EOF\_HANDLER})}{54}{section*.146}%
+\contentsline {subsubsection}{Camino de recepción y etiquetado por TDEST}{56}{section*.148}%
+\contentsline {subsubsection}{Mapa de memoria y de interrupciones}{56}{section*.149}%
+\contentsline {subsubsection}{Construcción de descriptores \textit {scatter-gather} en el driver}{57}{section*.151}%
+\contentsline {subsection}{\numberline {3.7.4}Verificación y depuración iterativa del driver}{57}{subsection.3.7.4}%
+\contentsline {subsection}{\numberline {3.7.5}Banco de pruebas de \textit {loopback} en la PL}{59}{subsection.3.7.5}%
+\contentsline {chapter}{\numberline {4}Resultados}{61}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Validación CDHS}{61}{section.4.1}%
+\contentsline {subsection}{\numberline {4.1.1}Montaje}{61}{subsection.4.1.1}%
+\contentsline {subsection}{\numberline {4.1.2}Comunicaciones serie RS422/RS485}{62}{subsection.4.1.2}%
+\contentsline {subsubsection}{Efecto del control de \textit {slew rate}}{63}{section*.155}%
+\contentsline {subsection}{\numberline {4.1.3}Bus CAN}{64}{subsection.4.1.3}%
+\contentsline {subsection}{\numberline {4.1.4}ADC SPI (termistores)}{65}{subsection.4.1.4}%
+\contentsline {subsection}{\numberline {4.1.5}PWM (calentadores)}{67}{subsection.4.1.5}%
+\contentsline {section}{\numberline {4.2}Validación AOCS}{67}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Montaje}{67}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}Comunicaciones serie RS422/RS485}{68}{subsection.4.2.2}%
+\contentsline {subsection}{\numberline {4.2.3}PWM (puentes en H)}{70}{subsection.4.2.3}%
+\contentsline {section}{\numberline {4.3}Validación de la placa de comunicación serie}{70}{section.4.3}%
+\contentsline {subsection}{\numberline {4.3.1}Verificación del driver con catorce transceptores}{70}{subsection.4.3.1}%
+\contentsline {subsection}{\numberline {4.3.2}Comparativa de las arquitecturas de transporte PS--PL}{70}{subsection.4.3.2}%
+\contentsline {paragraph}{Limitación del método de medida en la variante DMA14.}{71}{section*.162}%
+\contentsline {subsubsection}{Coste de hardware}{71}{section*.163}%
+\contentsline {subsubsection}{Coste de software}{72}{section*.166}%
+\contentsline {subsubsection}{Coste en interrupciones}{72}{section*.168}%
+\contentsline {subsubsection}{Latencia}{73}{section*.171}%
+\contentsline {subsubsection}{\textit {Throughput}}{74}{section*.174}%
+\contentsline {subsubsection}{Barrido de velocidad}{74}{section*.177}%
+\contentsline {subsubsection}{Robustez}{75}{section*.180}%
+\contentsline {subsubsection}{Selección de la arquitectura de transporte}{76}{section*.182}%
+\contentsline {subsection}{\numberline {4.3.3}Caracterización eléctrica de la placa de comunicación serie}{77}{subsection.4.3.3}%
+\contentsline {subsubsection}{Batería de pruebas de caracterización}{78}{section*.186}%
+\contentsline {subsubsection}{Efecto del limitador de slew rate sobre la velocidad máxima}{79}{section*.188}%
+\contentsline {subsubsection}{Comportamiento del bus multipunto}{80}{section*.191}%
+\contentsline {subsubsection}{Integridad, aislamiento y estabilidad}{81}{section*.193}%
+\contentsline {subsubsection}{Limitaciones del método de medida}{82}{section*.195}%
+\contentsline {chapter}{\numberline {5}Conclusiones y líneas futuras}{83}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Conclusiones}{83}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Líneas futuras}{85}{section.5.2}%
+\contentsline {chapter}{Bibliograf\'{\i }a}{87}{chapter*.196}%
 \contentsline {chapter}{Anexo A: Mapas de señales, tabla del NCO y volumen de código}{89}{chapter*.197}%
 \contentsline {chapter}{Anexo B: Aspectos éticos, económicos, sociales y ambientales}{96}{chapter*.206}%
 \contentsline {chapter}{Anexo C: Presupuesto económico}{100}{chapter*.207}%
