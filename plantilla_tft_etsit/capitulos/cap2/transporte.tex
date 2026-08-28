@@ -29,7 +29,7 @@ perfiles:
     de alto rendimiento (HP), sin pasar por la CPU.
 
     \item \textbf{AXI4-Stream.} Perfil sin direcciones: un flujo continuo de datos con
-    señales de \textit{handshake} (\texttt{TVALID}/\texttt{TREADY}), marca de fin de paquete
+    señales de \textit{handshake} (\texttt{TVALID}/\texttt{TREADY})\footnote{Par de señales con el que emisor y receptor acuerdan cuándo un dato del flujo es válido y ha sido aceptado.}, marca de fin de paquete
     (\texttt{TLAST}) y, opcionalmente, un identificador de destino (\texttt{TDEST}). Es el
     perfil idóneo para conectar un periférico que produce o consume bytes en secuencia,
     como un UART.

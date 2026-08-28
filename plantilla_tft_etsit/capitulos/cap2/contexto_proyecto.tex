@@ -95,19 +95,19 @@ papel con topologías y prestaciones distintas.
 El estándar TIA/EIA-485 (RS485) define las características eléctricas de transmisores y
 receptores para enlaces serie diferenciales. Su rasgo distintivo es la topología multipunto:
 admite hasta 32 transceptores estándar sobre el mismo par de hilos, más si son de carga
-fraccional.
+fraccional\footnote{Receptores que cargan la línea con una fracción de la unidad estándar, lo que permite superar los 32 nodos.}.
 
 La información viaja como diferencia de tensión entre los hilos A y B, lo que da un alto rechazo
 al modo común. Se suele usar en \textit{half-duplex} sobre dos hilos, con transmisión y recepción
 compartiendo el medio; esto obliga a controlar por software el sentido del enlace (pines de
 \textit{driver enable}) para evitar colisiones. Alcanza unos 1200~m a baja velocidad o hasta
 decenas de Mbps en distancias cortas, y necesita resistencias de terminación de $120\,\Omega$ en
-los extremos del bus para evitar reflexiones~\cite{ti2014rs485,eia485a}.
+los extremos del bus para evitar reflexiones\footnote{Ecos de la señal en un extremo mal adaptado de la línea, que se superponen a los bits siguientes.}~\cite{ti2014rs485,eia485a}.
 
 \subsection{RS422}
 
 El estándar TIA/EIA-422 (RS422) comparte con el RS485 la señalización diferencial, pero no la
-topología: está pensado para enlaces punto a punto o \textit{multi-drop}, con un único transmisor
+topología: está pensado para enlaces punto a punto o \textit{multi-drop}\footnote{Un transmisor y varios receptores sobre el mismo par; los receptores no transmiten por esa línea.}, con un único transmisor
 y hasta 10 receptores por par.
 
 Los transceptores RS422 no ceden el control del bus, así que la comunicación bidireccional
@@ -122,9 +122,9 @@ SpaceWire es un estándar de red a bordo de alta velocidad coordinado por la ESA
 interconectar nodos de alto rendimiento como memorias masivas, procesadores de instrumento y
 enlaces de telemetría.
 
-En el nivel físico usa señalización LVDS y una codificación \textit{Data-Strobe}: en lugar de
+En el nivel físico usa señalización LVDS\footnote{\textit{Low-Voltage Differential Signaling}: par diferencial de unos 350~mV de excursión, para alta velocidad y bajo consumo.} y una codificación \textit{Data-Strobe}: en lugar de
 transmitir un reloj aparte, que a alta frecuencia se desalinearía respecto a los datos
-(\textit{skew}), envía los datos por un par y una señal \textit{strobe} por otro, de modo que el
+(\textit{skew}\footnote{Desfase temporal entre señales que deberían llegar a la vez; crece con la frecuencia y la longitud de las pistas.}), envía los datos por un par y una señal \textit{strobe} por otro, de modo que el
 reloj se recupera con una XOR entre ambas. Proporciona enlaces punto a punto \textit{full-duplex}
 asíncronos de 2 a más de 400~Mbps. Su pila incluye una capa de red que permite encaminar
 paquetes a través de \textit{routers} SpaceWire~\cite{ecss50spw,parkes2012spw}.
@@ -134,10 +134,10 @@ paquetes a través de \textit{routers} SpaceWire~\cite{ecss50spw,parkes2012spw}.
 El bus CAN nació en automoción y se usa como estándar de facto (\textit{CAN for Aerospace}) en
 las redes internas de telemetría y telecomando (TM/TC) de satélites pequeños y comerciales.
 
-Es multipunto y multimaestro, con acceso por escucha de portadora y arbitraje por prioridad de
+Es multipunto y multimaestro, con acceso por escucha de portadora\footnote{Cada nodo espera a que el bus esté en reposo antes de empezar a transmitir.} y arbitraje por prioridad de
 mensaje. Los nodos no tienen dirección: cada trama lleva un identificador que fija su contenido y
 su prioridad. Si dos nodos transmiten a la vez, la colisión se resuelve bit a bit y sin destruir
 datos: gana el identificador de mayor prioridad y el otro nodo reintenta. La capa de enlace añade
-detección de errores por hardware (CRC, \textit{bit stuffing}, comprobación de trama) y
+detección de errores por hardware (CRC, \textit{bit stuffing}\footnote{Inserción de un bit de polaridad contraria tras cinco bits iguales para que el receptor mantenga el sincronismo.}, comprobación de trama) y
 aislamiento automático de nodos defectuosos, de modo que un periférico averiado no bloquea el
 bus~\cite{iso118981,esa2015can}.

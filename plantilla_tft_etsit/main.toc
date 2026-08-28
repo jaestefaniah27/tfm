@@ -91,11 +91,11 @@
 \contentsline {subsection}{\numberline {2.5.1}RS485}{7}{subsection.2.5.1}%
 \contentsline {subsection}{\numberline {2.5.2}RS422}{7}{subsection.2.5.2}%
 \contentsline {subsection}{\numberline {2.5.3}SpaceWire}{7}{subsection.2.5.3}%
-\contentsline {subsection}{\numberline {2.5.4}CAN}{7}{subsection.2.5.4}%
+\contentsline {subsection}{\numberline {2.5.4}CAN}{8}{subsection.2.5.4}%
 \contentsline {section}{\numberline {2.6}Transporte de datos entre el PS y la PL}{8}{section.2.6}%
 \contentsline {subsection}{\numberline {2.6.1}Bus AXI}{8}{subsection.2.6.1}%
-\contentsline {subsection}{\numberline {2.6.2}Acceso directo a memoria (DMA)}{8}{subsection.2.6.2}%
-\contentsline {subsubsection}{AXI DMA (PG021)}{8}{section*.82}%
+\contentsline {subsection}{\numberline {2.6.2}Acceso directo a memoria (DMA)}{9}{subsection.2.6.2}%
+\contentsline {subsubsection}{AXI DMA (PG021)}{9}{section*.82}%
 \contentsline {subsubsection}{AXI MCDMA (PG288)}{9}{section*.83}%
 \contentsline {subsection}{\numberline {2.6.3}Coste de la interrupción}{9}{subsection.2.6.3}%
 \contentsline {chapter}{\numberline {3}Desarrollo}{11}{chapter.3}%
