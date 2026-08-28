@@ -14,6 +14,12 @@
 \newblock Indra Sistemas S.A., \url{https://www.ptelince.es/}, 2026.
 \newblock Recuperado el 12 de junio de 2026.
 
+\bibitem{atlassian_jira}
+{Atlassian}.
+\newblock Jira: Herramienta de gestión de proyectos ágiles.
+\newblock \url{https://www.atlassian.com/software/jira}, 2025.
+\newblock Consultado en 2025.
+
 \bibitem{repo_tfm}
 Jorge Antonio~Estefanía Hidalgo.
 \newblock Repositorio de código del {TFM}: transceptores serie configurables y

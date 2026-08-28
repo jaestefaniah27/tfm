@@ -1,13 +1,13 @@
 # Fdb version 4
-["bibtex main"] 1787916006.54689 "main.aux" "main.bbl" "main" 1787923293.08075 0
-  "./biblio.bib" 1786790390 7661 8d6d339e27a5b9b1e40a11461bf342ac ""
+["bibtex main"] 1787932014.20994 "main.aux" "main.bbl" "main" 1787932655.74236 0
+  "./biblio.bib" 1787931969 7949 91585e4d9fb20b9949fee0862b8c3950 ""
   "C:/Users/jaest/AppData/Local/Programs/MiKTeX/bibtex/bst/bibtex/unsrt.bst" 1291864736 18030 1376b4b231b50c66211e47e42eda2875 ""
-  "main.aux" 1787923291 63209 601d07410aa3976500f541f742826ecf "pdflatex"
+  "main.aux" 1787932654 63012 00a9825fd37d9dfb426b87f6a5973c92 "pdflatex"
   (generated)
   "main.bbl"
   "main.blg"
   (rewritten before read)
-["pdflatex"] 1787923283.73271 "c:/Users/jaest/OneDrive/Documentos/4_TELECO/TFM/tfm/plantilla_tft_etsit/main.tex" "main.pdf" "main" 1787923293.08236 0
+["pdflatex"] 1787932647.1658 "c:/Users/jaest/OneDrive/Documentos/4_TELECO/TFM/tfm/plantilla_tft_etsit/main.tex" "main.pdf" "main" 1787932655.74348 0
   "C:/Users/jaest/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1784721521 81107 70b8516c68c2e617189c5e44bfd16b96 ""
   "C:/Users/jaest/AppData/Local/MiKTeX/miktex/data/le/pdftex/pdflatex.fmt" 1784721418 13333487 2b57f6b798f17b72de8f560b4e2f4ea9 ""
   "C:/Users/jaest/AppData/Local/Programs/MiKTeX/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1233951848 1004 54797486969f23fa377b128694d548df ""
@@ -302,9 +302,9 @@
   "capitulos/anexos/anexo1.tex" 1787253711 16523 e478c5b81235cd7ac1480d274969e773 ""
   "capitulos/anexos/anexoA.tex" 1787255759 12445 388d11321a41cfa4e5f766103d8e732c ""
   "capitulos/anexos/anexoB.tex" 1787253711 7660 b3fbbb7c4c1a162cf46c639e8e5c98e7 ""
-  "capitulos/cap1/intro.tex" 1787254615 11838 89044de703c44bc8be17c7597f12478e ""
-  "capitulos/cap2/contexto_proyecto.tex" 1787254603 13936 92e5ba4f3edf87ad1960dd57575452d9 ""
-  "capitulos/cap2/transporte.tex" 1787254643 8321 fc47a4094dff929ab99a3f5078e8f02a ""
+  "capitulos/cap1/intro.tex" 1787932593 11710 8cd368d00a34a85f03dc26ad481866e9 ""
+  "capitulos/cap2/contexto_proyecto.tex" 1787928480 8740 4cbd5505d3cdd0d6eadf8ea536e18dff ""
+  "capitulos/cap2/transporte.tex" 1787928536 6667 9cec53f24c980f203a9452b2a8eb6c02 ""
   "capitulos/cap3/entorno_desarrollo.tex" 1787255759 109709 0dccf9965120030a32ab5d16faa186cc ""
   "capitulos/cap3/transporte.tex" 1787255759 29117 d0a3ece3c83b988d67f8d39e6ef80805 ""
   "capitulos/cap4/benchmark.tex" 1787255759 24138 ea7ded9fc605a19cf828a5932bf9169c ""
@@ -312,13 +312,13 @@
   "capitulos/cap4/validacion_hardware.tex" 1787255759 20834 e330d9a0481d2d32a623e8643eb87ed0 ""
   "capitulos/cap5/conclusiones.tex" 1787253711 8836 3d7c99d99f329201e3785828eac1e9ce ""
   "capitulos/cap5/lineasfuturas.tex" 1786748105 3310 c545d91aac3a66cef9e8ce766a864f9e ""
-  "main.aux" 1787923291 63209 601d07410aa3976500f541f742826ecf "pdflatex"
-  "main.bbl" 1787916006 5464 1742b10c50dc1aa3a7a80dbf5a947072 "bibtex main"
-  "main.lof" 1787923291 4859 8258e2228699f6d2fc7d7334d81d1c7d "pdflatex"
-  "main.lot" 1787923291 4306 5db128349028c3ef3c3fbe47ef7c8f2b "pdflatex"
-  "main.out" 1787923291 18378 af96de113c1e81d12c77611bcdaae7dc "pdflatex"
+  "main.aux" 1787932654 63012 00a9825fd37d9dfb426b87f6a5973c92 "pdflatex"
+  "main.bbl" 1787932014 5664 a3fd6af15203ca4f53bd957084dcb46d "bibtex main"
+  "main.lof" 1787932654 4859 0d8cb5a715d0cbaaa3256c6967f8aa27 "pdflatex"
+  "main.lot" 1787932654 4306 99a0697d808c6fa94fe7d2b2e8614e6d "pdflatex"
+  "main.out" 1787932654 18217 9cf45c20f285f42cc4310d2b1c5fdabb "pdflatex"
   "main.tex" 1786790725 8867 80a0218f7e4dfe65aba9033f2f110c18 ""
-  "main.toc" 1787923291 17986 e0ba5e65209f60a6ae65b26dad0cf231 "pdflatex"
+  "main.toc" 1787932654 17943 7d050d149c27865423410267f9025a5b "pdflatex"
   "portada/logosportada/byn.png" 1784714824 471429 95658a848915c5b2824083b34a61755b ""
   "portada/logosportada/logoetsit.png" 1784714824 209658 bc7e1ac26c5a84bb0c4b8ede1bee6907 ""
   "portada/portadaBlanca.tex" 1784714824 1004 49dc2c0677409852431b5722a64bd81d ""

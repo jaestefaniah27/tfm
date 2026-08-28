@@ -14,8 +14,9 @@ líder del consorcio. La
 Universidad Politécnica de Madrid participa a través del grupo B105 Electronic Systems Lab,
 responsable del subsistema de comunicaciones del ordenador de a bordo (OBC); este trabajo se
 desarrolla dentro de esa responsabilidad. El proyecto sigue el enfoque \textbf{NewSpace}: uso de
-componentes comerciales (COTS, \textit{commercial off-the-shelf}) frente a los cualificados para
-espacio, trasladando la fiabilidad desde la pieza individual hacia la arquitectura del sistema.
+componentes comerciales (COTS, \textit{commercial off-the-shelf}) frente al uso tradicional de componentes resistentes a la radiación,
+que son mucho más caros. Los efectos de la radiación
+se mitigan siguiendo estrategias como la reduncancia.
 
 El OBC concentra el control del satélite y se comunica con los periféricos de la plataforma
 (propulsores, cámaras, seguidores de estrellas, sensores térmicos) mediante enlaces serie.
@@ -84,7 +85,7 @@ objetivos específicos:
 \section{Metodología}
 
 Durante el desarrollo del trabajo se ha tenido un contacto estrecho con los compañeros de
-Sener. Se han seguido \textbf{metodologías ágiles} mediante el uso del programa \textit{Jira},
+Sener. Se han seguido \textbf{metodologías ágiles} mediante el uso del programa \textit{Jira}~\cite{atlassian_jira},
 que permite organizar las tareas en función del tiempo que requieren. La metodología ágil
 utilizada consiste en establecer las tareas que se van a realizar durante un tiempo
 establecido, denominado como \textit{Sprint}. Al final de cada \textit{Sprint}, se tiene una
@@ -94,8 +95,8 @@ finales. Durante la reunión los participantes se turnan para hablar. En nuestro
 \textit{sprints} han tenido una duración de dos semanas, y se han realizado un total de 20 sprints.
 
 Además de las reuniones de \textit{Sprint}, se ha mantenido una comunicación constante con el
-equipo de Sener para resolver todo tipo de dudas acerca de los requerimientos del proyecto, y
-de cómo orientar muchos aspectos.
+equipo de Sener para resolver todo tipo de dudas acerca de los requerimientos del proyecto y
+de cómo orientar el desarrollo.
 
 El trabajo se estructuró en tres fases principales:
 
@@ -110,27 +111,24 @@ para sistemas empotrados.
 
 \textbf{Fase 2: Desarrollo e integración (febrero -- junio):} Con el entorno establecido, se abordó
 el desarrollo principal: el transceptor serie en VHDL, el driver para RTEMS, el diseño de las
-PCB de comunicación serie, CDHS y AOCS, y las aplicaciones de prueba. Se siguió una metodología iterativa: cada
-módulo se implementaba, se validaba de forma aislada (mediante simulación en Vivado o
-prueba directa sobre la placa) y se integraba en el sistema global antes de avanzar al
-siguiente.
+PCB de comunicación serie, CDHS y AOCS, y las aplicaciones de prueba. Se siguió una metodología
+iterativa: cada módulo se implementaba, se validaba de forma aislada y se integraba en el sistema
+global antes de avanzar al siguiente.
+
+En el firmware (VHDL y C), cada bloque se comprobaba mediante simulaciones de \textit{testbench}
+antes de integrarlo en el sistema completo. Además, se realizaron simulaciones del sistema completo,
+que permitieron encontrar y corregir varios errores antes de llevar el diseño a la placa.
+
+En el hardware se asumió desde el principio la detección de errores de diseño como parte del
+proceso: cada placa se caracterizaba en el laboratorio y, cuando el calendario lo permitió, se
+corrigió y se volvió a fabricar. Quedó fuera del alcance la validación de la comunicación SpaceWire
+presente en la PCB AOCS, por su alta complejidad técnica.
 
 \textbf{Fase 3: Estudio del transporte y caracterización (junio -- julio):} Se caracterizó el firmware desarrollado (VHDL y C) y el hardware (PCBs) mediante un conjunto de pruebas, las cuales
 revelaron que la aproximación inicial del sistema de transporte de datos no era eficiente. Se desarrollaron
-dos alternativas nuevas: la primera consistió en un sistema de transporte basado en catorce controladores AXI DMA independientes,
+dos alternativas nuevas: la primera consistió en un sistema de transporte basado en un controlador AXI DMA independiente por canal,
 y la segunda en un sistema de transporte basado en un único controlador AXI MCDMA con un puente VHDL que multiplexa 
-los catorce canales. Ambas alternativas fueron implementadas y comparadas, revelando que la segunda alternativa era la 
-más eficiente y escalable. 
-
-En el diseño y fabricación del hardware se asumió desde el principio la detección de errores de
-diseño como parte del proceso: cada placa se caracterizaba en el laboratorio y, cuando el
-calendario lo permitía, se corregía y se volvía a fabricar. Quedó fuera del alcance la validación
-de la comunicación SpaceWire presente en la PCB AOCS, por su alta complejidad técnica.
-
-Durante el desarrollo de los bloques VHDL, se comprobó en todo momento el correcto funcionamiento de los mismos
-mediante simulaciones de \textit{testbench} antes de integrarlos en el sistema completo.
-Además, se realizaron simulaciones del sistema completo, las cuales permitieron encontrar y corregir
-algunos errores.
+todos los canales. Ambas alternativas fueron implementadas y comparadas.
 
 Por último, se desarrollaron múltiples automatizaciones en forma de scripts de shell, Python, TCL, etc,
 que agilizaron el flujo de trabajo permitiendo ahorrar tiempo en tareas repetitivas y eliminar errores manuales.
@@ -166,8 +164,8 @@ circuito impreso y las herramientas de prueba desarrolladas.
 
 El \textbf{capítulo 4} presenta los resultados: la validación de la placa de comunicación serie
 con los catorce transceptores en funcionamiento simultáneo, la comparativa
-cuantitativa entre las tres arquitecturas de transporte, la caracterización eléctrica de la placa y
-la validación de las placas CDHS y AOCS sobre cada uno de sus interfaces.
+cuantitativa entre las tres arquitecturas de transporte, la caracterización eléctrica de la placa de comunicación serie y
+la validación de las placas CDHS y AOCS sobre cada una de sus interfaces.
 
 El \textbf{capítulo 5} reúne las conclusiones y las líneas futuras de trabajo. El \textbf{anexo A}
 contiene los mapas de señales de las tres placas, la tabla del oscilador controlado numéricamente y

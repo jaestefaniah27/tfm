@@ -531,19 +531,10 @@ INPUT .\portada\logosportada\logoetsit.png
 INPUT .\portada\logosportada\logoetsit.png
 INPUT portada\logosportada\logoetsit.png
 INPUT .\portada\logosportada\logoetsit.png
-INPUT .\portada\logosportada\logoetsit.png
-INPUT .\portada\logosportada\logoetsit.png
-INPUT portada\logosportada\logoetsit.png
-INPUT .\portada\logosportada\logoetsit.png
-INPUT .\portada\logosportada\logoetsit.png
-INPUT .\portada\logosportada\logoetsit.png
-INPUT portada\logosportada\logoetsit.png
-INPUT .\portada\logosportada\logoetsit.png
 INPUT .\capitulos\cap2\transporte.tex
 INPUT capitulos\cap2\transporte.tex
 INPUT .\capitulos\cap2\transporte.tex
 INPUT capitulos\cap2\transporte.tex
-INPUT C:\Users\jaest\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmbxti10.tfm
 INPUT .\portada\logosportada\logoetsit.png
 INPUT .\portada\logosportada\logoetsit.png
 INPUT portada\logosportada\logoetsit.png
@@ -660,6 +651,7 @@ INPUT IMG\Desarrollo\diagrama_transceptor.pdf
 INPUT .\IMG\Desarrollo\diagrama_transceptor.pdf
 INPUT .\IMG\Desarrollo\diagrama_transceptor.pdf
 INPUT .\IMG\Desarrollo\diagrama_transceptor.pdf
+INPUT C:\Users\jaest\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmbxti10.tfm
 INPUT .\portada\logosportada\logoetsit.png
 INPUT .\portada\logosportada\logoetsit.png
 INPUT portada\logosportada\logoetsit.png

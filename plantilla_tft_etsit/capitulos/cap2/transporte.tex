@@ -4,16 +4,13 @@
 
 \section{Transporte de datos entre el PS y la PL}
 
-Implementar los transceptores serie en la lógica programable resuelve la mitad del
-problema: la serialización de los bits. Queda la otra mitad, que es la que realmente
-determina el rendimiento del sistema completo: \textbf{por dónde y a qué coste viajan los
-bytes entre la memoria del procesador y esos transceptores}. El MPSoC ofrece varios
-caminos para ello, y la elección entre ellos no es un detalle de implementación, sino una
-decisión de arquitectura con consecuencias directas sobre la carga de CPU, la latencia y
-la ocupación de la FPGA.
+El PS y la PL necesitan intercambiar flujos de bytes: los que un periférico de la PL recibe y hay
+que llevar a la memoria del procesador, y los que el procesador quiere transmitir. El MPSoC
+ofrece varias vías para ese intercambio de información, y la elección entre ellas no es un detalle de
+implementación: condiciona la carga de CPU, la latencia y el área ocupada en la FPGA.
 
-Esta sección describe los mecanismos disponibles. Su aplicación concreta se desarrolla en la
-sección~\ref{sec:transporte_desarrollo}.
+Esta sección describe los mecanismos disponibles: el bus que conecta ambos dominios, el acceso
+directo a memoria y el coste que impone el modelo de interrupciones.
 
 \subsection{Bus AXI}
 
@@ -22,10 +19,9 @@ implementan el estándar AMBA AXI4 de ARM~\cite{arm2011axi4}. El estándar defin
 perfiles:
 
 \begin{itemize}
-    \item \textbf{AXI4-Lite.} Perfil reducido, orientado a la lectura y escritura de
-    \textit{registros} individuales. Cada transacción mueve una palabra y requiere que el
-    procesador ejecute una instrucción de carga o almacenamiento. Este bus es comúnmente utilizado
-    para configurar periféricos.
+    \item \textbf{AXI4-Lite.} Perfil reducido para leer y escribir \textit{registros}
+    individuales. Cada transacción mueve una palabra y consume una instrucción de carga o
+    almacenamiento del procesador. Es el bus con el que se configuran los periféricos.
 
     \item \textbf{AXI4 \textit{full} (\textit{memory-mapped}).} Perfil completo, con soporte
     de ráfagas (\textit{bursts}) de hasta 256 transferencias por transacción. Es el bus que
@@ -73,63 +69,47 @@ autónomamente. El modo SG permite encadenar transferencias sin que la CPU inter
 ellas, a costa de que el propio DMA lea y escriba los descriptores en memoria.
 
 La limitación de este IP es que \textbf{sirve a un único \textit{stream}}. Para $N$ periféricos
-hacen falta $N$ instancias, con el consiguiente coste de área que esto supone, además de la
-complejidad en software de gestionar $N$ controladores independientes y $N$ interrupciones. 
+hacen falta $N$ instancias, con su coste de área y la complejidad de gestionar en software $N$
+controladores y $N$ interrupciones.
 
 \subsubsection{AXI MCDMA (PG288)}
 
-El IP \texttt{axi\_mcdma} \cite{xilinx2022pg288} es la respuesta a esa limitación: un
-controlador \textbf{multicanal} que multiplexa hasta 16 canales lógicos sobre un único motor y
-un único puerto hacia la memoria. Cada canal tiene su propio juego de registros, su propio
-anillo de descriptores y su propio \textit{buffer} en la DDR, pero comparten el hardware de
-transferencia.
+El IP \texttt{axi\_mcdma} \cite{xilinx2022pg288} levanta esa limitación: es un controlador
+\textbf{multicanal} que multiplexa hasta 16 canales lógicos sobre un único motor y un único
+puerto hacia la memoria. Cada canal tiene sus registros, su anillo de descriptores y su
+\textit{buffer} en la DDR, pero comparten el hardware de transferencia.
 
-El encaminamiento entre canales lógicos y flujos físicos se realiza gracias a la señal
-\textbf{\texttt{TDEST}} del AXI-Stream. En el sentido S2MM (entrada), el MCDMA lee el
-\texttt{TDEST} que acompaña a cada paquete, lo usa como identificador de canal y escribe la
-carga útil en el \textit{buffer} apuntado por el descriptor activo de ese canal; el
-demultiplexado, por tanto, lo resuelve el propio hardware sin intervención del procesador. En
-el sentido MM2S (salida), la operación es la inversa: el motor etiqueta cada paquete que emite
-con el \texttt{TDEST} del canal que lo originó, de modo que el periférico o el conmutador
-\textit{stream} situado aguas abajo pueda encaminarlo a su destino. Basta así un único par de
-interfaces AXI-Stream para dar servicio a los $N$ periféricos, frente a las $N$ instancias
-independientes que exigiría el \texttt{axi\_dma}.
+El reparto entre canales lo hace la señal \textbf{\texttt{TDEST}} del AXI-Stream. En recepción
+(S2MM), el MCDMA lee el \texttt{TDEST} de cada paquete, lo toma como número de canal y escribe la
+carga en el \textit{buffer} de ese canal, sin que el procesador intervenga en el demultiplexado.
+En transmisión (MM2S) hace lo inverso: etiqueta cada paquete con el \texttt{TDEST} de su canal de
+origen. Un solo par de interfaces AXI-Stream da servicio así a los $N$ periféricos.
 
-\subsection{El coste de la interrupción y el régimen de \textit{livelock}}
+\subsection{Coste de la interrupción}
 \label{sec:teoria_livelock}
 
-La razón por la que la elección de transporte determina el rendimiento del conjunto no está en el
-ancho de banda del bus, que sobra en todos los casos, sino en \textbf{cuántas veces se expropia al
-procesador}. Atender una interrupción no es gratis: exige salvar el contexto de la tarea en curso,
-saltar al vector correspondiente, ejecutar la rutina de servicio, reconocer la fuente en el
-controlador y restaurar el contexto. Ese coste es prácticamente constante, del orden de unos pocos
-microsegundos en un procesador empotrado, y \textbf{no depende del número de bytes que la
-interrupción transporte}.
+Lo que separa una vía de transporte de otra no es el ancho de banda del bus, que sobra en todos
+los casos, sino \textbf{cuántas veces se interrumpe al procesador}. Atender una interrupción
+obliga a salvar el contexto de la tarea en curso, saltar al vector, ejecutar la rutina de
+servicio, reconocer la fuente en el controlador y restaurar el contexto. Ese coste es casi
+constante, del orden de unos pocos microsegundos en un procesador empotrado, y \textbf{no depende
+de cuántos bytes traiga la interrupción}.
 
-De ahí se sigue el comportamiento característico de un sistema que interrumpe una vez por byte. Si
-$C$ es el coste de atender una interrupción y $T_b$ el tiempo que la línea tarda en entregar un
-byte, el procesador solo puede seguir el ritmo del enlace mientras $C < T_b$. Al aumentar la
-velocidad de línea, $T_b$ se reduce mientras $C$ permanece fijo, de modo que existe una velocidad a
-partir de la cual el sistema deja de mejorar: todo el tiempo de CPU se consume en entrar y salir de
-la rutina de servicio, y subir el baudrate no aporta ningún byte adicional a la aplicación. Con
-$N$ enlaces simultáneos el umbral se alcanza $N$ veces antes, porque el coste se acumula sobre el
-mismo procesador.
+Si un sistema interrumpe una vez por byte, el procesador sigue el ritmo del enlace solo mientras
+el coste $C$ de la interrupción sea menor que el tiempo $T_b$ que tarda en llegar un byte. Al
+subir la velocidad de línea, $T_b$ baja y $C$ no, así que hay una velocidad a partir de la cual
+toda la CPU se va en entrar y salir de la rutina de servicio y ningún byte más llega a la
+aplicación. Con $N$ enlaces simultáneos el umbral se alcanza $N$ veces antes.
 
-Este fenómeno se conoce como \textbf{\textit{interrupt livelock}} y fue caracterizado por Mogul y
-Ramakrishnan en el contexto de las interfaces de red~\cite{mogul1997livelock}: por encima de cierta
-tasa de llegada, el rendimiento útil de un sistema dirigido por interrupción no se estanca
-simplemente, sino que puede llegar a \textbf{degradarse}, porque la máquina dedica todo su tiempo a
-atender interrupciones y ninguno a procesar lo que esas interrupciones han traído. El sistema no se
-bloquea (sigue respondiendo a la línea) pero no progresa, que es exactamente lo que distingue el
-\textit{livelock} del interbloqueo clásico.
+Este régimen, descrito por Mogul y Ramakrishnan para las interfaces de
+red~\cite{mogul1997livelock}, se conoce como \textbf{\textit{interrupt livelock}}: por encima de
+cierta tasa de llegada, el rendimiento útil no solo se estanca, sino que puede caer, porque la
+máquina gasta todo su tiempo atendiendo interrupciones y nada procesando lo que traen. El sistema
+responde pero no progresa.
 
-Las dos técnicas habituales de mitigación son las mismas que se aplican en este trabajo:
-\textbf{desplazar el trabajo fuera del contexto de interrupción} hacia una tarea planificable
-(\textit{deferred interrupt processing}), que es lo que hace el driver descrito en la
-sección~\ref{sec:driver_rtems}, y sobre todo \textbf{cambiar la unidad de notificación}, pasando de
-interrumpir por byte a interrumpir por paquete, que es precisamente lo que aporta el acceso directo
-a memoria. La comparativa del capítulo de resultados
-(sección~\ref{sec:resultados_benchmark}) mide ese salto de forma directa, en interrupciones por
-kilobyte transferido.
+Hay dos formas de evitarlo: sacar el trabajo del contexto de interrupción hacia una tarea
+planificable (\textit{deferred interrupt processing}) y, sobre todo, cambiar la unidad de
+notificación, pasando de interrumpir por byte a interrumpir por paquete. Esto último es lo que
+aporta el acceso directo a memoria.
 
 
