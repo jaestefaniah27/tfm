@@ -354,7 +354,7 @@ Modo SLO. El bit BIT_SLO del registro de control activa en el hardware VHDL una 
 
 # desarrollo hardware
 
-Una vez completado el firmware del transceptor serie, se desarrolló el hardware de prueba necesario para validar el sistema en condiciones reales. El plan inicial era diseñar una única PCB propia para testear múltiples líneas serie. Posteriormente, el proyecto LINCE requirió dos tarjetas adicionales con especificaciones impuestas por Indra —la placa CDHS y la placa AOCS— para que Sener pudiera validar su firmware sobre la ZCU102. Los esquemáticos completos, BOMs y archivos de fabricación de las tres placas están disponibles en el repositorio del proyecto bajo `HARDWARE/`.
+Una vez completado el firmware del transceptor serie, se desarrolló el hardware de prueba necesario para validar el sistema en condiciones reales. El plan inicial era diseñar una única PCB propia para testear múltiples líneas serie. Posteriormente, el proyecto LINCE requirió dos tarjetas adicionales con especificaciones impuestas por Indra —la placa CDHS y la placa AOCS— para que Sener pudiera validar su firmware sobre la ZCU102. Los esquemáticos completos, BOMs y archivos de fabricación de las tres placas están disponibles en el repositorio del proyecto bajo `tfm/00_docs/pcbs/`.
 
 ## diseño placa de comunicación serie (diseño propio)
 
@@ -387,7 +387,7 @@ Para RS422, cada driver slave dispone de un conector con las líneas TX cruzadas
 
 > **[FIGURA: `LINCE_comunicacion_serial.pdf` — hoja RS422-Slave-Conector.SchDoc (hoja 12): circuito con el cruce TX↔RX y la sección "Use/Example" mostrando el master con sus esclavos conectados al bus]**
 
-El esquemático completo (12 hojas) y la BOM están disponibles en `HARDWARE/lince_comunicacion_serial/` del repositorio del proyecto.
+El esquemático completo (12 hojas) y la BOM están disponibles en `tfm/00_docs/pcbs/serial/` del repositorio del proyecto.
 
 > **[FIGURA: Foto de la placa LINCE Comunicación Serie fabricada (cara superior)]**
 
@@ -466,7 +466,7 @@ Los seis puertos D-Sub-9 (J1–J6) son de tipo macho o hembra según la convenci
 
 ### Mapa de señales
 
-El mapa completo de señales entre la placa CDHS y el conector FMC se encuentra en el Anexo 1 de este documento. El esquemático completo y la BOM están disponibles en `HARDWARE/CDHS/`.
+El mapa completo de señales entre la placa CDHS y el conector FMC se encuentra en el Anexo 1 de este documento. El esquemático completo y la BOM están disponibles en `tfm/00_docs/pcbs/cdhs/`.
 
 ## diseño placa aocs
 
@@ -496,7 +496,7 @@ Misma arquitectura que la placa CDHS: 12 V del FMC, convertidor DC/DC para los 5
 
 ### Mapa de señales
 
-El mapa completo de señales entre la placa AOCS y el conector FMC se encuentra en el Anexo 1 de este documento. El esquemático completo y la BOM están disponibles en `HARDWARE/AOCS/`.
+El mapa completo de señales entre la placa AOCS y el conector FMC se encuentra en el Anexo 1 de este documento. El esquemático completo y la BOM están disponibles en `tfm/00_docs/pcbs/aocs/`.
 
 ## fabricación
 

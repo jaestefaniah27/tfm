@@ -1,6 +1,6 @@
-PWD C:\Users\jaest\OneDrive\Documentos\4_TELECO\TFM\tfm\plantilla_tft_etsit
+PWD c:\Users\jaest\OneDrive\Documentos\4_TELECO\TFM\tfm\plantilla_tft_etsit
 INPUT C:\Users\jaest\AppData\Local\MiKTeX\miktex\data\le\pdftex\pdflatex.fmt
-INPUT main.tex
+INPUT c:\Users\jaest\OneDrive\Documentos\4_TELECO\TFM\tfm\plantilla_tft_etsit\main.tex
 OUTPUT main.log
 INPUT C:\Users\jaest\AppData\Local\Programs\MiKTeX\tex\latex\base\book.cls
 INPUT C:\Users\jaest\AppData\Local\Programs\MiKTeX\tex\latex\base\book.cls

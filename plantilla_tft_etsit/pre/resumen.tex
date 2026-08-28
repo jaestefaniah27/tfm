@@ -16,7 +16,8 @@ la lógica programable del MPSoC.
 
 En segundo lugar, el desarrollo de un driver serie en C sobre el sistema operativo en tiempo real RTEMS 
 en el sistema de procesamiento del MPSoC, que utiliza el transceptor serie desarrollado y ofrece una 
-API pública que abstrae completamente del hardware. 
+API pública que abstrae completamente del hardware.
+
 En tercer lugar, el diseño y fabricación de tres placas de circuito impreso de ampliación de la ZCU102
 que se conectan a ella para expandir sus capacidades y permiten ampliar la ventana de
 desarrollo. La primera placa ofrece soporte hardware para 7 líneas RS422 y 7 líneas RS485,
@@ -28,9 +29,9 @@ PWM y dos líneas SpaceWire.
 
 En cuarto lugar, el estudio del transporte de datos entre el sistema de procesamiento y la lógica
 programable, que resultó ser el factor determinante del rendimiento del conjunto. Se implementaron
-y midieron tres arquitecturas completas sobre el mismo transceptor: una basada en AXI GPIO, otra
-con catorce controladores de acceso directo a memoria (DMA) y una tercera con un único controlador
-multicanal (MCDMA) gobernado por un puente diseñado en VHDL. La comparativa demuestra que la
+y midieron tres arquitecturas completas sobre el mismo transceptor: la primera basada en AXI GPIO,
+la segunda con un controlador de acceso directo a memoria (DMA) por transceptor y la tercera con un
+único controlador multicanal (MCDMA) gobernado por un puente diseñado en VHDL. La comparativa demuestra que la
 primera interrumpe al procesador una vez por byte y se queda en el 30\% del techo de la línea,
 mientras que la tercera alcanza el 99\% con cuatrocientas veces menos interrupciones.
 
@@ -72,9 +73,9 @@ SpaceWire lines.
 
 Fourth, the study of data transport between the processing system and the programmable logic, which
 proved to be the determining factor in the overall performance of the system. Three complete
-architectures were implemented and measured on the same transceiver: one based on AXI GPIO, another
-with fourteen independent direct memory access (DMA) controllers, and a third one with a single
-multichannel controller (MCDMA) governed by a bridge designed in VHDL. The comparison shows that
+architectures were implemented and measured on the same transceiver: the first one based on AXI
+GPIO, the second one with a direct memory access (DMA) controller per transceiver, and the third
+one with a single multichannel controller (MCDMA) governed by a bridge designed in VHDL. The comparison shows that
 the first one interrupts the processor once per byte and reaches only 30\% of the physical limit of
 the line, whereas the third one reaches 99\% with four hundred times fewer interrupts.
 
