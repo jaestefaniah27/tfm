@@ -291,8 +291,8 @@ fundamentales son:
 
 \begin{itemize}
     \item \textbf{Oscilador controlado numéricamente} (\texttt{NCO.vhd}): proporciona la señal
-    de temporización de bit para las 54 velocidades soportadas, para que transmisor y
-    receptor puedan trabajar a cualquiera de ellas.
+    de temporización de bit para las 54 velocidades soportadas; el transmisor y el
+    receptor instancian uno cada uno para poder trabajar a cualquiera de ellas.
     \item \textbf{Transmisor} (\texttt{TX\_CONFIGURABLE\_SERIAL.vhd}): serializa y emite las
     tramas, y gobierna la señal de \textit{Driver Enable} del transceptor físico.
     \item \textbf{Receptor} (\texttt{RX\_CONFIGURABLE\_SERIAL.vhd}): detecta el inicio de trama,
@@ -317,16 +317,17 @@ Los parámetros configurables son:
     \item Número de bits de datos (entre 5 y 9).
 \end{itemize}
 
-Los apartados que siguen recorren cada uno de esos bloques en el mismo orden en que un dato los
-atraviesa: primero la base de tiempos que comparten transmisor y receptor, después los dos caminos
-de datos, y por último los bloques que los acoplan al PS. El
-apartado~\ref{sec:bloque_canal} cierra el recorrido con el diagrama de conjunto
-(figura~\ref{fig:transceptor_bloques}), una vez presentadas todas las piezas que aparecen en él.
+Los siguientes apartados describen esos bloques uno a uno, siguiendo el camino que recorre un
+dato. Primero, el NCO, que marca la base de tiempos: el transmisor y el receptor tienen cada
+uno el suyo. Después, el transmisor y el receptor. Y por último, los bloques que los conectan
+al PS. El
+apartado~\ref{sec:bloque_canal} cierra con el diagrama de conjunto
+(figura~\ref{fig:transceptor_bloques}), cuando ya se han presentado todas sus piezas.
 
 \subsection{Oscilador controlado numéricamente (NCO)}
 
-El transmisor y el receptor comparten una misma base de tiempos, que es el bloque que se describe
-en primer lugar porque su salida, el \textit{tick}, es la referencia con la que ambos miden el
+El transmisor y el receptor tienen cada uno su propia base de tiempos, un NCO que se describe
+en primer lugar porque su salida, el \textit{tick}, es la referencia con la que cada uno mide el
 tiempo de bit.
 
 El transceptor debía poder variar su velocidad en tiempo de ejecución sobre un rango muy amplio
@@ -359,15 +360,16 @@ semiperiodos de bit, algo que necesitan tanto el transmisor, en el campo de para
 receptor, en el bit de inicio. Tabularlo en lugar de duplicar el primero evita arrastrar
 multiplicado por dos el error de truncamiento del incremento nominal.
 
-Las dos entradas de control restantes son las que permiten a las máquinas de estados del
-transmisor y del receptor anclar la fase del temporizador: \texttt{rst} pone a cero acumulador y
+Las dos entradas de control restantes son las que permiten a la máquina de estados del
+transmisor y a la del receptor anclar la fase de su temporizador: \texttt{rst} pone a cero acumulador y
 salida, con lo que el \textit{tick} arranca alineado con el inicio de la trama, y \texttt{en}
 congela el acumulador en los estados en los que no se necesita temporización, evitando que la fase
 derive entre tramas. La salida \texttt{tick} está registrada, por lo que aparece un ciclo de reloj
 después del desbordamiento.
 
 Para validar su funcionamiento se desarrolló un \textit{testbench} dedicado,
-\texttt{tb\_NCO.vhd}, que barre las \textbf{29 velocidades del rango de uso} (de 9\,600 a
+\texttt{tb\_NCO.vhd} (en \texttt{tfm/01\_ip\_serie/testbench/} del repositorio del
+proyecto~\cite{repo_tfm}), que barre las \textbf{29 velocidades del rango de uso} (de 9\,600 a
 3,6864~Mbaudios) en sus \textbf{dos modos} de temporización, y mide en cada punto la frecuencia
 real del \textit{tick} promediando 200 períodos tras descartar los diez primeros. Son 58 medidas
 independientes; las entradas de la tabla por debajo de 9\,600~baudios y la de 4~Mbaudios no se
@@ -478,95 +480,6 @@ comportamiento se organiza en siete estados:
     línea en reposo otros tantos ciclos antes de volver a \texttt{Idle}, donde
     \texttt{DE} se libera.
 \end{itemize}
-
-La figura~\ref{fig:cronograma_trama} recoge la secuencia completa de una trama sobre la línea, con
-la relación temporal entre los tres elementos que gobiernan el enlace: la ventana de \texttt{DE},
-los \textit{ticks} con los que el transmisor delimita cada bit y los instantes en los que el
-receptor muestrea. La configuración representada es de 8 bits de datos, paridad par, un bit de
-parada y orden LSB \textit{first}, con el dato \texttt{0x53}. El transmisor consume un \textit{tick}
-por frontera de bit y pasa al doble de frecuencia en el campo de parada, donde cuenta semiperiodos.
-El receptor, tras alinear su fase medio bit después del flanco de inicio, muestrea en el centro de
-cada bit; el primer muestreo, en el centro del bit de inicio, es el que descarta los falsos inicios
-de trama. Las zonas sombreadas \texttt{PreDE} y \texttt{PostDE} no están dibujadas a escala: duran
-100~$\mu$s frente a los 8,7~$\mu$s del tiempo de bit a 115\,200~baudios.
-
-\begin{figure}[H]
-    \centering
-    % babel-spanish activa < y >, que TikZ necesita para las puntas de flecha
-    \shorthandoff{<>}%
-    \resizebox{\textwidth}{!}{%
-    \begin{tikzpicture}[
-        x=1cm, y=1cm,
-        wave/.style={line width=1pt, line join=round},
-        guide/.style={gray!55, dashed, line width=0.3pt},
-        rowlbl/.style={font=\small, anchor=east},
-        fieldlbl/.style={font=\small, anchor=south},
-        meas/.style={<->, line width=0.5pt}]
-
-    % --- Zonas no dibujadas a escala (PreDE / PostDE)
-    \fill[gray!12] (1.4,0.20) rectangle (3.2,4.90);
-    \fill[gray!12] (14.2,0.20) rectangle (16.0,4.90);
-
-    % --- Líneas de separación de campo
-    \foreach \x in {1.4,3.2,4.2,5.2,6.2,7.2,8.2,9.2,10.2,11.2,12.2,13.2,14.2,16.0}
-        \draw[guide] (\x,0.20) -- (\x,4.90);
-
-    % --- Etiquetas de campo
-    \node[fieldlbl] at (0.7,4.95)  {Reposo};
-    \node[fieldlbl] at (2.3,4.95)  {\texttt{PreDE}};
-    \node[fieldlbl] at (3.7,4.95)  {Inicio};
-    \foreach \i/\x in {0/4.7,1/5.7,2/6.7,3/7.7,4/8.7,5/9.7,6/10.7,7/11.7}
-        \node[fieldlbl] at (\x,4.95) {D\i};
-    \node[fieldlbl] at (12.7,4.95) {P};
-    \node[fieldlbl] at (13.7,4.95) {Parada};
-    \node[fieldlbl] at (15.1,4.95) {\texttt{PostDE}};
-    \node[fieldlbl] at (16.7,4.95) {Reposo};
-
-    % --- DE
-    \node[rowlbl] at (-0.15,4.30) {\texttt{DE}};
-    \draw[wave] (0,4.0) -- (1.4,4.0) -- (1.4,4.6) -- (16.0,4.6) -- (16.0,4.0) -- (17.4,4.0);
-
-    % --- TX (byte 0x53, LSB first: 1 1 0 0 1 0 1 0; paridad par = 0)
-    \node[rowlbl] at (-0.15,2.90) {\texttt{TX}};
-    \draw[wave] (0,3.2) -- (3.2,3.2) -- (3.2,2.6) -- (4.2,2.6)
-                -- (4.2,3.2) -- (6.2,3.2) -- (6.2,2.6) -- (8.2,2.6)
-                -- (8.2,3.2) -- (9.2,3.2) -- (9.2,2.6) -- (10.2,2.6)
-                -- (10.2,3.2) -- (11.2,3.2) -- (11.2,2.6) -- (13.2,2.6)
-                -- (13.2,3.2) -- (17.4,3.2);
-
-    % --- Marcas de ruptura de escala
-    \foreach \y in {4.6,3.2} {
-        \fill[white] (2.18,\y-0.13) rectangle (2.52,\y+0.13);
-        \draw[line width=0.6pt] (2.20,\y-0.16) -- (2.38,\y+0.16);
-        \draw[line width=0.6pt] (2.34,\y-0.16) -- (2.52,\y+0.16);
-        \fill[white] (14.98,\y-0.13) rectangle (15.32,\y+0.13);
-        \draw[line width=0.6pt] (15.00,\y-0.16) -- (15.18,\y+0.16);
-        \draw[line width=0.6pt] (15.14,\y-0.16) -- (15.32,\y+0.16);
-    }
-
-    % --- tick del NCO en el transmisor: un pulso por frontera de bit,
-    %     y al doble de frecuencia durante el campo de parada
-    \node[rowlbl] at (-0.15,1.60) {\texttt{tick} (TX)};
-    \draw[wave] (0,1.4) -- (17.4,1.4);
-    \foreach \x in {4.2,5.2,6.2,7.2,8.2,9.2,10.2,11.2,12.2,13.2,13.7,14.2}
-        \draw[wave] (\x-0.06,1.4) -- (\x-0.06,1.95) -- (\x+0.06,1.95) -- (\x+0.06,1.4);
-
-    % --- Instantes de muestreo del receptor: centro de cada bit
-    \node[rowlbl] at (-0.15,0.75) {Muestreo RX};
-    \foreach \x in {3.7,4.7,5.7,6.7,7.7,8.7,9.7,10.7,11.7,12.7,13.7} {
-        \draw[guide] (\x,0.50) -- (\x,3.35);
-        \draw[->, line width=0.9pt] (\x,0.50) -- (\x,1.05);
-    }
-
-    % --- Medidas de tiempo
-    \draw[meas] (3.2,0.05) -- (3.7,0.05) node[midway, below=2pt, font=\small] {$T_b/2$};
-    \draw[meas] (4.7,0.05) -- (5.7,0.05) node[midway, below=2pt, font=\small] {$T_b$};
-
-    \end{tikzpicture}}%
-    \shorthandon{<>}
-    \caption{Cronograma de una trama completa en configuración 8E1, LSB \textit{first}.}
-    \label{fig:cronograma_trama}
-\end{figure}
 
 \subsubsection{Lógica de apoyo a la máquina de estados}
 
@@ -729,6 +642,98 @@ instantes de muestreo marcados en la figura~\ref{fig:cronograma_trama}.
 Esta técnica es una práctica estándar de robustez en receptores UART, y es la que resolvió los
 caracteres corruptos observados en las pruebas sobre la placa CDHS: con ella no volvió a aparecer
 ninguno en las pruebas posteriores.
+
+\subsubsection{Cronograma de una trama completa}
+
+Con el transmisor y el receptor ya descritos, la figura~\ref{fig:cronograma_trama} recoge la
+secuencia completa de una trama sobre la línea, con la relación temporal entre los tres elementos
+que gobiernan el enlace: la ventana de \texttt{DE}, los \textit{ticks} con los que el transmisor
+delimita cada bit y los instantes en los que el receptor muestrea. La configuración representada es
+de 8 bits de datos, paridad par, un bit de parada y orden LSB \textit{first}, con el dato
+\texttt{0x53}. El transmisor consume un \textit{tick} por frontera de bit y pasa al doble de
+frecuencia en el campo de parada, donde cuenta semiperiodos. El receptor, tras alinear su fase
+medio bit después del flanco de inicio, muestrea en el centro de cada bit; el primer muestreo, en
+el centro del bit de inicio, es el que descarta los falsos inicios de trama. Las zonas sombreadas
+\texttt{PreDE} y \texttt{PostDE} no están dibujadas a escala: duran 100~$\mu$s frente a los
+8,7~$\mu$s del tiempo de bit a 115\,200~baudios.
+
+\begin{figure}[H]
+    \centering
+    % babel-spanish activa < y >, que TikZ necesita para las puntas de flecha
+    \shorthandoff{<>}%
+    \resizebox{\textwidth}{!}{%
+    \begin{tikzpicture}[
+        x=1cm, y=1cm,
+        wave/.style={line width=1pt, line join=round},
+        guide/.style={gray!55, dashed, line width=0.3pt},
+        rowlbl/.style={font=\small, anchor=east},
+        fieldlbl/.style={font=\small, anchor=south},
+        meas/.style={<->, line width=0.5pt}]
+
+    % --- Zonas no dibujadas a escala (PreDE / PostDE)
+    \fill[gray!12] (1.4,0.20) rectangle (3.2,4.90);
+    \fill[gray!12] (15.2,0.20) rectangle (17.0,4.90);
+
+    % --- Líneas de separación de campo
+    \foreach \x in {1.4,3.2,4.2,5.2,6.2,7.2,8.2,9.2,10.2,11.2,12.2,13.7,15.2,17.0}
+        \draw[guide] (\x,0.20) -- (\x,4.90);
+
+    % --- Etiquetas de campo
+    \node[fieldlbl] at (0.7,4.95)   {Reposo};
+    \node[fieldlbl] at (2.3,4.95)   {\texttt{PreDE}};
+    \node[fieldlbl] at (3.7,4.95)   {Inicio};
+    \foreach \i/\x in {0/4.7,1/5.7,2/6.7,3/7.7,4/8.7,5/9.7,6/10.7,7/11.7}
+        \node[fieldlbl] at (\x,4.95) {D\i};
+    \node[fieldlbl] at (12.95,4.95) {Paridad};
+    \node[fieldlbl] at (14.45,4.95) {Parada};
+    \node[fieldlbl] at (16.1,4.95)  {\texttt{PostDE}};
+    \node[fieldlbl] at (17.7,4.95)  {Reposo};
+
+    % --- DE
+    \node[rowlbl] at (-0.15,4.30) {\texttt{DE}};
+    \draw[wave] (0,4.0) -- (1.4,4.0) -- (1.4,4.6) -- (17.0,4.6) -- (17.0,4.0) -- (18.4,4.0);
+
+    % --- TX (byte 0x53, LSB first: 1 1 0 0 1 0 1 0; paridad par = 0)
+    \node[rowlbl] at (-0.15,2.90) {\texttt{TX}};
+    \draw[wave] (0,3.2) -- (3.2,3.2) -- (3.2,2.6) -- (4.2,2.6)
+                -- (4.2,3.2) -- (6.2,3.2) -- (6.2,2.6) -- (8.2,2.6)
+                -- (8.2,3.2) -- (9.2,3.2) -- (9.2,2.6) -- (10.2,2.6)
+                -- (10.2,3.2) -- (11.2,3.2) -- (11.2,2.6) -- (13.7,2.6)
+                -- (13.7,3.2) -- (18.4,3.2);
+
+    % --- Marcas de ruptura de escala
+    \foreach \y in {4.6,3.2} {
+        \fill[white] (2.18,\y-0.13) rectangle (2.52,\y+0.13);
+        \draw[line width=0.6pt] (2.20,\y-0.16) -- (2.38,\y+0.16);
+        \draw[line width=0.6pt] (2.34,\y-0.16) -- (2.52,\y+0.16);
+        \fill[white] (15.93,\y-0.13) rectangle (16.27,\y+0.13);
+        \draw[line width=0.6pt] (15.95,\y-0.16) -- (16.13,\y+0.16);
+        \draw[line width=0.6pt] (16.09,\y-0.16) -- (16.27,\y+0.16);
+    }
+
+    % --- tick del NCO en el transmisor: un pulso por frontera de bit,
+    %     y al doble de frecuencia durante el campo de parada
+    \node[rowlbl] at (-0.15,1.60) {\texttt{tick} (TX)};
+    \draw[wave] (0,1.4) -- (18.4,1.4);
+    \foreach \x in {4.2,5.2,6.2,7.2,8.2,9.2,10.2,11.2,12.2,13.7,14.45,15.2}
+        \draw[wave] (\x-0.06,1.4) -- (\x-0.06,1.95) -- (\x+0.06,1.95) -- (\x+0.06,1.4);
+
+    % --- Instantes de muestreo del receptor: centro de cada bit
+    \node[rowlbl] at (-0.15,0.75) {Muestreo RX};
+    \foreach \x in {3.7,4.7,5.7,6.7,7.7,8.7,9.7,10.7,11.7,12.95,14.45} {
+        \draw[guide] (\x,0.50) -- (\x,3.35);
+        \draw[->, line width=0.9pt] (\x,0.50) -- (\x,1.05);
+    }
+
+    % --- Medidas de tiempo
+    \draw[meas] (3.2,0.05) -- (3.7,0.05) node[midway, below=2pt, font=\small] {$T_b/2$};
+    \draw[meas] (4.7,0.05) -- (5.7,0.05) node[midway, below=2pt, font=\small] {$T_b$};
+
+    \end{tikzpicture}}%
+    \shorthandon{<>}
+    \caption{Cronograma de una trama completa en configuración 8E1, LSB \textit{first}.}
+    \label{fig:cronograma_trama}
+\end{figure}
 
 \subsection{Registro de desplazamiento}
 
@@ -904,7 +909,8 @@ Cada bloque descrito en los apartados anteriores tiene su propio \textit{testben
 comprobación que realmente acredita el transceptor es la del canal completo, porque es la única que
 ejercita a la vez las dos máquinas de estados, la normalización del registro de desplazamiento y la
 coherencia entre la paridad generada y la esperada. El \textit{testbench}
-\texttt{tb\_CONFIGURABLE\_SERIAL\_TOP.vhd} conecta la salida \texttt{TX} del canal a su propia
+\texttt{tb\_CONFIGURABLE\_SERIAL\_TOP.vhd}, en \texttt{tfm/01\_ip\_serie/testbench/} del
+repositorio del proyecto~\cite{repo_tfm}, conecta la salida \texttt{TX} del canal a su propia
 entrada \texttt{RD} y \textbf{recorre el espacio de configuración completo} a 921\,600~baudios:
 cinco anchuras de palabra (5 a 9 bits) $\times$ dos órdenes de bit $\times$ tres campos de parada
 (1, 1,5 y 2) $\times$ cinco modos de paridad, es decir \textbf{150 configuraciones}, con tres
