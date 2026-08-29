@@ -1031,7 +1031,7 @@ procesador, estructurada como un AXI GPIO de doble canal:
 
 Adicionalmente, un bloque de información del sistema situado en la dirección fija
 \texttt{0xA0020000} expone en tiempo de ejecución el número de transceptores instanciados, el
-\textit{stride} de memoria entre instancias y la dirección base de la primera de ellas. Más allá del
+\textit{stride} de memoria entre instancias\footnote{Distancia en bytes entre la dirección base de una instancia y la de la siguiente; permite recorrer todos los transceptores sumando un desplazamiento fijo a la dirección de la primera.} y la dirección base de la primera de ellas. Más allá del
 último transceptor se aloja el controlador de interrupciones AXI INTC, compartido por todas
 las instancias.
 
@@ -1156,13 +1156,10 @@ a la \texttt{Master\_ISR} localizar en $O(1)$ el objeto \texttt{Transceiver} aso
 interrupción, evitando búsquedas costosas en contexto de ISR.
 
 \textbf{Modo SLO.} El bit \texttt{BIT\_SLO} del registro de control \textbf{no actúa sobre la lógica
-en VHDL}: se limita a propagarse hasta el pin \texttt{SLO} del chip transceptor de la PCB, que es
-quien realmente limita la velocidad de flanco de sus salidas diferenciales. Un flanco más lento
-reduce el contenido espectral de alta frecuencia y mejora la compatibilidad electromagnética, a
-costa de limitar la velocidad máxima del enlace. En el transceptor empleado ese pin es un
-habilitador de modo lento \textbf{activo a nivel bajo}, de modo que el nombre de la macro en
-\texttt{transceiver.h} induce a error y el valor por defecto deja el limitador \textit{activado};
-su efecto sobre la velocidad máxima se cuantifica en la sección~\ref{sec:resultados_pcb}.
+en VHDL}: se limita a propagarse hasta el pin \texttt{SLO} del chip transceptor de la PCB. El
+driver solo expone el bit; su efecto eléctrico y la cuantificación de su impacto sobre la
+velocidad máxima del enlace se tratan con la caracterización de la placa
+(sección~\ref{sec:pcb_slo}).
 
 % ---------------------------------------------------------------------------
 \section{Diseño hardware}
@@ -1172,7 +1169,7 @@ Una vez completado el firmware del transceptor serie, se desarrolló el hardware
 necesario para validar el sistema en condiciones reales. El plan inicial era diseñar una única
 placa de comunicación serie para ejercitar múltiples líneas a la vez. Posteriormente, el proyecto LINCE requirió
 dos tarjetas adicionales con especificaciones impuestas por Indra, la placa CDHS y la placa
-AOCS, para que Sener pudiera validar su firmware sobre la ZCU102. Los esquemáticos (PDF)
+AOCS, para que Indra pudiera validar su firmware sobre la ZCU102. Los esquemáticos (PDF)
 y las BOM de las tres placas están disponibles en el repositorio del proyecto~\cite{repo_tfm} bajo
 \texttt{tfm/00\_docs/pcbs/}.
 
@@ -1183,8 +1180,8 @@ plataforma.
 
 Los bancos de entrada/salida del conector FMC HPC empleados por estas tarjetas operan a
 \textbf{1,8~V}: es el nivel del carril \texttt{VADJ} con el que la ZCU102 alimenta la interfaz. Todo
-componente que se conecte directamente a esos pines debe, por tanto, admitir una tensión de
-alimentación de E/S (\textit{VIO}) de 1,8~V. La alternativa, interponer adaptadores de nivel entre
+componente que se conecte directamente a esos pines debe, por tanto, admitir una
+\textit{VIO}\footnote{\textit{Voltage Input/Output}: tensión con la que se alimenta el banco de entrada/salida digital de un circuito integrado, independiente de la de su núcleo; fija los niveles lógicos que la pieza acepta y entrega en sus pines.} de 1,8~V. La alternativa, interponer adaptadores de nivel entre
 el MPSoC y cada transceptor, añade componentes activos en el camino de señal, introduce retardo
 de propagación en líneas que conmutan a varios megabaudios y multiplica los puntos de fallo. Se
 descartó salvo donde fue inevitable, y se buscaron deliberadamente componentes con \textit{VIO}
@@ -1198,23 +1195,26 @@ con niveles lógicos de 3,3~V o 5~V, herederos de una generación tecnológica a
 encontró ninguno cuya interfaz digital fuera compatible con 1,8~V. La restricción de la plataforma
 y el catálogo de componentes cualificados para espacio resultaron incompatibles.
 
-La consecuencia es una decisión de diseño coherente con la filosofía NewSpace descrita en la
-introducción: se recurrió a \textbf{componentes comerciales}, seleccionando dentro de ellos el
-grado de calidad más alto disponible que cumpliera la restricción eléctrica. En la práctica, eso
-significó priorizar piezas de \textbf{grado automotriz} (cualificación AEC-Q100, identificable por
-el sufijo \texttt{Q1} en la referencia), que imponen rangos de temperatura extendidos y niveles de
+Al no encontrarse componentes con herencia de vuelo, se buscó el \textbf{grado automotriz} (cualificación
+AEC-Q100\footnote{Norma del \textit{Automotive Electronics Council} que somete a los circuitos
+integrados a ensayos de estrés (ciclado térmico, humedad, vida acelerada) para garantizar su
+operación en el rango de temperatura y fiabilidad exigidos por la industria del automóvil.}), que
+impone rangos de temperatura extendidos y niveles de
 robustez muy superiores a los de grado comercial, y que son el sustituto habitual del componente
 cualificado para espacio en misiones de bajo coste. Los transceptores \texttt{TCAN1044AVDRQ1} del
 bus CAN y el conversor analógico-digital \texttt{ADS7950QDBTRQ1} de la placa CDHS responden a este
 criterio, igual que el transceptor \texttt{THVD1424RGTR} de los canales serie de las placas CDHS y
 AOCS, elegido por soportar \textit{VIO} de 1,8~V de forma nativa.
 
-Esta elección tiene un coste: las tarjetas diseñadas son \textbf{hardware de
-validación funcional, no hardware de vuelo}. Permiten verificar el subsistema de comunicaciones en
-condiciones eléctricas realistas, que es su propósito, pero un modelo de vuelo exigiría rehacer la
-selección de componentes atendiendo a tolerancia a radiación, \textit{outgassing} y cualificación
-térmica, y muy probablemente replantear el nivel lógico de la interfaz para poder acceder al
-catálogo cualificado.
+Esta elección es la adecuada para el objetivo del trabajo: lo que se exige de estas
+tarjetas es la \textbf{validación funcional} del subsistema de comunicaciones, no que constituyan
+un \textbf{modelo de vuelo}. Con componentes de grado automotriz se verifica el subsistema en
+condiciones eléctricas realistas, que es su propósito, sin incurrir en el coste ni en los plazos de
+una selección cualificada para espacio. Además, la investigación de componentes deja una conclusión
+útil para cuando se aborde el modelo de vuelo: no existe en catálogo ningún transceptor con
+herencia de vuelo cuya interfaz digital opere a 1,8~V, de modo que ese modelo tendrá que renunciar
+a la lógica nativa de la plataforma y adaptar la interfaz a componentes de una generación anterior,
+con niveles de 3,3~V o 5~V, para poder acceder al catálogo cualificado.
 
 \subsection{Reglas de diseño y proceso de fabricación}
 
@@ -1269,14 +1269,33 @@ La arquitectura general de la placa divide los 14 canales en dos grupos conectad
     TX cruzada con RX para emular la conexión real punto a punto RS422.
 \end{itemize}
 
-La figura~\ref{fig:placa_serial_top} muestra cómo se reparten ambos grupos sobre la placa
-fabricada, a uno y otro lado del conector FMC.
+La hoja de nivel superior del esquemático (figura~\ref{fig:placa_serial_top}) recoge esta
+arquitectura: el conector FMC en el centro, el bus común RS485 (RS0--RS6) a un lado y los dos
+buses \textit{master/slave} RS422 (RS7--RS13) al otro, con sus conectores Dupont y Micro-D. El
+resultado físico del diseño se aprecia en el render de la figura~\ref{fig:serial_3d}.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{IMG/serial_pcb_top.jpg}
-    \caption{Arquitectura general de la placa de comunicación serie.}
+    \includegraphics[width=\textwidth, page=1]{IMG/pcbs/LINCE3_SERIAL.pdf}
+    \caption{Hoja de nivel superior del esquemático de la placa de comunicación serie.}
     \label{fig:placa_serial_top}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{IMG/pcbs/serial_3d_top.png}
+        \caption{Cara de conectores.}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{IMG/pcbs/serial_3d_bot.png}
+        \caption{Cara de componentes.}
+    \end{subfigure}
+    \caption{Render 3D de la placa de comunicación serie.}
+    \label{fig:serial_3d}
 \end{figure}
 
 \subsubsection{Topología RS485 con bus compartido configurable por \textit{jumper}}
@@ -1665,6 +1684,27 @@ montadas al salir del horno, que son las que se emplean en toda la campaña de v
     \label{fig:aocs_soldada}
 \end{figure}
 
+La placa de comunicación serie se montó por el mismo procedimiento; la figura~\ref{fig:serial_soldada}
+muestra sus dos caras ya pobladas, con los conectores D-Sub y los \textit{jumpers} de configuración
+en el anverso y los catorce transceptores LTC2865 en el reverso.
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{IMG/serial_pcb_jumpers.jpg}
+        \caption{Cara de conectores.}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{IMG/serial_pcb_top.jpg}
+        \caption{Cara de componentes.}
+    \end{subfigure}
+    \caption{Placa de comunicación serie tras el proceso de soldadura.}
+    \label{fig:serial_soldada}
+\end{figure}
+
 % ---------------------------------------------------------------------------
 \section{Desarrollo de herramientas de testing}
 % ---------------------------------------------------------------------------
@@ -1815,8 +1855,8 @@ osciloscopio (figura~\ref{fig:arnes_can}).
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.45\textwidth]{IMG/arnes_can.jpg}
-    \caption{Arnés de interconexión CAN nominal--redundante sobre el conector J1.}
+    \includegraphics[width=0.45\textwidth]{IMG/arnes_can.png}
+    \caption{Arnés de interconexión CAN nominal--redundante.}
     \label{fig:arnes_can}
 \end{figure}
 
