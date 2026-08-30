@@ -1005,48 +1005,93 @@ impuestos y sin optimizar nada. Funcionó, y con eso queda cumplido su propósit
 \subsection{API pública}
 
 Para la aplicación, cada canal serie es un objeto \texttt{Transceiver} sobre el que actúan las seis
-funciones de la tabla~\ref{tab:api}. El driver oculta el reparto de memoria, la gestión de
-interrupciones y la sincronización entre tareas: el código de usuario se limita a abrir el canal,
-fijar su configuración de protocolo y transferir bytes.
+funciones de su API pública. El driver oculta el reparto de memoria, la gestión de interrupciones y
+la sincronización entre tareas: el código de usuario se limita a abrir el canal, fijar su
+configuración de protocolo y recibir o transferir bytes. Las funciones, con su tipo de retorno, son:
+
+\begin{itemize}
+    \item \texttt{uint32\_t Transceiver\_Global\_INIT(void)}
+    \item \texttt{rtems\_status\_code Transceiver\_Init(dev, id, cfg)}
+    \item \texttt{void Transceiver\_SetRxCallback(dev, cb, arg)}
+    \item \texttt{size\_t Transceiver\_Read(dev, buf, maxlen)}
+    \item \texttt{int Transceiver\_Send(dev, data, len)}
+    \item \texttt{int Transceiver\_SendString(dev, s)}
+\end{itemize}
+
+\texttt{Transceiver\_Global\_INIT()} se invoca una sola vez al arranque. Descubre cuántos canales
+trae el \textit{bitstream}, prepara el controlador de interrupciones, instala la rutina de
+interrupción común y devuelve el número de canales encontrados.
+
+\texttt{Transceiver\_Init()} se llama una vez por canal. Recibe una estructura
+\texttt{Transceiver\_Config\_t} con la tasa de baudios, los bits de datos, la paridad, los bits de
+parada y el orden de bits, y deja el canal listo para operar.
+
+\texttt{Transceiver\_SetRxCallback()} registra la función de recepción, el \textit{callback}. La
+escribe el usuario y su contenido es libre: el driver la invoca cada vez que hay bytes nuevos
+disponibles y es la aplicación la que decide qué hacer, leerlos en el acto, despertar a otra tarea,
+contabilizar la recepción o cualquier otra cosa. Es solo una notificación: cuando se dispara, el
+driver ya ha sacado del hardware los bytes y los tiene disponibles.
+
+\texttt{Transceiver\_Read()} extrae del \textit{buffer} de recepción hasta \texttt{maxlen} bytes ya
+recibidos, devuelve cuántos ha copiado y no bloquea aunque no haya ninguno. Es la función con la que
+la aplicación retira los datos, normalmente desde el \textit{callback} o desde una tarea propia.
+
+\texttt{Transceiver\_Send()} encola los bytes a transmitir y retorna de inmediato, sin esperar a que
+salgan por la línea; devuelve cuántos aceptó, o un error si el \textit{buffer} de salida estaba
+lleno. \texttt{Transceiver\_SendString()} es la misma operación para cadenas terminadas en nulo.
+
+\subsection{Interfaz con el hardware}
+
+Cada instancia ocupa 4~KB del espacio de memoria del procesador y se maneja con dos registros AXI
+GPIO. El registro de escritura (PS$\rightarrow$PL) reúne el dato a transmitir, tres bits de control
+y los campos de configuración de protocolo; el de lectura (PL$\rightarrow$PS), el byte recibido y
+las banderas de estado. La tabla~\ref{tab:mapa_registros_gpio} recoge el reparto de bits.
 
 \begin{table}[H]
     \centering
     \small
-    \begin{tabular}{@{}l p{0.44\textwidth}@{}}
+    \begin{tabular}{@{}c l c l@{}}
         \hline
-        \textbf{Función} & \textbf{Descripción} \\
+        \multicolumn{2}{c}{\textbf{Escritura (PS $\rightarrow$ PL)}} &
+        \multicolumn{2}{c}{\textbf{Lectura (PL $\rightarrow$ PS)}} \\
+        \textbf{Bits} & \textbf{Campo} & \textbf{Bits} & \textbf{Campo} \\
         \hline
-        \texttt{Transceiver\_Global\_INIT()} & Descubre el hardware, prepara el INTC e instala la ISR maestra. Devuelve el número de canales. \\
-        \texttt{Transceiver\_Init(dev, id, cfg)} & Inicializa el canal \texttt{id} con la configuración \texttt{cfg}. \\
-        \texttt{Transceiver\_SetRxCallback(dev, cb, arg)} & Registra el \textit{callback} de recepción. \\
-        \texttt{Transceiver\_Read(dev, buf, maxlen)} & Extrae hasta \texttt{maxlen} bytes del \textit{buffer} de recepción. \\
-        \texttt{Transceiver\_Send(dev, data, len)} & Encola \texttt{len} bytes y arranca la transmisión. \\
-        \texttt{Transceiver\_SendString(dev, s)} & Variante de la anterior para cadenas terminadas en nulo. \\
+        8:0   & Dato a transmitir   & 8:0 & Byte recibido \\
+        9     & \texttt{SEND}       & 9   & \texttt{RX\_EMPTY} \\
+        10    & \texttt{ERROR\_OK}  & 10  & \texttt{RX\_FULL} \\
+        11    & \texttt{DATA\_READ} & 11  & \texttt{PARITY\_ERROR} \\
+        17:12 & Tasa de baudios     & 12  & \texttt{FRAME\_ERROR} \\
+        19:18 & Bits de parada      & 13  & \texttt{TX\_RDY} \\
+        22:20 & Paridad             &     & \\
+        25:23 & Bits de datos       &     & \\
+        26    & Orden de bits       &     & \\
+        27    & \texttt{SLO}        &     & \\
         \hline
     \end{tabular}
-    \caption{API pública del driver serie.}
-    \label{tab:api}
+    \caption{Mapa de registros de una instancia del transceptor.}
+    \label{tab:mapa_registros_gpio}
 \end{table}
 
-El uso sigue siempre el mismo guion. \texttt{Transceiver\_Global\_INIT()} se invoca una vez al
-arranque: descubre cuántos canales trae el \textit{bitstream}, prepara el controlador de
-interrupciones e instala la rutina de interrupción común. Después, por cada canal que vaya a
-usarse, \texttt{Transceiver\_Init()} recibe una estructura \texttt{Transceiver\_Config\_t} con la
-tasa de baudios, los bits de datos, la paridad, los bits de parada y el orden de bits, y deja el
-canal listo para operar.
+Las direcciones no están escritas en el código. Un bloque de información situado en la dirección
+fija \texttt{0xA0020000} publica en tiempo de ejecución el número de transceptores instanciados, el
+\textit{stride}\footnote{Distancia en bytes entre la dirección base de
+una instancia y la de la siguiente; permite recorrer todos los transceptores sumando un
+desplazamiento fijo a la dirección de la primera.} de memoria entre instancias y la dirección base del primero. El controlador
+de interrupciones AXI INTC, compartido por todas las instancias, se aloja inmediatamente después de
+la última, de modo que su dirección se obtiene sumando a la base el producto del número de
+instancias por el \textit{stride}. Con esos tres valores, leídos al arrancar, queda determinado
+todo el mapa: el mismo binario RTEMS funciona sobre cualquier \textit{bitstream}, desde un único
+canal hasta los catorce, sin recompilar.
 
-La transferencia es asíncrona en los dos sentidos. Para transmitir, la aplicación llama a
-\texttt{Transceiver\_Send()}, o a \texttt{Transceiver\_SendString()} para cadenas terminadas en
-nulo: la función encola los bytes y retorna de inmediato, sin esperar a que salgan por la línea.
-Para recibir, la aplicación registra con \texttt{Transceiver\_SetRxCallback()} una función propia,
-el \textit{callback}, que el driver llama cada vez que hay bytes nuevos disponibles; al recibir ese
-aviso, la aplicación los retira con \texttt{Transceiver\_Read()}, que copia hasta \texttt{maxlen}
-bytes ya recibidos y devuelve el control aunque no haya ninguno. El \textit{callback} es solo una
-notificación: cuando se dispara, el driver ya ha sacado del hardware los bytes y los tiene a
-disposición de la aplicación.
+\textbf{Bit \texttt{SLO}.} El bit \texttt{SLO} del registro de escritura no actúa sobre la lógica en
+VHDL: se propaga hasta el pin \texttt{SLO} del chip transceptor de la PCB. El driver se limita a
+exponerlo; su efecto eléctrico y la cuantificación de su impacto sobre la velocidad máxima del
+enlace se tratan con la caracterización de la placa (sección~\ref{sec:pcb_slo}).
 
-La figura~\ref{fig:driver_camino_datos} resume el recorrido interno de un byte en cada sentido; las
-dos últimas subsecciones lo detallan.
+\subsection{Gestión interna de la transmisión}
+
+La figura~\ref{fig:driver_camino_datos} resume el recorrido interno de un byte en cada sentido; esta
+subsección se ocupa de la transmisión y la siguiente, de la recepción.
 
 \begin{figure}[H]
     \centering
@@ -1095,56 +1140,6 @@ dos últimas subsecciones lo detallan.
     \caption{Camino de un byte entre la lógica programable y la aplicación.}
     \label{fig:driver_camino_datos}
 \end{figure}
-
-\subsection{Interfaz con el hardware}
-
-Cada instancia ocupa 4~KB del espacio de memoria del procesador y se maneja con dos registros AXI
-GPIO. El registro de escritura (PS$\rightarrow$PL) reúne el dato a transmitir, tres bits de control
-y los campos de configuración de protocolo; el de lectura (PL$\rightarrow$PS), el byte recibido y
-las banderas de estado. La tabla~\ref{tab:mapa_registros_gpio} recoge el reparto de bits.
-
-\begin{table}[H]
-    \centering
-    \small
-    \begin{tabular}{@{}c l c l@{}}
-        \hline
-        \multicolumn{2}{c}{\textbf{Escritura (PS $\rightarrow$ PL)}} &
-        \multicolumn{2}{c}{\textbf{Lectura (PL $\rightarrow$ PS)}} \\
-        \textbf{Bits} & \textbf{Campo} & \textbf{Bits} & \textbf{Campo} \\
-        \hline
-        8:0   & Dato a transmitir   & 8:0 & Byte recibido \\
-        9     & \texttt{SEND}       & 9   & \texttt{RX\_EMPTY} \\
-        10    & \texttt{ERROR\_OK}  & 10  & \texttt{RX\_FULL} \\
-        11    & \texttt{DATA\_READ} & 11  & \texttt{PARITY\_ERROR} \\
-        17:12 & Tasa de baudios     & 12  & \texttt{FRAME\_ERROR} \\
-        19:18 & Bits de parada      & 13  & \texttt{TX\_RDY} \\
-        22:20 & Paridad             &     & \\
-        25:23 & Bits de datos       &     & \\
-        26    & Orden de bits       &     & \\
-        27    & \texttt{SLO}        &     & \\
-        \hline
-    \end{tabular}
-    \caption{Mapa de registros de una instancia del transceptor.}
-    \label{tab:mapa_registros_gpio}
-\end{table}
-
-Las direcciones no están escritas en el código. Un bloque de información situado en la dirección
-fija \texttt{0xA0020000} publica en tiempo de ejecución el número de transceptores instanciados, el
-\textit{stride} de memoria entre instancias\footnote{Distancia en bytes entre la dirección base de
-una instancia y la de la siguiente; permite recorrer todos los transceptores sumando un
-desplazamiento fijo a la dirección de la primera.} y la dirección base del primero. El controlador
-de interrupciones AXI INTC, compartido por todas las instancias, se aloja inmediatamente después de
-la última, de modo que su dirección se obtiene sumando a la base el producto del número de
-instancias por el \textit{stride}. Con esos tres valores, leídos al arrancar, queda determinado
-todo el mapa: el mismo binario RTEMS funciona sobre cualquier \textit{bitstream}, desde un único
-canal hasta los catorce, sin recompilar.
-
-\textbf{Bit \texttt{SLO}.} El bit \texttt{SLO} del registro de escritura no actúa sobre la lógica en
-VHDL: se propaga hasta el pin \texttt{SLO} del chip transceptor de la PCB. El driver se limita a
-exponerlo; su efecto eléctrico y la cuantificación de su impacto sobre la velocidad máxima del
-enlace se tratan con la caracterización de la placa (sección~\ref{sec:pcb_slo}).
-
-\subsection{Gestión interna de la transmisión}
 
 Cada canal dispone de un \textit{buffer} circular de salida de 4~KB, tamaño que da margen para
 ráfagas a las tasas más altas soportadas, hasta 4~Mbaudios. \texttt{Transceiver\_Send()} copia ahí
