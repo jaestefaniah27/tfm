@@ -992,174 +992,203 @@ de Vivado completo en el repositorio.
 \section{Diseño del driver serie en RTEMS (PS)} \label{sec:driver_rtems}
 % ---------------------------------------------------------------------------
 
-El subsistema de comunicaciones del OBC requiere gestionar simultáneamente múltiples
-interfaces serie físicas (RS422 y RS485) desde una aplicación de tiempo real ejecutada sobre
-RTEMS. El bloque hardware \texttt{CONFIGURABLE\_SERIAL\_TOP}, implementado en VHDL en
-la lógica programable (PL), expone cada transceptor a través de un periférico AXI GPIO de
-doble canal, cuya interfaz de bajo nivel es demasiado específica para ser usada directamente
-desde la aplicación. Para abstraer esta complejidad y ofrecer una API uniforme e
-independiente de la dirección física de cada instancia, se desarrollaron los ficheros
-\texttt{transceiver.c} y \texttt{transceiver.h}.
+Completado el transceptor en la PL, queda su contraparte en el PS: los ficheros
+\texttt{transceiver.c} y \texttt{transceiver.h}, un driver para RTEMS que habla con el hardware a
+través del AXI GPIO de cada canal y expone a la aplicación una API pública sencilla, la misma para
+los catorce canales. Las subsecciones siguientes lo describen de fuera hacia dentro: primero la API
+que ve la aplicación, luego el mapa de registros con el que el driver dialoga con la PL y, por
+último, cómo gestiona por dentro la transmisión y la recepción sin bloquear al procesador.
 
-El diseño cubre tres requisitos fundamentales: (1) descubrimiento dinámico del hardware en
-tiempo de arranque, para que el mismo binario funcione con cualquier número de
-transceptores instanciados en el \textit{bitstream}; (2) comunicación orientada a interrupciones
-para no bloquear el procesador durante la espera de datos; y (3) una API sencilla que
-permita a la aplicación enviar y recibir datos sin conocer los detalles del mapa de registros.
-
-El driver que se describe a continuación es el de la \textbf{arquitectura de partida}, basada en
-AXI GPIO. Funciona, y es la referencia contra la que se mide todo lo demás, pero durante la
-validación con los catorce canales activos reveló un límite estructural: el procesador tiene
-que tocar cada byte. Este límite motivó el rediseño completo del transporte entre el PS y la PL. Ese
-trabajo, con las tres arquitecturas implementadas y su comparativa, se aborda en la
-sección~\ref{sec:transporte_desarrollo}.
-
-\subsection{Mapa de registros de la interfaz hardware}
-
-Cada instancia del transceptor ocupa una región de 4~KB del espacio de memoria del
-procesador, estructurada como un AXI GPIO de doble canal:
-
-\begin{itemize}
-    \item \textbf{Canal 1 (escritura, PS $\rightarrow$ PL):} contiene el dato de transmisión (bits 8:0),
-    los bits de control de protocolo (SEND, ERROR\_OK, DATA\_READ) y los campos de
-    configuración: tasa de baudios (6 bits), bits de parada (2 bits), paridad (3 bits), bits de
-    datos (3 bits), orden de bits y modo SLO.
-
-    \item \textbf{Canal 2 (lectura, PL $\rightarrow$ PS):} contiene el byte recibido (bits 8:0) y las
-    banderas de estado: RX\_EMPTY, RX\_FULL, PARITY\_ERROR, FRAME\_ERROR y TX\_RDY.
-\end{itemize}
-
-Adicionalmente, un bloque de información del sistema situado en la dirección fija
-\texttt{0xA0020000} expone en tiempo de ejecución el número de transceptores instanciados, el
-\textit{stride} de memoria entre instancias\footnote{Distancia en bytes entre la dirección base de una instancia y la de la siguiente; permite recorrer todos los transceptores sumando un desplazamiento fijo a la dirección de la primera.} y la dirección base de la primera de ellas. Más allá del
-último transceptor se aloja el controlador de interrupciones AXI INTC, compartido por todas
-las instancias.
-
-\subsection{Arquitectura software}
-
-La librería se organiza en torno a dos estructuras de datos centrales:
-
-\textbf{\texttt{Transceiver\_Config\_t}} agrupa los parámetros de configuración del protocolo: tasa de
-baudios, número de bits de datos (5 a 9), paridad (par, impar, \textit{mark}, \textit{space} o ninguna),
-bits de parada (1, 1,5 o 2), orden de bits (LSB o MSB \textit{first}) y modo de emisión lenta (SLO,
-que reduce las emisiones electromagnéticas). Todos los valores se expresan mediante macros
-simbólicas definidas en \texttt{transceiver.h}, que corresponden directamente a los valores
-codificados en la LUT del NCO hardware.
-
-\textbf{\texttt{Transceiver}} es el objeto \textit{handle} que representa una instancia concreta del
-transceptor en ejecución. Contiene el mapa de direcciones calculado dinámicamente
-(\texttt{base\_addr}, \texttt{intc\_base} y los \textit{offsets} derivados), las máscaras de interrupción
-individuales de RX y TX, y el estado software: un \textit{buffer} circular de recepción y uno de
-transmisión (ambos de 4096 bytes por defecto, asignados dinámicamente), los
-identificadores de las primitivas RTEMS asociadas (tarea \textit{worker}, \textit{mutex} de RX y \textit{mutex} de
-TX) y el \textit{callback} de usuario para notificación de datos recibidos.
-
-\subsection{Descubrimiento dinámico del hardware}
-
-La función \texttt{Transceiver\_Hardware\_Discover()} lee el bloque de información del sistema al
-arranque y extrae el número de instancias presentes, el \textit{stride} de memoria y la dirección
-base. Con estos tres valores se calcula automáticamente la dirección del INTC compartido:
-
-\begin{center}
-\texttt{g\_intc\_addr = g\_hw\_base + (g\_hw\_count $\times$ g\_hw\_stride)}
-\end{center}
-
-Este mecanismo permite que el mismo binario RTEMS funcione sin modificación con cualquier
-número de transceptores (hasta el máximo soportado de 14), cubriendo configuraciones que
-van desde un único canal hasta la instalación completa. La alternativa de \textit{hardcodear} las
-direcciones habría requerido recompilar la aplicación para cada variante del \textit{bitstream}.
-
-\subsection{Modelo de interrupciones con ISR maestra y tareas \textit{worker}}
-
-El diseño de la gestión de interrupciones adopta el patrón \textit{deferred interrupt processing}
-recomendado para RTEMS. Se instala una única ISR en el vector 121 (\texttt{Master\_ISR}) que
-atiende a todos los transceptores a través del AXI INTC compartido. La ISR funciona del
-siguiente modo:
-
-\begin{enumerate}
-    \item Lee el registro de interrupciones pendientes (INTC\_ISR).
-    \item Para cada transceptor con la interrupción de recepción activa: la reconoce en el
-    registro \texttt{INTC\_IAR}, deshabilita temporalmente la línea con \texttt{INTC\_CIE} y
-    envía el evento
-    \texttt{RTEMS\_EVENT\_0} a la tarea \textit{worker} correspondiente.
-    \item Para cada transceptor con interrupción TX activa: extrae el siguiente byte del
-    \textit{buffer} circular de transmisión, lo escribe en el registro de control pulsando
-    \texttt{BIT\_TX\_SEND}, y limpia la interrupción. Si el \textit{buffer} ha quedado vacío, marca
-    \texttt{tx\_busy = false}.
-\end{enumerate}
-
-Cada instancia \texttt{Transceiver} tiene asociada una tarea RTEMS dedicada
-(\texttt{Rx\_Worker\_Task}) que se bloquea esperando el evento. Al recibirlo, vacía el FIFO
-hardware byte a byte hacia el \textit{buffer} circular de recepción, pulsando \texttt{BIT\_DATA\_READ}
-para confirmar la lectura de cada byte al hardware. El acceso al \textit{buffer} se protege con un
-semáforo binario de prioridad para evitar condiciones de carrera. Tras drenar el FIFO, la
-\textit{worker} re-habilita la interrupción (INTC\_SIE) e invoca el \textit{callback} de usuario si está
-registrado.
-
-La separación entre la ISR (que solo despierta la tarea) y la \textit{worker} (que realiza el trabajo
-real) garantiza que el tiempo de latencia en contexto de interrupción sea mínimo y que el
-procesamiento se ejecute con las prioridades del planificador RTEMS.
-
-\subsection{Inicialización y configuración del hardware}
-
-\texttt{Transceiver\_Init()} realiza la puesta en marcha completa de una instancia: calcula la
-dirección base y la dirección del INTC, asigna las máscaras de interrupción individuales (bit
-$2 \cdot id$ para RX y bit $2 \cdot id + 1$ para TX dentro del registro de 32 bits del INTC),
-asigna dinámicamente los \textit{buffers} circulares, crea el semáforo y la tarea \textit{worker} con
-\texttt{rtems\_semaphore\_create} y \texttt{rtems\_task\_create}, escribe la configuración de
-protocolo en el hardware y lanza la tarea \textit{worker}.
-
-La función \texttt{Transceiver\_Global\_INIT()} orquesta la inicialización completa del sistema:
-primero llama a \texttt{Transceiver\_Hardware\_Discover()} para poblar las variables globales, y a
-continuación a \texttt{Transceiver\_Global\_INTC\_Init()}, que habilita el modo maestro del INTC
-(registro MER) e instala la \texttt{Master\_ISR}.
+Este driver se planteó como prueba de concepto: el objetivo era que funcionase, sin requisitos
+impuestos y sin optimizar nada. Funcionó, y con eso queda cumplido su propósito.
 
 \subsection{API pública}
 
-La interfaz expuesta al código de aplicación se reduce a las cinco funciones de la
-tabla~\ref{tab:api}:
+Para la aplicación, cada canal serie es un objeto \texttt{Transceiver} sobre el que actúan las seis
+funciones de la tabla~\ref{tab:api}. El driver oculta el reparto de memoria, la gestión de
+interrupciones y la sincronización entre tareas: el código de usuario se limita a abrir el canal,
+fijar su configuración de protocolo y transferir bytes.
 
 \begin{table}[H]
     \centering
     \small
-    \begin{tabular}{@{}l p{0.40\textwidth}@{}}
+    \begin{tabular}{@{}l p{0.44\textwidth}@{}}
         \hline
         \textbf{Función} & \textbf{Descripción} \\
         \hline
-        \texttt{Transceiver\_Global\_INIT()} & Descubrimiento hardware e inicialización del INTC. \\
-        \texttt{Transceiver\_Init(dev, id, cfg)} & Inicializa la instancia \texttt{dev} con el id y la configuración. \\
-        \texttt{Transceiver\_SetRxCallback(dev, cb, arg)} & Registra \textit{callback} de recepción. \\
-        \texttt{Transceiver\_Read(dev, buf, maxlen)} & Extrae hasta \texttt{maxlen} bytes del buffer RX. \\
-        \texttt{Transceiver\_SendString(dev, s)} & Encola la cadena \texttt{s} y arranca la transmisión. \\
+        \texttt{Transceiver\_Global\_INIT()} & Descubre el hardware, prepara el INTC e instala la ISR maestra. Devuelve el número de canales. \\
+        \texttt{Transceiver\_Init(dev, id, cfg)} & Inicializa el canal \texttt{id} con la configuración \texttt{cfg}. \\
+        \texttt{Transceiver\_SetRxCallback(dev, cb, arg)} & Registra el \textit{callback} de recepción. \\
+        \texttt{Transceiver\_Read(dev, buf, maxlen)} & Extrae hasta \texttt{maxlen} bytes del \textit{buffer} de recepción. \\
+        \texttt{Transceiver\_Send(dev, data, len)} & Encola \texttt{len} bytes y arranca la transmisión. \\
+        \texttt{Transceiver\_SendString(dev, s)} & Variante de la anterior para cadenas terminadas en nulo. \\
         \hline
     \end{tabular}
     \caption{API pública del driver serie.}
     \label{tab:api}
 \end{table}
 
-\subsection{Decisiones de diseño}
+El uso sigue siempre el mismo guion. \texttt{Transceiver\_Global\_INIT()} se invoca una vez al
+arranque: descubre cuántos canales trae el \textit{bitstream}, prepara el controlador de
+interrupciones e instala la rutina de interrupción común. Después, por cada canal que vaya a
+usarse, \texttt{Transceiver\_Init()} recibe una estructura \texttt{Transceiver\_Config\_t} con la
+tasa de baudios, los bits de datos, la paridad, los bits de parada y el orden de bits, y deja el
+canal listo para operar.
 
-\textbf{Buffer circular frente a copia directa en ISR.} Dado que RTEMS no permite operaciones de
-copia de longitud arbitraria en contexto de interrupción sin afectar la latencia del sistema, se
-optó por \textit{buffers} circulares gestionados desde la tarea \textit{worker}. El tamaño de 4096 bytes
-proporciona margen suficiente para ráfagas de datos a las tasas más altas soportadas (hasta
-4~Mbaudios).
+La transferencia es asíncrona en los dos sentidos. Para transmitir, la aplicación llama a
+\texttt{Transceiver\_Send()}, o a \texttt{Transceiver\_SendString()} para cadenas terminadas en
+nulo: la función encola los bytes y retorna de inmediato, sin esperar a que salgan por la línea.
+Para recibir, la aplicación registra con \texttt{Transceiver\_SetRxCallback()} una función propia,
+el \textit{callback}, que el driver llama cada vez que hay bytes nuevos disponibles; al recibir ese
+aviso, la aplicación los retira con \texttt{Transceiver\_Read()}, que copia hasta \texttt{maxlen}
+bytes ya recibidos y devuelve el control aunque no haya ninguno. El \textit{callback} es solo una
+notificación: cuando se dispara, el driver ya ha sacado del hardware los bytes y los tiene a
+disposición de la aplicación.
 
-\textbf{Transmisión dirigida por interrupción.} El primer byte de cada cadena a transmitir se escribe
-directamente desde \texttt{Transceiver\_SendString()} para arrancar el hardware; los bytes
-siguientes son enviados sucesivamente por la \texttt{Master\_ISR} al recibir la interrupción
-TX\_RDY, sin necesidad de que la tarea de aplicación permanezca bloqueada durante la
-transmisión.
+La figura~\ref{fig:driver_camino_datos} resume el recorrido interno de un byte en cada sentido; las
+dos últimas subsecciones lo detallan.
 
-\textbf{Compatibilidad multi-instancia mediante tabla global.} El array \texttt{g\_instances[]} permite
-a la \texttt{Master\_ISR} localizar en $O(1)$ el objeto \texttt{Transceiver} asociado a cada par de bits de
-interrupción, evitando búsquedas costosas en contexto de ISR.
+\begin{figure}[H]
+    \centering
+    % babel-spanish activa < y >, que TikZ necesita para las puntas de flecha
+    \shorthandoff{<>}%
+    \resizebox{\textwidth}{!}{%
+    \begin{tikzpicture}[
+        x=1cm, y=1cm,
+        box/.style={draw, rounded corners=2pt, align=center, font=\small,
+                    inner sep=3pt, minimum height=1.2cm},
+        tall/.style={box, minimum height=4.0cm},
+        flow/.style={->, line width=0.7pt},
+        back/.style={->, line width=0.7pt, dashed},
+        lbl/.style={font=\footnotesize, inner sep=1.5pt}]
 
-\textbf{Modo SLO.} El bit \texttt{BIT\_SLO} del registro de control \textbf{no actúa sobre la lógica
-en VHDL}: se limita a propagarse hasta el pin \texttt{SLO} del chip transceptor de la PCB. El
-driver solo expone el bit; su efecto eléctrico y la cuantificación de su impacto sobre la
-velocidad máxima del enlace se tratan con la caracterización de la placa
-(sección~\ref{sec:pcb_slo}).
+    \node[tall, minimum width=2.1cm] (pl)   at (1.05,2.0)  {PL\\canal $i$\\[3pt]FIFO RX\\registro TX};
+    \node[box,  minimum width=2.1cm] (intc) at (4.35,3.4)  {AXI INTC\\28 fuentes\\en 1 línea};
+    \node[box,  minimum width=2.9cm] (isr)  at (8.05,3.4)  {\texttt{Master\_ISR}};
+    \node[box,  minimum width=2.5cm] (wkr)  at (12.35,3.4) {Tarea \textit{worker}\\(una por canal)};
+    \node[box,  minimum width=1.8cm] (rxr)  at (15.90,3.4) {\textit{ring} RX\\4~KB};
+    \node[box,  minimum width=1.8cm] (txr)  at (15.90,0.6) {\textit{ring} TX\\4~KB};
+    \node[tall, minimum width=2.0cm] (app)  at (19.10,2.0) {Aplicación};
+
+    % --- Recepción
+    \draw[flow] (2.1,3.4)     -- (intc.west) node[lbl, above, midway] {IRQ};
+    \draw[flow] (intc.east)   -- (isr.west);
+    \draw[flow] (isr.east)    -- (wkr.west)  node[lbl, above, midway] {evento};
+    \draw[flow] (wkr.east)    -- (rxr.west)  node[lbl, above, midway] {byte};
+    \draw[flow] (rxr.east)    -- (18.1,3.4)  node[lbl, above, midway] {lectura};
+    \draw[back] (pl.north) -- ++(0,0.8) -| (wkr.north);
+    \node[lbl, above] at (6.5,4.8) {bytes del FIFO de recepción (\texttt{DATA\_READ})};
+
+    % --- Transmisión
+    \draw[flow] (18.1,0.6) -- (txr.east) node[lbl, above, midway] {\texttt{Send}};
+    % primer byte: escrito directamente por Transceiver_Send, sin pasar por la ISR
+    \draw[flow] ([yshift=-0.3cm]txr.west) -- (2.1,0.3);
+    \node[lbl, above] at (8.55,0.3) {1.\textsuperscript{er} byte (\texttt{Transceiver\_Send})};
+    % resto de la cola: la va drenando la Master_ISR al recibir TX_RDY
+    \draw[flow] ([yshift=0.4cm]txr.west) -- (8.90,1.0) -- (8.90,2.8);
+    \node[lbl, above] at (11.6,1.0) {resto};
+    \draw[flow] (7.20,2.8) -- (7.20,1.0) -- (2.1,1.0);
+    \node[lbl, above] at (4.65,1.0) {\texttt{SEND} (\texttt{TX\_RDY})};
+
+    \end{tikzpicture}}%
+    \shorthandon{<>}
+    \caption{Camino de un byte entre la lógica programable y la aplicación.}
+    \label{fig:driver_camino_datos}
+\end{figure}
+
+\subsection{Interfaz con el hardware}
+
+Cada instancia ocupa 4~KB del espacio de memoria del procesador y se maneja con dos registros AXI
+GPIO. El registro de escritura (PS$\rightarrow$PL) reúne el dato a transmitir, tres bits de control
+y los campos de configuración de protocolo; el de lectura (PL$\rightarrow$PS), el byte recibido y
+las banderas de estado. La tabla~\ref{tab:mapa_registros_gpio} recoge el reparto de bits.
+
+\begin{table}[H]
+    \centering
+    \small
+    \begin{tabular}{@{}c l c l@{}}
+        \hline
+        \multicolumn{2}{c}{\textbf{Escritura (PS $\rightarrow$ PL)}} &
+        \multicolumn{2}{c}{\textbf{Lectura (PL $\rightarrow$ PS)}} \\
+        \textbf{Bits} & \textbf{Campo} & \textbf{Bits} & \textbf{Campo} \\
+        \hline
+        8:0   & Dato a transmitir   & 8:0 & Byte recibido \\
+        9     & \texttt{SEND}       & 9   & \texttt{RX\_EMPTY} \\
+        10    & \texttt{ERROR\_OK}  & 10  & \texttt{RX\_FULL} \\
+        11    & \texttt{DATA\_READ} & 11  & \texttt{PARITY\_ERROR} \\
+        17:12 & Tasa de baudios     & 12  & \texttt{FRAME\_ERROR} \\
+        19:18 & Bits de parada      & 13  & \texttt{TX\_RDY} \\
+        22:20 & Paridad             &     & \\
+        25:23 & Bits de datos       &     & \\
+        26    & Orden de bits       &     & \\
+        27    & \texttt{SLO}        &     & \\
+        \hline
+    \end{tabular}
+    \caption{Mapa de registros de una instancia del transceptor.}
+    \label{tab:mapa_registros_gpio}
+\end{table}
+
+Las direcciones no están escritas en el código. Un bloque de información situado en la dirección
+fija \texttt{0xA0020000} publica en tiempo de ejecución el número de transceptores instanciados, el
+\textit{stride} de memoria entre instancias\footnote{Distancia en bytes entre la dirección base de
+una instancia y la de la siguiente; permite recorrer todos los transceptores sumando un
+desplazamiento fijo a la dirección de la primera.} y la dirección base del primero. El controlador
+de interrupciones AXI INTC, compartido por todas las instancias, se aloja inmediatamente después de
+la última, de modo que su dirección se obtiene sumando a la base el producto del número de
+instancias por el \textit{stride}. Con esos tres valores, leídos al arrancar, queda determinado
+todo el mapa: el mismo binario RTEMS funciona sobre cualquier \textit{bitstream}, desde un único
+canal hasta los catorce, sin recompilar.
+
+\textbf{Bit \texttt{SLO}.} El bit \texttt{SLO} del registro de escritura no actúa sobre la lógica en
+VHDL: se propaga hasta el pin \texttt{SLO} del chip transceptor de la PCB. El driver se limita a
+exponerlo; su efecto eléctrico y la cuantificación de su impacto sobre la velocidad máxima del
+enlace se tratan con la caracterización de la placa (sección~\ref{sec:pcb_slo}).
+
+\subsection{Gestión interna de la transmisión}
+
+Cada canal dispone de un \textit{buffer} circular de salida de 4~KB, tamaño que da margen para
+ráfagas a las tasas más altas soportadas, hasta 4~Mbaudios. \texttt{Transceiver\_Send()} copia ahí
+los bytes de la aplicación y, si el transmisor estaba en reposo, escribe el primero directamente en
+el registro de escritura para poner en marcha el hardware; la tarea que llama no se bloquea.
+
+El resto de la ráfaga lo va sacando la rutina de interrupción. Los catorce canales comparten un
+único controlador AXI INTC, que concentra sus veintiocho fuentes de interrupción, la de recepción y
+la de transmisión de cada canal, en una sola línea hacia el PS, atendida por una única rutina,
+\texttt{Master\_ISR}. Cuando el transmisor de un canal termina de emitir un byte activa su señal
+\texttt{TX\_RDY}; la \texttt{Master\_ISR} lee el registro de interrupciones pendientes, localiza el
+canal en la tabla de instancias \texttt{g\_instances[]} mediante un índice directo, sin listas
+enlazadas ni búsquedas en contexto de interrupción, toma el siguiente byte de su cola y lo escribe.
+Cuando la cola queda vacía, marca el canal como libre.
+
+En transmisión, por tanto, la rutina de interrupción sí mueve el dato, pero es la escritura de un
+único byte por interrupción, de coste acotado, que no compromete la latencia del sistema. Un
+semáforo binario serializa las llamadas concurrentes de varias tareas a \texttt{Transceiver\_Send()}
+sobre el mismo canal; el acceso al \textit{buffer} frente a la \texttt{Master\_ISR} se protege
+inhibiendo un instante las interrupciones durante el encolado.
+
+\subsection{Gestión interna de la recepción}
+
+La recepción sigue el patrón de procesado diferido recomendado en RTEMS: la rutina de interrupción
+hace lo imprescindible y delega el grueso del trabajo en una tarea ordinaria. Esa tarea, la
+\textit{worker}, es una tarea de RTEMS, un hilo con su propia pila y prioridad que el planificador
+del sistema operativo de tiempo real gestiona junto con las demás: se ejecuta cuando le
+corresponde, cede la CPU mientras espera y no carga al núcleo más que con un cambio de contexto.
+Hay una \texttt{Rx\_Worker\_Task} por canal, creada en \texttt{Transceiver\_Init()} y bloqueada a la
+espera de trabajo.
+
+Cuando llega un byte por la línea, el receptor del canal genera una interrupción. La
+\texttt{Master\_ISR} la reconoce, inhibe temporalmente esa fuente en el INTC y envía un evento
+RTEMS a la \texttt{Rx\_Worker\_Task} del canal; ahí acaba el trabajo en contexto de interrupción. La
+tarea despierta y vacía el FIFO del hardware byte a byte hacia el \textit{buffer} circular de
+recepción, también de 4~KB, confirmando cada extracción con el bit \texttt{DATA\_READ}. Al agotar el
+FIFO invoca el \textit{callback} que la aplicación haya registrado, vuelve a habilitar la
+interrupción y se bloquea de nuevo. La aplicación recoge los bytes cuando puede con
+\texttt{Transceiver\_Read()}. Un semáforo binario por canal protege el \textit{buffer} de recepción
+frente al acceso simultáneo de la \textit{worker} y la aplicación.
+
+Como esa copia, de duración variable, corre ya como tarea sujeta al planificador y no en la rutina
+de interrupción, la latencia de interrupción del sistema no depende del volumen de datos que llegue
+por las líneas serie.
 
 % ---------------------------------------------------------------------------
 \section{Diseño hardware}

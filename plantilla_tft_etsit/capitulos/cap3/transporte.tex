@@ -39,11 +39,12 @@ cuantitativa; esta sección describe la construcción de cada una.
 % ---------------------------------------------------------------------------
 
 Es la arquitectura de partida, la descrita en las secciones anteriores de este capítulo, y la
-referencia contra la que se mide todo lo demás. El IP \texttt{MULTI\_SERIAL\_CORE} agrupa los
-catorce canales bajo una única interfaz AXI-Lite; cada canal expone un registro de escritura
-(dato de transmisión, bits de control y configuración de protocolo) y un registro de lectura
-(dato recibido y banderas de estado). Un AXI INTC concentra las veintiocho fuentes de
-interrupción (RX y TX de cada canal) en una sola línea hacia el PS.
+referencia contra la que se mide todo lo demás. Cada canal es una instancia de
+\texttt{CONFIGURABLE\_SERIAL\_TOP} con su propio AXI GPIO de doble canal, colgado de un
+\textit{smartconnect} AXI-Lite: un registro de escritura (dato de transmisión, bits de control y
+configuración de protocolo) y un registro de lectura (dato recibido y banderas de estado). Un AXI
+INTC concentra las veintiocho fuentes de interrupción (RX y TX de cada canal) en una sola línea
+hacia el PS.
 
 Su virtud es la simplicidad: es la variante con menos lógica, no necesita ningún mapeo especial
 de la MMU y no tiene que preocuparse por la coherencia de caché, porque todos los accesos son

@@ -83,6 +83,20 @@ plantilla_tft_etsit/IMG/Desarrollo/*.fls
 plantilla_tft_etsit/IMG/Desarrollo/*.fdb_latexmk
 plantilla_tft_etsit/IMG/Desarrollo/*.synctex.gz
 
+# Artefactos de compilación LaTeX de la memoria: solo se versionan los .tex
+# fuente y el main.pdf resultante.
+plantilla_tft_etsit/*.aux
+plantilla_tft_etsit/*.bbl
+plantilla_tft_etsit/*.blg
+plantilla_tft_etsit/*.fdb_latexmk
+plantilla_tft_etsit/*.fls
+plantilla_tft_etsit/*.lof
+plantilla_tft_etsit/*.log
+plantilla_tft_etsit/*.lot
+plantilla_tft_etsit/*.out
+plantilla_tft_etsit/*.synctex.gz
+plantilla_tft_etsit/*.toc
+
 # Configuración local del editor (no versionar)
 .claude/settings.local.json
 
