@@ -1042,10 +1042,16 @@ lleno. \texttt{Transceiver\_SendString()} es la misma operación para cadenas te
 
 \subsection{Interfaz con el hardware}
 
-Cada instancia ocupa 4~KB del espacio de memoria del procesador y se maneja con dos registros AXI
-GPIO. El registro de escritura (PS$\rightarrow$PL) reúne el dato a transmitir, tres bits de control
-y los campos de configuración de protocolo; el de lectura (PL$\rightarrow$PS), el byte recibido y
-las banderas de estado. La tabla~\ref{tab:mapa_registros_gpio} recoge el reparto de bits.
+El driver y la PL se comunican a través de un único bloque AXI GPIO por canal, configurado como
+doble canal y mapeado en 4~KB del espacio de direcciones del procesador. Los dos canales tienen
+sentido fijo: el canal~1, de 28 bits, escribe del PS a la PL; el canal~2, de 14 bits, lee de la PL
+al PS. Cada uno se maneja con su registro de datos, situado en los desplazamientos \texttt{0x00} y
+\texttt{0x08} respecto de la dirección base de la instancia, de modo que toda la interacción con el
+hardware se reduce a escribir y leer dos palabras de 32 bits.
+
+El registro de escritura reúne el dato a transmitir, tres bits de control y los campos de
+configuración de protocolo; el de lectura, el byte recibido y las banderas de estado. La
+tabla~\ref{tab:mapa_registros_gpio} recoge el reparto de bits.
 
 \begin{table}[H]
     \centering
@@ -1068,20 +1074,46 @@ las banderas de estado. La tabla~\ref{tab:mapa_registros_gpio} recoge el reparto
         27    & \texttt{SLO}        &     & \\
         \hline
     \end{tabular}
-    \caption{Mapa de registros de una instancia del transceptor.}
+    \caption{Mapa de bits de los dos canales del AXI GPIO de una instancia.}
     \label{tab:mapa_registros_gpio}
 \end{table}
 
-Las direcciones no están escritas en el código. Un bloque de información situado en la dirección
-fija \texttt{0xA0020000} publica en tiempo de ejecución el número de transceptores instanciados, el
-\textit{stride}\footnote{Distancia en bytes entre la dirección base de
-una instancia y la de la siguiente; permite recorrer todos los transceptores sumando un
-desplazamiento fijo a la dirección de la primera.} de memoria entre instancias y la dirección base del primero. El controlador
-de interrupciones AXI INTC, compartido por todas las instancias, se aloja inmediatamente después de
-la última, de modo que su dirección se obtiene sumando a la base el producto del número de
-instancias por el \textit{stride}. Con esos tres valores, leídos al arrancar, queda determinado
-todo el mapa: el mismo binario RTEMS funciona sobre cualquier \textit{bitstream}, desde un único
-canal hasta los catorce, sin recompilar.
+Los campos de configuración de protocolo se escriben una sola vez, en
+\texttt{Transceiver\_Init()}, y permanecen fijos mientras el canal está abierto: el driver guarda
+esa palabra y la reutiliza como base cada vez que toca los bits inferiores, para no alterar la
+configuración al transmitir. Los bits de control funcionan como pulsos, no como niveles. Para
+transmitir se deposita el byte en los bits 8:0 y se lleva \texttt{SEND} a uno y de vuelta a cero, lo
+que ordena al transmisor cargar el dato. Para consumir un byte recibido se lee el canal de entrada y
+se pulsa \texttt{DATA\_READ}, que hace avanzar la FIFO de recepción. \texttt{ERROR\_OK} es el
+reconocimiento equivalente para las banderas de error. En sentido contrario, \texttt{RX\_EMPTY}
+indica si queda algo por leer y \texttt{TX\_RDY} que el transmisor ha terminado el byte en curso y
+admite el siguiente.
+
+\textbf{Descubrimiento del mapa de direcciones.} Ninguna dirección de canal está escrita en el
+código. En la dirección fija \texttt{0xA0020000} se sitúa un AXI GPIO adicional, de solo lectura,
+cuyas dos entradas están cableadas en la PL a constantes que el script de generación calcula al
+construir el \textit{bitstream}. Ese bloque de información publica tres valores:
+
+\begin{itemize}
+    \item \textbf{Número de transceptores} instanciados, $N$, en los bits 15:0 del canal~1.
+    \item \textbf{\textit{Stride}}, en los bits 31:16 del canal~1: la distancia en bytes entre la
+          dirección base de una instancia y la de la siguiente, 4~KB en este diseño.
+    \item \textbf{Dirección base} del primer transceptor, en el canal~2.
+\end{itemize}
+
+Las instancias se asignan de forma contigua a partir de esa base, y el AXI INTC compartido por todas
+ellas queda inmediatamente después de la última. Con los tres valores, leídos al arrancar en
+\texttt{Transceiver\_Global\_INIT()}, el driver deduce el resto del mapa con dos cuentas:
+
+\[
+    \text{base}_i = \text{base} + i \cdot \text{\textit{stride}}, \quad i = 0,\dots,N-1
+    \qquad
+    \text{base}_{\text{INTC}} = \text{base} + N \cdot \text{\textit{stride}}
+\]
+
+De este modo el mismo binario RTEMS funciona sobre cualquier \textit{bitstream}, desde un único
+canal hasta los catorce, sin recompilar: basta con que el hardware declare cuántas instancias trae y
+dónde empiezan.
 
 \textbf{Bit \texttt{SLO}.} El bit \texttt{SLO} del registro de escritura no actúa sobre la lógica en
 VHDL: se propaga hasta el pin \texttt{SLO} del chip transceptor de la PCB. El driver se limita a
