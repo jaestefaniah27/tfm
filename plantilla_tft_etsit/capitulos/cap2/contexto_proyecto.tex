@@ -136,6 +136,18 @@ Al separar físicamente los dos sentidos, no hace falta arbitrar el bus por soft
 reduce la carga de proceso y hace el enlace idóneo para el envío continuo de telemetría de
 sensores~\cite{ti2018rs422,tia422b}.
 
+
+La figura~\ref{fig:topologia_rs} contrapone las dos topologías. En RS485 los nodos cuelgan del
+mismo par y solo uno transmite a la vez, de modo que hace falta la señal \texttt{DE} para cederse
+el medio. En RS422 cada par tiene un único transmisor, y por eso el enlace no necesita arbitraje.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.92\textwidth]{IMG/Desarrollo/diagrama_topologia_rs.pdf}
+    \caption{Topologías RS485 y RS422.}
+    \label{fig:topologia_rs}
+\end{figure}
+
 \subsection{SpaceWire}
 
 La placa AOCS expone dos enlaces SpaceWire, la única interfaz de las tres placas que quedó sin
