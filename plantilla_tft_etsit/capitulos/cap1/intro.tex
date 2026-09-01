@@ -16,15 +16,15 @@ responsable del subsistema de comunicaciones del ordenador de a bordo (OBC); est
 desarrolla dentro de esa responsabilidad. El proyecto sigue el enfoque \textbf{NewSpace}: uso de
 componentes comerciales (COTS, \textit{commercial off-the-shelf}) frente al uso tradicional de componentes resistentes a la radiación,
 que son mucho más caros. Los efectos de la radiación
-se mitigan siguiendo estrategias como la reduncancia.
+se mitigan mediante estrategias como la redundancia.
 
 El OBC concentra el control del satélite y se comunica con los periféricos de la plataforma
 (propulsores, cámaras, seguidores de estrellas, sensores térmicos) mediante enlaces serie.
 Los requisitos de LINCE fijan catorce enlaces RS422/RS485 operando de forma simultánea, cada uno
 con sus propios parámetros de línea. Esa cifra obliga a estudiar el transporte de datos desde
-cada transceptor hasta la aplicación de usuario. Hay que
-balancear los recursos del sistema de manera que se minimicen el área de la lógica programable (PL) y el uso de CPU del
-sistema de procesamiento (PS) sin penalizar el rendimiento del conjunto. La ZCU102, plataforma de desarrollo basada en el
+cada transceptor hasta la aplicación de usuario. El reparto de recursos debe minimizar el área
+ocupada en la lógica programable (PL) y el uso de CPU del sistema de procesamiento (PS), sin
+penalizar por ello el rendimiento del conjunto. La ZCU102, plataforma de desarrollo basada en el
 MPSoC Zynq UltraScale+ escogida para el prototipado, no dispone ni de tantos transceptores físicos
 serie ni de los conectores de los periféricos del satélite, de modo que el propio banco de ensayo
 forma parte del problema a resolver.
@@ -85,7 +85,7 @@ objetivos específicos:
 \section{Metodología}
 
 Durante el desarrollo del trabajo se ha tenido un contacto estrecho con los compañeros de
-Sener. Se han seguido \textbf{metodologías ágiles} mediante el uso del programa \textit{Jira}~\cite{atlassian_jira},
+Sener. Se han seguido \textbf{metodologías ágiles} mediante la plataforma \textit{Jira}~\cite{atlassian_jira},
 que permite organizar las tareas en función del tiempo que requieren. La metodología ágil
 utilizada consiste en establecer las tareas que se van a realizar durante un tiempo
 establecido, denominado \textit{sprint}. Al final de cada \textit{sprint} se celebra una

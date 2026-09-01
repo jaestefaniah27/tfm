@@ -95,7 +95,9 @@ un canal con un único \textit{buffer} activo:
 \subsubsection{Coste de la replicación de motores DMA}
 
 La variante opera en placa y en transmisión alcanza \textbf{3 interrupciones por kilobyte}, frente
-a las 1\,250 de la variante GPIO. El enfoque no escala, por dos razones:
+a las 1\,250 de la variante GPIO. El límite de la variante no está, por tanto, en el rendimiento
+que alcanza, sino en el precio que paga por alcanzarlo. Replicar catorce veces el motor DMA choca
+con dos recursos finitos del dispositivo:
 
 \textbf{El coste en lógica.} Catorce motores DMA completos ocupan \textbf{40\,217 LUT}
 (\textit{Look-Up Table}), un 14,7\,\% del dispositivo: 2,8 veces más lógica que la solución
