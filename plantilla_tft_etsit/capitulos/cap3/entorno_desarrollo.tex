@@ -1278,19 +1278,18 @@ cambiar la tensión del carril \texttt{VADJ} o interponer adaptadores de nivel.
 
 \subsection{Reglas de diseño y proceso de fabricación}
 
-El diseño de las tres placas se realizó en \textbf{Altium Designer}. En los tres proyectos, antes
-de colocar un solo componente, el primer paso fue \textbf{establecer las reglas de diseño}. Es un
-paso que conviene no posponer: las reglas son el contrato que el comprobador de Altium verifica de
-forma continua durante el rutado. Fijarlas al principio convierte las restricciones de fabricación
-en un error detectado en el momento de cometerlo, en lugar de en un rechazo del fabricante cuando
-el diseño ya está cerrado.
+Las tres placas se diseñaron en \textbf{Altium Designer}. En los tres proyectos el primer paso,
+antes de colocar ningún componente, fue definir las \textbf{reglas de diseño}. Altium las
+comprueba de forma continua mientras se rutan las pistas. Definirlas al principio hace que una
+restricción de fabricación incumplida salte como error en ese momento, y no como un rechazo del
+fabricante con el diseño ya cerrado.
 
 El criterio adoptado fue ceñirse a las \textbf{capacidades del proceso de fabricación del fabricante
 seleccionado}, PCBWay~\cite{pcbway_caps}, en lugar de definir un conjunto de reglas propio. Los
 límites de su proceso estándar (anchuras y separaciones mínimas de pista, diámetro mínimo de
 taladro, anillo de vía y distancia mínima al borde de placa) son los que acotan lo que es
-fabricable a coste ordinario. Apurarlos por debajo obliga a recurrir a procesos de precisión, que
-encarecen la tirada. Superarlos con margen no aporta nada. Diseñar directamente contra esas
+fabricable a coste ordinario. Apurarlos por debajo obliga a recurrir a procesos de precisión más
+caros, y mantenerse muy por encima de ellos no aporta ninguna ventaja. Diseñar directamente contra esas
 capacidades garantiza que las tres placas fueran fabricables en la primera tirada, como en efecto
 ocurrió.
 
@@ -1336,12 +1335,12 @@ buses \textit{master/slave} RS422 (RS7--RS13) al otro. Cada bus sale por sus pro
 Dupont y Micro-D. El resultado físico del diseño se aprecia en el render de la
 figura~\ref{fig:serial_3d}.
 
-\begin{figure}[H]
+\begin{sidewaysfigure}
     \centering
-    \includegraphics[width=\textwidth, page=1]{IMG/pcbs/LINCE3_SERIAL.pdf}
+    \includegraphics[width=0.95\textheight, page=1]{IMG/pcbs/LINCE3_SERIAL.pdf}
     \caption{Hoja de nivel superior del esquemático de la placa de comunicación serie.}
     \label{fig:placa_serial_top}
-\end{figure}
+\end{sidewaysfigure}
 
 \begin{figure}[H]
     \centering
@@ -1409,14 +1408,14 @@ La placa LINCE3 CDHS BreakoutBox es una tarjeta de interconexión entre la ZCU10
 (conectada por FMC) y los periféricos del subsistema de gestión de datos y calentadores del
 satélite. Sus especificaciones fueron definidas por Indra: 6 conectores D-Sub-9 (J1--J6),
 interfaces CAN redundante, tres canales RS422/RS485, cuatro líneas PWM para calentadores
-y un ADC para termistores. El esquemático se organizó en un bloque jerárquico por subsistema,
-como recoge la figura~\ref{fig:cdhs_top}, y el resultado físico del diseño se aprecia en el
-render de la figura~\ref{fig:cdhs_3d}.
+y un ADC para termistores. El esquemático se organizó en un bloque jerárquico por
+subsistema, con el reparto que recoge la figura~\ref{fig:cdhs_top}. El resultado físico del
+diseño se aprecia en el render de la figura~\ref{fig:cdhs_3d}.
 
-\begin{figure}[H]
+\begin{figure}[htbp]
     \centering
-    \includegraphics[width=\textwidth, page=1]{IMG/pcbs/LINCE3_CDHS.pdf}
-    \caption{Hoja de nivel superior del esquemático de la placa CDHS.}
+    \includegraphics[width=\textwidth]{IMG/Desarrollo/diagrama_bloques_cdhs.pdf}
+    \caption{Diagrama de bloques de la placa CDHS.}
     \label{fig:cdhs_top}
 \end{figure}
 
@@ -1587,12 +1586,12 @@ la adición de puntos de prueba y la corrección de un error de conexión en el 
 de motores. Las tres primeras se detallan en el subsistema RS que sigue, y la cuarta en el de
 MOT-PWM.
 
-\begin{figure}[H]
+\begin{sidewaysfigure}
     \centering
-    \includegraphics[width=\textwidth, page=1]{IMG/pcbs/LINCE3_AOCS_V2.pdf}
+    \includegraphics[width=0.95\textheight, page=1]{IMG/pcbs/LINCE3_AOCS_V2.pdf}
     \caption{Hoja de nivel superior del esquemático de la placa AOCS.}
     \label{fig:aocs_top}
-\end{figure}
+\end{sidewaysfigure}
 
 \begin{figure}[H]
     \centering
@@ -1909,9 +1908,9 @@ Arnés a 4 hilos, cruzando las líneas TX-P/N de un driver con las RX-P/N del op
 Arnés a 2 hilos, en el que se conectan A+ y B$-$ de un driver con los del otro
 (figura~\ref{fig:arnes_rs485}).
 
-\begin{figure}[H]
+\begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.45\textwidth]{IMG/arnes_rs485.jpg}
+    \includegraphics[width=0.85\textwidth]{IMG/Desarrollo/diagrama_arnes_loopback.pdf}
     \caption{Arnés de \textit{loopback} RS485 a 2 hilos entre dos conectores D-Sub-9.}
     \label{fig:arnes_rs485}
 \end{figure}
