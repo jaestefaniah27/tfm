@@ -85,7 +85,9 @@ configuró automáticamente usando \textit{Block Automation} de Vivado. Se añad
 del paso anterior al \textit{Block Design}. Se añadieron dos AXI GPIO IPs al \textit{block design} para
 comunicar el PS con la PL, y se conectaron los bloques entre sí, utilizando \textit{Automate
 Connection} de Vivado para todas las conexiones faltantes. El diseño resultante es el de la
-figura~\ref{fig:block_design_and}.
+figura~\ref{fig:block_design_and}, donde se aprecia la estructura que se repetirá en todos los
+diseños del trabajo: el bloque del PS, los periféricos de la PL y el interconector AXI que los une,
+con el bloque VHDL propio colgando de uno de los dos AXI GPIO.
 
 \begin{figure}[H]
     \centering
@@ -95,8 +97,9 @@ figura~\ref{fig:block_design_and}.
 \end{figure}
 
 Después se creó un \textit{Wrapper} del \textit{Block Design} para que Vivado pudiera sintetizarlo
-correctamente. En la pestaña \textit{Address Editor} pueden verse las direcciones de los registros
-para acceder a la parte PL desde el PS. Por último, se generó el \textit{BitStream} y se exportó el
+correctamente. La pestaña \textit{Address Editor} de Vivado lista las direcciones base con las que el PS accede
+a los registros de cada periférico de la PL. El proyecto completo de este ejemplo, con el diseño y
+el código de las dos mitades, está en el repositorio bajo \texttt{tfm/00\_docs/AND\_example}. Por último, se generó el \textit{BitStream} y se exportó el
 hardware como .xsa.
 
 \textbf{Generación de la imagen de arranque (Vitis).} El objetivo de este paso es empaquetar el
@@ -107,14 +110,19 @@ hardware generado en Vivado, junto con el software de arranque, en un único bin
     \item Se creó un componente de tipo \textit{Platform} en Vitis, utilizando como base el .xsa
     exportado desde Vivado, y se compiló.
     \item Sobre esa plataforma se creó una aplicación a partir del ejemplo \textit{Zynq MP FSBL},
-    y se compiló para obtener el \texttt{zynqmp\_fsbl\_proyect.elf}.
+    el cargador de arranque de primera etapa (\textit{First Stage Boot Loader}), que es el primer
+    programa que ejecuta el PS y el que carga el resto de componentes de la imagen. Al compilarla
+    se obtiene el \texttt{zynqmp\_fsbl\_proyect.elf}.
     \item Se lanzó el generador de imágenes de Vitis (\textit{Create Zynq UltraScale+ Boot Image})
     y se añadieron los componentes en el orden indicado en la figura
     \ref{fig:vitis_boot_image}, ya que el orden dentro del fichero BIF determina la secuencia
     de arranque.
 \end{enumerate}
 
-Los componentes que forman la imagen, en orden, son:
+La lista siguiente detalla cada componente con su modo y su destino. El nivel de detalle es
+deliberado: el modo y el orden de los componentes dentro del fichero BIF son la parte del
+procedimiento que la documentación de Xilinx no reúne en un solo sitio, y un error en cualquiera de
+los dos impide el arranque sin dar un mensaje útil.
 
 \begin{itemize}
     \item \texttt{zynqmp\_fsbl\_proyect.elf}, en modo \textit{bootloader}, destino a53-0 y nivel
@@ -1746,6 +1754,15 @@ en el anverso y los catorce transceptores LTC2865 en el reverso.
 % ---------------------------------------------------------------------------
 \section{Desarrollo de herramientas de testing}
 % ---------------------------------------------------------------------------
+
+Nada de lo descrito hasta aquí puede darse por bueno sin un banco desde el que ejercitarlo. El
+transceptor, el driver y las tres placas se validan desde el propio MPSoC, de modo que hizo falta
+construir el software que los pone a trabajar y que hace observable lo que ocurre: aplicaciones
+sobre RTEMS que configuran cada canal, generan tráfico y comprueban lo recibido, y el equipamiento
+de laboratorio que cierra los enlaces sobre cable real.
+
+Este apartado describe esas herramientas. Son las que producen los resultados del capítulo~4, y
+conocerlas es necesario para interpretar las trazas y las medidas que allí se presentan.
 
 \subsection{Aplicación de testing del driver serie en RTEMS}
 

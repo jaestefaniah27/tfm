@@ -13,25 +13,29 @@ garantizando así la autonomía estratégica de España y Europa en el sector es
 
 \section{MPSoC Zynq UltraScale+ ZCU102}
 
-La ZCU102 es una tarjeta de evaluación de propósito general de Xilinx para el prototipado de
+La ZCU102 es una tarjeta de evaluación de propósito general de Xilinx (hoy AMD) para el prototipado de
 sistemas empotrados sobre el MPSoC (\textit{Multiprocessor System-on-Chip}) Zynq UltraScale+.
-Este MPSoC integra en un único encapsulado un sistema de procesamiento con cuatro núcleos ARM y
-una matriz de lógica programable, unidos por buses internos de alto rendimiento. La arquitectura
+Este MPSoC integra en un único encapsulado un sistema de procesamiento con cuatro núcleos ARM
+(\textit{Advanced RISC Machines}) y una matriz de lógica programable, unidos por buses internos de
+alto rendimiento. La arquitectura
 separa el sistema en dos dominios complementarios: el Sistema de Procesamiento (PS,
 \textit{Processing System}) y la lógica programable (PL, \textit{Programmable Logic}).
 
 El \textbf{PS} es el dominio del software. Son núcleos ARM de arquitectura fija que ejecutan
 instrucciones de forma secuencial, igual que cualquier microprocesador clásico. Sobre ellos
-corren el sistema operativo, la gestión de memoria y las rutinas de control de alto nivel.
+corren el sistema operativo, la gestión de la memoria DDR (\textit{Double Data Rate}) y las
+rutinas de control de alto nivel.
 
-La \textbf{PL} es el dominio del hardware a medida: una matriz tipo FPGA (\textit{Field
-Programmable Gate Array}) que no ejecuta un programa, sino que se configura físicamente. Con un
-lenguaje de descripción de hardware como VHDL se interconectan los recursos del silicio (tablas
-de búsqueda, biestables, memoria BRAM y bloques DSP) para formar circuitos digitales concretos.
+La \textbf{PL} es el dominio del hardware a medida: una matriz reconfigurable tipo FPGA
+(\textit{Field Programmable Gate Array}) que no ejecuta un programa, sino que se configura físicamente. Con un
+lenguaje de descripción de hardware como VHDL (\textit{Very High Speed Integrated Circuit
+Hardware Description Language}) se interconectan los recursos del silicio (tablas de búsqueda,
+biestables, memoria BRAM (\textit{Block RAM}) y bloques DSP (\textit{Digital Signal Processor}))
+para formar circuitos digitales concretos.
 A cambio de un flujo de diseño más costoso, la PL ofrece determinismo temporal estricto y
 paralelismo masivo.
 
-La placa expone dos conectores FMC HPC (\textit{High Pin Count}), conformes al estándar VITA 57.1
+La placa expone dos conectores FMC (\textit{FPGA Mezzanine Card}) HPC (\textit{High Pin Count}), conformes al estándar VITA 57.1
 \cite{vita571fmc}. Sobre ellos se montan tarjetas de expansión (\textit{mezzanines}) que llevan
 pines digitales y pares diferenciales de la FPGA hacia el exterior, que es la vía para conectar
 periféricos físicos a la PL.
@@ -44,8 +48,9 @@ Vitis para el PS.
 \subsection{Vivado Design Suite}
 
 Vivado es el entorno de diseño, síntesis e implementación de la lógica de la PL. Admite
-descripción en HDL y diseño por bloques (\textit{Block Design}), donde los módulos propios se
-conectan al PS mediante el bus AXI (\textit{Advanced eXtensible Interface}). El fichero de
+descripción en HDL (\textit{Hardware Description Language}) y diseño por bloques (\textit{Block
+Design}), donde los periféricos de diseño propio se conectan al PS mediante el bus AXI
+(\textit{Advanced eXtensible Interface}). El fichero de
 restricciones (.xdc) asocia las señales del diseño a los pines físicos del encapsulado. El flujo
 termina con dos salidas: el \textit{bitstream} que configura la FPGA y un fichero .xsa que
 describe la arquitectura hardware para las herramientas de software.
@@ -59,7 +64,8 @@ Vitis es el IDE para el software del PS. Toma el fichero .xsa de Vivado y genera
 soporte de la placa (BSP, \textit{Board Support Package}): el mapa de memoria y los \textit{drivers}
 de bajo nivel con los que el código en C accede a los periféricos de la PL. Aporta además el
 compilador cruzado para los núcleos ARM y el empaquetado del binario de arranque (BOOT.BIN), que
-reúne el firmware de inicialización (PMUFW y FSBL), el \textit{bitstream} y el ejecutable en un
+reúne el firmware de inicialización (PMUFW, \textit{Power Management Unit Firmware}, y FSBL,
+\textit{First Stage Boot Loader}), el \textit{bitstream} y el ejecutable en un
 solo fichero cargable desde una tarjeta SD.
 
 Con Vitis se construyen, por tanto, tanto la capa de acceso a los periféricos como la imagen con
@@ -73,8 +79,9 @@ opera en un único espacio de direcciones físico, con un solo proceso y varios 
 cambios de contexto pesados ni traducción de direcciones, la latencia de respuesta a una
 interrupción es baja y acotada.
 
-Es un estándar de facto en la industria aeroespacial (ESA y NASA lo emplean en satélites y
-sondas) por su robustez y su soporte para arquitecturas ARM como la del Zynq UltraScale+. En
+Es un estándar de facto en la industria aeroespacial (ESA, \textit{European Space Agency}, y NASA
+lo emplean en satélites y sondas) por su robustez y su soporte para arquitecturas ARM como la del
+Zynq UltraScale+. En
 este tipo de plataforma se ejecuta sobre el PS y se encarga de la lógica de control y del acceso
 a los registros de los periféricos de la PL.
 
@@ -126,12 +133,13 @@ En el nivel físico usa señalización LVDS\footnote{\textit{Low-Voltage Differe
 transmitir un reloj aparte, que a alta frecuencia se desalinearía respecto a los datos
 (\textit{skew}\footnote{Desfase temporal entre señales que deberían llegar a la vez; crece con la frecuencia y la longitud de las pistas.}), envía los datos por un par y una señal \textit{strobe} por otro, de modo que el
 reloj se recupera con una XOR entre ambas. Proporciona enlaces punto a punto \textit{full-duplex}
-asíncronos de 2 a más de 400~Mbps. Su pila incluye una capa de red que permite encaminar
+asíncronos de hasta 400~Mbps. Su pila incluye una capa de red que permite encaminar
 paquetes a través de \textit{routers} SpaceWire~\cite{ecss50spw,parkes2012spw}.
 
 \subsection{CAN}
 
-El bus CAN nació en automoción y se usa como estándar de facto (\textit{CAN for Aerospace}) en
+El bus CAN (\textit{Controller Area Network}) nació en automoción y se usa como estándar de facto
+(\textit{CAN for Aerospace}) en
 las redes internas de telemetría y telecomando (TM/TC) de satélites pequeños y comerciales.
 
 Es multipunto y multimaestro, con acceso por escucha de portadora\footnote{Cada nodo espera a que el bus esté en reposo antes de empezar a transmitir.} y arbitraje por prioridad de

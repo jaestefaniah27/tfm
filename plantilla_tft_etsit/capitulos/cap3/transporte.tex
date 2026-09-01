@@ -62,7 +62,7 @@ serie sino el manejo de interrupciones. El sistema está en el régimen de \text
 livelock} descrito en la sección~\ref{sec:teoria_livelock}.
 
 % ---------------------------------------------------------------------------
-\subsection{Variante B --- catorce AXI DMA}
+\subsection{Variante B --- 14$\times$ AXI DMA}
 % ---------------------------------------------------------------------------
 
 Esta variante saca a la CPU del movimiento de datos delegándolo en motores DMA. Como un
@@ -97,9 +97,9 @@ un canal con un único \textit{buffer} activo:
 La variante opera en placa y en transmisión alcanza \textbf{3 interrupciones por kilobyte}, frente
 a las 1\,250 de la variante GPIO. El enfoque no escala, por dos razones:
 
-\textbf{El coste en lógica.} Catorce motores DMA completos ocupan \textbf{40\,217 LUT}, un
-14,7\,\% del dispositivo: 2,8 veces más lógica que la solución multicanal, para el mismo número
-de canales. La cifra por canal, 2\,873 LUT/canal frente a los 1\,014 del MCDMA, expresa
+\textbf{El coste en lógica.} Catorce motores DMA completos ocupan \textbf{40\,217 LUT}
+(\textit{Look-Up Table}), un 14,7\,\% del dispositivo: 2,8 veces más lógica que la solución
+multicanal, para el mismo número de canales. La cifra por canal, 2\,873 LUT/canal frente a los 1\,014 del MCDMA, expresa
 directamente lo que cuesta replicar en vez de compartir. Ese coste condiciona además
 el endurecimiento futuro del diseño, porque una triplicación modular (TMR, \textit{Triple Modular
 Redundancy}) de la lógica, que es la técnica habitual para tolerar los efectos de la radiación en

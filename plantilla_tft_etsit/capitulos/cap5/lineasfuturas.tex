@@ -27,15 +27,18 @@ ocupación del MCDMA mantiene el diseño en torno al 16\,\% del dispositivo, mie
 operación sobre la variante DMA14 rondaría el 44\,\% y la haría inviable
 (sección~\ref{sec:resultados_benchmark}).
 
-\textbf{Investigar arquitecturas tolerantes a radiación más allá del TMR.} La triplicación protege
-la lógica de usuario, pero no agota el problema: en una FPGA basada en SRAM, la memoria de
-configuración es tan vulnerable como los biestables, y un SEU en ella altera el propio circuito y
-no solo su estado. La continuación natural es estudiar y comparar el resto de mecanismos
-disponibles sobre este mismo diseño: el \textit{scrubbing} periódico de la memoria de
-configuración, la protección con código corrector de las memorias y de los \textit{buffers} en la
-DDR, las máquinas de estados con codificación segura y recuperación a un estado conocido, los
-temporizadores de guarda que reinicien un canal bloqueado sin arrastrar al resto, y la
-comparación con el uso de dispositivos cualificados o tolerantes a radiación por construcción.
-El objetivo es cuantificar qué combinación de técnicas ofrece la mejor relación entre cobertura
-frente a SEU, área ocupada y penalización en rendimiento, para el perfil de órbita baja del
-proyecto LINCE.
+\textbf{Proteger la memoria de configuración de la lógica programable.} La triplicación cubre la
+lógica de usuario y deja fuera un punto que en una FPGA basada en SRAM es igual de sensible: la
+memoria de configuración. Un SEU en ella no corrompe un dato, sino el propio circuito
+implementado, y la triplicación no lo detecta porque las tres copias residen en el mismo
+dispositivo. El mecanismo estándar frente a esto es el \textit{scrubbing}, la reescritura
+periódica de la memoria de configuración a partir de una copia de referencia, que en el Zynq
+UltraScale+ puede gobernarse desde el PS. La línea de trabajo consiste en integrarlo sobre la
+variante MCDMA y medir dos cosas: cada cuánto puede refrescarse la configuración sin perturbar el
+tráfico de los canales, y qué parte del área queda cubierta.
+
+Fuera ya del alcance de una continuación inmediata queda la comparación sistemática de mecanismos
+de tolerancia a radiación sobre esta plataforma, que constituye un trabajo en sí mismo. La
+migración a memorias externas con código corrector o la evaluación de dispositivos tolerantes a
+radiación por construcción pertenecen a esa categoría y condicionan el diseño de la placa entera,
+no solo el de la lógica desarrollada aquí.

@@ -7,7 +7,8 @@
 El PS y la PL necesitan intercambiar flujos de bytes: los que un periférico de la PL recibe y hay
 que llevar a la memoria del procesador, y los que el procesador quiere transmitir. El MPSoC
 ofrece varias vías para ese intercambio de información, y la elección entre ellas no es un detalle de
-implementación: condiciona la carga de CPU, la latencia y el área ocupada en la FPGA.
+implementación: condiciona la carga de CPU (\textit{Central Processing Unit}), la latencia y el
+área ocupada en la FPGA.
 
 Esta sección describe los mecanismos disponibles: el bus que conecta ambos dominios, el acceso
 directo a memoria y el coste que impone el modelo de interrupciones.
@@ -15,8 +16,8 @@ directo a memoria y el coste que impone el modelo de interrupciones.
 \subsection{Bus AXI}
 
 La comunicación entre el PS y la PL del Zynq UltraScale+ se realiza a través de puertos que
-implementan el estándar AMBA AXI4 de ARM~\cite{arm2011axi4}. El estándar define tres
-perfiles:
+implementan el estándar AMBA (\textit{Advanced Microcontroller Bus Architecture}) AXI4 de
+ARM~\cite{arm2011axi4}. El estándar define tres perfiles:
 
 \begin{itemize}
     \item \textbf{AXI4-Lite.} Perfil reducido para leer y escribir \textit{registros}
@@ -75,8 +76,8 @@ controladores y $N$ interrupciones.
 \subsubsection{AXI MCDMA (PG288)}
 
 El IP \texttt{axi\_mcdma} \cite{xilinx2022pg288} levanta esa limitación: es un controlador
-\textbf{multicanal} que multiplexa hasta 16 canales lógicos sobre un único motor y un único
-puerto hacia la memoria. Cada canal tiene sus registros, su anillo de descriptores y su
+\textbf{multicanal} (MCDMA, \textit{Multichannel DMA}) que multiplexa hasta 16 canales lógicos
+sobre un único motor y un único puerto hacia la memoria. Cada canal tiene sus registros, su anillo de descriptores y su
 \textit{buffer} en la DDR, pero comparten el hardware de transferencia.
 
 El reparto entre canales lo hace la señal \textbf{\texttt{TDEST}} del AXI-Stream. En recepción
