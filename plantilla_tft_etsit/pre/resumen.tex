@@ -18,30 +18,27 @@ En segundo lugar, el desarrollo de un driver serie en C sobre el sistema operati
 en el sistema de procesamiento del MPSoC, que utiliza el transceptor serie desarrollado y ofrece una 
 API pública que abstrae completamente del hardware.
 
-En tercer lugar, el diseño y fabricación de tres placas de circuito impreso de ampliación de la ZCU102
-que se conectan a ella para expandir sus capacidades y permiten ampliar la ventana de
-desarrollo. La primera placa ofrece soporte hardware para 7 líneas RS422 y 7 líneas RS485,
-las cuales se pueden conectar en buses compartidos configurables por hardware. La segunda
-placa ofrece soporte para 3 líneas RS422 o RS485 seleccionable, dos líneas CAN, cuatro
-líneas PWM y cuatro líneas analógicas. La tercera placa ofrece soporte para cinco líneas
-RS422 o RS485 seleccionable, tres pares de líneas de potencia para controlar motores por
-PWM y dos líneas SpaceWire.
+En tercer lugar, el diseño y fabricación de tres placas de circuito impreso de ampliación de la ZCU102.
+Las placas se conectan a ella para expandir sus capacidades y ampliar la ventana de desarrollo.
+La primera se diseñó para ejercitar específicamente los enlaces serie RS422 y RS485. Las otras
+dos, la placa CDHS y la placa AOCS, responden a las necesidades del ordenador de a bordo del
+satélite. Entre ambas cubren interfaces RS422/RS485, CAN, PWM, señales analógicas y SpaceWire.
 
 En cuarto lugar, el estudio del transporte de datos entre el sistema de procesamiento y la lógica
-programable, que resultó ser el factor determinante del rendimiento del conjunto. Se implementaron
-y midieron tres arquitecturas completas sobre el mismo transceptor: la primera basada en AXI GPIO,
-la segunda con un controlador de acceso directo a memoria (DMA) por transceptor y la tercera con un
-único controlador multicanal (MCDMA) gobernado por un puente diseñado en VHDL. La comparativa demuestra que la
-primera interrumpe al procesador una vez por byte y se queda en el 30\% del techo de la línea,
-mientras que la tercera alcanza el 99\% con cuatrocientas veces menos interrupciones.
+programable, el factor determinante del rendimiento del conjunto. Se implementaron y midieron tres
+arquitecturas de transporte sobre el mismo transceptor: la primera basada en AXI GPIO, la segunda
+con un controlador de acceso directo a memoria (DMA) por transceptor y la tercera con un único
+controlador multicanal (MCDMA) gobernado por un puente diseñado en VHDL. La comparativa mostró que
+la arquitectura MCDMA ofrece el mejor rendimiento de las tres.
 
 En quinto lugar, la validación de la plataforma mediante el desarrollo de herramientas de software
 y hardware adicionales, que permitieron verificar el correcto funcionamiento del driver serie
 y de las distintas funcionalidades de las placas de ampliación.
 
 El conjunto del trabajo constituye una plataforma funcional y validada que el equipo de
-Sener, Indra y el laboratorio B105 pueden utilizar como base para el subsistema de
-comunicaciones del ordenador de a bordo del satélite LINCE en el futuro.
+Sener (la empresa de ingeniería con la que se ha desarrollado el trabajo), Indra y el
+laboratorio B105 pueden utilizar como base para el subsistema de comunicaciones del
+ordenador de a bordo del satélite LINCE en el futuro.
 }
 
 \vspace{0.9cm}
@@ -63,29 +60,27 @@ Second, the development of a serial driver in C on the RTEMS real-time operating
 the processing system of the MPSoC, which uses the serial transceiver developed and provides a
 public API that fully abstracts the hardware.
 
-Third, the design and manufacture of three expansion printed circuit boards for the ZCU102, which
-connect to it in order to extend its capabilities and widen the development window. The first board
-provides hardware support for 7 RS422 lines and 7 RS485 lines, which can be connected in shared
-buses configurable by hardware. The second board provides support for 3 selectable RS422 or RS485
-lines, two CAN lines, four PWM lines and four analogue lines. The third board provides support for
-five selectable RS422 or RS485 lines, three pairs of power lines for PWM motor control and two
-SpaceWire lines.
+Third, the design and manufacture of three expansion printed circuit boards for the ZCU102. The
+boards connect to it in order to extend its capabilities and widen the development window. The
+first board was designed to exercise the RS422 and RS485 serial links specifically. The other two,
+the CDHS board and the AOCS board, respond to the needs of the satellite's on-board computer.
+Together they cover RS422/RS485, CAN, PWM, analogue and SpaceWire interfaces.
 
-Fourth, the study of data transport between the processing system and the programmable logic, which
-proved to be the determining factor in the overall performance of the system. Three complete
-architectures were implemented and measured on the same transceiver: the first one based on AXI
-GPIO, the second one with a direct memory access (DMA) controller per transceiver, and the third
-one with a single multichannel controller (MCDMA) governed by a bridge designed in VHDL. The comparison shows that
-the first one interrupts the processor once per byte and reaches only 30\% of the physical limit of
-the line, whereas the third one reaches 99\% with four hundred times fewer interrupts.
+Fourth, the study of data transport between the processing system and the programmable logic, the
+determining factor in the overall performance of the system. Three transport architectures were
+implemented and measured on the same transceiver: the first one based on AXI GPIO, the second one
+with a direct memory access (DMA) controller per transceiver, and the third one with a single
+multichannel controller (MCDMA) governed by a bridge designed in VHDL. The comparison showed that
+the MCDMA architecture offers the best performance of the three.
 
 Fifth, the validation of the platform through the development of additional software and hardware
 tools, which made it possible to verify the correct operation of the serial driver and of the
 different features of the expansion boards.
 
-Taken as a whole, the work constitutes a functional and validated platform that the teams at Sener,
-Indra and the B105 laboratory can use in the future as a basis for the communications subsystem of
-the on-board computer of the LINCE satellite.
+Taken as a whole, the work constitutes a functional and validated platform that the teams at Sener
+(the engineering company that partnered on this work), Indra and the
+B105 laboratory can use in the future as a basis for the communications subsystem of the on-board
+computer of the LINCE satellite.
 }
 \vspace{0.9cm}
 
