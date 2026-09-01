@@ -1,9 +1,10 @@
 Este anexo recoge el mapa de señales completo entre los conectores FMC de la ZCU102 y las
 placas LINCE Comunicación Serial, CDHS y AOCS, la tabla de frecuencias soportadas
-por el NCO del transceptor serie junto con su error medido, y el recuento del código desarrollado
-a lo largo del trabajo.
+por el NCO del transceptor serie junto con su error medido, el recuento del código desarrollado
+a lo largo del trabajo, la descripción RTL detallada de los bloques auxiliares del transceptor
+y los volcados completos del terminal de las pruebas de validación hardware del Capítulo~4.
 
-\section*{A.1 Mapa de señales LINCE Comunicación Serial}
+\section*{C.1 Mapa de señales LINCE Comunicación Serial}
 
 La tabla~\ref{tab:mapa_lince_serial} recoge el mapeado de los 14 drivers RS-485/RS-422 de la placa
 LINCE Comunicación Serial con el conector FMC HPC0 (P2) de la ZCU102. Cada driver expone las
@@ -83,7 +84,7 @@ control de dirección hardware).
 \end{longtable}
 }
 
-\section*{A.2 Mapa de señales CDHS}
+\section*{C.2 Mapa de señales CDHS}
 
 La tabla~\ref{tab:mapa_cdhs} recoge el mapeado de los cuatro subsistemas de la placa CDHS (SPI del
 ADC, CAN nominal y redundante, los tres canales serie y las cuatro líneas de PWM) con el conector
@@ -123,7 +124,7 @@ FMC HPC0 de la ZCU102.
     \label{tab:mapa_cdhs}
 \end{table}
 
-\section*{A.3 Mapa de señales AOCS}
+\section*{C.3 Mapa de señales AOCS}
 
 El mapa de la tabla~\ref{tab:mapa_aocs} corresponde a la revisión V2 de la placa, la versión
 cerrada del esquemático (sección~\ref{sec:diseno_aocs}). Respecto a la revisión fabricada, cada canal serie consume
@@ -194,7 +195,7 @@ cortocircuitadas, y el conector J4 alberga dos canales (RS41 y RS42).
 \end{longtable}
 }
 
-\section*{A.4 Tabla de frecuencias del NCO}
+\section*{C.4 Tabla de frecuencias del NCO}
 
 La tabla del NCO del transceptor serie contiene \textbf{54 entradas}, de 50 a 4.000.000 de
 baudios. La tabla~\ref{tab:nco} recoge las \textbf{29 que ejercita el \textit{testbench}}
@@ -246,7 +247,7 @@ tiempo de simulación desproporcionado, de modo que ninguna de ellas se barre.
     \label{tab:nco}
 \end{table}
 
-\section*{A.5 Volumen y distribución del código desarrollado}
+\section*{C.5 Volumen y distribución del código desarrollado}
 
 Se recoge aquí el recuento de líneas de código de autoría propia escritas en el trabajo, desglosado
 por lenguaje y por función. El criterio de recuento es restrictivo: se excluye todo el código
@@ -292,3 +293,278 @@ del código de aplicación. Es la traducción cuantitativa de una decisión deli
 adelantado en herramientas que hicieran el flujo reproducible y barato de iterar, cuyo retorno se
 manifestó en las campañas de depuración, donde regenerar el diseño completo desde cero pasó a ser
 un comando en lugar de una tarde de trabajo manual.
+
+\section*{C.6 Descripción RTL del registro de desplazamiento y la FIFO}
+
+Este apartado detalla los dos bloques auxiliares situados entre el receptor y el PS, cuyo
+comportamiento se resume en la sección~\ref{sec:normalizacion_fifo} del capítulo de desarrollo.
+
+\subsection*{C.6.1 Registro de desplazamiento}
+
+El registro de desplazamiento convierte a paralelo los bits que va entregando el receptor. Sus
+entradas son el bit muestreado (\texttt{D}), un pulso de habilitación por bit recibido
+(\texttt{Enable}, conectado al \texttt{Valid\_out} del receptor) y las dos señales de configuración
+que determinan el formato de la palabra (\texttt{data\_bits} y \texttt{bit\_order}); su salida
+\texttt{Q} es la palabra de 9~bits. El registro solo evoluciona en los ciclos en que
+\texttt{Enable} está activo, de modo que la FSM del receptor controla exactamente qué muestras
+entran en la palabra.
+
+Está diseñado para poder almacenar datos tanto si la configuración es LSB-\textit{first} como
+MSB-\textit{first}, de modo que una vez recibido el mensaje la palabra en la salida siempre es la
+correcta independientemente del modo configurado. Para ello dispone de dos caminos de
+desplazamiento combinacionales, seleccionados por \texttt{bit\_order}: en LSB \textit{first} el
+bit entrante se inserta en la posición más significativa de la palabra activa y el contenido se
+desplaza hacia la derecha; en MSB \textit{first} se inserta en la posición cero y el contenido se
+desplaza hacia la izquierda. Cada camino tiene a su vez cinco variantes, una por anchura de
+palabra, que fijan dónde se inserta el bit y rellenan a cero las posiciones no utilizadas.
+
+El efecto de esta \textbf{normalización} es que, completada la trama, el primer bit de datos
+recibido ocupa siempre \texttt{Q(0)} y la palabra está alineada al LSB con independencia de la
+configuración. Los dos consumidores de la salida, la FIFO y el cálculo de paridad esperada del
+receptor, pueden así ignorar por completo el orden de bits configurado, y el software del PS
+recibe la palabra en el mismo formato en los cinco anchos y en los dos órdenes posibles.
+
+\subsection*{C.6.2 FIFO}
+
+La FIFO es un bloque IP con 9 bits de datos (para poder almacenar mensajes de 9 bits) y
+512 de profundidad, que permite almacenar temporalmente varios mensajes y habilitarlos
+para su lectura posterior por el PS. Está configurada en modo \textit{first word fall through},
+de modo que la palabra más antigua está disponible en la salida sin necesidad de una lectura
+previa, y su reset síncrono se deriva del reset global del transceptor. La escritura la ordena
+directamente el pulso \texttt{Store\_out} del receptor, que solo se emite cuando la trama ha
+superado las comprobaciones de paridad y bit de parada.
+
+La habilitación de lectura se construye como la conjunción de FIFO no vacía y la señal
+\texttt{Data\_read} procedente del PS. Esta última se toma \textbf{a nivel}: en la versión inicial
+se empleaba el flanco detectado de \texttt{Data\_read}, lo que resulta adecuado cuando el PS lee
+byte a byte, pero deja de serlo con el transporte por DMA descrito en la
+sección~\ref{sec:transporte_desarrollo}, donde \texttt{Data\_read} lo conduce la señal
+\textit{tready} del canal AXI-Stream. La latencia del detector de flanco, de dos etapas de
+registro, hacía que el receptor de DMA capturase varias veces la misma palabra de la FIFO. Con
+la lectura a nivel, la FIFO avanza exactamente en el ciclo en que el consumidor acepta el dato.
+
+\section*{C.7 Volcados completos de terminal de las pruebas serie RS422/RS485}
+
+Este apartado recoge la salida íntegra del terminal de las dos sesiones de prueba de
+comunicaciones serie RS422/RS485 descritas en las secciones~\ref{sec:cdhs_rs} y
+\ref{sec:validacion_aocs} del capítulo de validación hardware.
+
+\subsection*{C.7.1 Placa CDHS (3 transceptores)}
+
+La sesión recoge el descubrimiento dinámico de los tres transceptores instanciados en el
+\textit{bitstream} y los intercambios de \textit{loopback} entre UART~0, UART~1 y UART~2.
+
+\begin{lstlisting}[basicstyle=\ttfamily\scriptsize, caption={Salida completa del terminal --- prueba RS422/RS485 con la placa CDHS (3 transceptores)}]
+MMU_MAP: return from mmu_map_pl_axi_early()
+[TRANSCEIVER DEBUG] Detectados: 3 | Base: 0xA0000000 | INT: 0xA0003000
+[TRANSCEIVER DEBUG]   - Transceptor 0: 0xA0000000
+[TRANSCEIVER DEBUG]   - Transceptor 1: 0xA0001000
+[TRANSCEIVER DEBUG]   - Transceptor 2: 0xA0002000
+
+=== ARRANQUE SISTEMA ZCU102 (5 UARTs) ===
+UART 00 [OK] Base: 0xA0000000
+UART 01 [OK] Base: 0xA0001000
+UART 02 [OK] Base: 0xA0002000
+[RX UART 00]: UART 2 Lista.
+
+=======================================================
+ CONSOLA DE CONTROL MULTI-TRANSCEPTOR
+-------------------------------------------------------
+ Formato: <ID> <MENSAJE> | <ID> SLO ON | <ID> SLO OFF
+ Ejemplos:
+   '0 Hola'      -> Envia 'Hola' por UART 0
+   'ALL Reset'   -> Envia 'Reset' por TODAS las UARTs
+   '2 SLO ON'    -> Activa el modo Slow Rate en UART 2
+   'ALL SLO OFF' -> Desactiva el modo Slow en TODAS
+=======================================================
+
+CMD>
+---- Sent utf8 encoded message: "0 hola" ----
+0 hola
+Tx -> UART 0: OK
+CMD> [RX UART 02]: hola
+---- Sent utf8 encoded message: "2 hola" ----
+2 hola
+Tx -> UART 2: OK
+CMD> [RX UART 00]: hola
+---- Sent utf8 encoded message: "0 hola" ----
+0 hola
+Tx -> UART 0: OK
+CMD> [RX UART 02]: hola
+---- Sent utf8 encoded message: "2 hola" ----
+2 hola
+Tx -> UART 2: OK
+CMD> [RX UART 00]: hola
+---- Sent utf8 encoded message: "0 hola" ----
+0 hola
+Tx -> UART 0: OK
+CMD> [RX UART 02]: ?hola
+---- Sent utf8 encoded message: "2 hola" ----
+2 hola
+Tx -> UART 2: OK
+CMD> [RX UART 00]: ?hola
+---- Sent utf8 encoded message: "0 hola" ----
+0 hola
+Tx -> UART 0: OK
+CMD> [RX UART 02]: ?hola
+---- Sent utf8 encoded message: "2 hola" ----
+2 hola
+Tx -> UART 2: OK
+CMD> [RX UART 00]: ?hola
+---- Sent utf8 encoded message: "0 hola" ----
+0 hola
+Tx -> UART 0: OK
+CMD> [RX UART 02]: hola
+---- Sent utf8 encoded message: "2 hola" ----
+2 hola
+Tx -> UART 2: OK
+CMD> [RX UART 00]: hola
+---- Sent utf8 encoded message: "0 HOLA MUNDO" ----
+0 HOLA MUNDO
+Tx -> UART 0: OK
+CMD> [RX UART 02]: HOLA MUNDO
+---- Sent utf8 encoded message: "1 HOLA MUNDO" ----
+1 HOLA MUNDO
+Tx -> UART 1: OK
+CMD>
+---- Sent utf8 encoded message: "2 HOLA MUNDO" ----
+2 HOLA MUNDO
+Tx -> UART 2: OK
+CMD> [RX UART 00]: HOLA MUNDO
+\end{lstlisting}
+
+\subsection*{C.7.2 Placa AOCS (5 transceptores)}
+
+La sesión recoge el descubrimiento dinámico de los cinco transceptores instanciados en el
+\textit{bitstream} y los cuatro pares de \textit{loopback} ejercitados entre UART~0 y el
+resto de canales.
+
+\begin{lstlisting}[basicstyle=\ttfamily\scriptsize, caption={Salida completa del terminal --- prueba RS422/RS485 con la placa AOCS (5 transceptores)}]
+MMU_MAP: return from mmu_map_pl_axi_early()
+[TRANSCEIVER DEBUG] Detectados: 5 | Base: 0xA0000000 | INT: 0xA0005000
+[TRANSCEIVER DEBUG]   - Transceptor 0: 0xA0000000
+[TRANSCEIVER DEBUG]   - Transceptor 1: 0xA0001000
+[TRANSCEIVER DEBUG]   - Transceptor 2: 0xA0002000
+[TRANSCEIVER DEBUG]   - Transceptor 3: 0xA0003000
+[TRANSCEIVER DEBUG]   - Transceptor 4: 0xA0004000
+
+=== ARRANQUE SISTEMA ZCU102 (5 UARTs) ===
+UART 00 [OK] Base: 0xA0000000
+UART 01 [OK] Base: 0xA0001000
+UART 02 [OK] Base: 0xA0002000
+UART 03 [OK] Base: 0xA0003000
+UART 04 [OK] Base: 0xA0004000
+[RX UART 00]: UART 4 Lista.
+
+=======================================================
+ CONSOLA DE CONTROL MULTI-TRANSCEPTOR
+-------------------------------------------------------
+ Formato: <ID> <MENSAJE> | <ID> SLO ON | <ID> SLO OFF
+ Ejemplos:
+   '0 Hola'      -> Envia 'Hola' por UART 0
+   'ALL Reset'   -> Envia 'Reset' por TODAS las UARTs
+   '2 SLO ON'    -> Activa el modo Slow Rate en UART 2
+   'ALL SLO OFF' -> Desactiva el modo Slow en TODAS
+=======================================================
+
+CMD>
+---- Sent utf8 encoded message: "0 HOLA" ----
+0 HOLA
+Tx -> UART 0: OK
+CMD> [RX UART 04]: HOLA
+---- Sent utf8 encoded message: "4 HOLA" ----
+4 HOLA
+Tx -> UART 4: OK
+CMD> [RX UART 00]: HOLA
+---- Sent utf8 encoded message: "0 HOLA" ----
+0 HOLA
+Tx -> UART 0: OK
+CMD> [RX UART 03]: HOLA
+---- Sent utf8 encoded message: "3 HOLA" ----
+3 HOLA
+Tx -> UART 3: OK
+CMD> [RX UART 00]: HOLA
+---- Sent utf8 encoded message: "0 HOLA" ----
+0 HOLA
+Tx -> UART 0: OK
+CMD> [RX UART 02]: HOLA
+---- Sent utf8 encoded message: "2 HOLA" ----
+2 HOLA
+Tx -> UART 2: OK
+CMD> [RX UART 00]: HOLA
+---- Sent utf8 encoded message: "0 HOLA" ----
+0 HOLA
+Tx -> UART 0: OK
+CMD> [RX UART 01]: HOLA
+---- Sent utf8 encoded message: "1 HOLA" ----
+1 HOLA
+Tx -> UART 1: OK
+CMD> [RX UART 00]: HOLA
+\end{lstlisting}
+
+\section*{C.8 Volcado completo del barrido del ADC}
+
+Este apartado recoge la salida íntegra del terminal del barrido de tensión aplicado al canal
+CH2 del ADC ADS7950 de la placa CDHS, descrito en la sección~\ref{sec:validacion_cdhs} del
+capítulo de validación hardware. Se aprecian los dos tramos de subida y bajada de la rampa
+aplicada a CH2, los dos escalones intermedios en los que la fuente se dejó fija y la
+estabilidad de los otros tres canales durante todo el ensayo.
+
+\begin{lstlisting}[basicstyle=\ttfamily\scriptsize, caption={Salida completa del terminal --- barrido de tensión sobre CH2 del ADS7950 (placa CDHS)}]
+ADS7950: CH0= 244  CH1=  43  CH2=   0  CH3=  19
+ADS7950: CH0= 243  CH1=  43  CH2=   0  CH3=  19
+ADS7950: CH0= 244  CH1=  43  CH2=   0  CH3=  19
+ADS7950: CH0= 245  CH1=  43  CH2=   0  CH3=  19
+ADS7950: CH0= 244  CH1=  43  CH2=   0  CH3=  19
+ADS7950: CH0= 245  CH1=  44  CH2=   0  CH3=  19
+ADS7950: CH0= 244  CH1=  43  CH2=1577  CH3=  19
+ADS7950: CH0= 245  CH1=  43  CH2=1577  CH3=  19
+ADS7950: CH0= 244  CH1=  43  CH2=1579  CH3=  19
+ADS7950: CH0= 245  CH1=  43  CH2=1582  CH3=  19
+ADS7950: CH0= 245  CH1=  43  CH2=1580  CH3=  20
+ADS7950: CH0= 245  CH1=  43  CH2=1827  CH3=  19
+ADS7950: CH0= 245  CH1=  43  CH2=2156  CH3=  20
+ADS7950: CH0= 245  CH1=  44  CH2=2501  CH3=  20
+ADS7950: CH0= 245  CH1=  43  CH2=2814  CH3=  20
+ADS7950: CH0= 246  CH1=  43  CH2=2934  CH3=  21
+ADS7950: CH0= 245  CH1=  43  CH2=3419  CH3=  21
+ADS7950: CH0= 245  CH1=  43  CH2=3565  CH3=  21
+ADS7950: CH0= 245  CH1=  43  CH2=3535  CH3=  22
+ADS7950: CH0= 245  CH1=  43  CH2=3536  CH3=  22
+ADS7950: CH0= 246  CH1=  43  CH2=3069  CH3=  22
+ADS7950: CH0= 246  CH1=  43  CH2=2770  CH3=  22
+ADS7950: CH0= 246  CH1=  43  CH2=2436  CH3=  22
+ADS7950: CH0= 247  CH1=  43  CH2=1896  CH3=  22
+ADS7950: CH0= 246  CH1=  43  CH2=1509  CH3=  22
+ADS7950: CH0= 246  CH1=  43  CH2=1276  CH3=  22
+ADS7950: CH0= 247  CH1=  43  CH2= 928  CH3=  22
+ADS7950: CH0= 246  CH1=  43  CH2= 433  CH3=  22
+ADS7950: CH0= 247  CH1=  43  CH2= 400  CH3=  22
+ADS7950: CH0= 247  CH1=  43  CH2= 583  CH3=  22
+ADS7950: CH0= 246  CH1=  43  CH2=1238  CH3=  22
+ADS7950: CH0= 247  CH1=  43  CH2=1808  CH3=  23
+ADS7950: CH0= 247  CH1=  43  CH2=1827  CH3=  23
+ADS7950: CH0= 247  CH1=  43  CH2=1826  CH3=  23
+ADS7950: CH0= 248  CH1=  43  CH2= 647  CH3=  23
+ADS7950: CH0= 248  CH1=  44  CH2= 245  CH3=  23
+ADS7950: CH0= 248  CH1=  43  CH2= 189  CH3=  23
+ADS7950: CH0= 248  CH1=  43  CH2= 166  CH3=  22
+ADS7950: CH0= 247  CH1=  43  CH2= 148  CH3=  23
+ADS7950: CH0= 248  CH1=  43  CH2= 130  CH3=  22
+ADS7950: CH0= 248  CH1=  43  CH2= 116  CH3=  22
+ADS7950: CH0= 248  CH1=  43  CH2= 102  CH3=  22
+ADS7950: CH0= 248  CH1=  43  CH2=1823  CH3=  23
+ADS7950: CH0= 247  CH1=  43  CH2=1821  CH3=  23
+ADS7950: CH0= 248  CH1=  43  CH2=1820  CH3=  23
+ADS7950: CH0= 248  CH1=  43  CH2=1825  CH3=  23
+ADS7950: CH0= 248  CH1=  43  CH2=1826  CH3=  23
+ADS7950: CH0= 250  CH1=  43  CH2=1826  CH3=  23
+ADS7950: CH0= 249  CH1=  43  CH2=1826  CH3=  23
+ADS7950: CH0= 249  CH1=  44  CH2=1827  CH3=  23
+ADS7950: CH0= 249  CH1=  43  CH2=1825  CH3=  23
+ADS7950: CH0= 249  CH1=  43  CH2=1826  CH3=  24
+ADS7950: CH0= 248  CH1=  43  CH2=1820  CH3=  24
+ADS7950: CH0= 249  CH1=  43  CH2= 390  CH3=  23
+ADS7950: CH0= 249  CH1=  43  CH2= 230  CH3=  23
+ADS7950: CH0= 250  CH1=  43  CH2= 189  CH3=  23
+\end{lstlisting}

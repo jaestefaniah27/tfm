@@ -48,87 +48,8 @@ recepciones de esta captura aparecen caracteres corruptos (\texttt{?}), correspo
 una iteración previa del diseño antes de aplicar la corrección de robustez del receptor
 descrita en el Capítulo~3 (verificación de \textit{start-bit} a mitad de período). Una
 vez implementada esa mejora en la FSM del receptor, los caracteres corruptos desaparecieron
-por completo en las pruebas posteriores. La traza completa de la sesión, desde el
-descubrimiento de los transceptores hasta el último intercambio, es la siguiente:
-
-\begin{lstlisting}[basicstyle=\ttfamily\scriptsize, caption={Salida completa del terminal --- prueba RS422/RS485 con la placa CDHS (3 transceptores)}]
-MMU_MAP: return from mmu_map_pl_axi_early()
-[TRANSCEIVER DEBUG] Detectados: 3 | Base: 0xA0000000 | INT: 0xA0003000
-[TRANSCEIVER DEBUG]   - Transceptor 0: 0xA0000000
-[TRANSCEIVER DEBUG]   - Transceptor 1: 0xA0001000
-[TRANSCEIVER DEBUG]   - Transceptor 2: 0xA0002000
-
-=== ARRANQUE SISTEMA ZCU102 (5 UARTs) ===
-UART 00 [OK] Base: 0xA0000000
-UART 01 [OK] Base: 0xA0001000
-UART 02 [OK] Base: 0xA0002000
-[RX UART 00]: UART 2 Lista.
-
-=======================================================
- CONSOLA DE CONTROL MULTI-TRANSCEPTOR
--------------------------------------------------------
- Formato: <ID> <MENSAJE> | <ID> SLO ON | <ID> SLO OFF
- Ejemplos:
-   '0 Hola'      -> Envia 'Hola' por UART 0
-   'ALL Reset'   -> Envia 'Reset' por TODAS las UARTs
-   '2 SLO ON'    -> Activa el modo Slow Rate en UART 2
-   'ALL SLO OFF' -> Desactiva el modo Slow en TODAS
-=======================================================
-
-CMD>
----- Sent utf8 encoded message: "0 hola" ----
-0 hola
-Tx -> UART 0: OK
-CMD> [RX UART 02]: hola
----- Sent utf8 encoded message: "2 hola" ----
-2 hola
-Tx -> UART 2: OK
-CMD> [RX UART 00]: hola
----- Sent utf8 encoded message: "0 hola" ----
-0 hola
-Tx -> UART 0: OK
-CMD> [RX UART 02]: hola
----- Sent utf8 encoded message: "2 hola" ----
-2 hola
-Tx -> UART 2: OK
-CMD> [RX UART 00]: hola
----- Sent utf8 encoded message: "0 hola" ----
-0 hola
-Tx -> UART 0: OK
-CMD> [RX UART 02]: ?hola
----- Sent utf8 encoded message: "2 hola" ----
-2 hola
-Tx -> UART 2: OK
-CMD> [RX UART 00]: ?hola
----- Sent utf8 encoded message: "0 hola" ----
-0 hola
-Tx -> UART 0: OK
-CMD> [RX UART 02]: ?hola
----- Sent utf8 encoded message: "2 hola" ----
-2 hola
-Tx -> UART 2: OK
-CMD> [RX UART 00]: ?hola
----- Sent utf8 encoded message: "0 hola" ----
-0 hola
-Tx -> UART 0: OK
-CMD> [RX UART 02]: hola
----- Sent utf8 encoded message: "2 hola" ----
-2 hola
-Tx -> UART 2: OK
-CMD> [RX UART 00]: hola
----- Sent utf8 encoded message: "0 HOLA MUNDO" ----
-0 HOLA MUNDO
-Tx -> UART 0: OK
-CMD> [RX UART 02]: HOLA MUNDO
----- Sent utf8 encoded message: "1 HOLA MUNDO" ----
-1 HOLA MUNDO
-Tx -> UART 1: OK
-CMD>
----- Sent utf8 encoded message: "2 HOLA MUNDO" ----
-2 HOLA MUNDO
-Tx -> UART 2: OK
-CMD> [RX UART 00]: HOLA MUNDO
-\end{lstlisting}
+por completo en las pruebas posteriores. La salida completa del terminal se recoge en el
+apartado C.7 del Anexo~C.
 
 Las líneas \texttt{---- Sent utf8 encoded message ----} las escribe el terminal del PC al enviar
 cada orden, no la aplicación en placa. El encabezado \texttt{(5 UARTs)} es una cadena fija de la
@@ -255,68 +176,10 @@ ADS7950: CH0= 246  CH1=  43  CH2= 102  CH3=  22   <- de vuelta a 0 V
 Los canales CH0 ($\approx$245), CH1 ($\approx$43) y CH3 ($\approx$19) mostraron valores
 estables bajos durante todo el ensayo, correspondientes a las entradas no excitadas.
 
-El barrido completo, tal y como salió por el terminal, es el siguiente. Se aprecian los dos
-tramos de subida y bajada de la rampa aplicada a CH2, los dos escalones intermedios en los que la
-fuente se dejó fija y la estabilidad de los otros tres canales durante todo el ensayo:
-
-\begin{lstlisting}[basicstyle=\ttfamily\scriptsize, caption={Salida completa del terminal --- barrido de tensión sobre CH2 del ADS7950 (placa CDHS)}]
-ADS7950: CH0= 244  CH1=  43  CH2=   0  CH3=  19
-ADS7950: CH0= 243  CH1=  43  CH2=   0  CH3=  19
-ADS7950: CH0= 244  CH1=  43  CH2=   0  CH3=  19
-ADS7950: CH0= 245  CH1=  43  CH2=   0  CH3=  19
-ADS7950: CH0= 244  CH1=  43  CH2=   0  CH3=  19
-ADS7950: CH0= 245  CH1=  44  CH2=   0  CH3=  19
-ADS7950: CH0= 244  CH1=  43  CH2=1577  CH3=  19
-ADS7950: CH0= 245  CH1=  43  CH2=1577  CH3=  19
-ADS7950: CH0= 244  CH1=  43  CH2=1579  CH3=  19
-ADS7950: CH0= 245  CH1=  43  CH2=1582  CH3=  19
-ADS7950: CH0= 245  CH1=  43  CH2=1580  CH3=  20
-ADS7950: CH0= 245  CH1=  43  CH2=1827  CH3=  19
-ADS7950: CH0= 245  CH1=  43  CH2=2156  CH3=  20
-ADS7950: CH0= 245  CH1=  44  CH2=2501  CH3=  20
-ADS7950: CH0= 245  CH1=  43  CH2=2814  CH3=  20
-ADS7950: CH0= 246  CH1=  43  CH2=2934  CH3=  21
-ADS7950: CH0= 245  CH1=  43  CH2=3419  CH3=  21
-ADS7950: CH0= 245  CH1=  43  CH2=3565  CH3=  21
-ADS7950: CH0= 245  CH1=  43  CH2=3535  CH3=  22
-ADS7950: CH0= 245  CH1=  43  CH2=3536  CH3=  22
-ADS7950: CH0= 246  CH1=  43  CH2=3069  CH3=  22
-ADS7950: CH0= 246  CH1=  43  CH2=2770  CH3=  22
-ADS7950: CH0= 246  CH1=  43  CH2=2436  CH3=  22
-ADS7950: CH0= 247  CH1=  43  CH2=1896  CH3=  22
-ADS7950: CH0= 246  CH1=  43  CH2=1509  CH3=  22
-ADS7950: CH0= 246  CH1=  43  CH2=1276  CH3=  22
-ADS7950: CH0= 247  CH1=  43  CH2= 928  CH3=  22
-ADS7950: CH0= 246  CH1=  43  CH2= 433  CH3=  22
-ADS7950: CH0= 247  CH1=  43  CH2= 400  CH3=  22
-ADS7950: CH0= 247  CH1=  43  CH2= 583  CH3=  22
-ADS7950: CH0= 246  CH1=  43  CH2=1238  CH3=  22
-ADS7950: CH0= 247  CH1=  43  CH2=1808  CH3=  23
-ADS7950: CH0= 247  CH1=  43  CH2=1827  CH3=  23
-ADS7950: CH0= 247  CH1=  43  CH2=1826  CH3=  23
-ADS7950: CH0= 248  CH1=  43  CH2= 647  CH3=  23
-ADS7950: CH0= 248  CH1=  44  CH2= 245  CH3=  23
-ADS7950: CH0= 248  CH1=  43  CH2= 189  CH3=  23
-ADS7950: CH0= 248  CH1=  43  CH2= 166  CH3=  22
-ADS7950: CH0= 247  CH1=  43  CH2= 148  CH3=  23
-ADS7950: CH0= 248  CH1=  43  CH2= 130  CH3=  22
-ADS7950: CH0= 248  CH1=  43  CH2= 116  CH3=  22
-ADS7950: CH0= 248  CH1=  43  CH2= 102  CH3=  22
-ADS7950: CH0= 248  CH1=  43  CH2=1823  CH3=  23
-ADS7950: CH0= 247  CH1=  43  CH2=1821  CH3=  23
-ADS7950: CH0= 248  CH1=  43  CH2=1820  CH3=  23
-ADS7950: CH0= 248  CH1=  43  CH2=1825  CH3=  23
-ADS7950: CH0= 248  CH1=  43  CH2=1826  CH3=  23
-ADS7950: CH0= 250  CH1=  43  CH2=1826  CH3=  23
-ADS7950: CH0= 249  CH1=  43  CH2=1826  CH3=  23
-ADS7950: CH0= 249  CH1=  44  CH2=1827  CH3=  23
-ADS7950: CH0= 249  CH1=  43  CH2=1825  CH3=  23
-ADS7950: CH0= 249  CH1=  43  CH2=1826  CH3=  24
-ADS7950: CH0= 248  CH1=  43  CH2=1820  CH3=  24
-ADS7950: CH0= 249  CH1=  43  CH2= 390  CH3=  23
-ADS7950: CH0= 249  CH1=  43  CH2= 230  CH3=  23
-ADS7950: CH0= 250  CH1=  43  CH2= 189  CH3=  23
-\end{lstlisting}
+El volcado completo del barrido se recoge en el apartado C.8 del
+Anexo~C. Se aprecian en él los dos tramos de subida y bajada de la rampa aplicada a CH2, los
+dos escalones intermedios en los que la fuente se dejó fija y la estabilidad de los otros tres
+canales durante todo el ensayo.
 
 La traza se conserva en
 \texttt{tfm/\allowbreak 00\_docs/\allowbreak logs\_terminal/\allowbreak cdhs\_testing\_adc.txt}.
@@ -374,71 +237,8 @@ CMD> 0 HOLA  ->  [RX UART 03]: HOLA
 CMD> 0 HOLA  ->  [RX UART 01]: HOLA
 \end{lstlisting}
 
-La traza completa de la sesión, con el descubrimiento de los cinco transceptores y los cuatro
-pares de \textit{loopback} ejercitados, es la siguiente:
-
-\begin{lstlisting}[basicstyle=\ttfamily\scriptsize, caption={Salida completa del terminal --- prueba RS422/RS485 con la placa AOCS (5 transceptores)}]
-MMU_MAP: return from mmu_map_pl_axi_early()
-[TRANSCEIVER DEBUG] Detectados: 5 | Base: 0xA0000000 | INT: 0xA0005000
-[TRANSCEIVER DEBUG]   - Transceptor 0: 0xA0000000
-[TRANSCEIVER DEBUG]   - Transceptor 1: 0xA0001000
-[TRANSCEIVER DEBUG]   - Transceptor 2: 0xA0002000
-[TRANSCEIVER DEBUG]   - Transceptor 3: 0xA0003000
-[TRANSCEIVER DEBUG]   - Transceptor 4: 0xA0004000
-
-=== ARRANQUE SISTEMA ZCU102 (5 UARTs) ===
-UART 00 [OK] Base: 0xA0000000
-UART 01 [OK] Base: 0xA0001000
-UART 02 [OK] Base: 0xA0002000
-UART 03 [OK] Base: 0xA0003000
-UART 04 [OK] Base: 0xA0004000
-[RX UART 00]: UART 4 Lista.
-
-=======================================================
- CONSOLA DE CONTROL MULTI-TRANSCEPTOR
--------------------------------------------------------
- Formato: <ID> <MENSAJE> | <ID> SLO ON | <ID> SLO OFF
- Ejemplos:
-   '0 Hola'      -> Envia 'Hola' por UART 0
-   'ALL Reset'   -> Envia 'Reset' por TODAS las UARTs
-   '2 SLO ON'    -> Activa el modo Slow Rate en UART 2
-   'ALL SLO OFF' -> Desactiva el modo Slow en TODAS
-=======================================================
-
-CMD>
----- Sent utf8 encoded message: "0 HOLA" ----
-0 HOLA
-Tx -> UART 0: OK
-CMD> [RX UART 04]: HOLA
----- Sent utf8 encoded message: "4 HOLA" ----
-4 HOLA
-Tx -> UART 4: OK
-CMD> [RX UART 00]: HOLA
----- Sent utf8 encoded message: "0 HOLA" ----
-0 HOLA
-Tx -> UART 0: OK
-CMD> [RX UART 03]: HOLA
----- Sent utf8 encoded message: "3 HOLA" ----
-3 HOLA
-Tx -> UART 3: OK
-CMD> [RX UART 00]: HOLA
----- Sent utf8 encoded message: "0 HOLA" ----
-0 HOLA
-Tx -> UART 0: OK
-CMD> [RX UART 02]: HOLA
----- Sent utf8 encoded message: "2 HOLA" ----
-2 HOLA
-Tx -> UART 2: OK
-CMD> [RX UART 00]: HOLA
----- Sent utf8 encoded message: "0 HOLA" ----
-0 HOLA
-Tx -> UART 0: OK
-CMD> [RX UART 01]: HOLA
----- Sent utf8 encoded message: "1 HOLA" ----
-1 HOLA
-Tx -> UART 1: OK
-CMD> [RX UART 00]: HOLA
-\end{lstlisting}
+La traza completa de la sesión se recoge, junto a la de la placa CDHS, en el apartado C.7 del
+Anexo~C.
 
 A diferencia de la captura de la placa CDHS, aquí no aparece ningún carácter corrupto: esta
 sesión ya se ejecutó con la verificación de \textit{start-bit} a mitad de período incorporada al

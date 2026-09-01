@@ -291,7 +291,7 @@ fundamentales son:
 
 \begin{itemize}
     \item \textbf{Oscilador controlado numéricamente} (\texttt{NCO.vhd}): proporciona la señal
-    de temporización de bit para las 54 velocidades soportadas; el transmisor y el
+    de temporización de bit para las 54 velocidades de bus soportadas; el transmisor y el
     receptor instancian uno cada uno para poder trabajar a cualquiera de ellas.
     \item \textbf{Transmisor} (\texttt{TX\_CONFIGURABLE\_SERIAL.vhd}): serializa y emite las
     tramas, y gobierna la señal de \textit{Driver Enable} del transceptor físico.
@@ -310,11 +310,15 @@ fundamentales son:
 Los parámetros configurables son:
 
 \begin{itemize}
-    \item Baudrate (desde 50 hasta 4.000.000 baudios).
-    \item Número de \textit{stop bits} (1, 1,5 o 2).
-    \item Paridad (par, impar, marca, espacio o deshabilitada).
-    \item Orden de los bits (LSB o MSB).
-    \item Número de bits de datos (entre 5 y 9).
+    \item Velocidad de bus, o \textit{baudrate}, desde 50 hasta 4.000.000 baudios.
+    \item Número de bits de parada, o \textit{stop bits}, que marcan el final de la trama y
+    devuelven la línea a reposo: 1, 1,5 o 2.
+    \item Modo de paridad: par, impar, marca, espacio o deshabilitada. La paridad es un único bit
+    de comprobación que iguala a par o a impar el número de unos de la palabra, no un código de
+    redundancia cíclica (CRC).
+    \item Orden de los bits, empezando por el menos significativo (LSB) o por el más
+    significativo (MSB).
+    \item Número de bits de datos, entre 5 y 9.
 \end{itemize}
 
 Los siguientes apartados describen esos bloques uno a uno, siguiendo el camino que recorre un
@@ -735,49 +739,23 @@ el centro del bit de inicio, es el que descarta los falsos inicios de trama. Las
     \label{fig:cronograma_trama}
 \end{figure}
 
-\subsection{Registro de desplazamiento}
+\subsection{Normalización de la palabra recibida y almacenamiento} \label{sec:normalizacion_fifo}
 
-El registro de desplazamiento convierte a paralelo los bits que va entregando el receptor. Sus
-entradas son el bit muestreado (\texttt{D}), un pulso de habilitación por bit recibido
-(\texttt{Enable}, conectado al \texttt{Valid\_out} del receptor) y las dos señales de configuración
-que determinan el formato de la palabra (\texttt{data\_bits} y \texttt{bit\_order}); su salida
-\texttt{Q} es la palabra de 9~bits. El registro solo evoluciona en los ciclos en que
-\texttt{Enable} está activo, de modo que la FSM del receptor controla exactamente qué muestras
-entran en la palabra.
+Entre el receptor y el PS se sitúan dos bloques auxiliares. El registro de desplazamiento
+convierte a paralelo los bits que entrega el receptor y \textbf{normaliza} la palabra: sea cual
+sea la anchura y el orden de bits configurados, el primer bit de datos recibido acaba siempre en
+\texttt{Q(0)} y la palabra queda alineada al LSB. Sus dos consumidores, la FIFO y el cálculo de
+paridad esperada, pueden así ignorar la configuración del canal, y el software del PS recibe la
+palabra en el mismo formato en los cinco anchos y en los dos órdenes posibles.
 
-Está diseñado para poder almacenar datos tanto si la configuración es LSB-\textit{first} como
-MSB-\textit{first}, de modo que una vez recibido el mensaje la palabra en la salida siempre es la
-correcta independientemente del modo configurado. Para ello dispone de dos caminos de
-desplazamiento combinacionales, seleccionados por \texttt{bit\_order}: en LSB \textit{first} el
-bit entrante se inserta en la posición más significativa de la palabra activa y el contenido se
-desplaza hacia la derecha; en MSB \textit{first} se inserta en la posición cero y el contenido se
-desplaza hacia la izquierda. Cada camino tiene a su vez cinco variantes, una por anchura de
-palabra, que fijan dónde se inserta el bit y rellenan a cero las posiciones no utilizadas.
+La FIFO es un bloque IP de 9~bits de dato y 512 de profundidad que almacena los mensajes ya
+validados hasta que el PS los lee. Su habilitación de lectura se toma \textbf{a nivel} y no por
+flanco, condición necesaria para el transporte por DMA descrito en la
+sección~\ref{sec:transporte_desarrollo}: con la lectura a nivel la FIFO avanza exactamente en el
+ciclo en que el consumidor acepta el dato.
 
-El efecto de esta \textbf{normalización} es que, completada la trama, el primer bit de datos
-recibido ocupa siempre \texttt{Q(0)} y la palabra está alineada al LSB con independencia de la
-configuración. Los dos consumidores de la salida, la FIFO y el cálculo de paridad esperada del
-receptor, pueden así ignorar por completo el orden de bits configurado, y el software del PS
-recibe la palabra en el mismo formato en los cinco anchos y en los dos órdenes posibles.
-
-\subsection{FIFO}
-
-La FIFO es un bloque IP con 9 bits de datos (para poder almacenar mensajes de 9 bits) y
-512 de profundidad, que permite almacenar temporalmente varios mensajes y habilitarlos
-para su lectura posterior por el PS. Está configurada en modo \textit{first word fall through},
-de modo que la palabra más antigua está disponible en la salida sin necesidad de una lectura
-previa, y su reset síncrono se deriva del reset global del transceptor. La escritura la ordena
-directamente el pulso \texttt{Store\_out} del receptor, que solo se emite cuando la trama ha
-superado las comprobaciones de paridad y bit de parada.
-
-La habilitación de lectura se construye como la conjunción de FIFO no vacía y la señal
-\texttt{Data\_read} procedente del PS. Esta última se toma \textbf{a nivel}: en la versión inicial
-se empleaba el flanco detectado de \texttt{Data\_read}, lo que resulta adecuado cuando el PS lee
-byte a byte, pero deja de serlo con el transporte por DMA descrito en la
-sección~\ref{sec:transporte_desarrollo}, donde \texttt{Data\_read} lo conduce la señal
-\textit{tready} del canal AXI-Stream. La latencia del detector de flanco, de dos etapas de
-registro, hacía que el receptor de DMA capturase varias veces la misma palabra de la FIFO. Con
-la lectura a nivel, la FIFO avanza exactamente en el ciclo en que el consumidor acepta el dato.
+La descripción RTL de ambos bloques, con los caminos de desplazamiento y la construcción de las
+señales de escritura y lectura, se recoge en el apartado C.6 del Anexo~C.
 
 \subsection{Bloque de canal} \label{sec:bloque_canal}
 
@@ -1237,47 +1215,51 @@ plataforma.
 Los bancos de entrada/salida del conector FMC HPC empleados por estas tarjetas operan a
 \textbf{1,8~V}: es el nivel del carril \texttt{VADJ} con el que la ZCU102 alimenta la interfaz. Todo
 componente que se conecte directamente a esos pines debe, por tanto, admitir una
-\textit{VIO}\footnote{\textit{Voltage Input/Output}: tensión con la que se alimenta el banco de entrada/salida digital de un circuito integrado, independiente de la de su núcleo; fija los niveles lógicos que la pieza acepta y entrega en sus pines.} de 1,8~V. La alternativa, interponer adaptadores de nivel entre
+\textit{VIO} (voltaje de bus) de 1,8~V. La \textit{VIO} es la tensión con la que se alimenta el
+banco de entrada/salida digital de un circuito integrado, independiente de la de su núcleo, y fija
+los niveles lógicos que la pieza acepta y entrega en sus pines. La alternativa, interponer adaptadores de nivel entre
 el MPSoC y cada transceptor, añade componentes activos en el camino de señal, introduce retardo
 de propagación en líneas que conmutan a varios megabaudios y multiplica los puntos de fallo. Se
 descartó salvo donde fue inevitable, y se buscaron deliberadamente componentes con \textit{VIO}
 nativo a 1,8~V.
 
-El primer criterio de búsqueda fue la \textbf{herencia de vuelo}: se exploró la posibilidad de
-emplear componentes ya utilizados en misiones espaciales, cualificados o con historial de vuelo
-demostrado, por ser la opción preferible desde el punto de vista de la fiabilidad. La búsqueda no
-dio resultado. Los transceptores de bus con herencia de vuelo disponibles en catálogo operan
-con niveles lógicos de 3,3~V o 5~V, herederos de una generación tecnológica anterior, y no se
-encontró ninguno cuya interfaz digital fuera compatible con 1,8~V. La restricción de la plataforma
-y el catálogo de componentes cualificados para espacio resultaron incompatibles.
+El criterio de partida no fue la cualificación formal para espacio. El componente cualificado es
+la pieza \textit{rad-hard}, con un coste unitario y unos plazos de suministro que no encajan en un
+programa New Space como LINCE. La práctica habitual en este ámbito es otra: emplear componentes de
+catálogo, no cualificados oficialmente, que acreditan \textbf{herencia de vuelo} por haberse
+utilizado ya en misiones anteriores.
+
+La búsqueda se orientó por tanto a piezas de catálogo con herencia de vuelo, y no dio resultado.
+Los transceptores de bus que la acreditan pertenecen a una generación tecnológica anterior y su
+interfaz digital opera a 3,3~V o 5~V. No se encontró ninguno que admitiese una \textit{VIO} de 1,8~V,
+de modo que la herencia de vuelo y el nivel de la plataforma resultaron incompatibles.
 
 Al no encontrarse componentes con herencia de vuelo, se buscó el \textbf{grado automotriz} (cualificación
 AEC-Q100\footnote{Norma del \textit{Automotive Electronics Council} que somete a los circuitos
 integrados a ensayos de estrés (ciclado térmico, humedad, vida acelerada) para garantizar su
 operación en el rango de temperatura y fiabilidad exigidos por la industria del automóvil.}), que
-impone rangos de temperatura extendidos y niveles de
-robustez muy superiores a los de grado comercial, y que son el sustituto habitual del componente
-cualificado para espacio en misiones de bajo coste. Los transceptores \texttt{TCAN1044AVDRQ1} del
+impone rangos de temperatura extendidos y niveles de robustez muy superiores a los de grado
+comercial. Es el escalón al que se recurre en misiones de bajo coste cuando no hay una pieza de
+catálogo con herencia de vuelo que cumpla los requisitos eléctricos. Los transceptores \texttt{TCAN1044AVDRQ1} del
 bus CAN y el conversor analógico-digital \texttt{ADS7950QDBTRQ1} de la placa CDHS responden a este
 criterio, igual que el transceptor \texttt{THVD1424RGTR} de los canales serie de las placas CDHS y
 AOCS, elegido por soportar \textit{VIO} de 1,8~V de forma nativa.
 
-Esta elección es la adecuada para el objetivo del trabajo: lo que se exige de estas
-tarjetas es la \textbf{validación funcional} del subsistema de comunicaciones, no que constituyan
-un \textbf{modelo de vuelo}. Con componentes de grado automotriz se verifica el subsistema en
-condiciones eléctricas realistas, que es su propósito, sin incurrir en el coste ni en los plazos de
-una selección cualificada para espacio. Además, la investigación de componentes deja una conclusión
-útil para cuando se aborde el modelo de vuelo: no existe en catálogo ningún transceptor con
-herencia de vuelo cuya interfaz digital opere a 1,8~V, de modo que ese modelo tendrá que renunciar
-a la lógica nativa de la plataforma y adaptar la interfaz a componentes de una generación anterior,
-con niveles de 3,3~V o 5~V, para poder acceder al catálogo cualificado.
+A estas tarjetas se les exige la \textbf{validación funcional} del subsistema de comunicaciones,
+no ser un \textbf{modelo de vuelo}. El grado automotriz permitió ejercitar el subsistema en
+condiciones eléctricas realistas dentro del coste y del plazo del trabajo.
+
+La búsqueda deja además un dato aprovechable para el modelo de vuelo. Ningún transceptor de
+catálogo con herencia de vuelo opera su interfaz digital a 1,8~V. Ese modelo tendrá que renunciar
+al nivel nativo de la plataforma y adaptar la interfaz a piezas de 3,3~V o 5~V, ya sea cambiando la
+tensión del carril \texttt{VADJ} o interponiendo adaptadores de nivel.
 
 \subsection{Reglas de diseño y proceso de fabricación}
 
 El diseño de las tres placas se realizó en \textbf{Altium Designer}, y el primer paso en cualquiera
 de los tres proyectos, antes de colocar un solo componente, fue \textbf{establecer las reglas de
 diseño}. Es un paso que conviene no posponer: las reglas son el contrato que el comprobador de
-Altium verifica de forma continua durante el enrutado, por lo que fijarlas al principio convierte
+Altium verifica de forma continua durante el rutado, por lo que fijarlas al principio convierte
 las restricciones de fabricación en un error detectado en el momento de cometerlo, en lugar de en un
 rechazo del fabricante cuando el diseño ya está cerrado.
 
@@ -1291,7 +1273,7 @@ capacidades garantiza que las tres placas fueran fabricables en la primera tirad
 ocurrió.
 
 Sobre esas reglas generales se impusieron dos restricciones adicionales propias de las señales que
-transportan estas placas: \textbf{enrutado en par diferencial} con impedancia controlada para las
+transportan estas placas: \textbf{rutado en par diferencial} con impedancia controlada para las
 líneas RS-422/RS-485 y CAN, cuyo desequilibrio degradaría el rechazo a modo común del que depende
 la inmunidad al ruido de un bus diferencial; y \textbf{longitud acotada} en las líneas de
 conmutación rápida procedentes del FMC.
