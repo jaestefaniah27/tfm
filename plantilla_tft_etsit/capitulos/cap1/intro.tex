@@ -88,15 +88,19 @@ Durante el desarrollo del trabajo se ha tenido un contacto estrecho con los comp
 Sener. Se han seguido \textbf{metodologías ágiles} mediante el uso del programa \textit{Jira}~\cite{atlassian_jira},
 que permite organizar las tareas en función del tiempo que requieren. La metodología ágil
 utilizada consiste en establecer las tareas que se van a realizar durante un tiempo
-establecido, denominado como \textit{Sprint}. Al final de cada \textit{Sprint}, se tiene una
-reunión estructurada en las siguientes fases: revisión de \textit{sprint}, preparación del
-siguiente \textit{sprint}, análisis de posibles mejoras acerca de la metodología, y preguntas
-finales. Durante la reunión los participantes se turnan para hablar. En nuestro caso, los 
-\textit{sprints} han tenido una duración de dos semanas, y se han realizado un total de 20 sprints.
+establecido, denominado \textit{sprint}. Al final de cada \textit{sprint} se celebra una
+reunión estructurada en cuatro fases: revisión del \textit{sprint} cerrado, preparación del
+siguiente, análisis de posibles mejoras sobre la metodología y preguntas finales. Los
+\textit{sprints} han tenido una duración de dos semanas y se han realizado 20 en total.
 
-Además de las reuniones de \textit{Sprint}, se ha mantenido una comunicación constante con el
+Además de las reuniones de \textit{sprint}, se ha mantenido una comunicación constante con el
 equipo de Sener para resolver todo tipo de dudas acerca de los requerimientos del proyecto y
 de cómo orientar el desarrollo.
+
+El flujo de trabajo se apoyó en automatizaciones propias en forma de scripts de shell, Python y
+TCL, que redujeron el tiempo dedicado a tareas repetitivas y eliminaron los errores manuales.
+
+\subsection{Planificación temporal}
 
 El trabajo se estructuró en tres fases principales:
 
@@ -130,8 +134,8 @@ dos alternativas nuevas: la primera consistió en un sistema de transporte basad
 y la segunda en un sistema de transporte basado en un único controlador AXI MCDMA con un puente VHDL que multiplexa 
 todos los canales. Ambas alternativas fueron implementadas y comparadas.
 
-Por último, se desarrollaron múltiples automatizaciones en forma de scripts de shell, Python, TCL, etc,
-que agilizaron el flujo de trabajo permitiendo ahorrar tiempo en tareas repetitivas y eliminar errores manuales.
+
+\section{Estructura de la memoria y documentación}
 
 Todo el trabajo desarrollado (código VHDL, aplicaciones y drivers de RTEMS, bancos de pruebas,
 diseños de las placas y scripts de automatización) se ha versionado en un único repositorio Git,
@@ -147,7 +151,7 @@ repositorio, siempre relativas a su raíz.
 
 
 
-\section{Estructura de la memoria}
+
 
 El resto del documento se organiza en cuatro capítulos y tres anexos.
 
@@ -168,8 +172,8 @@ cuantitativa entre las tres arquitecturas de transporte, la caracterización el�
 la validación de las placas CDHS y AOCS sobre cada una de sus interfaces.
 
 El \textbf{capítulo 5} reúne las conclusiones y las líneas futuras de trabajo. El \textbf{anexo A}
-contiene los mapas de señales de las tres placas, la tabla del oscilador controlado numéricamente y
-el recuento del código desarrollado; el \textbf{anexo B}, el análisis de aspectos éticos,
-económicos, sociales y ambientales; y el \textbf{anexo C}, el presupuesto económico del trabajo.
+recoge el análisis de aspectos éticos, económicos, sociales y ambientales; el \textbf{anexo B}, el
+presupuesto económico del trabajo; y el \textbf{anexo C}, los mapas de señales de las tres placas,
+la tabla del oscilador controlado numéricamente y el recuento del código desarrollado.
 
 

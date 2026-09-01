@@ -43,7 +43,7 @@ sintético Dhrystone~\cite{weicker1984dhrystone}, que ejercita la aritmética en
 cadenas y las llamadas a función, y que sirve aquí únicamente como comprobación de que el
 \textit{toolchain} genera código funcional y el planificador ejecuta una carga sostenida.
 
-\subsection{Establecimiento de un flujo de desarrollo completo}
+\subsection{Validación del flujo de desarrollo de extremo a extremo}
 
 Una vez preparadas todas las herramientas de desarrollo, se realizó un desarrollo
 completo de principio a fin implementando un ejemplo sencillo: una
@@ -396,7 +396,7 @@ CFG=3686400 expected=7372800.0 Hz  measured=7371913.012000 Hz  err=-886.988000 H
 Fin del testbench: medidas completadas para todas las frecuencias.
 \end{lstlisting}
 
-De esa campaña procede la tabla~\ref{tab:nco} del Anexo~A, y su lectura valida el diseño: el peor
+De esa campaña procede la tabla~\ref{tab:nco} del Anexo~C, y su lectura valida el diseño: el peor
 error de todo el rango es de 120~ppm (a 3,6864~Mbaudios), dos órdenes de magnitud por debajo de la
 tolerancia habitual del $\pm$2\,\% de un receptor UART, y en la mayoría de las velocidades estándar
 el error es nulo o inferior a 1~ppm. El NCO queda así acreditado como fuente de temporización
@@ -1391,7 +1391,7 @@ que generan con un convertidor DC/DC los 5~V de su etapa de potencia, esta placa
 ninguna etapa de conversión: todos los carriles llegan directamente del FMC. Sendos conectores
 de dos pines dan acceso externo a los carriles de 12~V y 3,3~V.
 
-El mapa completo de señales entre esta placa y el conector FMC se encuentra en el Anexo~A de
+El mapa completo de señales entre esta placa y el conector FMC se encuentra en el Anexo~C de
 este documento. El esquemático completo (12 hojas, PDF) y la BOM están disponibles en
 \texttt{tfm/00\_docs/pcbs/serial/} del repositorio del proyecto.
 
@@ -1559,7 +1559,7 @@ Los escudos metálicos de todos los conectores están conectados al plano de GND
 mantener la continuidad de apantallamiento EMI con los cables blindados.
 
 El mapa completo de señales entre la placa CDHS y el conector FMC se encuentra en el
-Anexo~A de este documento. El esquemático (PDF) y la BOM están disponibles en
+Anexo~C de este documento. El esquemático (PDF) y la BOM están disponibles en
 \texttt{tfm/00\_docs/pcbs/cdhs/}.
 
 % ----- AOCS -----
@@ -1697,7 +1697,7 @@ los motores, que no se alimenta del FMC: admite alimentación exterior a través
 bornes banana, independiente del resto de la placa.
 
 El mapa completo de señales entre la placa AOCS y el conector FMC se encuentra en el
-Anexo~A. Los esquemáticos (PDF) y la BOM están disponibles en
+Anexo~C. Los esquemáticos (PDF) y la BOM están disponibles en
 \texttt{tfm/00\_docs/pcbs/aocs/}. El fichero \texttt{LINCE3\_AOCS\_V2.pdf} es la revisión aquí
 descrita, la única que refleja el estado final del diseño, y del que proceden todas las hojas de
 esquemático reproducidas en esta sección; \texttt{LINCE3\_AOCS.pdf} es un volcado anterior que se
