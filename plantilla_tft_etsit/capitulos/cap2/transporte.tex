@@ -4,7 +4,8 @@
 
 \section{Transporte de datos entre el PS y la PL}
 
-El PS y la PL necesitan intercambiar flujos de bytes: los que un periférico de la PL recibe y hay
+Llevar los catorce enlaces serie hasta la aplicación es el problema que ocupa buena parte del
+trabajo. El capítulo~3 lo resuelve construyendo y midiendo tres arquitecturas distintas. El PS y la PL necesitan intercambiar flujos de bytes: los que un periférico de la PL recibe y hay
 que llevar a la memoria del procesador, y los que el procesador quiere transmitir. El MPSoC
 ofrece varias vías para ese intercambio de información, y la elección entre ellas no es un detalle de
 implementación: condiciona la carga de CPU (\textit{Central Processing Unit}), la latencia y el
@@ -15,7 +16,7 @@ directo a memoria y el coste que impone el modelo de interrupciones.
 
 \subsection{Bus AXI}
 
-La comunicación entre el PS y la PL del Zynq UltraScale+ se realiza a través de puertos que
+Cada una de esas tres arquitecturas se apoya en un perfil distinto del estándar. La comunicación entre el PS y la PL del Zynq UltraScale+ se realiza a través de puertos que
 implementan el estándar AMBA (\textit{Advanced Microcontroller Bus Architecture}) AXI4 de
 ARM~\cite{arm2011axi4}. El estándar define tres perfiles:
 
@@ -39,7 +40,8 @@ ARM~\cite{arm2011axi4}. El estándar define tres perfiles:
 
 \subsection{Acceso directo a memoria (DMA)}
 
-Un controlador DMA es un maestro de bus que transfiere bloques de datos entre la memoria y un
+Las dos arquitecturas que superan a la de partida se construyen sobre este mecanismo, cada una
+con una IP de DMA distinta. Un controlador DMA es un maestro de bus que transfiere bloques de datos entre la memoria y un
 periférico \textbf{sin intervención de la CPU}. El procesador se limita a programar la
 transferencia (dirección de origen o destino y longitud) y a recibir una única interrupción
 cuando el bloque completo ha terminado. La tasa de interrupción deja de depender del número
@@ -93,8 +95,8 @@ Lo que separa una vía de transporte de otra no es el ancho de banda del bus, qu
 los casos, sino \textbf{cuántas veces se interrumpe al procesador}. Atender una interrupción
 obliga a salvar el contexto de la tarea en curso, saltar al vector, ejecutar la rutina de
 servicio, reconocer la fuente en el controlador y restaurar el contexto. Ese coste es casi
-constante, del orden de unos pocos microsegundos en un procesador empotrado, y \textbf{no depende
-de cuántos bytes traiga la interrupción}.
+constante, del orden de unos pocos microsegundos en un procesador empotrado, y no depende de
+cuántos bytes traiga la interrupción.
 
 Si un sistema interrumpe una vez por byte, el procesador sigue el ritmo del enlace solo mientras
 el coste $C$ de la interrupción sea menor que el tiempo $T_b$ que tarda en llegar un byte. Al
@@ -102,15 +104,15 @@ subir la velocidad de línea, $T_b$ baja y $C$ no, así que hay una velocidad a 
 toda la CPU se va en entrar y salir de la rutina de servicio y ningún byte más llega a la
 aplicación. Con $N$ enlaces simultáneos el umbral se alcanza $N$ veces antes.
 
-Este régimen, descrito por Mogul y Ramakrishnan para las interfaces de
-red~\cite{mogul1997livelock}, se conoce como \textbf{\textit{interrupt livelock}}: por encima de
-cierta tasa de llegada, el rendimiento útil no solo se estanca, sino que puede caer, porque la
-máquina gasta todo su tiempo atendiendo interrupciones y nada procesando lo que traen. El sistema
-responde pero no progresa.
+Mogul y Ramakrishnan describieron este régimen para las interfaces de red y lo llamaron
+\textit{interrupt livelock}~\cite{mogul1997livelock}. Por encima de una tasa de llegada crítica,
+el procesador ocupa cada ciclo en atender interrupciones y el rendimiento útil cae, porque no le
+queda tiempo para ejecutar la aplicación que debía recibir esos datos.
 
-Hay dos formas de evitarlo: sacar el trabajo del contexto de interrupción hacia una tarea
-planificable (\textit{deferred interrupt processing}) y, sobre todo, cambiar la unidad de
-notificación, pasando de interrumpir por byte a interrumpir por paquete. Esto último es lo que
-aporta el acceso directo a memoria.
+Existe una mitigación parcial: sacar el trabajo del contexto de interrupción hacia una tarea
+planificable (\textit{deferred interrupt processing}).
+
+La solución de fondo es cambiar la unidad de notificación, pasando de interrumpir por byte a
+interrumpir por paquete. Esto es lo que aporta el acceso directo a memoria.
 
 
