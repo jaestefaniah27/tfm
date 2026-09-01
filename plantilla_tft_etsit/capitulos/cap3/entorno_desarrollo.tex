@@ -98,7 +98,7 @@ figura~\ref{fig:block_design_and}, donde se aprecia la estructura que se repetir
 diseños del trabajo: el bloque del PS, los periféricos de la PL y el interconector AXI que los une,
 con el bloque VHDL propio colgando de uno de los dos AXI GPIO.
 
-\begin{figure}[H]
+\begin{figure}[htbp]
     \centering
     \includegraphics[width=\textwidth]{IMG/Desarrollo/block_design_and.png}
     \caption{\textit{Block Design} del ejemplo de la puerta AND.}
@@ -154,7 +154,7 @@ los dos impide el arranque sin dar un mensaje útil.
     enlazado el BL33 (U-Boot) y arrancarlo.
 \end{itemize}
 
-\begin{figure}[H]
+\begin{figure}[htbp]
     \centering
     \includegraphics[width=\textwidth]{IMG/Desarrollo/vitis_boot_image.png}
     \caption{Generador de imágenes de arranque de Vitis.}
@@ -679,7 +679,7 @@ el centro del bit de inicio, es el que descarta los falsos inicios de trama. Las
 \texttt{PreDE} y \texttt{PostDE} no están dibujadas a escala: duran 100~$\mu$s frente a los
 8,7~$\mu$s del tiempo de bit a 115\,200~baudios.
 
-\begin{figure}[H]
+\begin{figure}[htbp]
     \centering
     % babel-spanish activa < y >, que TikZ necesita para las puntas de flecha
     \shorthandoff{<>}%
@@ -1123,7 +1123,7 @@ enlace se tratan en la caracterización de la placa (sección~\ref{sec:pcb_slo})
 La figura~\ref{fig:driver_camino_datos} resume el recorrido interno de un byte en cada sentido.
 Esta subsección se ocupa de la transmisión, y la siguiente, de la recepción.
 
-\begin{figure}[H]
+\begin{figure}[htbp]
     \centering
     % babel-spanish activa < y >, que TikZ necesita para las puntas de flecha
     \shorthandoff{<>}%
@@ -1342,7 +1342,7 @@ figura~\ref{fig:serial_3d}.
     \label{fig:placa_serial_top}
 \end{sidewaysfigure}
 
-\begin{figure}[H]
+\begin{figure}[htbp]
     \centering
     \begin{subfigure}[t]{0.48\textwidth}
         \centering
@@ -1419,7 +1419,7 @@ diseño se aprecia en el render de la figura~\ref{fig:cdhs_3d}.
     \label{fig:cdhs_top}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}[htbp]
     \centering
     \begin{subfigure}[t]{0.48\textwidth}
         \centering
@@ -1469,7 +1469,7 @@ Las líneas CANH y CANL de cada canal incorporan diodos de protección ESD
 por encima de su tensión de ruptura sin introducir una capacitancia parásita significativa. La
 figura~\ref{fig:cdhs_can} recoge el circuito completo de los dos canales.
 
-\begin{figure}[H]
+\begin{figure}[htbp]
     \centering
     \includegraphics[width=\textwidth, page=3]{IMG/pcbs/LINCE3_CDHS.pdf}
     \caption{Subsistema CAN de la placa CDHS.}
@@ -1521,7 +1521,7 @@ diferencial A/B. Si el receptor permaneciera activo durante la transmisión, el 
 su propio eco. El circuito completo de un canal, con esa conexión y los cuatro \textit{jumpers}
 de configuración, es el de la figura~\ref{fig:cdhs_rs}.
 
-\begin{figure}[H]
+\begin{figure}[htbp]
     \centering
     \includegraphics[width=\textwidth, page=4]{IMG/pcbs/LINCE3_CDHS.pdf}
     \caption{Canal RS de la placa CDHS con el THVD1424RGTR.}
@@ -1593,7 +1593,7 @@ MOT-PWM.
     \label{fig:aocs_top}
 \end{sidewaysfigure}
 
-\begin{figure}[H]
+\begin{figure}[htbp]
     \centering
     \begin{subfigure}[t]{0.48\textwidth}
         \centering
@@ -1658,7 +1658,7 @@ técnicas de igualación de longitud (\textit{length matching}), para minimizar 
 entre el par de datos y el par de \textit{strobe}. También se ha controlado su impedancia
 característica, de 100~$\Omega$ diferencial.
 
-\begin{figure}[H]
+\begin{figure}[htbp]
     \centering
     \includegraphics[width=\textwidth, page=6]{IMG/pcbs/LINCE3_AOCS_V2.pdf}
     \caption{Subsistema SpaceWire de la placa AOCS.}
@@ -1730,14 +1730,14 @@ Las figuras~\ref{fig:cdhs_soldada} y~\ref{fig:aocs_soldada} muestran las placas 
 montadas al salir del horno, que son las que se emplean en toda la campaña de validación
 (sección~\ref{sec:validacion_cdhs} y siguientes).
 
-\begin{figure}[H]
+\begin{figure}[htbp]
     \centering
     \includegraphics[width=0.62\textwidth]{IMG/cdhs_soldada.jpg}
     \caption{Placa CDHS tras el proceso de soldadura.}
     \label{fig:cdhs_soldada}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}[htbp]
     \centering
     \includegraphics[width=0.62\textwidth]{IMG/aocs_soldada_caras.jpg}
     \caption{Placa AOCS tras el proceso de soldadura.}
@@ -1748,7 +1748,7 @@ La placa de comunicación serie se montó por el mismo procedimiento. La figura~
 muestra sus dos caras ya pobladas: los conectores D-Sub y los \textit{jumpers} de configuración
 en el anverso, y los catorce transceptores LTC2865 en el reverso.
 
-\begin{figure}[H]
+\begin{figure}[htbp]
     \centering
     \begin{subfigure}[t]{0.48\textwidth}
         \centering
@@ -1896,7 +1896,7 @@ por sí solo, excede el alcance de este trabajo.
 Arnés a 4 hilos, cruzando las líneas TX-P/N de un driver con las RX-P/N del opuesto
 (figura~\ref{fig:arnes_rs422}).
 
-\begin{figure}[H]
+\begin{figure}[htbp]
     \centering
     \includegraphics[width=0.45\textwidth]{IMG/arnes_rs422.jpg}
     \caption{Arnés de \textit{loopback} RS422 a 4 hilos entre dos conectores D-Sub-9.}
@@ -1922,7 +1922,7 @@ Como ambos canales convergen en el mismo conector J1, el arnés emplea un único
 con los hilos cruzados entre ambos pares, dejando puntas accesibles para la sonda del
 osciloscopio (figura~\ref{fig:arnes_can}).
 
-\begin{figure}[H]
+\begin{figure}[htbp]
     \centering
     \includegraphics[width=0.45\textwidth]{IMG/arnes_can.png}
     \caption{Arnés de interconexión CAN nominal--redundante.}

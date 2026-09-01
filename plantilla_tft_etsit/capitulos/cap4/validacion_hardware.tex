@@ -17,7 +17,7 @@ conecta a la ZCU102 por el conector FMC HPC0. La figura~\ref{fig:sistema_montado
 banco tal y como se utilizó durante toda la campaña, con la alimentación, la consola serie por
 USB y los arneses de \textit{loopback} conectados.
 
-\begin{figure}[H]
+\begin{figure}[htbp]
     \centering
     \includegraphics[width=0.8\textwidth]{IMG/sistema_montado.jpg}
     \caption{Sistema completo montado: ZCU102 con la placa CDHS.}
@@ -71,7 +71,7 @@ acota la velocidad máxima alcanzable, un compromiso que se cuantifica sobre la 
 comunicación serie en la sección~\ref{sec:pcb_slo}. La base de tiempos de las capturas de la
 derecha es cinco veces mayor que la de las de la izquierda.
 
-\begin{figure}[H]
+\begin{figure}[htbp]
     \centering
     \begin{subfigure}[t]{0.48\textwidth}
         \centering
@@ -134,14 +134,14 @@ reflexiones visibles que degradaban los flancos (figura~\ref{fig:can_sin_term});
 resistencias de 60~$\Omega$ conectadas, la forma de onda resultó limpia y bien definida
 (figura~\ref{fig:can_con_term}).
 
-\begin{figure}[H]
+\begin{figure}[htbp]
     \centering
     \includegraphics[width=0.78\textwidth]{IMG/can_sin_term.png}
     \caption{Señal diferencial CAN sin resistencias de terminación.}
     \label{fig:can_sin_term}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}[htbp]
     \centering
     \includegraphics[width=0.78\textwidth]{IMG/can_con_term.png}
     \caption{Señal diferencial CAN con resistencias de terminación (60~$\Omega$ + 60~$\Omega$).}
@@ -191,7 +191,7 @@ osciloscopio sobre el conector J5 de la placa CDHS, verificando los cuatro canal
 5~kHz, 1~kHz y 100~Hz, todos con \textit{duty cycle} del 50\%. La figura~\ref{fig:cdhs_pwm}
 recoge la medida del canal de 1~kHz, representativa de las cuatro.
 
-\begin{figure}[H]
+\begin{figure}[htbp]
     \centering
     \includegraphics[width=0.78\textwidth]{IMG/cdhs_pwm_1khz.png}
     \caption{Señal PWM en el conector J5 de la placa CDHS (1~kHz, 50\,\%).}
@@ -211,7 +211,7 @@ la V2 documentada en la sección~\ref{sec:diseno_aocs}, con cinco canales serie 
 DE y RE cortocircuitadas; la V2 no llegó a fabricarse, por lo que todo lo que sigue mide la
 revisión de cinco canales.
 
-\begin{figure}[H]
+\begin{figure}[htbp]
     \centering
     \includegraphics[width=0.62\textwidth]{IMG/aocs_soldada.jpg}
     \caption{Placas AOCS con componentes montados.}
@@ -258,7 +258,7 @@ sección~\ref{sec:diseno_aocs}: ese eje no entrega señal en el conector porque 
 su puente en H colgaban de dos salidas del adaptador de nivel cuyas entradas están atadas a
 masa. Es un fallo de la placa, no del firmware, y la revisión V2 lo corrige.
 
-\begin{figure}[H]
+\begin{figure}[htbp]
     \centering
     \includegraphics[width=0.78\textwidth]{IMG/aocs_pwm_motor.png}
     \caption{Señales PWM de control de motor en la placa AOCS.}
