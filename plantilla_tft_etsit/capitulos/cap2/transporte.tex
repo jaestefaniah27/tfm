@@ -58,6 +58,17 @@ cuando el bloque completo ha terminado. La tasa de interrupción deja de depende
 de bytes y pasa a depender del número de \textit{paquetes}, lo que en la práctica supone una
 reducción de dos a tres órdenes de magnitud.
 
+La figura~\ref{fig:dma} muestra el reparto de papeles. Los datos van de la memoria al periférico
+sin pasar por la CPU, que solo conserva dos hilos con el controlador: el de configuración y el de
+la interrupción de fin de bloque.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.95\textwidth]{IMG/Desarrollo/diagrama_dma.pdf}
+    \caption{Transferencia por acceso directo a memoria.}
+    \label{fig:dma}
+\end{figure}
+
 En el ecosistema de Xilinx, dos IP cubren este papel.
 
 \subsubsection{AXI DMA (PG021)}

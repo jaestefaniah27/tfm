@@ -44,6 +44,17 @@ La placa expone dos conectores FMC (\textit{FPGA Mezzanine Card}) HPC (\textit{H
 pines digitales y pares diferenciales de la FPGA hacia el exterior, que es la vía para conectar
 periféricos físicos a la PL.
 
+La figura~\ref{fig:mpsoc_zynq} recoge el reparto. Conviene fijarse en los puertos AXI entre PS y
+PL, porque son el camino que recorren los datos de los catorce enlaces serie y el objeto de la
+comparativa del capítulo~4.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{IMG/Desarrollo/diagrama_mpsoc_zynq.pdf}
+    \caption{MPSoC Zynq UltraScale+ y entorno de la ZCU102.}
+    \label{fig:mpsoc_zynq}
+\end{figure}
+
 \section{Vivado y Vitis (Xilinx): PS y PL}
 
 Estas dos herramientas son las que han producido todo lo desarrollado en este trabajo: el VHDL

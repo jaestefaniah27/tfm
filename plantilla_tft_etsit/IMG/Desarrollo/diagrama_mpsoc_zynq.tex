@@ -1,0 +1,143 @@
+% ---------------------------------------------------------------------------
+% Diagrama de bloques del MPSoC Zynq UltraScale+ y de la tarjeta ZCU102 sobre
+% la que se ha desarrollado y validado este trabajo: los dominios PS y PL del
+% chip, los puertos AXI que los comunican y lo que añade la placa alrededor.
+% Fuente del PDF que incluye la memoria (capítulo 2).
+%
+% Compilar:  pdflatex diagrama_mpsoc_zynq.tex
+% ---------------------------------------------------------------------------
+\documentclass[border=8pt]{standalone}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, calc}
+
+\definecolor{cPropio}{HTML}{2A78D6}   % azul: lógica de diseño propio
+\definecolor{cIP}{HTML}{EDA100}       % ámbar: IP de terceros
+\definecolor{cExt}{HTML}{1BAF7A}      % aguamarina: software y hardware externo
+\definecolor{cRef}{HTML}{8A8A85}      % gris: líneas, bandas y contornos
+
+\begin{document}
+\begin{tikzpicture}[
+    x=1cm, y=1cm, font=\sffamily\small,
+    blk/.style={draw=cPropio, line width=0.9pt, rounded corners=2pt,
+                fill=cPropio!7},
+    ip/.style={draw=cIP!85!black, line width=0.9pt, rounded corners=2pt,
+               fill=cIP!12},
+    ext/.style={draw=cExt!80!black, line width=0.9pt, rounded corners=2pt,
+                fill=cExt!10},
+    band/.style={draw=cRef!45, dashed, line width=0.7pt, rounded corners=4pt},
+    sig/.style={-{Stealth[length=4.5pt]}, line width=0.7pt, cRef!85!black},
+    bus/.style={{Stealth[length=4.5pt]}-{Stealth[length=4.5pt]},
+                line width=0.9pt, cRef!70!black},
+    lbl/.style={font=\sffamily\scriptsize, inner sep=2pt},
+    tlbl/.style={font=\ttfamily\scriptsize, inner sep=2pt},
+    name/.style={font=\ttfamily\scriptsize, align=center},
+]
+
+% ===================== Bandas =====================
+\draw[band] (-0.3,8.70) rectangle (19.3,10.70);
+\node[lbl, anchor=north west, text=cRef!55!black] at (-0.2,10.63) {\textbf{PS}};
+\node[lbl, anchor=north east, text=cRef!55!black] at (19.2,10.63)
+      {\textbf{MPSoC (chip)}};
+
+\draw[band] (-0.3,3.00) rectangle (19.3,7.20);
+\node[lbl, anchor=south west, text=cRef!55!black] at (-0.2,3.07) {\textbf{PL}};
+
+\draw[band] (-0.3,-0.30) rectangle (19.3,2.30);
+\node[lbl, anchor=north west, text=cRef!55!black] at (-0.2,2.23) {\textbf{ZCU102}};
+\node[lbl, anchor=south east, text=cRef!55!black] at (19.2,-0.23)
+      {\textbf{placa de evaluación}};
+
+% ===================== PS: bloques =====================
+\draw[ext] (0.10,8.95) rectangle (4.30,10.35);
+\node[align=center] at (2.20,9.65) {Controlador\\de memoria DDR};
+
+\draw[ext] (4.60,8.95) rectangle (8.80,10.35);
+\node[align=center] at (6.70,9.65) {4 $\times$\\Cortex-A53};
+
+\draw[ext] (9.10,8.95) rectangle (13.30,10.35);
+\node at (11.20,9.65) {PMU};
+
+\draw[ext] (13.60,8.95) rectangle (17.80,10.35);
+\node at (15.70,9.65) {GIC};
+
+% ===================== Puertos AXI (entre PS y PL) =====================
+\draw[ip] (0.40,7.50) rectangle (4.00,8.30);
+\node[lbl] at (2.20,7.90) {AXI4 HP};
+
+\draw[ip] (4.90,7.50) rectangle (17.50,8.30);
+\node[lbl] at (11.20,7.90) {AXI4 GP};
+
+\draw[bus] (2.20,8.95) -- (2.20,8.30);
+\draw[bus] (6.70,8.95) -- (6.70,8.30);
+\draw[bus] (11.20,8.95) -- (11.20,8.30);
+\draw[bus] (15.70,8.95) -- (15.70,8.30);
+
+\draw[bus] (2.20,7.50) -- (2.20,6.90);
+\draw[bus] (11.20,7.50) -- (11.20,6.90);
+
+% ===================== PL: matriz reconfigurable =====================
+\draw[ip] (0.10,3.30) rectangle (18.10,6.90);
+\node[lbl, text=cIP!45!black] at (9.10,6.62) {\textbf{Matriz reconfigurable}};
+
+\draw[draw=cIP!60!black, line width=0.5pt, rounded corners=1pt]
+      (0.40,4.40) rectangle (4.40,5.60);
+\node[align=center] at (2.40,5.00) {Tablas de\\búsqueda};
+
+\draw[draw=cIP!60!black, line width=0.5pt, rounded corners=1pt]
+      (4.70,4.40) rectangle (8.70,5.60);
+\node at (6.70,5.00) {Biestables};
+
+\draw[draw=cIP!60!black, line width=0.5pt, rounded corners=1pt]
+      (9.00,4.40) rectangle (13.00,5.60);
+\node at (11.00,5.00) {BRAM};
+
+\draw[draw=cIP!60!black, line width=0.5pt, rounded corners=1pt]
+      (13.30,4.40) rectangle (17.30,5.60);
+\node at (15.30,5.00) {DSP};
+
+% ===================== ZCU102: periféricos de la placa =====================
+\draw[ext] (0.15,0.00) rectangle (3.45,1.70);
+\node at (1.80,0.85) {DDR};
+
+\draw[ext] (3.70,0.00) rectangle (7.00,1.70);
+\node[align=center] at (5.35,0.85) {FMC HPC0};
+
+\draw[ext] (7.25,0.00) rectangle (10.55,1.70);
+\node[align=center] at (8.90,0.85) {FMC HPC1};
+
+\draw[ext] (10.80,0.00) rectangle (14.10,1.70);
+\node[align=center] at (12.45,0.85) {Tarjeta SD};
+
+\draw[ext] (14.35,0.00) rectangle (17.65,1.70);
+\node[align=center] at (16.00,0.85) {Consola\\serie (USB)};
+
+\node[lbl, anchor=north, text=cRef!55!black] at (1.80,0.35) {memoria externa};
+\node[lbl, anchor=north, text=cRef!55!black] at (5.35,0.35) {conector mezzanine};
+\node[lbl, anchor=north, text=cRef!55!black] at (8.90,0.35) {conector mezzanine};
+\node[lbl, anchor=north, text=cRef!55!black] at (12.45,0.35) {arranque del sistema};
+
+% ===================== FMC hacia la PL =====================
+\draw[bus] (5.35,1.70) -- (5.35,3.30);
+\draw[bus] (8.90,1.70) -- (8.90,3.30);
+
+% ===================== DDR: bypass hasta el controlador del PS =====================
+\draw[bus] (1.80,1.70) -- (1.80,2.00) -- (-0.15,2.00) -- (-0.15,9.65) -- (0.10,9.65);
+
+% ===================== SD y consola: bypass hasta la banda PS =====================
+\draw[sig] (12.45,1.70) -- (12.45,2.00) -- (18.50,2.00) -- (18.50,8.70);
+\node[lbl, anchor=east, text=cRef!55!black] at (18.40,8.55) {arranque};
+
+\draw[bus] (16.00,1.70) -- (16.00,2.00) -- (19.00,2.00) -- (19.00,8.70);
+\node[lbl, anchor=west, text=cRef!55!black] at (19.05,8.55) {consola};
+
+% ===================== Leyenda =====================
+\draw[ip] (0.10,-1.10) rectangle (0.42,-0.88);
+\node[lbl, anchor=west] at (0.50,-0.99) {interconexión AXI y lógica programable};
+\draw[ext] (7.20,-1.10) rectangle (7.52,-0.88);
+\node[lbl, anchor=west] at (7.60,-0.99) {silicio del PS y placa ZCU102};
+
+\end{tikzpicture}
+\end{document}

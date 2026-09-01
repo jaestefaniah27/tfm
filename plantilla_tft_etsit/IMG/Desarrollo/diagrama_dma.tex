@@ -1,0 +1,100 @@
+% ---------------------------------------------------------------------------
+% Acceso directo a memoria (DMA): qué hace el controlador y por qué descarga
+% al procesador. Vista genérica de un único canal, con los dos sentidos de
+% transferencia (MM2S y S2MM) y las dos únicas señales que llegan a la CPU.
+% Fuente del PDF que incluye la memoria (capítulo 2).
+%
+% Compilar:  pdflatex diagrama_dma.tex
+% ---------------------------------------------------------------------------
+\documentclass[border=8pt]{standalone}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, calc}
+
+\definecolor{cPropio}{HTML}{2A78D6}   % azul: lógica de diseño propio
+\definecolor{cIP}{HTML}{EDA100}       % ámbar: IP de terceros
+\definecolor{cExt}{HTML}{1BAF7A}      % aguamarina: software y hardware externo
+\definecolor{cRef}{HTML}{8A8A85}      % gris: líneas, bandas y contornos
+
+\begin{document}
+\begin{tikzpicture}[
+    x=1cm, y=1cm, font=\sffamily\small,
+    blk/.style={draw=cPropio, line width=0.9pt, rounded corners=2pt,
+                fill=cPropio!7},
+    ip/.style={draw=cIP!85!black, line width=0.9pt, rounded corners=2pt,
+               fill=cIP!12},
+    ext/.style={draw=cExt!80!black, line width=0.9pt, rounded corners=2pt,
+                fill=cExt!10},
+    band/.style={draw=cRef!45, dashed, line width=0.7pt, rounded corners=4pt},
+    sig/.style={-{Stealth[length=4.5pt]}, line width=0.7pt, cRef!85!black},
+    stream/.style={-{Stealth[length=6pt]}, line width=1.5pt, cRef!60!black},
+    irq/.style={-{Stealth[length=4.5pt]}, line width=0.7pt, cIP!70!black},
+    lbl/.style={font=\sffamily\scriptsize, inner sep=2pt},
+    tlbl/.style={font=\ttfamily\scriptsize, inner sep=2pt},
+    name/.style={font=\ttfamily\scriptsize, align=center},
+]
+
+% ===================== CPU =====================
+\draw[ext] (6.9,9.3) rectangle (10.3,10.5);
+\node at (8.6,9.9) {CPU (PS)};
+
+% ===================== DDR, a un lado =====================
+\draw[ext] (0.3,3.7) rectangle (5.0,8.3);
+\node[name] at (2.65,8.05) {DDR};
+\draw[draw=cExt!60!black, line width=0.5pt, rounded corners=1pt]
+      (0.7,6.55) rectangle (4.6,7.85);
+\node[lbl] at (2.65,7.20) {buffer TX};
+\draw[draw=cExt!60!black, line width=0.5pt, rounded corners=1pt]
+      (0.7,4.15) rectangle (4.6,5.45);
+\node[lbl] at (2.65,4.80) {buffer RX};
+
+% ===================== DMA, en el centro =====================
+\draw[ip] (6.1,3.9) rectangle (11.1,8.1);
+\node[name] at (8.6,7.80) {AXI DMA};
+\draw[draw=cIP!60!black, line width=0.5pt, rounded corners=1pt]
+      (6.5,6.25) rectangle (10.7,7.55);
+\node[name] at (8.6,7.05) {MM2S};
+\node[lbl] at (8.6,6.55) {memoria $\rightarrow$ periférico};
+\draw[draw=cIP!60!black, line width=0.5pt, rounded corners=1pt]
+      (6.5,4.45) rectangle (10.7,5.75);
+\node[name] at (8.6,5.25) {S2MM};
+\node[lbl] at (8.6,4.75) {periférico $\rightarrow$ memoria};
+
+% ===================== Periférico de la PL, al otro lado =====================
+\draw[ext] (12.9,3.9) rectangle (17.1,8.1);
+\node at (15.0,7.75) {periférico PL};
+\node[lbl, align=center] at (15.0,5.15) {interfaz\\AXI-Stream};
+
+% ===================== Camino de datos: transmisión (MM2S) =====================
+\draw[stream] (5.0,7.0) -- (6.1,7.0);
+\draw[stream] (11.1,7.0) -- (12.9,7.0);
+\node[lbl, anchor=south, text=cRef!55!black] at (5.55,7.05) {AXI4};
+\node[lbl, anchor=south, text=cRef!55!black] at (12.00,7.05) {AXI-Stream};
+
+% ===================== Camino de datos: recepción (S2MM) =====================
+\draw[stream] (12.9,5.0) -- (11.1,5.0);
+\draw[stream] (6.1,5.0) -- (5.0,5.0);
+
+% ===================== CPU -> DMA: solo control =====================
+\draw[sig] (7.5,9.3) -- (7.5,8.1);
+\node[lbl, anchor=east, text=cRef!55!black] at (7.4,8.95) {AXI4-Lite};
+\draw[irq] (9.7,8.1) -- (9.7,9.3);
+\node[lbl, anchor=west, text=cIP!55!black] at (9.8,8.95) {IRQ};
+\node[lbl, align=center, text=cRef!55!black] at (8.6,8.35)
+      {(dirección, longitud;\\sin datos)};
+
+% ===================== Nota: unidad de notificación =====================
+\draw[band] (5.0,1.55) rectangle (12.2,2.65);
+\node[lbl, align=center, text=cRef!35!black] at (8.6,2.10)
+      {Una interrupción por bloque transferido,\\no por cada byte.};
+
+% ===================== Leyenda =====================
+\draw[ip] (0.6,-0.45) rectangle (0.92,-0.23);
+\node[lbl, anchor=west] at (1.00,-0.34) {IP de terceros};
+\draw[ext] (4.2,-0.45) rectangle (4.52,-0.23);
+\node[lbl, anchor=west] at (4.60,-0.34) {resto del sistema};
+
+\end{tikzpicture}
+\end{document}

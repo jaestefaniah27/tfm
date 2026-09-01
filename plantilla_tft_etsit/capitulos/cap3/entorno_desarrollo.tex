@@ -5,10 +5,11 @@
 \section{Preparación del entorno de desarrollo}
 
 Durante este trabajo se utilizó una máquina virtual con un sistema operativo Linux
-(Ubuntu/Debian) como entorno de desarrollo principal, por dos motivos prácticos: por un
-lado, la máquina virtual puede dejarse trabajando de forma indefinida, lo que resulta
-necesario para las compilaciones prolongadas de la herramienta de síntesis; por otro, se le pueden asignar muchos más recursos de memoria y
-almacenamiento de los que estarían disponibles en un equipo de trabajo convencional.
+(Ubuntu/Debian) como entorno de desarrollo principal. Esta elección respondió a dos
+motivos prácticos. La máquina virtual puede dejarse trabajando de forma indefinida, lo
+que resulta necesario para las compilaciones prolongadas de la herramienta de síntesis.
+Además, se le pueden asignar muchos más recursos de memoria y almacenamiento de los que
+estarían disponibles en un equipo de trabajo convencional.
 
 Se siguieron los siguientes pasos para dejar operativo el
 entorno de desarrollo.
@@ -33,6 +34,14 @@ compilación se realizó utilizando la herramienta RTEMS Source Builder (RSB)~\c
 \textit{toolchain} cruzado específico para la arquitectura AArch64. Se configuró y compiló el Board
 Support Package (BSP) correspondiente a la plataforma ZynqMP (\texttt{zynqmp\_apu}),
 habilitando explícitamente el soporte para multiprocesamiento simétrico (SMP).
+
+En este trabajo, unos binarios precompilados de RTEMS no habrían bastado. La
+compilación desde código fuente fue la vía que permitió fijar con precisión la
+arquitectura AArch64 objetivo, el BSP \texttt{zynqmp\_apu} concreto de la ZCU102 y la
+versión~7 de RTEMS, y habilitar explícitamente el soporte SMP en la configuración del
+núcleo. Sobre ese control total se apoyó después la integración del driver propio del
+transceptor. Un binario precompilado genérico no habría garantizado esa combinación
+exacta de arquitectura, BSP y opciones de núcleo.
 
 Para validar el entorno recién compilado, se ejecutaron pruebas preliminares utilizando el
 emulador QEMU (\texttt{qemu-system-aarch64}) configurado con la máquina
@@ -135,12 +144,11 @@ los dos impide el arranque sin dar un mensaje útil.
     \item \texttt{bl31.elf}, en modo \textit{datafile}, destino a53-0 y nivel de excepción EL3. Es
     el \textit{firmware} de ARM Trusted Firmware y se descarga del mismo sitio que el PMUFW.
     \item \texttt{u-boot.elf}, en modo \textit{datafile}, destino a53-0 y nivel de excepción EL2.
-    U-Boot es un gestor de arranque de segunda etapa: se ejecuta después del FSBL, inicializa
-    los periféricos necesarios (tarjeta SD, red, consola serie) y es el encargado de cargar en
-    memoria la imagen del sistema operativo (en este caso \texttt{rtems.img}) y cederle el
-    control. Ofrece además una consola interactiva desde la que se puede inspeccionar la
-    memoria o elegir manualmente qué imagen arrancar, lo que resultó muy útil durante la
-    depuración.
+    U-Boot es un gestor de arranque de segunda etapa. Se ejecuta después del FSBL, inicializa
+    los periféricos necesarios (tarjeta SD, red, consola serie) y carga en memoria la imagen
+    del sistema operativo (en este caso \texttt{rtems.img}), a la que cede el control.
+    Ofrece además una consola interactiva desde la que se puede inspeccionar la memoria o
+    elegir manualmente qué imagen arrancar, lo que resultó útil durante la depuración.
     \item \texttt{system.dtb}, en modo \textit{datafile}, destino a53-0 y dirección de carga
     \texttt{0x100000}. Este \textit{device tree} es el que permite a BL31 saber dónde está
     enlazado el BL33 (U-Boot) y arrancarlo.
@@ -154,31 +162,31 @@ los dos impide el arranque sin dar un mensaje útil.
 \end{figure}
 
 \textbf{Parte RTEMS.} Una vez generado el archivo de arranque, se desarrolló un software de
-ejemplo que interactuaba con los puertos GPIO conectados por AXI, excitando todas las
-combinaciones posibles de la puerta AND en la PL y leyendo su salida. Fue necesario añadir
+ejemplo que interactuaba con los puertos GPIO conectados por AXI. Excitaba todas las
+combinaciones posibles de la puerta AND en la PL y leía su salida. Fue necesario añadir
 un archivo de mapeado de memoria para que el sistema operativo reconociera las direcciones
 correspondientes a la PL, y un \texttt{wscript} para la compilación. Ambos fuentes están
 disponibles en \texttt{tfm/00\_docs/AND\_example/} dentro del repositorio del proyecto
 \cite{repo_tfm}.
 
-El primero de ellos, \texttt{and\_demo.c}, contiene la tarea \texttt{Init} de RTEMS: escribe la
+El primero de ellos, \texttt{and\_demo.c}, contiene la tarea \texttt{Init} de RTEMS. Escribe la
 pareja de entradas \texttt{(A,B)} en el registro de datos del \texttt{axi\_gpio\_0} (mapeado en
-\texttt{0xA0000000}), espera un instante a que la lógica de la PL se estabilice y lee la salida
-\texttt{Z} del \texttt{axi\_gpio\_1} (\texttt{0xA0010000}), imprimiendo cada resultado por la
+\texttt{0xA0000000}) y espera un instante a que la lógica de la PL se estabilice. Después lee la
+salida \texttt{Z} del \texttt{axi\_gpio\_1} (\texttt{0xA0010000}) e imprime cada resultado por la
 consola serie.
 
 El segundo, \texttt{mmu\_pl\_map.c}, es el archivo de mapeado mencionado: declara como memoria de
 periférico el rango \texttt{0xA0000000}--\texttt{0xA01FFFFF}, donde Vivado ha situado los AXI GPIO.
 Este mapeado se realiza nada más arrancar \texttt{Init}, ya que RTEMS desconoce a priori las
-direcciones de la PL y, sin él, el primer acceso a los GPIO aborta la ejecución.
+direcciones de la PL. Sin él, el primer acceso a los GPIO aborta la ejecución.
 
 \textbf{Carga en la tarjeta SD y arranque de la placa.}
 Los dos ficheros se copian en la partición FAT de una tarjeta SD, que se inserta en el zócalo
 \texttt{J100} de la placa~\cite{xilinx2023ug1182}. El \texttt{BOOT.bin} es el que el MPSoC ejecuta
-nada más alimentarse: inicializa el PS, carga el \textit{bitstream} en la PL y encadena el resto
-de etapas hasta U-Boot, que a su vez carga el \texttt{rtems.img} en memoria y le cede el control.
-Si el ensayo solo ejercita la PL, el \texttt{BOOT.bin} basta por sí solo, ya que lleva dentro el
-\textit{bitstream}.
+nada más alimentarse. Inicializa el PS, carga el \textit{bitstream} en la PL y encadena el resto
+de etapas hasta U-Boot. U-Boot, a su vez, carga el \texttt{rtems.img} en memoria y le cede el
+control. Si el ensayo solo ejercita la PL, el \texttt{BOOT.bin} basta por sí solo, ya que lleva
+dentro el \textit{bitstream}.
 
 Antes de encender la placa hay que colocar el selector de modo de arranque en la posición de
 tarjeta SD. Es el conmutador DIP \texttt{SW6}, la referencia 44 del plano de componentes de la
@@ -216,20 +224,20 @@ A=1, B=1, Z=1 (raw=0x00000001)
 [ RTEMS shutdown ]
 \end{lstlisting}
 
-La primera línea la emite U-Boot al ceder el control a la imagen de RTEMS; las cuatro siguientes
+La primera línea la emite U-Boot al ceder el control a la imagen de RTEMS. Las cuatro siguientes
 son las escritas por \texttt{and\_demo.c}, con la salida \texttt{Z} a uno únicamente cuando ambas
-entradas valen uno. Esta traza fue la primera confirmación de que el flujo completo
-(VHDL sintetizado en la PL, imagen de arranque, aplicación de RTEMS y comunicación PS$\leftrightarrow$PL
-por AXI) funcionaba de extremo a extremo. La salida se conserva en
+entradas valen uno. Esta traza fue la primera confirmación de que el flujo completo funcionaba
+de extremo a extremo. Incluye el VHDL sintetizado en la PL, la imagen de arranque, la aplicación
+de RTEMS y la comunicación PS$\leftrightarrow$PL por AXI. La salida se conserva en
 \texttt{tfm/\allowbreak 00\_docs/\allowbreak logs\_terminal/\allowbreak and\_gate\_output.txt}.
 
 Para facilitar el desarrollo rápido en la parte de RTEMS se desarrollaron dos herramientas,
 disponibles en \texttt{tfm/07\_tools/} dentro del repositorio del proyecto~\cite{repo_tfm}. La primera,
 \texttt{make\_img.sh}, automatiza la
-compilación: deduce el nombre de la aplicación del directorio desde el que se lanza, ejecuta
+compilación. Deduce el nombre de la aplicación del directorio desde el que se lanza y ejecuta
 \texttt{waf}\footnote{\texttt{waf} es el sistema de compilación que emplean las aplicaciones de
 RTEMS; el fichero \texttt{wscript} de cada aplicación describe sus fuentes y opciones de
-compilación.} (configurándolo la primera vez), convierte el ejecutable a binario plano con
+compilación.} (configurándolo la primera vez). Convierte el ejecutable a binario plano con
 \texttt{objcopy}\footnote{Utilidad del \textit{toolchain} cruzado que extrae del ejecutable
 compilado una copia del contenido tal cual debe quedar en memoria, sin la información auxiliar
 que el ejecutable lleva para el enlazado y la depuración.}, lo comprime y lo empaqueta con
@@ -241,48 +249,50 @@ espera U-Boot, generando \texttt{rtems.img}.
 La segunda, \texttt{automate\_ymodem\_update.py}, evita tener que quitar y poner la tarjeta SD
 en cada prueba. Escrito en Python sobre \texttt{pyserial}\footnote{Biblioteca de Python para
 manejar puertos serie, empleada aquí para dialogar con la consola de U-Boot.}, invoca al script
-anterior para regenerar la imagen y, a través de la conexión USB-serie con la placa, interrumpe
+anterior para regenerar la imagen. A través de la conexión USB-serie con la placa, interrumpe
 el \textit{autoboot}\footnote{Arranque automático que U-Boot lanza tras un breve tiempo de
-espera; pulsando una tecla durante esa ventana se accede a su consola de comandos.} de U-Boot,
+espera; pulsando una tecla durante esa ventana se accede a su consola de comandos.} de U-Boot y
 transfiere \texttt{rtems.img} por YMODEM\footnote{Protocolo para enviar ficheros por un enlace
 serie: los trocea, los numera y comprueba que cada trozo llega sin errores.} con el comando
-\texttt{loady} y la escribe en la partición FAT\footnote{Partición de la tarjeta SD, con el
+\texttt{loady}. Por último, lo escribe en la partición FAT\footnote{Partición de la tarjeta SD, con el
 mismo formato que usa un USB corriente, de la que la ZCU102 lee los ficheros de arranque.} de
 la SD mediante
-\texttt{fatwrite}; ambos son comandos de la consola de U-Boot.
-Opcionalmente puede enviar también el \texttt{BOOT.bin}, pero no se utilizó porque el archivo es grande y la conexión USB-serial, lenta. De esta manera, cada vez que se quería probar un cambio en la
-aplicación de RTEMS bastaba con ejecutar este único script y reiniciar la ZCU pulsando su
-botón de ResetCPU, que reinicia el sistema de procesamiento sin cortar la alimentación de la placa.
+\texttt{fatwrite}; \texttt{loady} y \texttt{fatwrite} son comandos de la consola de U-Boot.
+Opcionalmente puede enviar también el \texttt{BOOT.bin}, pero no se utilizó porque el archivo es
+grande y la conexión USB-serie es lenta. De esta manera, cada vez que se quería probar un cambio
+en la aplicación de RTEMS, bastaba con ejecutar este único script y reiniciar la ZCU pulsando su
+botón de \textit{ResetCPU}. Este botón reinicia el sistema de procesamiento sin cortar la
+alimentación de la placa.
 
 La puesta en marcha del flujo requirió varias iteraciones. Cada intento implica sintetizar el
 diseño en Vivado, crear y compilar la plataforma en Vitis, crear y compilar la aplicación,
 generar la imagen de arranque, compilar la imagen de RTEMS, copiar los ficheros a la tarjeta SD y
-arrancar la placa; una iteración completa lleva varios minutos y, cuando la placa no arranca, el
+arrancar la placa. Una iteración completa lleva varios minutos. Cuando la placa no arranca, el
 sistema no ofrece ninguna indicación del motivo.
 
-A ello se añade que Vitis reutiliza artefactos ya compilados de la plataforma y de la aplicación:
-un .xsa nuevo no siempre se propaga a la imagen final y el sistema se comporta como antes del
-cambio en el VHDL. Limpiar y recompilar no da un resultado fiable, por lo que el
-procedimiento adoptado es crear una plataforma y una aplicación nuevas para cada cambio en la PL:
-es más lento, pero garantiza que la imagen generada corresponde al hardware recién sintetizado.
+A ello se añade que Vitis reutiliza artefactos ya compilados de la plataforma y de la aplicación.
+Un .xsa nuevo no siempre se propaga a la imagen final, y el sistema se comporta como antes del
+cambio en el VHDL. Limpiar y recompilar no da un resultado fiable. Por ello, el
+procedimiento adoptado es crear una plataforma y una aplicación nuevas para cada cambio en la PL.
+Es más lento, pero garantiza que la imagen generada corresponde al hardware recién sintetizado.
 
 \textbf{Automatización de la generación de la imagen.} Repetir a mano toda esta secuencia en
 cada iteración del diseño (exportar el XSA, crear y compilar la plataforma en Vitis, compilar el
-FSBL y ensamblar el BOOT.BIN) es largo y propenso al error humano: olvidar un componente,
-invertir su orden dentro del BIF o arrastrar un artefacto antiguo impide que la placa arranque,
-y sin ninguna indicación del motivo. A ello se suma el tiempo de navegar por los asistentes
-gráficos de cada herramienta. Para eliminar ambos costes se desarrolló el script
+FSBL y ensamblar el BOOT.BIN) es largo y propenso al error humano. Olvidar un componente,
+invertir su orden dentro del BIF o arrastrar un artefacto antiguo impide que la placa arranque.
+El sistema no ofrece ninguna indicación del motivo. A ello se suma el tiempo de navegar por los
+asistentes gráficos de cada herramienta. Para eliminar ambos costes se desarrolló el script
 \texttt{generate\_boot.sh} (disponible en
 \texttt{tfm/06\_firmware/boot\_scripts/} del repositorio del proyecto~\cite{repo_tfm}), un
-\textit{wizard} interactivo en Bash que encadena todos estos pasos de forma desatendida. El script
-ofrece tres puntos de entrada según el estado en que se encuentre el trabajo: partir del proyecto
-de Vivado y generar \textit{bitstream} desde cero, partir de un proyecto con \textit{bitstream} ya
-generado y solo exportar el XSA, o partir directamente de un XSA ya exportado. A partir de ahí
-invoca Vitis en modo script mediante su API Python para crear la plataforma y compilar el FSBL, y
-llama a \texttt{bootgen} para ensamblar el BOOT.BIN final con los componentes de arranque
-precompilados (PMUFW, BL31, U-Boot, DTB). El tiempo de iteración hardware $\rightarrow$ imagen
-pasa así de varios minutos de interacción gráfica a una sola ejecución de terminal, y la imagen
-generada corresponde siempre al hardware recién sintetizado.
+\textit{wizard} interactivo en Bash. Encadena todos estos pasos de forma desatendida. El script
+ofrece tres puntos de entrada, según el estado en que se encuentre el trabajo. Puede partir del
+proyecto de Vivado y generar el \textit{bitstream} desde cero, partir de un proyecto con
+\textit{bitstream} ya generado para exportar solo el XSA, o partir directamente de un XSA ya
+exportado. A partir de ahí invoca Vitis en modo script mediante su API Python para crear la
+plataforma y compilar el FSBL. Después llama a \texttt{bootgen} para ensamblar el BOOT.BIN final
+con los componentes de arranque precompilados (PMUFW, BL31, U-Boot, DTB). El tiempo de iteración
+hardware $\rightarrow$ imagen pasa así de varios minutos de interacción gráfica a una sola
+ejecución de terminal. La imagen generada corresponde siempre al hardware recién sintetizado.
 
 Este flujo quedó establecido como procedimiento estándar para el resto del trabajo.
 
@@ -299,7 +309,7 @@ fundamentales son:
 
 \begin{itemize}
     \item \textbf{Oscilador controlado numéricamente} (\texttt{NCO.vhd}): proporciona la señal
-    de temporización de bit para las 54 velocidades de bus soportadas; el transmisor y el
+    de temporización de bit para las 54 velocidades de bus soportadas. El transmisor y el
     receptor instancian uno cada uno para poder trabajar a cualquiera de ellas.
     \item \textbf{Transmisor} (\texttt{TX\_CONFIGURABLE\_SERIAL.vhd}): serializa y emite las
     tramas, y gobierna la señal de \textit{Driver Enable} del transceptor físico.
@@ -358,7 +368,7 @@ fijado a 32.
 El circuito consiste en un sumador acumulador: para cada frecuencia seleccionada, se tiene
 calculado un incremento concreto que depende del número de bits del sumador. Cuantos más
 bits tenga este sumador, mejor precisión se consigue. En esta implementación se han
-utilizado 32 bits. El incremento se suma y acumula en cada período de reloj; cuando el
+utilizado 32 bits. El incremento se suma y acumula en cada período de reloj. Cuando el
 sumador se desborda, se utiliza el bit de \textit{carry\_out} como \textit{tick} del NCO. Este \textit{tick} se genera
 a la frecuencia deseada, y el mecanismo de acumulación garantiza que el error promedio sea
 inferior al de un divisor entero simple.
@@ -384,7 +394,7 @@ Para validar su funcionamiento se desarrolló un \textit{testbench} dedicado,
 proyecto~\cite{repo_tfm}), que barre las \textbf{29 velocidades del rango de uso} (de 9\,600 a
 3,6864~Mbaudios) en sus \textbf{dos modos} de temporización, y mide en cada punto la frecuencia
 real del \textit{tick} promediando 200 períodos tras descartar los diez primeros. Son 58 medidas
-independientes; las entradas de la tabla por debajo de 9\,600~baudios y la de 4~Mbaudios no se
+independientes. Las entradas de la tabla por debajo de 9\,600~baudios y la de 4~Mbaudios no se
 ejercitan, por quedar la primera fuera del uso previsto y exigir la segunda un tiempo de simulación
 desproporcionado. La transcripción siguiente recoge el principio y el final de la campaña:
 
@@ -495,7 +505,7 @@ comportamiento se organiza en siete estados:
 
 \subsubsection{Lógica de apoyo a la máquina de estados}
 
-La FSM se limita a secuenciar la trama y a generar señales de control; el trabajo de seleccionar
+La FSM se limita a secuenciar la trama y a generar señales de control. El trabajo de seleccionar
 qué bit sale a la línea en cada momento recae en un camino de datos puramente combinacional que
 la acompaña, y que evita tener que desplazar o rotar la palabra de entrada.
 
@@ -534,7 +544,7 @@ paso de transmisión a recepción y no dejaba establecerse al transceptor físic
 sitúan un margen configurable a ambos lados de la trama: \texttt{DE} se activa
 \texttt{DELAY\_CYCLES} ciclos antes del bit de inicio y se libera otros tantos después del último
 bit de parada. El valor por defecto es de 10\,000 ciclos, esto es, 100~$\mu$s con el reloj de
-100~MHz; en simulación se reduce a una decena de ciclos mediante el \textit{generic} para no
+100~MHz. En simulación se reduce a una decena de ciclos mediante el \textit{generic} para no
 alargar los \textit{testbench}, sin que ello afecte al valor de síntesis.
 
 La medida no eliminó los caracteres corruptos, cuya causa estaba en el receptor y se aborda en el
@@ -546,7 +556,7 @@ peor caso, es despreciable frente al tiempo de trama salvo a las velocidades má
 
 El receptor vigila la línea serie, recupera la temporización de bit a partir del flanco de inicio y
 entrega los bits muestreados al registro de desplazamiento, señalando al final si la trama es
-válida. Sus puertos se recogen en la tabla~\ref{tab:rx_puertos}; las cinco entradas de
+válida. Sus puertos se recogen en la tabla~\ref{tab:rx_puertos}. Las cinco entradas de
 configuración son las mismas del transmisor y con idéntica codificación, por lo que ambos
 comparten la palabra de configuración del canal.
 
@@ -589,12 +599,12 @@ extraerla de la propia línea. Su FSM consta de cinco estados:
 \begin{itemize}
     \item \textbf{\texttt{Idle}}: NCO detenido y línea en observación. Un nivel bajo en la línea se
     interpreta como posible bit de inicio: se resetea el acumulador del NCO, con lo que la fase
-    del temporizador queda anclada al flanco de bajada; se borra el contador de bits y se pasa a
+    del temporizador queda anclada al flanco de bajada. Se borra el contador de bits y se pasa a
     \texttt{StartBit}.
 
     \item \textbf{\texttt{StartBit}}: el NCO trabaja en \texttt{half\_mode}, de forma que su primer
-    \textit{tick} llega a mitad del bit de inicio. En ese instante se vuelve a muestrear la línea:
-    si sigue en bajo, el bit de inicio es legítimo y se pasa a \texttt{RcvData}; si ha vuelto a
+    \textit{tick} llega a mitad del bit de inicio. En ese instante se vuelve a muestrear la línea.
+    Si sigue en bajo, el bit de inicio es legítimo y se pasa a \texttt{RcvData}. Si ha vuelto a
     alto, se descarta y se regresa a \texttt{Idle}.
 
     \item \textbf{\texttt{RcvData}}: cada \textit{tick}, ya a la velocidad nominal, genera un
@@ -606,19 +616,19 @@ extraerla de la propia línea. Su FSM consta de cinco estados:
     directamente a \texttt{StopBit}.
 
     \item \textbf{\texttt{ParityBit}}: compara el valor muestreado con la paridad esperada. Si
-    coinciden pasa a \texttt{StopBit}; si no, activa \texttt{PAR\_ERROR} y vuelve a \texttt{Idle}
+    coinciden, pasa a \texttt{StopBit}. Si no, activa \texttt{PAR\_ERROR} y vuelve a \texttt{Idle}
     descartando la trama, sin escribirla en la FIFO.
 
     \item \textbf{\texttt{StopBit}}: muestrea el centro del primer bit de parada. Si la línea está
-    en alto, emite \texttt{Store\_out} y la palabra se escribe en la FIFO; si está en bajo, la
+    en alto, emite \texttt{Store\_out} y la palabra se escribe en la FIFO. Si está en bajo, la
     trama está desalineada y se activa \texttt{FRAME\_ERROR}. En ambos casos se regresa a
     \texttt{Idle}.
 \end{itemize}
 
 Solo se comprueba el primer bit de parada: la entrada \texttt{stop\_bit} no interviene en la FSM
 del receptor. El resto del campo de parada transcurre con la FSM ya en \texttt{Idle}, donde la
-línea en reposo está en alto y no se dispara ninguna detección; el receptor queda así preparado
-para el siguiente flanco de inicio sin necesidad de contar la duración exacta del campo.
+línea en reposo está en alto y no se dispara ninguna detección. El receptor queda así preparado
+para el siguiente flanco de inicio, sin necesidad de contar la duración exacta del campo.
 
 \subsubsection{Lógica de apoyo a la máquina de estados}
 
@@ -647,7 +657,7 @@ además de fijar la fase de muestreo: filtra los falsos inicios de trama. Pulsos
 la línea generan flancos descendentes que un receptor sin esta comprobación aceptaría como bits de
 inicio válidos, capturando a continuación una trama de basura y entregando un carácter corrupto al
 \textit{buffer}. Con la verificación, un pulso más corto que medio bit deja la línea de nuevo en
-alto antes del \textit{tick} y la FSM regresa a \texttt{Idle} sin capturar nada; solo se prosigue
+alto antes del \textit{tick}, y la FSM regresa a \texttt{Idle} sin capturar nada. Solo se prosigue
 con la recepción si la línea sigue en bajo al llegar a la mitad del bit. Es el primero de los
 instantes de muestreo marcados en la figura~\ref{fig:cronograma_trama}.
 
@@ -664,7 +674,7 @@ delimita cada bit y los instantes en los que el receptor muestrea. La configurac
 de 8 bits de datos, paridad par, un bit de parada y orden LSB \textit{first}, con el dato
 \texttt{0x53}. El transmisor consume un \textit{tick} por frontera de bit y pasa al doble de
 frecuencia en el campo de parada, donde cuenta semiperiodos. El receptor, tras alinear su fase
-medio bit después del flanco de inicio, muestrea en el centro de cada bit; el primer muestreo, en
+medio bit después del flanco de inicio, muestrea en el centro de cada bit. El primer muestreo, en
 el centro del bit de inicio, es el que descarta los falsos inicios de trama. Las zonas sombreadas
 \texttt{PreDE} y \texttt{PostDE} no están dibujadas a escala: duran 100~$\mu$s frente a los
 8,7~$\mu$s del tiempo de bit a 115\,200~baudios.
@@ -891,13 +901,13 @@ arquitectura se detalla en la sección~\ref{sec:transporte_desarrollo}.
 \subsection{Verificación en simulación del canal completo}
 \label{sec:verificacion_canal}
 
-Cada bloque descrito en los apartados anteriores tiene su propio \textit{testbench}, pero la
-comprobación que realmente acredita el transceptor es la del canal completo, porque es la única que
+Cada bloque descrito en los apartados anteriores tiene su propio \textit{testbench}. La
+comprobación que realmente acredita el transceptor es la del canal completo. Es la única que
 ejercita a la vez las dos máquinas de estados, la normalización del registro de desplazamiento y la
 coherencia entre la paridad generada y la esperada. El \textit{testbench}
 \texttt{tb\_CONFIGURABLE\_SERIAL\_TOP.vhd}, en \texttt{tfm/01\_ip\_serie/testbench/} del
 repositorio del proyecto~\cite{repo_tfm}, conecta la salida \texttt{TX} del canal a su propia
-entrada \texttt{RD} y \textbf{recorre el espacio de configuración completo} a 921\,600~baudios:
+entrada \texttt{RD}. \textbf{Recorre el espacio de configuración completo} a 921\,600~baudios:
 cinco anchuras de palabra (5 a 9 bits) $\times$ dos órdenes de bit $\times$ tres campos de parada
 (1, 1,5 y 2) $\times$ cinco modos de paridad, es decir \textbf{150 configuraciones}, con tres
 tramas de contenido distinto en cada una. En total, \textbf{450 tramas} comparadas dato a dato
@@ -926,21 +936,22 @@ PASS cfg bits=9 order='1' stop=3 par=4 sent=134 rec=134
 Passed = 450 / Total = 450
 \end{lstlisting}
 
-Las 450 tramas se recuperan íntegras y ninguna dispara las banderas \texttt{PAR\_ERROR} ni
-\texttt{FRAME\_ERROR}, que el \textit{testbench} vigila trama a trama. El dato relevante no es
-tanto el número como su cobertura: al pasar el barrido completo queda comprobado que el multiplexor
-de serialización, el decodificador de anchura, la red de paridad y los dos caminos de
-desplazamiento del registro se corresponden entre transmisor y receptor \textbf{en todas} las
-combinaciones que el PS puede programar, y no solo en la configuración 8N1 habitual.
+Las 450 tramas se recuperaron íntegras. Ninguna disparó las banderas \texttt{PAR\_ERROR} ni
+\texttt{FRAME\_ERROR}, que el \textit{testbench} vigilaba trama a trama. El dato relevante no es
+tanto el número como su cobertura. Al completar el barrido quedó comprobado que el transmisor y
+el receptor coinciden en todos sus bloques: el multiplexor de serialización, el decodificador de
+anchura, la red de paridad y los dos caminos de desplazamiento del registro. Esta coincidencia se
+cumple \textbf{en todas} las combinaciones que el PS puede programar, y no solo en la
+configuración 8N1 habitual.
 
 Por legibilidad, en esta transcripción y en las que siguen se reproducen únicamente las líneas de
-\texttt{report} del \textit{testbench}, sin las marcas de tiempo, iteración e instancia que el
-simulador antepone a cada una.
+\texttt{report} del \textit{testbench}. Se omiten las marcas de tiempo, iteración e instancia que
+el simulador antepone a cada una.
 
 \subsection{Bloque Zynq UltraScale+ MPSoC}
 
 Para que el proyecto en Vivado funcione correctamente, es importante aplicar el \textit{preset} al
-bloque IP Zynq UltraScale+ antes de añadir el resto de elementos, ya que se aplican
+bloque IP Zynq UltraScale+ antes de añadir el resto de elementos. El \textit{preset} aplica
 configuraciones de relojes y alimentación cruciales para el correcto funcionamiento de la PL.
 
 % ---------------------------------------------------------------------------
@@ -952,25 +963,25 @@ configuraciones de relojes y alimentación cruciales para el correcto funcionami
 Se desarrolló un script de TCL, \texttt{new\_generate\_transceivers.tcl}, que permite generar y
 conectar automáticamente un número deseado de transceptores en el \textit{Block Design} de Vivado.
 Su punto de entrada es el procedimiento \texttt{create\_many\_transceivers}, que recibe el número de
-instancias y los nombres del bloque Zynq y del \textit{SmartConnect} a los que engancharse, de modo
-que la llamada empleada en el diseño de catorce canales es
+instancias y los nombres del bloque Zynq y del \textit{SmartConnect} a los que engancharse. La
+llamada empleada en el diseño de catorce canales es
 \texttt{create\_many\_transceivers 14 "zynq\_ultra\_ps\_e\_0" "axi\_smc"}. Para que funcione
 correctamente, es necesario tener las fuentes .vhd del transceptor en el proyecto, el
 \textit{Block Design} creado, y el bloque IP Zynq UltraScale+ MPSoC importado y configurado
-previamente; a partir de ahí, el script se encarga de añadir y conectar el resto de los bloques
+previamente. A partir de ahí, el script se encarga de añadir y conectar el resto de los bloques
 necesarios: un AXI GPIO de doble canal por transceptor, el controlador de interrupciones común, un
-bloque de solo lectura con los metadatos del sistema que consulta el driver y la asignación de
+bloque de solo lectura con los metadatos del sistema que consulta el driver, y la asignación de
 direcciones en el mapa de memoria del PS. El script está en
 \texttt{tfm/01\_ip\_serie/scripts/} dentro del repositorio del proyecto~\cite{repo_tfm}, y cada
 proyecto de Vivado conserva su copia en el subdirectorio \texttt{scripts/} correspondiente.
 
 \subsection{Generación de proyecto con TCL}
 
-También se desarrolló otro script de TCL (\texttt{new\_rebuild\_all.tcl}) que regenera el proyecto
-entero de Vivado con un número determinado de transceptores, partiendo desde cero: crea el
+También se desarrolló otro script de TCL, \texttt{new\_rebuild\_all.tcl}, que regenera el proyecto
+entero de Vivado con un número determinado de transceptores, partiendo desde cero. Crea el
 proyecto para la ZCU102, añade las fuentes y las restricciones, instancia y configura el bloque
-Zynq, invoca al generador de transceptores anterior, valida el diseño y genera el \textit{wrapper},
-dejando el proyecto listo para lanzar la síntesis y la generación del \textit{bitstream}. Esto
+Zynq, invoca al generador de transceptores anterior, valida el diseño y genera el \textit{wrapper}.
+El proyecto queda así listo para lanzar la síntesis y la generación del \textit{bitstream}. Esto
 permite reproducir exactamente cualquier configuración sin necesidad de guardar el proyecto
 de Vivado completo en el repositorio.
 
@@ -979,11 +990,12 @@ de Vivado completo en el repositorio.
 % ---------------------------------------------------------------------------
 
 Completado el transceptor en la PL, queda su contraparte en el PS: los ficheros
-\texttt{transceiver.c} y \texttt{transceiver.h}, un driver para RTEMS que habla con el hardware a
+\texttt{transceiver.c} y \texttt{transceiver.h}. Es un driver para RTEMS que habla con el hardware a
 través del AXI GPIO de cada canal y expone a la aplicación una API pública sencilla, la misma para
-los catorce canales. Las subsecciones siguientes lo describen de fuera hacia dentro: primero la API
-que ve la aplicación, luego el mapa de registros con el que el driver dialoga con la PL y, por
-último, cómo gestiona por dentro la transmisión y la recepción sin bloquear al procesador.
+los catorce canales. Las subsecciones siguientes lo describen de fuera hacia dentro. Primero se
+presenta la API que ve la aplicación. Después, el mapa de registros con el que el driver dialoga
+con la PL. Por último, se explica cómo gestiona por dentro la transmisión y la recepción sin
+bloquear al procesador.
 
 Este driver se planteó como prueba de concepto: el objetivo era que funcionase, sin requisitos
 impuestos y sin optimizar nada. Funcionó, y con eso queda cumplido su propósito.
@@ -1013,30 +1025,30 @@ interrupción común y devuelve el número de canales encontrados.
 parada y el orden de bits, y deja el canal listo para operar.
 
 \texttt{Transceiver\_SetRxCallback()} registra la función de recepción, el \textit{callback}. La
-escribe el usuario y su contenido es libre: el driver la invoca cada vez que hay bytes nuevos
-disponibles y es la aplicación la que decide qué hacer, leerlos en el acto, despertar a otra tarea,
-contabilizar la recepción o cualquier otra cosa. Es solo una notificación: cuando se dispara, el
-driver ya ha sacado del hardware los bytes y los tiene disponibles.
+escribe el usuario y su contenido es libre. El driver la invoca cada vez que hay bytes nuevos
+disponibles. Es la aplicación la que decide qué hacer con ellos: leerlos en el acto, despertar a
+otra tarea, contabilizar la recepción o cualquier otra cosa. Es solo una notificación: cuando se
+dispara, el driver ya ha sacado del hardware los bytes y los tiene disponibles.
 
 \texttt{Transceiver\_Read()} extrae del \textit{buffer} de recepción hasta \texttt{maxlen} bytes ya
 recibidos, devuelve cuántos ha copiado y no bloquea aunque no haya ninguno. Es la función con la que
 la aplicación retira los datos, normalmente desde el \textit{callback} o desde una tarea propia.
 
 \texttt{Transceiver\_Send()} encola los bytes a transmitir y retorna de inmediato, sin esperar a que
-salgan por la línea; devuelve cuántos aceptó, o un error si el \textit{buffer} de salida estaba
+salgan por la línea. Devuelve cuántos aceptó, o un error si el \textit{buffer} de salida estaba
 lleno. \texttt{Transceiver\_SendString()} es la misma operación para cadenas terminadas en nulo.
 
 \subsection{Interfaz con el hardware}
 
 El driver y la PL se comunican a través de un único bloque AXI GPIO por canal, configurado como
 doble canal y mapeado en 4~KB del espacio de direcciones del procesador. Los dos canales tienen
-sentido fijo: el canal~1, de 28 bits, escribe del PS a la PL; el canal~2, de 14 bits, lee de la PL
+sentido fijo. El canal~1, de 28 bits, escribe del PS a la PL. El canal~2, de 14 bits, lee de la PL
 al PS. Cada uno se maneja con su registro de datos, situado en los desplazamientos \texttt{0x00} y
-\texttt{0x08} respecto de la dirección base de la instancia, de modo que toda la interacción con el
-hardware se reduce a escribir y leer dos palabras de 32 bits.
+\texttt{0x08} respecto de la dirección base de la instancia. Toda la interacción con el hardware
+se reduce así a escribir y leer dos palabras de 32 bits.
 
 El registro de escritura reúne el dato a transmitir, tres bits de control y los campos de
-configuración de protocolo; el de lectura, el byte recibido y las banderas de estado. La
+configuración de protocolo. El de lectura reúne el byte recibido y las banderas de estado. La
 tabla~\ref{tab:mapa_registros_gpio} recoge el reparto de bits.
 
 \begin{table}[H]
@@ -1065,7 +1077,7 @@ tabla~\ref{tab:mapa_registros_gpio} recoge el reparto de bits.
 \end{table}
 
 Los campos de configuración de protocolo se escriben una sola vez, en
-\texttt{Transceiver\_Init()}, y permanecen fijos mientras el canal está abierto: el driver guarda
+\texttt{Transceiver\_Init()}, y permanecen fijos mientras el canal está abierto. El driver guarda
 esa palabra y la reutiliza como base cada vez que toca los bits inferiores, para no alterar la
 configuración al transmitir. Los bits de control funcionan como pulsos, no como niveles. Para
 transmitir se deposita el byte en los bits 8:0 y se lleva \texttt{SEND} a uno y de vuelta a cero, lo
@@ -1076,8 +1088,8 @@ indica si queda algo por leer y \texttt{TX\_RDY} que el transmisor ha terminado 
 admite el siguiente.
 
 \textbf{Descubrimiento del mapa de direcciones.} Ninguna dirección de canal está escrita en el
-código. En la dirección fija \texttt{0xA0020000} se sitúa un AXI GPIO adicional, de solo lectura,
-cuyas dos entradas están cableadas en la PL a constantes que el script de generación calcula al
+código. En la dirección fija \texttt{0xA0020000} se sitúa un AXI GPIO adicional, de solo lectura.
+Sus dos entradas están cableadas en la PL a constantes que el script de generación calcula al
 construir el \textit{bitstream}. Ese bloque de información publica tres valores:
 
 \begin{itemize}
@@ -1098,18 +1110,18 @@ ellas queda inmediatamente después de la última. Con los tres valores, leídos
 \]
 
 De este modo el mismo binario RTEMS funciona sobre cualquier \textit{bitstream}, desde un único
-canal hasta los catorce, sin recompilar: basta con que el hardware declare cuántas instancias trae y
-dónde empiezan.
+canal hasta los catorce, sin recompilar. Basta con que el hardware declare cuántas instancias trae
+y dónde empiezan.
 
 \textbf{Bit \texttt{SLO}.} El bit \texttt{SLO} del registro de escritura no actúa sobre la lógica en
 VHDL: se propaga hasta el pin \texttt{SLO} del chip transceptor de la PCB. El driver se limita a
-exponerlo; su efecto eléctrico y la cuantificación de su impacto sobre la velocidad máxima del
-enlace se tratan con la caracterización de la placa (sección~\ref{sec:pcb_slo}).
+exponerlo. Su efecto eléctrico y la cuantificación de su impacto sobre la velocidad máxima del
+enlace se tratan en la caracterización de la placa (sección~\ref{sec:pcb_slo}).
 
 \subsection{Gestión interna de la transmisión}
 
-La figura~\ref{fig:driver_camino_datos} resume el recorrido interno de un byte en cada sentido; esta
-subsección se ocupa de la transmisión y la siguiente, de la recepción.
+La figura~\ref{fig:driver_camino_datos} resume el recorrido interno de un byte en cada sentido.
+Esta subsección se ocupa de la transmisión, y la siguiente, de la recepción.
 
 \begin{figure}[H]
     \centering
@@ -1161,37 +1173,37 @@ subsección se ocupa de la transmisión y la siguiente, de la recepción.
 
 Cada canal dispone de un \textit{buffer} circular de salida de 4~KB, tamaño que da margen para
 ráfagas a las tasas más altas soportadas, hasta 4~Mbaudios. \texttt{Transceiver\_Send()} copia ahí
-los bytes de la aplicación y, si el transmisor estaba en reposo, escribe el primero directamente en
-el registro de escritura para poner en marcha el hardware; la tarea que llama no se bloquea.
+los bytes de la aplicación. Si el transmisor estaba en reposo, escribe el primero directamente en
+el registro de escritura para poner en marcha el hardware. La tarea que llama no se bloquea.
 
 El resto de la ráfaga lo va sacando la rutina de interrupción. Los catorce canales comparten un
-único controlador AXI INTC, que concentra sus veintiocho fuentes de interrupción, la de recepción y
-la de transmisión de cada canal, en una sola línea hacia el PS, atendida por una única rutina,
-\texttt{Master\_ISR}. Cuando el transmisor de un canal termina de emitir un byte activa su señal
-\texttt{TX\_RDY}; la \texttt{Master\_ISR} lee el registro de interrupciones pendientes, localiza el
-canal en la tabla de instancias \texttt{g\_instances[]} mediante un índice directo, sin listas
-enlazadas ni búsquedas en contexto de interrupción, toma el siguiente byte de su cola y lo escribe.
-Cuando la cola queda vacía, marca el canal como libre.
+único controlador AXI INTC, que concentra sus veintiocho fuentes de interrupción (la de recepción y
+la de transmisión de cada canal) en una sola línea hacia el PS. Una única rutina,
+\texttt{Master\_ISR}, atiende esa línea. Cuando el transmisor de un canal termina de emitir un
+byte, activa su señal \texttt{TX\_RDY}. La \texttt{Master\_ISR} lee el registro de interrupciones
+pendientes y localiza el canal en la tabla de instancias \texttt{g\_instances[]} mediante un
+índice directo, sin listas enlazadas ni búsquedas en contexto de interrupción. Toma entonces el
+siguiente byte de su cola y lo escribe. Cuando la cola queda vacía, marca el canal como libre.
 
 En transmisión, por tanto, la rutina de interrupción sí mueve el dato, pero es la escritura de un
-único byte por interrupción, de coste acotado, que no compromete la latencia del sistema. Un
+único byte por interrupción. Su coste está acotado y no compromete la latencia del sistema. Un
 semáforo binario serializa las llamadas concurrentes de varias tareas a \texttt{Transceiver\_Send()}
-sobre el mismo canal; el acceso al \textit{buffer} frente a la \texttt{Master\_ISR} se protege
+sobre el mismo canal. El acceso al \textit{buffer} frente a la \texttt{Master\_ISR} se protege
 inhibiendo un instante las interrupciones durante el encolado.
 
 \subsection{Gestión interna de la recepción}
 
 La recepción sigue el patrón de procesado diferido recomendado en RTEMS: la rutina de interrupción
 hace lo imprescindible y delega el grueso del trabajo en una tarea ordinaria. Esa tarea, la
-\textit{worker}, es una tarea de RTEMS, un hilo con su propia pila y prioridad que el planificador
-del sistema operativo de tiempo real gestiona junto con las demás: se ejecuta cuando le
+\textit{worker}, es una tarea de RTEMS: un hilo con su propia pila y prioridad que el planificador
+del sistema operativo de tiempo real gestiona junto con las demás. Se ejecuta cuando le
 corresponde, cede la CPU mientras espera y no carga al núcleo más que con un cambio de contexto.
 Hay una \texttt{Rx\_Worker\_Task} por canal, creada en \texttt{Transceiver\_Init()} y bloqueada a la
 espera de trabajo.
 
 Cuando llega un byte por la línea, el receptor del canal genera una interrupción. La
 \texttt{Master\_ISR} la reconoce, inhibe temporalmente esa fuente en el INTC y envía un evento
-RTEMS a la \texttt{Rx\_Worker\_Task} del canal; ahí acaba el trabajo en contexto de interrupción. La
+RTEMS a la \texttt{Rx\_Worker\_Task} del canal. Ahí acaba el trabajo en contexto de interrupción. La
 tarea despierta y vacía el FIFO del hardware byte a byte hacia el \textit{buffer} circular de
 recepción, también de 4~KB, confirmando cada extracción con el bit \texttt{DATA\_READ}. Al agotar el
 FIFO invoca el \textit{callback} que la aplicación haya registrado, vuelve a habilitar la
@@ -1199,9 +1211,9 @@ interrupción y se bloquea de nuevo. La aplicación recoge los bytes cuando pued
 \texttt{Transceiver\_Read()}. Un semáforo binario por canal protege el \textit{buffer} de recepción
 frente al acceso simultáneo de la \textit{worker} y la aplicación.
 
-Como esa copia, de duración variable, corre ya como tarea sujeta al planificador y no en la rutina
-de interrupción, la latencia de interrupción del sistema no depende del volumen de datos que llegue
-por las líneas serie.
+Esa copia, de duración variable, corre ya como tarea sujeta al planificador y no en la rutina de
+interrupción. Por ello, la latencia de interrupción del sistema no depende del volumen de datos
+que llegue por las líneas serie.
 
 % ---------------------------------------------------------------------------
 \section{Diseño hardware}
@@ -1209,9 +1221,10 @@ por las líneas serie.
 
 Una vez completado el firmware del transceptor serie, se desarrolló el hardware de prueba
 necesario para validar el sistema en condiciones reales. El plan inicial era diseñar una única
-placa de comunicación serie para ejercitar múltiples líneas a la vez. Posteriormente, el proyecto LINCE requirió
-dos tarjetas adicionales con especificaciones impuestas por Indra, la placa CDHS y la placa
-AOCS, para que Indra pudiera validar su firmware sobre la ZCU102. Los esquemáticos (PDF)
+placa de comunicación serie para ejercitar múltiples líneas a la vez. Posteriormente, el proyecto
+LINCE requirió dos tarjetas adicionales con especificaciones impuestas por Indra: la placa CDHS y
+la placa AOCS. Estas placas permitieron a Indra validar su firmware sobre la ZCU102. Los
+esquemáticos (PDF)
 y las BOM de las tres placas están disponibles en el repositorio del proyecto~\cite{repo_tfm} bajo
 \texttt{tfm/00\_docs/pcbs/}.
 
@@ -1224,12 +1237,12 @@ Los bancos de entrada/salida del conector FMC HPC empleados por estas tarjetas o
 \textbf{1,8~V}: es el nivel del carril \texttt{VADJ} con el que la ZCU102 alimenta la interfaz. Todo
 componente que se conecte directamente a esos pines debe, por tanto, admitir una
 \textit{VIO} (voltaje de bus) de 1,8~V. La \textit{VIO} es la tensión con la que se alimenta el
-banco de entrada/salida digital de un circuito integrado, independiente de la de su núcleo, y fija
-los niveles lógicos que la pieza acepta y entrega en sus pines. La alternativa, interponer adaptadores de nivel entre
-el MPSoC y cada transceptor, añade componentes activos en el camino de señal, introduce retardo
-de propagación en líneas que conmutan a varios megabaudios y multiplica los puntos de fallo. Se
-descartó salvo donde fue inevitable, y se buscaron deliberadamente componentes con \textit{VIO}
-nativo a 1,8~V.
+banco de entrada/salida digital de un circuito integrado, independiente de la de su núcleo. Fija
+los niveles lógicos que la pieza acepta y entrega en sus pines. La alternativa, interponer
+adaptadores de nivel entre el MPSoC y cada transceptor, añade componentes activos en el camino de
+señal. Introduce además retardo de propagación en líneas que conmutan a varios megabaudios, y
+multiplica los puntos de fallo. Se descartó salvo donde fue inevitable, y se buscaron
+deliberadamente componentes con \textit{VIO} nativo a 1,8~V.
 
 El criterio de partida no fue la cualificación formal para espacio. El componente cualificado es
 la pieza \textit{rad-hard}, con un coste unitario y unos plazos de suministro que no encajan en un
@@ -1245,13 +1258,14 @@ de modo que la herencia de vuelo y el nivel de la plataforma resultaron incompat
 Al no encontrarse componentes con herencia de vuelo, se buscó el \textbf{grado automotriz} (cualificación
 AEC-Q100\footnote{Norma del \textit{Automotive Electronics Council} que somete a los circuitos
 integrados a ensayos de estrés (ciclado térmico, humedad, vida acelerada) para garantizar su
-operación en el rango de temperatura y fiabilidad exigidos por la industria del automóvil.}), que
-impone rangos de temperatura extendidos y niveles de robustez muy superiores a los de grado
-comercial. Es el escalón al que se recurre en misiones de bajo coste cuando no hay una pieza de
-catálogo con herencia de vuelo que cumpla los requisitos eléctricos. Los transceptores \texttt{TCAN1044AVDRQ1} del
-bus CAN y el conversor analógico-digital \texttt{ADS7950QDBTRQ1} de la placa CDHS responden a este
-criterio, igual que el transceptor \texttt{THVD1424RGTR} de los canales serie de las placas CDHS y
-AOCS, elegido por soportar \textit{VIO} de 1,8~V de forma nativa.
+operación en el rango de temperatura y fiabilidad exigidos por la industria del automóvil.}).
+Esta cualificación impone rangos de temperatura extendidos y niveles de robustez muy superiores a
+los de grado comercial. Es el escalón al que se recurre en misiones de bajo coste cuando no hay
+una pieza de catálogo con herencia de vuelo que cumpla los requisitos eléctricos. Los transceptores
+\texttt{TCAN1044AVDRQ1} del bus CAN y el conversor analógico-digital \texttt{ADS7950QDBTRQ1} de la
+placa CDHS responden a este criterio. Lo mismo ocurre con el transceptor \texttt{THVD1424RGTR} de
+los canales serie de las placas CDHS y AOCS, elegido por soportar \textit{VIO} de 1,8~V de forma
+nativa.
 
 A estas tarjetas se les exige la \textbf{validación funcional} del subsistema de comunicaciones,
 no ser un \textbf{modelo de vuelo}. El grado automotriz permitió ejercitar el subsistema en
@@ -1259,51 +1273,52 @@ condiciones eléctricas realistas dentro del coste y del plazo del trabajo.
 
 La búsqueda deja además un dato aprovechable para el modelo de vuelo. Ningún transceptor de
 catálogo con herencia de vuelo opera su interfaz digital a 1,8~V. Ese modelo tendrá que renunciar
-al nivel nativo de la plataforma y adaptar la interfaz a piezas de 3,3~V o 5~V, ya sea cambiando la
-tensión del carril \texttt{VADJ} o interponiendo adaptadores de nivel.
+al nivel nativo de la plataforma y adaptar la interfaz a piezas de 3,3~V o 5~V. Para ello, deberá
+cambiar la tensión del carril \texttt{VADJ} o interponer adaptadores de nivel.
 
 \subsection{Reglas de diseño y proceso de fabricación}
 
-El diseño de las tres placas se realizó en \textbf{Altium Designer}, y el primer paso en cualquiera
-de los tres proyectos, antes de colocar un solo componente, fue \textbf{establecer las reglas de
-diseño}. Es un paso que conviene no posponer: las reglas son el contrato que el comprobador de
-Altium verifica de forma continua durante el rutado, por lo que fijarlas al principio convierte
-las restricciones de fabricación en un error detectado en el momento de cometerlo, en lugar de en un
-rechazo del fabricante cuando el diseño ya está cerrado.
+El diseño de las tres placas se realizó en \textbf{Altium Designer}. En los tres proyectos, antes
+de colocar un solo componente, el primer paso fue \textbf{establecer las reglas de diseño}. Es un
+paso que conviene no posponer: las reglas son el contrato que el comprobador de Altium verifica de
+forma continua durante el rutado. Fijarlas al principio convierte las restricciones de fabricación
+en un error detectado en el momento de cometerlo, en lugar de en un rechazo del fabricante cuando
+el diseño ya está cerrado.
 
 El criterio adoptado fue ceñirse a las \textbf{capacidades del proceso de fabricación del fabricante
 seleccionado}, PCBWay~\cite{pcbway_caps}, en lugar de definir un conjunto de reglas propio. Los
 límites de su proceso estándar (anchuras y separaciones mínimas de pista, diámetro mínimo de
 taladro, anillo de vía y distancia mínima al borde de placa) son los que acotan lo que es
-fabricable a coste ordinario; apurarlos por debajo obliga a recurrir a procesos de precisión, que
-encarecen la tirada, y superarlos con margen no aporta nada. Diseñar directamente contra esas
+fabricable a coste ordinario. Apurarlos por debajo obliga a recurrir a procesos de precisión, que
+encarecen la tirada. Superarlos con margen no aporta nada. Diseñar directamente contra esas
 capacidades garantiza que las tres placas fueran fabricables en la primera tirada, como en efecto
 ocurrió.
 
 Sobre esas reglas generales se impusieron dos restricciones adicionales propias de las señales que
-transportan estas placas: \textbf{rutado en par diferencial} con impedancia controlada para las
-líneas RS-422/RS-485 y CAN, cuyo desequilibrio degradaría el rechazo a modo común del que depende
-la inmunidad al ruido de un bus diferencial; y \textbf{longitud acotada} en las líneas de
-conmutación rápida procedentes del FMC.
+transportan estas placas. La primera es el \textbf{rutado en par diferencial} con impedancia
+controlada para las líneas RS-422/RS-485 y CAN, cuyo desequilibrio degradaría el rechazo a modo
+común del que depende la inmunidad al ruido de un bus diferencial. La segunda es la
+\textbf{longitud acotada} en las líneas de conmutación rápida procedentes del FMC.
 
 \subsection{Diseño de la placa de comunicación serie}
 
 El objetivo de esta placa es poder ejercitar simultáneamente los 14 transceptores del IP core,
-replicando las topologías de bus reales que se encontrarán en el satélite: RS485 multipunto
-con múltiples nodos en el mismo cable, y RS422 en configuración \textit{master/slave} con cruce de
-TX y RX. A diferencia de las placas CDHS y AOCS, cuyas especificaciones vinieron dictadas
+replicando las topologías de bus reales que se encontrarán en el satélite. Estas son RS485
+multipunto, con múltiples nodos en el mismo cable, y RS422 en configuración \textit{master/slave},
+con cruce de TX y RX. A diferencia de las placas CDHS y AOCS, cuyas especificaciones vinieron dictadas
 por Indra, esta placa fue diseñada con total libertad para maximizar la flexibilidad de los
 ensayos en laboratorio.
 
-El transceptor seleccionado para los catorce canales es el \textbf{LTC2865} \cite{ltc2865} de
-Analog Devices, un transceptor RS-485/RS-422 de hasta 20~Mbps cuyo pin de alimentación lógica
+El transceptor seleccionado para los catorce canales es el \textbf{LTC2865}~\cite{ltc2865} de
+Analog Devices, un transceptor RS-485/RS-422 de hasta 20~Mbps. Su pin de alimentación lógica
 independiente (\texttt{VL}) le permite operar la interfaz digital directamente a los 1,8~V del
-FMC, tal como exige la sección~\ref{sec:seleccion_componentes}, y que expone además un
+FMC, tal como exige la sección~\ref{sec:seleccion_componentes}. Expone además un
 pin \texttt{SLO} de limitación de \textit{slew} controlable desde el MPSoC, que tendrá un papel
 protagonista en la caracterización de la placa (sección~\ref{sec:pcb_slo}). Todas las líneas
-diferenciales incorporan diodos TVS \textbf{SM712-02HTG} contra transitorios, y cada driver
-dispone de una resistencia de terminación de 120~$\Omega$ conmutable mediante \textit{jumper},
-lo que permite terminar el bus en los nodos extremos y dejar abiertos los intermedios.
+diferenciales incorporan diodos TVS \textbf{SM712-02HTG} contra transitorios. Cada driver
+dispone además de una resistencia de terminación de 120~$\Omega$ conmutable mediante
+\textit{jumper}, lo que permite terminar el bus en los nodos extremos y dejar abiertos los
+intermedios.
 
 La arquitectura general de la placa divide los 14 canales en dos grupos conectados al FMC:
 
@@ -1317,8 +1332,9 @@ La arquitectura general de la placa divide los 14 canales en dos grupos conectad
 
 La hoja de nivel superior del esquemático (figura~\ref{fig:placa_serial_top}) recoge esta
 arquitectura: el conector FMC en el centro, el bus común RS485 (RS0--RS6) a un lado y los dos
-buses \textit{master/slave} RS422 (RS7--RS13) al otro, con sus conectores Dupont y Micro-D. El
-resultado físico del diseño se aprecia en el render de la figura~\ref{fig:serial_3d}.
+buses \textit{master/slave} RS422 (RS7--RS13) al otro. Cada bus sale por sus propios conectores
+Dupont y Micro-D. El resultado físico del diseño se aprecia en el render de la
+figura~\ref{fig:serial_3d}.
 
 \begin{figure}[H]
     \centering
@@ -1361,24 +1377,25 @@ en uno o varios buses, sin modificar el firmware ni el cableado exterior.
 
 Los conectores de mayor densidad (Micro-D) de la placa son compartidos entre el Driver 0 y
 el Driver 6 mediante un \textit{jumper} de selección de hardware. Dependiendo de la posición del
-\textit{jumper}, los conectores Micro-D quedan asignados a uno u otro driver, lo que permite usar
-un único tipo de conector con cableado de satélite sin duplicar el número de conectores en
+\textit{jumper}, los conectores Micro-D quedan asignados a uno u otro driver. Esto permite usar
+un único tipo de conector con cableado de satélite, sin duplicar el número de conectores en
 la placa.
 
 \subsubsection{Topología RS422 maestro/esclavo configurable por \textit{jumper}}
 
 Para RS422, cada driver \textit{slave} dispone de un conector con las líneas TX cruzadas a RX
-(TX-Y+/TX-Z$-$ conectadas a RX del bus), replicando la conexión estándar punto a punto
-RS422 donde el receptor del esclavo escucha las transmisiones del \textit{master}. Al igual que en
-RS485, un \textit{jumper} determina si el driver se une al bus común o permanece independiente.
+(TX-Y+/TX-Z$-$ conectadas a RX del bus). Esta disposición replica la conexión estándar punto a
+punto RS422, donde el receptor del esclavo escucha las transmisiones del \textit{master}. Al
+igual que en RS485, un \textit{jumper} determina si el driver se une al bus común o permanece
+independiente.
 
 \subsubsection{Alimentación}
 
 La placa se alimenta íntegramente del conector FMC, que suministra los carriles de 12~V, 3,3~V y
 VADJ a 1,8~V. Los transceptores LTC2865 operan con la etapa de bus a 3,3~V (\texttt{VCC}) y la
-interfaz lógica a 1,8~V (\texttt{VL}), de modo que, a diferencia de las placas CDHS y AOCS,
-que generan con un convertidor DC/DC los 5~V de su etapa de potencia, esta placa no necesita
-ninguna etapa de conversión: todos los carriles llegan directamente del FMC. Sendos conectores
+interfaz lógica a 1,8~V (\texttt{VL}). A diferencia de las placas CDHS y AOCS, que generan con un
+convertidor DC/DC los 5~V de su etapa de potencia, esta placa no necesita ninguna etapa de
+conversión. Todos los carriles llegan directamente del FMC. Sendos conectores
 de dos pines dan acceso externo a los carriles de 12~V y 3,3~V.
 
 El mapa completo de señales entre esta placa y el conector FMC se encuentra en el Anexo~C de
@@ -1423,7 +1440,7 @@ render de la figura~\ref{fig:cdhs_3d}.
 \subsubsection{Nivel de tensión y selección de componentes}
 
 Como en las otras dos tarjetas, todos los bancos de pines del conector FMC HPC utilizados por esta
-placa operan a 1,8~V, y los componentes se seleccionaron con \textit{VIO} nativo a ese nivel para
+placa operan a 1,8~V. Los componentes se seleccionaron con \textit{VIO} nativo a ese nivel, para
 evitar etapas de adaptación en la cadena de señal. Las implicaciones de esta restricción, y el
 motivo por el que obligó a descartar los componentes con herencia de vuelo, se discuten en la
 sección~\ref{sec:seleccion_componentes}. Los subsistemas que siguen aplican ese criterio, y las
@@ -1444,12 +1461,12 @@ notas de aplicación del estándar CAN (ISO 11898-2). En lugar de una única res
 \textbf{condensador de 4,7~nF} conectado desde el punto medio al plano de masa. Cada una de
 las dos resistencias de 60~$\Omega$ está controlada por un \textit{jumper} independiente, lo que
 permite habilitar o deshabilitar la terminación sin modificar el circuito. La resistencia
-equivalente sigue siendo 120~$\Omega$ cuando ambos \textit{jumpers} están colocados, y el
+equivalente sigue siendo 120~$\Omega$ cuando ambos \textit{jumpers} están colocados. El
 condensador de derivación crea un camino de baja impedancia para las interferencias de
-modo común de alta frecuencia hacia masa, mejorando el comportamiento EMC del bus.
+modo común de alta frecuencia hacia masa, lo que mejora el comportamiento EMC del bus.
 
 Las líneas CANH y CANL de cada canal incorporan diodos de protección ESD
-\textbf{ESDCAN24-2BLY}, específicamente diseñados para buses CAN, que clampean transitorios
+\textbf{ESDCAN24-2BLY}, específicamente diseñados para buses CAN. Clampean los transitorios
 por encima de su tensión de ruptura sin introducir una capacitancia parásita significativa. La
 figura~\ref{fig:cdhs_can} recoge el circuito completo de los dos canales.
 
@@ -1465,10 +1482,10 @@ figura~\ref{fig:cdhs_can} recoge el circuito completo de los dos canales.
 Se disponen tres canales serie idénticos e independientes (RS1, RS2, RS3), cada uno con el
 transceptor \textbf{THVD1424RGTR}. Este integrado, sugerido dentro del proyecto LINCE con
 posterioridad al diseño de la placa de comunicación serie propia, mejora al LTC2865 empleado en
-aquella: además de
+aquella. Además de
 soportar VIO de 1,8~V, incorpora resistencias de terminación internas conmutables y permite
-seleccionar entre modo \textit{Half-Duplex} y \textit{Full-Duplex} sin cambiar el hardware, por
-lo que se adoptó para las dos tarjetas oficiales. La configuración se expone mediante
+seleccionar entre modo \textit{Half-Duplex} y \textit{Full-Duplex} sin cambiar el hardware. Por
+estas ventajas se adoptó para las dos tarjetas oficiales. La configuración se expone mediante
 \textit{jumpers} físicos de 2 pines: \textbf{H/F} (conmuta entre \textit{Half-Duplex} y \textit{Full-Duplex}), \textbf{SLR}
 (habilita control de \textit{slew rate}), \textbf{TERM\_TX / TERM\_RX} (conectan las resistencias de
 terminación internas). Los tres canales salen por los conectores J2, J3 y J4.
@@ -1480,8 +1497,8 @@ Tanto las líneas RX como las TX de cada canal llevan un par de diodos TVS
 El THVD1424 expone dos pines de control independientes: \textbf{DE} (\textit{Driver Enable}, activo en
 alto) habilita el transmisor, y \textbf{RE} (\textit{Receiver Enable}, activo en bajo) habilita el receptor.
 En el esquemático, ambos pines están conectados a la misma señal de control procedente del
-MPSoC, con lo que una única línea digital controla simultáneamente transmisor y receptor
-de forma complementaria (tabla~\ref{tab:de_re}).
+MPSoC. Una única línea digital controla así, de forma complementaria, transmisor y receptor
+(tabla~\ref{tab:de_re}).
 
 \begin{table}[H]
     \centering
@@ -1498,10 +1515,10 @@ de forma complementaria (tabla~\ref{tab:de_re}).
 \end{table}
 
 Esta decisión responde a dos motivos. Por un lado, el equipo de Indra comunicó que en la
-arquitectura del satélite los esclavos solo transmiten bajo demanda del OBC, por lo que no
+arquitectura del satélite los esclavos solo transmiten bajo demanda del OBC. Por ello, no
 existe un escenario real en el que un nodo deba transmitir y recibir simultáneamente. Por
 otro lado, en modo \textit{Half-Duplex} las líneas TX y RX comparten físicamente el mismo par
-diferencial A/B; si el receptor permaneciera activo durante la transmisión, el nodo escucharía
+diferencial A/B. Si el receptor permaneciera activo durante la transmisión, el nodo escucharía
 su propio eco. El circuito completo de un canal, con esa conexión y los cuatro \textit{jumpers}
 de configuración, es el de la figura~\ref{fig:cdhs_rs}.
 
@@ -1530,7 +1547,7 @@ las pruebas serie.
 
 Cuatro entradas analógicas de termistores (CH0--CH3) se digitalizan con el ADC SAR de
 12 bits \textbf{ADS7950QDBTRQ1}, comunicado al procesador por SPI a 1,8~V. La circuitería
-analógica opera a 3,3~V; ambos carriles (+VBD a 1,8~V y +VA a 3,3~V) son independientes
+analógica opera a 3,3~V. Ambos carriles (+VBD a 1,8~V y +VA a 3,3~V) son independientes,
 para evitar acoplos entre el dominio digital y el analógico~\cite{ti2018ads7950}. Los
 termistores se conectan por J6.
 
@@ -1564,7 +1581,7 @@ subsistemas, y la figura~\ref{fig:aocs_3d} recoge el aspecto físico de la tarje
 Lo que se describe a continuación es la \textbf{revisión V2} del diseño, que es la versión
 cerrada del esquemático. Las dos unidades fabricadas y toda la validación
 recogida en la sección~\ref{sec:validacion_aocs} corresponden a la \textbf{revisión anterior},
-de cinco canales serie, mientras que la V2 no llegó a fabricarse. Las diferencias entre ambas
+de cinco canales serie. La V2 no llegó a fabricarse. Las diferencias entre ambas
 revisiones son cuatro: el desdoble del canal de J4 en dos, la separación de las líneas DE y RE,
 la adición de puntos de prueba y la corrección de un error de conexión en el eje Z del bloque
 de motores. Las tres primeras se detallan en el subsistema RS que sigue, y la cuarta en el de
@@ -1597,51 +1614,50 @@ MOT-PWM.
 \subsubsection{Subsistema RS422/RS485}
 
 La placa incorpora \textbf{seis canales serie} (RS1, RS3, RS41, RS42, RS5 y RS8) con el mismo
-transceptor THVD1424RGTR descrito en la sección de la placa CDHS y sus mismos \textit{jumpers}
-de configuración H/F, SLR y terminación. Los canales RS41 y RS42 comparten el conector J4:
-la hoja \texttt{RSx2} monta los dos transceptores de ese conector, de modo que los seis canales
-salen por cinco D-Sub-9 (J1, J3, J4$\times$2, J5 y J8). Frente a la revisión anterior, de cinco
-canales, el desdoble permite ejercitar un par \textit{master/slave} completo sobre un único
-conector.
+transceptor THVD1424RGTR descrito en la sección de la placa CDHS. Usa los mismos \textit{jumpers}
+de configuración H/F, SLR y terminación. Los canales RS41 y RS42 comparten el conector J4: la
+hoja \texttt{RSx2} monta los dos transceptores de ese conector. Los seis canales salen así por
+cinco D-Sub-9 (J1, J3, J4$\times$2, J5 y J8). Frente a la revisión anterior, de cinco canales, el
+desdoble permite ejercitar un par \textit{master/slave} completo sobre un único conector.
 
 Respecto al diseño de la CDHS hay una diferencia de fondo: en esta placa las líneas
 \textbf{DE y RE llegan por separado} desde el MPSoC, en lugar de cortocircuitadas. Cada canal
 consume así cuatro señales digitales del FMC (TX, RX, DE y RE) en vez de tres. El motivo es que
 el cortocircuito DE--RE fija el comportamiento en el cobre: obliga a que el receptor esté
 siempre en el estado complementario del transmisor, que es lo que la arquitectura del satélite
-necesita, pero impide comprobar en banco cualquier otra combinación. Con las dos líneas
-independientes el firmware puede seguir imponiendo el comportamiento complementario por
-software, y además habilitar receptor y transmisor a la vez para observar el eco propio en
+necesita. Sin embargo, impide comprobar en banco cualquier otra combinación. Con las dos líneas
+independientes, el firmware puede seguir imponiendo el comportamiento complementario por
+software. Además, permite habilitar receptor y transmisor a la vez para observar el eco propio en
 \textit{half-duplex}, o dejar ambos deshabilitados para verificar que la línea queda en alta
 impedancia.
 
 \paragraph{Puntos de prueba.}
 La revisión V2 añade \textbf{puntos de prueba} en las cuatro líneas lógicas de cada canal
-(TX, DE, RE y RX) más una toma de masa por bloque, accesibles desde la cara de conectores
+(TX, DE, RE y RX), más una toma de masa por bloque. Son accesibles desde la cara de conectores,
 junto a los \textit{jumpers} (figura~\ref{fig:aocs_3d}). El bloque de PWM de motores lleva los
 suyos sobre los seis pares X1/X2, Y1/Y2 y Z1/Z2, también con masa propia. La razón es la
-depuración: los caracteres corruptos que motivaron los estados \texttt{PreDE} y \texttt{PostDE}
-del transmisor se diagnosticaron pinchando el osciloscopio en el lado lógico del transceptor,
-y en la revisión anterior esas líneas solo eran accesibles en las patas del encapsulado. Una toma de masa
-contigua a cada grupo de señales es parte del mismo objetivo: el lazo de masa de la punta es lo
-que limita la fidelidad de la medida en flancos de varios megabaudios.
+depuración. Los caracteres corruptos que motivaron los estados \texttt{PreDE} y \texttt{PostDE}
+del transmisor se diagnosticaron pinchando el osciloscopio en el lado lógico del transceptor. En
+la revisión anterior, esas líneas solo eran accesibles en las patas del encapsulado. Una toma de
+masa contigua a cada grupo de señales es parte del mismo objetivo: el lazo de masa de la punta es
+lo que limita la fidelidad de la medida en flancos de varios megabaudios.
 
 \subsubsection{Subsistema SpaceWire}
 
 Se implementan dos enlaces SpaceWire \textit{full-duplex} independientes (SPW1 y SPW2) mediante
-señalización diferencial LVDS, ya que el estándar SpaceWire opera directamente a niveles LVDS
+señalización diferencial LVDS. El estándar SpaceWire opera directamente a niveles LVDS
 compatibles con los bancos del FMC. Ambos enlaces son idénticos y atraviesan \textbf{repetidores
-LVDS DS90CP22M}, como muestra la figura~\ref{fig:aocs_spw}: cada enlace lleva dos repetidores de
-dos canales, uno para el sentido entrante (los pares DIN y SIN) y otro para el saliente (SOUT y
+LVDS DS90CP22M}, como muestra la figura~\ref{fig:aocs_spw}. Cada enlace lleva dos repetidores de
+dos canales: uno para el sentido entrante (los pares DIN y SIN) y otro para el saliente (SOUT y
 DOUT), lo que suma cuatro integrados en la placa. El repetidor reacondiciona los flancos y
-aísla el tramo de cobre de la tarjeta del cable externo, que es donde el enlace se degrada; su
-coste es un retardo de propagación fijo, irrelevante frente a la temporización de SpaceWire, y
-la simetría entre los dos enlaces permite atribuir al cableado, y no a la placa, cualquier
+aísla el tramo de cobre de la tarjeta del cable externo, que es donde el enlace se degrada. Su
+coste es un retardo de propagación fijo, irrelevante frente a la temporización de SpaceWire. La
+simetría entre los dos enlaces permite además atribuir al cableado, y no a la placa, cualquier
 diferencia que se observe entre ellos en banco. Los pares
 diferenciales (cuatro por enlace: DIN, SIN, SOUT y DOUT) se han trazado en la PCB con
-técnicas de igualación de longitud (\textit{length matching}) para minimizar el \textit{skew} entre el par
-de datos y el par de \textit{strobe}, y con impedancia característica controlada de 100~$\Omega$
-diferencial.
+técnicas de igualación de longitud (\textit{length matching}), para minimizar el \textit{skew}
+entre el par de datos y el par de \textit{strobe}. También se ha controlado su impedancia
+característica, de 100~$\Omega$ diferencial.
 
 \begin{figure}[H]
     \centering
@@ -1663,21 +1679,20 @@ ejes X e Y, y U5 el eje Z, que ocupa solo dos de sus cuatro canales.
 
 \paragraph{Corrección de la revisión V2: el eje Z.}
 La revisión fabricada tenía un \textbf{error de conexión en el eje Z} que la V2 corrige. En
-U5, las señales \texttt{PWM\_Z\_1} y \texttt{PWM\_Z\_2} entran por A2 y A1, cuyas salidas
-correspondientes son B2Y y B1Y; sin embargo, las entradas del puente en H de ese eje (U6) no
-colgaban de B2Y y B1Y, sino de \textbf{B4Y y B3Y}, que son las salidas de los dos canales no
-utilizados. Y esos dos canales tienen sus entradas A4 y A3 \textbf{atadas a masa}, junto a los
-pines NC del integrado. El resultado es que el eje Z quedaba fijo a nivel bajo en el conector,
-por mucho que la PL generase la señal: las dos líneas que la transportaban terminaban en
-salidas del adaptador sin conectar, y las que llegaban al puente en H estaban permanentemente
+U5, las señales \texttt{PWM\_Z\_1} y \texttt{PWM\_Z\_2} entraban por A2 y A1, cuyas salidas
+correspondientes eran B2Y y B1Y. Sin embargo, las entradas del puente en H de ese eje (U6) no
+colgaban de B2Y y B1Y, sino de \textbf{B4Y y B3Y}, que eran las salidas de los dos canales no
+utilizados. Esos dos canales tenían además sus entradas A4 y A3 \textbf{atadas a masa}, junto a
+los pines NC del integrado. El resultado era que el eje Z quedaba fijo a nivel bajo en el
+conector, por mucho que la PL generase la señal. Las dos líneas que la transportaban terminaban
+en salidas del adaptador sin conectar, y las que llegaban al puente en H estaban permanentemente
 a cero.
 
-Ninguna comprobación automática detecta este fallo: el diseño es eléctricamente correcto, no
-incumple ninguna
-regla de Altium y el comprobador de conectividad no ve nada anómalo, porque las dos salidas
-sobrantes son terminaciones válidas y las entradas a masa son una conexión legítima. Solo se
-manifiesta al medir el eje Z en el conector. La V2 reencamina las entradas de U6 a B2Y y B1Y,
-que es donde salen efectivamente las señales del eje.
+Ninguna comprobación automática detecta este fallo: el diseño es eléctricamente correcto y no
+incumple ninguna regla de Altium. El comprobador de conectividad no ve nada anómalo, porque las
+dos salidas sobrantes son terminaciones válidas y las entradas a masa son una conexión legítima.
+Solo se manifiesta al medir el eje Z en el conector. La V2 reencamina las entradas de U6 a B2Y y
+B1Y, que es donde salen efectivamente las señales del eje.
 
 \subsubsection{Alimentación}
 
@@ -1690,7 +1705,7 @@ El mapa completo de señales entre la placa AOCS y el conector FMC se encuentra 
 Anexo~C. Los esquemáticos (PDF) y la BOM están disponibles en
 \texttt{tfm/00\_docs/pcbs/aocs/}. El fichero \texttt{LINCE3\_AOCS\_V2.pdf} es la revisión aquí
 descrita, la única que refleja el estado final del diseño, y del que proceden todas las hojas de
-esquemático reproducidas en esta sección; \texttt{LINCE3\_AOCS.pdf} es un volcado anterior que se
+esquemático reproducidas en esta sección. \texttt{LINCE3\_AOCS.pdf} es un volcado anterior que se
 conserva por trazabilidad, pero está desactualizado incluso respecto a lo que se fabricó.
 
 % ----- FABRICACIÓN -----
@@ -1730,9 +1745,9 @@ montadas al salir del horno, que son las que se emplean en toda la campaña de v
     \label{fig:aocs_soldada}
 \end{figure}
 
-La placa de comunicación serie se montó por el mismo procedimiento; la figura~\ref{fig:serial_soldada}
-muestra sus dos caras ya pobladas, con los conectores D-Sub y los \textit{jumpers} de configuración
-en el anverso y los catorce transceptores LTC2865 en el reverso.
+La placa de comunicación serie se montó por el mismo procedimiento. La figura~\ref{fig:serial_soldada}
+muestra sus dos caras ya pobladas: los conectores D-Sub y los \textit{jumpers} de configuración
+en el anverso, y los catorce transceptores LTC2865 en el reverso.
 
 \begin{figure}[H]
     \centering
@@ -1756,10 +1771,10 @@ en el anverso y los catorce transceptores LTC2865 en el reverso.
 % ---------------------------------------------------------------------------
 
 Nada de lo descrito hasta aquí puede darse por bueno sin un banco desde el que ejercitarlo. El
-transceptor, el driver y las tres placas se validan desde el propio MPSoC, de modo que hizo falta
+transceptor, el driver y las tres placas se validan desde el propio MPSoC. Para ello hizo falta
 construir el software que los pone a trabajar y que hace observable lo que ocurre: aplicaciones
-sobre RTEMS que configuran cada canal, generan tráfico y comprueban lo recibido, y el equipamiento
-de laboratorio que cierra los enlaces sobre cable real.
+sobre RTEMS que configuran cada canal, generan tráfico y comprueban lo recibido. También hizo
+falta el equipamiento de laboratorio que cierra los enlaces sobre cable real.
 
 Este apartado describe esas herramientas. Son las que producen los resultados del capítulo~4, y
 conocerlas es necesario para interpretar las trazas y las medidas que allí se presentan.
@@ -1778,7 +1793,7 @@ La aplicación de testing del driver serie está estructurada en tres archivos:
 \subsubsection{Configuración del sistema RTEMS --- \texttt{init.c}}
 
 \texttt{init.c} es el fichero de configuración estática de RTEMS. No contiene lógica de
-aplicación; define el entorno de ejecución mediante macros que \texttt{<rtems/confdefs.h>}
+aplicación. Define el entorno de ejecución mediante macros que \texttt{<rtems/confdefs.h>}
 convierte en estructuras de datos internas del kernel:
 
 \begin{lstlisting}[caption={Configuración estática de RTEMS en init.c}]
@@ -1795,12 +1810,12 @@ CONFIGURE_INIT_TASK_STACK_SIZE (64 KB)    // Stack grande para Init
 La aplicación tiene tres secciones claramente separadas:
 
 \textbf{Callback de recepción \texttt{on\_rx\_data()}.} Se registra en el driver y se invoca desde la
-tarea \textit{worker} cuando llegan datos. Implementa un ensamblador de líneas por canal: por cada
+tarea \textit{worker} cuando llegan datos. Implementa un ensamblador de líneas por canal. Por cada
 byte recibido, acumula hasta encontrar un carácter de fin de línea (\verb|\n| o \verb|\r|),
 momento en el que imprime la línea completa con el formato
 \texttt{[RX UART 02]: mensaje}. Hay un \texttt{AppLineBuffer} (1024 bytes) por cada uno de los
-14 canales, declarados estáticamente en el array \texttt{rx\_lines[MAX\_TRANSCEIVERS]}, para
-evitar mezclar caracteres de UARTs distintas en la misma línea de consola.
+14 canales, declarado estáticamente en el array \texttt{rx\_lines[MAX\_TRANSCEIVERS]}. Esto evita
+mezclar caracteres de UARTs distintas en la misma línea de consola.
 
 \textbf{Tarea de consola TX \texttt{Tx\_Console\_Task()}.} Es una tarea RTEMS independiente
 (prioridad 100, baja) que bloquea en \texttt{fgets(stdin)} esperando comandos del usuario por
@@ -1837,21 +1852,21 @@ de \texttt{main()}. La secuencia de inicialización es:
 Para poder probar la funcionalidad de la placa CDHS, fue necesario añadir soporte firmware
 que controlara las líneas adicionales a RS422 y RS485. La configuración del entorno fue la
 siguiente: se preparó el hardware en la PL para probar las líneas de RS422/RS485, SPI, CAN
-y PWM creando un proyecto en Vivado con el script TCL \texttt{new\_rebuild\_all.tcl} con 3
-transceptores serie, y añadiendo el bloque de control PWM. Además se configuró el PS para
+y PWM. Para ello se creó un proyecto en Vivado con el script TCL \texttt{new\_rebuild\_all.tcl},
+con 3 transceptores serie, y se añadió el bloque de control PWM. Además se configuró el PS para
 conectar SPI y CAN con el exterior activando las líneas de SPI 0, CAN 0 y CAN 1 como
 interfaces externas hacia el conector FMC.
 
 Para controlar las líneas de PWM se instanció el bloque \texttt{PWMx4\_auto\_test}, que genera
 desde la PL cuatro señales PWM a 10~kHz, 5~kHz, 1~kHz y 100~Hz con \textit{duty cycle} del
-50\%, sin necesidad de ningún driver en el PS. Se utilizó el mismo BOOT.bin para todas las
+50\%. No necesita ningún driver en el PS. Se utilizó el mismo BOOT.bin para todas las
 pruebas de CDHS.
 
 Para probar el ADC ADS7950 de la placa CDHS, se desarrolló una pequeña aplicación de
 lectura SPI sobre RTEMS. Dado que el BSP de RTEMS 7 para ZCU102 no incluía en ese
 momento un driver SPI de alto nivel, se accedió directamente al controlador SPI Cadence
-integrado en el PS mediante mapeado de registros en memoria (MMIO), siguiendo el mapa de
-registros descrito en el Manual de Referencia Técnico del Zynq UltraScale+
+integrado en el PS mediante mapeado de registros en memoria (MMIO). Se siguió para ello el
+mapa de registros descrito en el Manual de Referencia Técnico del Zynq UltraScale+
 \cite{xilinx2023ug1085}. El protocolo de comunicación con el ADC (formato de trama de
 16 bits, selección de canal en \textit{Manual Mode} y gestión de la latencia de conversión) se
 implementó conforme al \textit{datasheet} del ADS7950~\cite{ti2018ads7950}.
@@ -1863,17 +1878,17 @@ y se establecen tests que comprueban que la conexión por CAN funciona correctam
 \subsubsection{Ampliación para soportar interfaces adicionales AOCS}
 
 Para probar la placa AOCS, se generó un proyecto de Vivado con \texttt{new\_rebuild\_all.tcl} con
-5 transceptores, añadiendo un bloque VHDL para controlar los puentes en H por PWM
+5 transceptores. Se añadió además un bloque VHDL para controlar los puentes en H por PWM
 (\texttt{Motor\_H\_bridge\_test.vhd}). Este bloque genera 3 PWMs y los enruta por la línea 1 o
 línea 2 de cada motor en función de la dirección deseada. Para estas pruebas, se fijó un
-tiempo para cada dirección de manera que durante unos segundos el PWM fuera en un
-sentido (línea 1 activa, línea 2 a 0) y durante los siguientes segundos en el sentido contrario.
+tiempo para cada dirección: durante unos segundos el PWM iba en un sentido (línea 1 activa,
+línea 2 a 0), y durante los siguientes segundos, en el sentido contrario.
 
 La comunicación por SpaceWire quedó fuera del alcance de la validación por su alta complejidad
-técnica: el estándar no se agota en la capa física LVDS que expone la placa, sino que exige
+técnica. El estándar no se agota en la capa física LVDS que expone la placa, sino que exige
 implementar en la lógica programable la codificación \textit{data-strobe}, la máquina de estados
-de establecimiento y recuperación del enlace y los niveles de paquete y red, un desarrollo que
-por sí solo excede el alcance de este trabajo.
+de establecimiento y recuperación del enlace, y los niveles de paquete y red. Este desarrollo,
+por sí solo, excede el alcance de este trabajo.
 
 \subsection{Arneses y equipamiento de validación}
 
