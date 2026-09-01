@@ -143,10 +143,17 @@ validar. SpaceWire es un estándar de red a bordo de alta velocidad coordinado p
 interconectar nodos de alto rendimiento como memorias masivas, procesadores de instrumento y
 enlaces de telemetría.
 
-En el nivel físico usa señalización LVDS\footnote{\textit{Low-Voltage Differential Signaling}: par diferencial de unos 350~mV de excursión, para alta velocidad y bajo consumo.} y una codificación \textit{Data-Strobe}: en lugar de
-transmitir un reloj aparte, que a alta frecuencia se desalinearía respecto a los datos
-(\textit{skew}\footnote{Desfase temporal entre señales que deberían llegar a la vez; crece con la frecuencia y la longitud de las pistas.}), envía los datos por un par y una señal \textit{strobe} por otro, de modo que el
-reloj se recupera con una XOR entre ambas. Proporciona enlaces punto a punto \textit{full-duplex}
+En el nivel físico usa señalización LVDS\footnote{\textit{Low-Voltage Differential Signaling}: par diferencial de unos 350~mV de excursión, para alta velocidad y bajo consumo.} y una codificación \textit{Data-Strobe}. Enviar el reloj
+por un par propio obliga a que ese par y el de datos lleguen alineados dentro de una fracción del
+tiempo de bit. A 200~Mbps el tiempo de bit es de 5~ns, de modo que un desfase de pocos
+nanosegundos entre ambos pares, acumulado por la diferencia de longitud de las pistas y por la
+dispersión del cable, basta para muestrear el bit equivocado.
+
+La codificación \textit{Data-Strobe} evita esa restricción. Los datos viajan por un par y una
+señal \textit{strobe} por el otro, con la condición de que en cada bit conmute una sola de las
+dos. El reloj se recupera con una XOR entre ambas, y el margen deja de depender del alineamiento
+entre pares para depender solo de que ninguno cambie dos veces en el mismo
+bit~\cite{ecss50spw,parkes2012spw}. Proporciona enlaces punto a punto \textit{full-duplex}
 asíncronos de hasta 400~Mbps. Su pila incluye una capa de red que permite encaminar
 paquetes a través de \textit{routers} SpaceWire~\cite{ecss50spw,parkes2012spw}.
 
@@ -157,7 +164,8 @@ capítulo~4. El bus CAN (\textit{Controller Area Network}) nació en automoción
 (\textit{CAN for Aerospace}) en
 las redes internas de telemetría y telecomando (TM/TC) de satélites pequeños y comerciales.
 
-Es multipunto y multimaestro, con acceso por escucha de portadora\footnote{Cada nodo espera a que el bus esté en reposo antes de empezar a transmitir.} y arbitraje por prioridad de
+Es multipunto y multimaestro, con acceso por escucha de portadora, es decir, cada nodo espera a
+que el bus esté en reposo antes de empezar a transmitir, y con arbitraje por prioridad de
 mensaje. Los nodos no tienen dirección: cada trama lleva un identificador que fija su contenido y
 su prioridad. Si dos nodos transmiten a la vez, la colisión se resuelve bit a bit y sin destruir
 datos: gana el identificador de mayor prioridad y el otro nodo reintenta. La capa de enlace añade
