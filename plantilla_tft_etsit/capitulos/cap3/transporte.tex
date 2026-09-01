@@ -246,6 +246,17 @@ descriptor y el \textit{buffer} de DDR del canal $N$. Sin esa etiqueta el hardwa
 de saber de quién es cada byte, y todo el tráfico se deposita en el canal cero, comportamiento
 que se documenta en la sección~\ref{sec:transporte_depuracion}.
 
+La figura~\ref{fig:mcdma_interior} recoge el mecanismo completo. Los catorce canales entran y
+salen por un único par de interfaces AXI-Stream, y es la etiqueta \texttt{TDEST} la que decide en
+qué \textit{buffer} de la DDR acaba cada paquete.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{IMG/Desarrollo/diagrama_mcdma_interior.pdf}
+    \caption{Multiplexado de los catorce canales por \texttt{TDEST}.}
+    \label{fig:mcdma_interior}
+\end{figure}
+
 El paquete se cierra por dos condiciones: cuando la FIFO del canal se vacía (fin natural de la
 ráfaga) o cuando se alcanza el tope duro de longitud del generic \texttt{MAX\_PKT}, fijado en
 256~bytes. Ese segundo criterio es una \textbf{invariante de seguridad} impuesta por el IP, cuya
