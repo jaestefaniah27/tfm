@@ -18,34 +18,53 @@ directo a memoria y el coste que impone el modelo de interrupciones.
 
 Cada una de esas tres arquitecturas se apoya en un perfil distinto del estándar. La comunicación entre el PS y la PL del Zynq UltraScale+ se realiza a través de puertos que
 implementan el estándar AMBA (\textit{Advanced Microcontroller Bus Architecture}) AXI4 de
-ARM~\cite{arm2011axi4}. El estándar define tres perfiles:
+ARM~\cite{arm2011axi4}. El estándar define tres perfiles, y todos se describen aquí sobre la misma
+rejilla de canales para poder contraponerlos.
 
-\begin{itemize}
-    \item \textbf{AXI4-Lite.} Perfil reducido para leer y escribir \textit{registros}
-    individuales. Cada transacción mueve una palabra y consume una instrucción de carga o
-    almacenamiento del procesador. Es el bus con el que se configuran los periféricos.
+\paragraph{AXI4-Lite.}
+Perfil reducido para leer y escribir \textit{registros} individuales. Usa los cinco canales de una
+transacción \textit{memory-mapped} (dirección y datos de escritura, respuesta de escritura, y
+dirección y datos de lectura), pero cada canal mueve una sola palabra por transacción, y cada
+palabra consume una instrucción de carga o almacenamiento del procesador. Es el bus con el que se
+configuran los periféricos (figura~\ref{fig:axi_lite}).
 
-    \item \textbf{AXI4 \textit{full} (\textit{memory-mapped}).} Perfil completo, con soporte
-    de ráfagas (\textit{bursts}) de hasta 256 transferencias por transacción. Es el bus que
-    utilizan los maestros de la PL para acceder a la DDR del PS a través de los puertos
-    de alto rendimiento (HP), sin pasar por la CPU.
-
-    \item \textbf{AXI4-Stream.} Perfil sin direcciones: un flujo continuo de datos con
-    señales de \textit{handshake} (\texttt{TVALID}/\texttt{TREADY})\footnote{Par de señales con el que emisor y receptor acuerdan cuándo un dato del flujo es válido y ha sido aceptado.}, marca de fin de paquete
-    (\texttt{TLAST}) y, opcionalmente, un identificador de destino (\texttt{TDEST}). Es el
-    perfil idóneo para conectar un periférico que produce o consume bytes en secuencia,
-    como un UART.
-\end{itemize}
-
-La figura~\ref{fig:bus_axi} sitúa los tres perfiles en el sistema y muestra en qué se diferencia
-una transacción de cada uno.
-
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{IMG/Desarrollo/diagrama_bus_axi.pdf}
-    \caption{Perfiles del bus AXI4 y su uso entre el PS y la PL.}
-    \label{fig:bus_axi}
+    \includegraphics[width=\textwidth]{IMG/Desarrollo/diagrama_axi_lite.pdf}
+    \caption{Canales de una transacción AXI4-Lite.}
+    \label{fig:axi_lite}
 \end{figure}
+
+\paragraph{AXI4 \textit{full} (\textit{memory-mapped}).}
+Perfil completo. Conserva esos mismos cinco canales, pero los de datos admiten ráfagas
+(\textit{bursts}) de hasta 256 transferencias por cada dirección emitida. Es el bus que utilizan
+los maestros de la PL para acceder a la memoria DDR del PS a través de los puertos de alto
+rendimiento (HP), sin pasar por la CPU (figura~\ref{fig:axi_full}).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{IMG/Desarrollo/diagrama_axi_full.pdf}
+    \caption{Canales de una transacción AXI4 \textit{full}.}
+    \label{fig:axi_full}
+\end{figure}
+
+\paragraph{AXI4-Stream.}
+Perfil sin direcciones: elimina los canales de dirección y de respuesta y deja un único canal de
+datos unidireccional. El flujo lo acompañan señales de \textit{handshake}
+(\texttt{TVALID}/\texttt{TREADY})\footnote{Par de señales con el que emisor y receptor acuerdan cuándo un dato del flujo es válido y ha sido aceptado.}, una marca de fin de paquete
+(\texttt{TLAST}) y, opcionalmente, un identificador de destino (\texttt{TDEST}). Es el perfil
+idóneo para conectar un periférico que produce o consume bytes en secuencia, como un UART
+(figura~\ref{fig:axi_stream}).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{IMG/Desarrollo/diagrama_axi_stream.pdf}
+    \caption{Único canal de un enlace AXI4-Stream.}
+    \label{fig:axi_stream}
+\end{figure}
+
+Cuántas direcciones hay que mover por cada dato útil es lo que decide el coste en CPU de cada
+arquitectura del capítulo~3.
 
 
 \subsection{Acceso directo a memoria (DMA)}
@@ -107,7 +126,15 @@ El reparto entre canales lo hace la señal \textbf{\texttt{TDEST}} del AXI-Strea
 (S2MM), el MCDMA lee el \texttt{TDEST} de cada paquete, lo toma como número de canal y escribe la
 carga en el \textit{buffer} de ese canal, sin que el procesador intervenga en el demultiplexado.
 En transmisión (MM2S) hace lo inverso: etiqueta cada paquete con el \texttt{TDEST} de su canal de
-origen. Un solo par de interfaces AXI-Stream da servicio así a los $N$ periféricos.
+origen. Un solo par de interfaces AXI-Stream da servicio así a los $N$ periféricos
+(figura~\ref{fig:mcdma}).
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.95\textwidth]{IMG/Desarrollo/diagrama_mcdma.pdf}
+    \caption{Transferencia multicanal con AXI MCDMA.}
+    \label{fig:mcdma}
+\end{figure}
 
 \subsection{Coste de la interrupción}
 \label{sec:teoria_livelock}

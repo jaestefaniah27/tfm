@@ -332,8 +332,7 @@ Los parámetros configurables son:
     \item Número de bits de parada, o \textit{stop bits}, que marcan el final de la trama y
     devuelven la línea a reposo: 1, 1,5 o 2.
     \item Modo de paridad: par, impar, marca, espacio o deshabilitada. La paridad es un único bit
-    de comprobación que iguala a par o a impar el número de unos de la palabra, no un código de
-    redundancia cíclica (CRC).
+    de comprobación que iguala a par o a impar el número de unos de la palabra.
     \item Orden de los bits, empezando por el menos significativo (LSB) o por el más
     significativo (MSB).
     \item Número de bits de datos, entre 5 y 9.
@@ -989,7 +988,7 @@ de Vivado completo en el repositorio.
 \section{Diseño del driver serie en RTEMS (PS)} \label{sec:driver_rtems}
 % ---------------------------------------------------------------------------
 
-Completado el transceptor en la PL, queda su contraparte en el PS: los ficheros
+Completado el transceptor en la PL, se continuó con su contraparte en el PS: los ficheros
 \texttt{transceiver.c} y \texttt{transceiver.h}. Es un driver para RTEMS que habla con el hardware a
 través del AXI GPIO de cada canal y expone a la aplicación una API pública sencilla, la misma para
 los catorce canales. Las subsecciones siguientes lo describen de fuera hacia dentro. Primero se
@@ -1295,13 +1294,13 @@ ocurrió.
 
 Sobre esas reglas generales se impusieron dos restricciones adicionales propias de las señales que
 transportan estas placas. La primera es el \textbf{rutado en par diferencial} con impedancia
-controlada para las líneas RS-422/RS-485 y CAN, cuyo desequilibrio degradaría el rechazo a modo
-común del que depende la inmunidad al ruido de un bus diferencial. La segunda es la
-\textbf{longitud acotada} en las líneas de conmutación rápida procedentes del FMC.
+controlada para las líneas SPW, RS-422/RS-485 y CAN. La segunda es la
+\textbf{longitud acotada} en las líneas de conmutación rápida procedentes del FMC, de manera que 
+las señales tarden lo mismo en llegar a su destino.
 
 \subsection{Diseño de la placa de comunicación serie}
 
-El objetivo de esta placa es poder ejercitar simultáneamente los 14 transceptores del IP core,
+El objetivo de esta placa era poder ejercitar simultáneamente los 14 transceptores del IP core,
 replicando las topologías de bus reales que se encontrarán en el satélite. Estas son RS485
 multipunto, con múltiples nodos en el mismo cable, y RS422 en configuración \textit{master/slave},
 con cruce de TX y RX. A diferencia de las placas CDHS y AOCS, cuyas especificaciones vinieron dictadas
@@ -1910,7 +1909,7 @@ Arnés a 2 hilos, en el que se conectan A+ y B$-$ de un driver con los del otro
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.85\textwidth]{IMG/Desarrollo/diagrama_arnes_loopback.pdf}
+    \includegraphics[width=0.45\textwidth]{IMG/arnes_rs485.jpg}
     \caption{Arnés de \textit{loopback} RS485 a 2 hilos entre dos conectores D-Sub-9.}
     \label{fig:arnes_rs485}
 \end{figure}

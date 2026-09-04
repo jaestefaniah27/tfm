@@ -30,7 +30,7 @@ instrucciones de forma secuencial, igual que cualquier microprocesador clásico.
 corren el sistema operativo, la gestión de la memoria DDR (\textit{Double Data Rate}) y las
 rutinas de control de alto nivel.
 
-La \textbf{PL} es el dominio del hardware a medida: una matriz reconfigurable tipo FPGA
+La \textbf{PL} es el dominio del hardware a medida: una matriz reconfigurable FPGA
 (\textit{Field Programmable Gate Array}) que no ejecuta un programa, sino que se configura físicamente. Con un
 lenguaje de descripción de hardware como VHDL (\textit{Very High Speed Integrated Circuit
 Hardware Description Language}) se interconectan los recursos del silicio (tablas de búsqueda,
@@ -50,8 +50,8 @@ comparativa del capítulo~4.
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=\textwidth]{IMG/Desarrollo/diagrama_mpsoc_zynq.pdf}
-    \caption{MPSoC Zynq UltraScale+ y entorno de la ZCU102.}
+    \includegraphics[width=\textwidth]{IMG/Desarrollo/diagrama_mpsoc_zynq_oficial.jpg}
+    \caption{Arquitectura del MPSoC Zynq UltraScale+ (fuente: AMD).}
     \label{fig:mpsoc_zynq}
 \end{figure}
 
@@ -149,10 +149,10 @@ sensores~\cite{ti2018rs422,tia422b}.
 
 
 La figura~\ref{fig:topologia_rs} contrapone las dos topologías. En RS485 los nodos cuelgan del
-mismo par y solo uno transmite a la vez, de modo que hace falta la señal \texttt{DE} para cederse
-el medio. En RS422 cada par tiene un único transmisor, y por eso el enlace no necesita arbitraje.
+mismo par y solo uno transmite a la vez, de modo que hace falta controlar el acceso al bus y cederlo
+tras cada transmisión. En RS422 cada par tiene un único transmisor, y por eso el enlace no necesita arbitraje.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.92\textwidth]{IMG/Desarrollo/diagrama_topologia_rs.pdf}
     \caption{Topologías RS485 y RS422.}
@@ -172,13 +172,16 @@ tiempo de bit. A 200~Mbps el tiempo de bit es de 5~ns, de modo que un desfase de
 nanosegundos entre ambos pares, acumulado por la diferencia de longitud de las pistas y por la
 dispersión del cable, basta para muestrear el bit equivocado.
 
-La codificación \textit{Data-Strobe} evita esa restricción. Los datos viajan por un par y una
-señal \textit{strobe} por el otro, con la condición de que en cada bit conmute una sola de las
-dos. El reloj se recupera con una XOR entre ambas, y el margen deja de depender del alineamiento
-entre pares para depender solo de que ninguno cambie dos veces en el mismo
-bit~\cite{ecss50spw,parkes2012spw}. Proporciona enlaces punto a punto \textit{full-duplex}
-asíncronos de hasta 400~Mbps. Su pila incluye una capa de red que permite encaminar
-paquetes a través de \textit{routers} SpaceWire~\cite{ecss50spw,parkes2012spw}.
+La codificación \textit{Data-Strobe} (DS) supera esta limitación empleando dos líneas
+diferenciales: \textit{Data} transmite directamente el flujo de datos, mientras que
+\textit{Strobe} conmuta únicamente cuando el bit a transmitir es idéntico al anterior
+(permaneciendo constante si el dato cambia). De este modo, se garantiza exactamente una transición
+por periodo de bit entre ambas líneas. En recepción, el reloj se recupera de forma inmediata
+aplicando una operación XOR a ambas señales y el dato se muestrea directamente de la línea
+\textit{Data}, lo que elimina la necesidad de un alineamiento estricto de reloj y proporciona una
+alta tolerancia al desfase (\textit{skew}) entre pares~\cite{ecss50spw,parkes2012spw}. Proporciona
+enlaces punto a punto \textit{full-duplex} asíncronos de hasta 400~Mbps. Su pila incluye una capa de
+red que permite encaminar paquetes a través de \textit{routers} SpaceWire~\cite{ecss50spw,parkes2012spw}.
 
 \subsection{CAN}
 

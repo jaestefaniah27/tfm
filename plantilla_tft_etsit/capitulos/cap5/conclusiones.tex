@@ -19,8 +19,9 @@ a dato sin ningún error (sección~\ref{sec:verificacion_canal}), y catorce inst
 funcionan de forma simultánea sobre la placa.
 
 \textbf{El segundo objetivo, diseñar la arquitectura de transporte entre la lógica programable y
-el sistema de procesamiento, es el de mayor recorrido del trabajo y se ha cumplido con datos
-propios.} No se seleccionó una alternativa sobre el papel: se implementaron y midieron
+el sistema de procesamiento, es el de mayor recorrido del trabajo y se ha cumplido con la
+arquitectura MCDMA que gobierna los catorce canales del sistema final.} No se seleccionó una
+alternativa sobre el papel: se implementaron y midieron
 \textbf{tres arquitecturas completas} (AXI GPIO, catorce AXI DMA y un AXI MCDMA con puente VHDL
 propio) sobre el mismo transceptor y con el mismo programa de pruebas. La comparación es
 concluyente. La arquitectura de partida, basada en AXI GPIO, \textbf{interrumpe al procesador una

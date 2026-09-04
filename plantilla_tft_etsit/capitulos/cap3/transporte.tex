@@ -31,8 +31,10 @@ transporte y el driver \texttt{transceiver.c/h} que lo maneja.
 \end{table}
 
 Las tres son funcionales y arrancan sobre la misma placa con el mismo código de aplicación.
-El capítulo de resultados (sección~\ref{sec:resultados_benchmark}) recoge la comparativa
-cuantitativa; esta sección describe la construcción de cada una.
+Esta sección describe la construcción de cada una, con las cifras de coste que arroja, y cierra
+con la comparación que lleva a elegir la última. La comparativa cuantitativa completa, con
+\textit{throughput} y latencia, se recoge en el capítulo de resultados
+(sección~\ref{sec:resultados_benchmark}).
 
 % ---------------------------------------------------------------------------
 \subsection{Variante A --- AXI GPIO (referencia)}
@@ -46,7 +48,8 @@ configuración de protocolo) y un registro de lectura (dato recibido y banderas 
 INTC concentra las veintiocho fuentes de interrupción (RX y TX de cada canal) en una sola línea
 hacia el PS.
 
-Su virtud es la simplicidad: es la variante con menos lógica, no necesita ningún mapeo especial
+Su virtud es la simplicidad: es la variante con menos lógica (\textbf{6\,434 LUT}, un
+2,35\,\% del dispositivo, 460 LUT por canal), no necesita ningún mapeo especial
 de la MMU y no tiene que preocuparse por la coherencia de caché, porque todos los accesos son
 del propio procesador. Su defecto es estructural y no tiene arreglo dentro de esta
 arquitectura: \textbf{el procesador tiene que tocar cada byte}. En recepción, cada carácter
@@ -100,13 +103,11 @@ que alcanza, sino en el precio que paga por alcanzarlo. Replicar catorce veces e
 con dos recursos finitos del dispositivo:
 
 \textbf{El coste en lógica.} Catorce motores DMA completos ocupan \textbf{40\,217 LUT}
-(\textit{Look-Up Table}), un 14,7\,\% del dispositivo: 2,8 veces más lógica que la solución
-multicanal, para el mismo número de canales. La cifra por canal, 2\,873 LUT/canal frente a los 1\,014 del MCDMA, expresa
-directamente lo que cuesta replicar en vez de compartir. Ese coste condiciona además
-el endurecimiento futuro del diseño, porque una triplicación modular (TMR, \textit{Triple Modular
+(\textit{Look-Up Table}), un 14,7\,\% del dispositivo, esto es \textbf{2\,873 LUT por canal}: más
+de seis veces la huella por canal de la variante GPIO. Ese coste condiciona además el
+endurecimiento futuro del diseño, porque una triplicación modular (TMR, \textit{Triple Modular
 Redundancy}) de la lógica, que es la técnica habitual para tolerar los efectos de la radiación en
-órbita, multiplicaría por tres esa huella y la llevaría a cerca de la mitad del dispositivo,
-mientras que sobre la variante multicanal sigue siendo asumible.
+órbita, multiplicaría por tres esa huella y la llevaría a cerca de la mitad del dispositivo.
 
 \textbf{El límite de las interrupciones.} Cada \texttt{axi\_dma} expone dos líneas de
 interrupción, MM2S y S2MM. Catorce DMA son \textbf{veintiocho líneas}, y el PS solo ofrece ocho
@@ -315,6 +316,46 @@ Rearmar un canal de recepción consiste en borrar el campo de estado, volcar la 
 del descriptor y volver a escribir el puntero de cola: el motor lo relee y reanuda. La
 recepción entrega el paquete cuando el puente cierra el \texttt{TLAST}, no byte a byte, que es
 justamente el origen de la reducción de interrupciones.
+
+\subsubsection{Coste de la solución multicanal}
+
+Compartir un único motor entre los catorce canales deja la ocupación en \textbf{14\,191 LUT}, un
+5,18\,\% del dispositivo, \textbf{1\,014 LUT por canal}, y eso incluyendo lógica propia que las
+otras dos variantes no llevan: el puente de transmisión, las catorce FIFO de recepción con su
+árbitro y el bloque de fin de trama.
+
+En interrupciones bastan las \textbf{tres líneas} ya descritas, MM2S, S2MM y fin de trama, de las
+ocho que ofrece \texttt{pl\_ps\_irq0}. La ISR de recepción sigue teniendo que escanear registros de
+estado para saber qué canales han completado, pero los escanea sobre un solo motor, y quedan cinco
+líneas libres para futuras ampliaciones del diseño.
+
+El precio de compartir se paga en el sentido de transmisión: con un único canal MM2S, dos tareas
+que quieran escribir a la vez se turnan tras el \textit{mutex} del driver, y por eso
+\texttt{Transceiver\_Send} es bloqueante aquí y no en las otras dos variantes. Cuánto cuesta esa
+serialización se mide en la sección~\ref{sec:resultados_benchmark}.
+
+% ---------------------------------------------------------------------------
+\subsection{Comparación y elección de la arquitectura final}
+% ---------------------------------------------------------------------------
+
+Con las tres arquitecturas construidas y medidas sobre la misma placa, la elección se decide en
+dos ejes. En \textbf{coste de CPU} la variante GPIO queda descartada por sí sola: sus 1\,250
+interrupciones por kilobyte la mantienen en \textit{livelock} y su rendimiento no mejora al subir
+la velocidad de línea. Las dos variantes con DMA resuelven ese problema por igual, hasta 3
+interrupciones por kilobyte en transmisión, de modo que la diferencia entre ellas no está en lo
+que rinden sino en lo que cuestan.
+
+Ahí la comparación es concluyente. Replicar catorce motores cuesta \textbf{2,8 veces} la lógica de
+compartir uno solo, 2\,873 frente a 1\,014 LUT por canal para el mismo número de canales, y esa
+distancia se triplica en cuanto se plantee el endurecimiento por TMR: la variante DMA14 llevaría
+cerca de la mitad del dispositivo, mientras que la multicanal sigue siendo asumible. En
+interrupciones la diferencia no es de grado sino cualitativa, porque veintiocho líneas contra las
+ocho disponibles obligan a reducirlas por OR y a escanear catorce registros de estado en cada
+evento, mientras que tres líneas caben con holgura.
+
+La variante MCDMA se adopta por ello como \textbf{solución final}. A cambio hay que asumir la
+serialización de la transmisión y diseñar y verificar lógica propia en lugar de instanciar IP de
+terceros, que es a lo que se dedica el resto de esta sección.
 
 % ---------------------------------------------------------------------------
 \subsection{Verificación y depuración iterativa del driver} \label{sec:transporte_depuracion}

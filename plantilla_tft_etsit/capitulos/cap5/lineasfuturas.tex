@@ -1,44 +1,43 @@
 \section{Líneas futuras}
 
-De todo lo que el trabajo deja abierto, tres líneas destacan sobre las demás por ser las que
-condicionan que esta plataforma pueda llegar a volar.
+El trabajo deja abiertas varias tareas que continúan directamente lo desarrollado aquí, sobre la
+misma plataforma y sin cambiar sus decisiones de diseño.
 
-\textbf{Completar SpaceWire, desde la capa física hasta un controlador propio.} Es la única
-interfaz de las placas que no llegó a validarse. La tarjeta AOCS expone los dos enlaces con su
-señalización LVDS, sus repetidores y sus pares igualados en longitud, de modo que el trabajo
-pendiente está íntegramente en la lógica programable y el software: la codificación
-\textit{data-strobe}, la máquina de estados de establecimiento y recuperación del enlace, y los
-niveles de paquete y de red del estándar. El camino razonable es el mismo que siguió el transceptor
-serie de este trabajo: implementar el controlador desde cero en VHDL, verificarlo por simulación
-bloque a bloque y exponerlo al PS mediante el transporte MCDMA ya desarrollado, que admite canales
-adicionales sin rediseño. Es el paso más relevante a corto plazo, porque SpaceWire es el protocolo
-previsto para los enlaces de mayor ancho de banda del satélite.
+\textbf{Cerrar los pendientes detectados durante la validación.} Son correcciones acotadas y ya
+identificadas: invertir el valor por defecto de la señal \texttt{SLO} en el driver y renombrar la
+macro correspondiente, de modo que los tres buses arranquen a 4~Mbps en lugar de quedar limitados
+a los 250~kbps del modo lento; fabricar la revisión V2 de la placa AOCS, cuyo esquemático ya
+corrige el error de conexión del eje Z del bloque de motores, y repetir sobre ella la batería de
+pruebas eléctricas; y completar la medida de recepción de la variante DMA14 para cerrar la tabla
+comparativa, aunque la arquitectura ya se haya descartado por recursos.
+
+\textbf{Poner en servicio la interfaz SpaceWire sobre la capa física ya disponible.} Es la única
+interfaz de las placas que no llegó a validarse, y el hardware necesario está fabricado y medido:
+la tarjeta AOCS expone los dos enlaces con su señalización LVDS, sus repetidores y sus pares
+igualados en longitud. El trabajo pendiente queda íntegramente en la lógica programable y el
+software, y consiste en incorporar un controlador SpaceWire, propio o de terceros, y colgarlo del
+transporte MCDMA ya desarrollado, que admite canales adicionales sin rediseño. La verificación
+puede reutilizar el mismo esquema de este trabajo: simulación bloque a bloque y una campaña de
+pruebas en placa contra el enlace del otro conector.
+
+\textbf{Ampliar el driver y su campaña de pruebas a las condiciones de operación del satélite.}
+El driver actual se ha validado con tráfico continuo de diez segundos sobre buses conocidos. Los
+pasos siguientes son medir el comportamiento en ejecuciones largas, añadir el tratamiento y el
+recuento de errores de trama y de colisión que el bus RS-485 multipunto puede provocar en vuelo, y
+exponer esas estadísticas a la capa de software superior. Todo ello se apoya en la API de cinco
+funciones ya definida y no exige tocar el RTL.
 
 \textbf{Endurecer la variante MCDMA mediante triplicación modular (TMR).} La lógica programable
-comercial es susceptible a los efectos de la radiación en órbita, en particular a los
-\textit{single event upsets} (SEU), que alteran el contenido de los biestables y de la memoria de
-configuración. La técnica habitual de mitigación es la triplicación modular redundante: tres copias
-de la lógica y módulos votadores que enmascaran el fallo de cualquiera de ellas. La línea de
-trabajo concreta es replicar el proyecto de la variante MCDMA triplicando su lógica propia (el
-puente VHDL y los transceptores serie), incorporar los votadores necesarios y demostrar que el
-sistema sigue superando la misma campaña de treinta y seis comprobaciones. El presupuesto de área
-lo permite, y esa fue una de las razones de escoger esta arquitectura: triplicar el 5,2\,\% de
-ocupación del MCDMA mantiene el diseño en torno al 16\,\% del dispositivo, mientras que la misma
-operación sobre la variante DMA14 rondaría el 44\,\% y la haría inviable
+comercial es susceptible a los \textit{single event upsets} provocados por la radiación en órbita,
+y la mitigación habitual es triplicar la lógica e insertar módulos votadores. La tarea concreta es
+replicar el proyecto de la variante MCDMA triplicando su lógica propia, el puente VHDL y los
+transceptores serie, y comprobar que sigue superando la misma campaña de treinta y seis
+verificaciones. El presupuesto de área lo permite, y esa fue una de las razones de escoger esta
+arquitectura: triplicar el 5,2\,\% de ocupación del MCDMA mantiene el diseño en torno al 16\,\% del
+dispositivo, mientras que la misma operación sobre la variante DMA14 rondaría el 44\,\%
 (sección~\ref{sec:resultados_benchmark}).
 
-\textbf{Proteger la memoria de configuración de la lógica programable.} La triplicación cubre la
-lógica de usuario y deja fuera un punto que en una FPGA basada en SRAM es igual de sensible: la
-memoria de configuración. Un SEU en ella no corrompe un dato, sino el propio circuito
-implementado, y la triplicación no lo detecta porque las tres copias residen en el mismo
-dispositivo. El mecanismo estándar frente a esto es el \textit{scrubbing}, la reescritura
-periódica de la memoria de configuración a partir de una copia de referencia, que en el Zynq
-UltraScale+ puede gobernarse desde el PS. La línea de trabajo consiste en integrarlo sobre la
-variante MCDMA y medir dos cosas: cada cuánto puede refrescarse la configuración sin perturbar el
-tráfico de los canales, y qué parte del área queda cubierta.
-
-Fuera ya del alcance de una continuación inmediata queda la comparación sistemática de mecanismos
-de tolerancia a radiación sobre esta plataforma, que constituye un trabajo en sí mismo. La
-migración a memorias externas con código corrector o la evaluación de dispositivos tolerantes a
-radiación por construcción pertenecen a esa categoría y condicionan el diseño de la placa entera,
-no solo el de la lógica desarrollada aquí.
+Más allá de estas tareas, la calificación para vuelo del subsistema es un trabajo en sí mismo. La
+protección de la memoria de configuración mediante \textit{scrubbing}, la comparación sistemática
+de mecanismos de tolerancia a radiación o la migración a componentes con herencia de vuelo afectan
+al diseño de la placa entera, y no solo a la lógica desarrollada aquí.
