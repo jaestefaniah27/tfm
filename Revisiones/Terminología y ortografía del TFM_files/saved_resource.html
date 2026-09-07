@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<!-- saved from url=(0133)https://484059c2-f035-43cb-9eb5-ec37ca1e541f.frame.claudeusercontent.com/_f/1788794956-2d9e/?__frame_v=manifest.44244f2523adb29d.json -->
+<html class=" ocyfjthfb idc0_350"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><!-- frame-runtime --><script>window.__FRAME_PREAMBLE={"v":1,"capabilities":{"artifact":"artifact.DfA2To-s.js","assets":"assets.8Gk803W0.js","comments":"comments.hEoja5zd.js","db":"db.h-3sndFg.js","downloads":"downloads.th1YuAIk.js","embed":"embed.eqL6deQM.js","endpoints":"endpoints.CfzSv5nM.js","mcp":"mcp.Bvma3qD7.js","network":"network.B5UA9Su4.js","permissions":"permissions.BNySkLV5.js","room":"room.VSdFwTE9.js","sample":"sample.BW2Uysoh.js","self":"artifact.DfA2To-s.js","user":"user.BpKav-Rf.js"},"transforms":"_transforms.-IAc0qoT.js","comments":"_comments.C-AkolIB.js","translate":"_translate.5HCW4BJh.js","ldx":"_ldx.6JS5dhCp.js"}</script><script>(function(){"use strict";var le=["light","dark","system"],ue=/^[A-Za-z0-9_-]{1,64}$/,J=/^[a-zA-Z_:][a-zA-Z0-9_:.-]{0,127}$/,fe=new Set(["class","hidden","value","checked","style","title","alt","placeholder","lang","dir","role","tabindex","disabled","readonly","contenteditable","open","colspan","rowspan"]);function de(e){const t=e.toLowerCase();return t.startsWith("data-")||t.startsWith("aria-")||fe.has(t)}var We="http://www.w3.org/1999/xhtml",pe="http://www.w3.org/2000/svg",me=new Set(["script","style","iframe","noscript","noframes","noembed","xmp","plaintext","template","title","textarea","object","embed"]),he=new Set(["script","style"]);function _e(e){const t=e.localName.toLowerCase();return e.namespaceURI==="http://www.w3.org/1999/xhtml"?!me.has(t):e.namespaceURI===pe?!he.has(t):!1}function I(e,t){return e===t||(e===160||e===32)&&(t===160||t===32)}function ve(e,t){const r=e.length,n=t.length;let a=0;for(;a<r&&a<n&&I(e.charCodeAt(a),t.charCodeAt(a));)a++;let s=0;for(;s<r-a&&s<n-a&&I(e.charCodeAt(r-1-s),t.charCodeAt(n-1-s));)s++;return{p:a,s}}function ye(e,t){const r=e.firstChild;if(e.childNodes.length!==1||r===null||r.nodeType!==Node.TEXT_NODE){e.textContent=t;return}const n=r.data,a=n.length,s=t.length,{p:c,s:i}=ve(n,t);c===a&&i===0&&a===s||r.replaceData(c,a-c-i,t.slice(c,s-i));const p=r.data,f=e.ownerDocument.getSelection?.()??null,v=f!==null&&f.rangeCount>0&&(f.anchorNode===r||f.focusNode===r)?{anchor:f.anchorNode,anchorOffset:f.anchorOffset,focus:f.focusNode,focusOffset:f.focusOffset}:null;let d=-1,y=-1;for(let _=0;_<p.length&&_<t.length;_++){const E=p.charCodeAt(_),T=t.charCodeAt(_);E!==T&&I(E,T)&&(d<0&&(d=_),y=_)}const w=d>=0;if(w&&r.replaceData(d,y-d+1,t.slice(d,y+1)),w&&v!==null&&v.anchor!==null&&v.focus!==null)try{f.setBaseAndExtent(v.anchor,v.anchorOffset,v.focus,v.focusOffset)}catch{}}var we=new Set(["html","head","body","frameset"]);function be(e){return e.namespaceURI==="http://www.w3.org/1999/xhtml"&&we.has(e.localName)}function Ee(e){if(e===null||typeof e!="object")return!1;const t=e;if(typeof t.target!="string"||!ue.test(t.target)||t.text!==void 0&&typeof t.text!="string")return!1;if(t.attrsSet!==void 0){if(t.attrsSet===null||typeof t.attrsSet!="object")return!1;for(const[r,n]of Object.entries(t.attrsSet))if(!J.test(r)||typeof n!="string")return!1}if(t.attrsRemoved!==void 0){if(!Array.isArray(t.attrsRemoved))return!1;for(const r of t.attrsRemoved)if(typeof r!="string"||!J.test(r))return!1}return!0}function ge(e,t){if(e===null||typeof e!="object")return!1;const{seq:r,elements:n}=e;if(typeof r!="number"||!Number.isSafeInteger(r)||!Array.isArray(n)||n.length===0||n.length>64)return!1;for(let a=0;a<n.length;a++)if(!t(n[a]))return!1;return!0}function Ae(e){return e===null||typeof e!="object"?!1:ge(e.__frame_patch,Ee)}function Te(e){if(e===null||typeof e!="object")return!1;const t=e.__frame_init;return t!==null&&typeof t=="object"}function Re(e){return e!==null&&typeof e=="object"&&e.__frame_size_poke===!0}function Le(e){if(e===null||typeof e!="object")return!1;const t=e.__frame_theme;if(t===null||typeof t!="object")return!1;const r=t.theme;return typeof r=="string"&&le.includes(r)}var L=/^[\w.-]+\.js$/;function Se(e,t,r){return r?"inert":typeof t=="string"&&L.test(t)?e?[t]:"inert":e?"inert":"framed"}var Ke="frame_ldx_runtime",$e="script#an-form";function ke(){return{post(e,t){parent.postMessage(e,t)},on(e){const t=r=>{r.source===parent&&e(r.data,r.origin,r.isTrusted)};return addEventListener("message",t),()=>removeEventListener("message",t)}}}function Pe(){return{post:()=>{},on:()=>()=>{}}}var U="__frame_scroll",Oe=150,Ce=310,Me=160,je=3e4;function Ne(){let e=0,t=!1,r=!1,n=!1,a=0,s=null;const c=u=>{try{sessionStorage.setItem(U,JSON.stringify({y:u}))}catch{}},i=()=>{if(clearTimeout(e),s===null)return;const u=s;s=null,c(u)},p=()=>{if(t){t=!1;return}r=!0,s=scrollY,clearTimeout(e),e=setTimeout(i,Oe)};try{addEventListener("scroll",p,{passive:!0}),addEventListener("pagehide",i)}catch{}const f=()=>{let u;try{u=sessionStorage.getItem(U)}catch{return null}if(u===null)return null;let b;try{b=JSON.parse(u)}catch{b=null}const o=b?.y;if(!(typeof o=="number"&&Number.isFinite(o)&&o>=0)){try{sessionStorage.removeItem(U)}catch{}return null}return o};let v=!1;const d=u=>{try{const b=scrollY;scrollTo({top:u,left:0,behavior:"instant"}),a=u,n=!0,clearTimeout(e),s=null,c(u);const o=scrollY;o!==b&&(t=!0),o!==u&&!v&&(v=!0,addEventListener("load",()=>{try{if(scrollY===o){const m=f();d(m!==null?m:a)}}catch{}},{once:!0}))}catch{}},y=()=>{try{return!!location.hash}catch{return!0}};let w=!1;const _=()=>{try{if(w||innerWidth>Ce||innerHeight>Me)return;w=!0;const u=Date.now(),b=()=>{try{removeEventListener("resize",b)}catch{}if(Date.now()-u>je||r||y())return;const o=f();d(o!==null?o:a)};addEventListener("resize",b)}catch{}};let E=!1,T=!1;return{restore(){if(E||(E=!0,y()))return;const u=f();u!==null&&(d(u),_())},promoted(){if(T||(T=!0,y()))return;const u=f();u!==null?(d(u),_()):n&&d(a)}}}function Be(e,t,r,n){let a=null;try{a=window.trustedTypes?.createPolicy("frame-runtime",{createScriptURL:p=>p})??null}catch{}const s=window.Worker,c=s?.prototype,i=Object.freeze({Worker:s,workerOn:c?.addEventListener,workerPost:c?.postMessage,workerTerminate:c?.terminate,fetch:window.fetch.bind(window),preventDefault:Event.prototype.preventDefault,policy:a,origins:t});r(e).then(p=>p?.bootTopLevel?p.bootTopLevel(i,n):n.settle()).catch(()=>n.settle())}var qe="modulepreload",Xe=function(e){return"/"+e},Ye={},De=function(t,r,n){let a=Promise.resolve();function s(c){const i=new Event("vite:preloadError",{cancelable:!0});if(i.payload=c,window.dispatchEvent(i),!i.defaultPrevented)throw c}return a.then(c=>{for(const i of c||[])i.status==="rejected"&&s(i.reason);return t().catch(s)})},Ie=window===top,Q=Object.getOwnPropertyDescriptor(window,"claude"),C=Se(Ie,window.__FRAME_PREAMBLE?.topLevel,Q?.writable===!1),x=typeof C=="object"&&C[0],h=x?Pe():ke();(function(){const e=Object.defineProperty,t=globalThis,r=["RTCPeerConnection","webkitRTCPeerConnection","RTCDataChannel","RTCIceCandidate","RTCSessionDescription","RTCRtpSender","RTCRtpReceiver"];let n=0;for(let a=0;a<r.length;a++){const s=r[a];try{e(t,s,{value:void 0,writable:!1,configurable:!1})}catch{try{delete t[s]}catch{}try{e(t,s,{value:void 0,writable:!1,configurable:!0})}catch{}}typeof t[s]=="function"&&n++}if(n&&C==="framed")try{h.post({__frame_rtc_lockdown_failed:n},"*")}catch{}})();var Ue=1e4,xe=2e3,ee=Object.freeze([...window.__FRAME_PREAMBLE?.origins??["https://claude.ai","https://preview.claude.ai"]]);function te(e){for(const t of ee)if(t.endsWith(":*"))try{const r=new URL(e);if(`${r.protocol}//${r.hostname}:*`===t)return!0}catch{}else if(e===t)return!0;return!1}var M=Object.freeze({...window.__FRAME_PREAMBLE?.capabilities}),F=window.__FRAME_PREAMBLE?.transforms,z=window.__FRAME_PREAMBLE?.comments,H=window.__FRAME_PREAMBLE?.translate,W=window.__FRAME_PREAMBLE?.ldx;function S(e){return De(()=>import("/_runtime/"+e),void 0)}function re(e,t){return{contract:e.contract,changes:new Set(e.changes??[]),flags:new Set(e.flags??[]),capabilities:e.capabilities??{},capBudgets:e.capBudgets??{},transforms:new Map,shellOrigin:t,mount:q,hooks:N,pipe:()=>({wrap:(r,n)=>(...a)=>{try{return n(...a)}catch(s){return Promise.reject(s)}}})}}var j=null,A=null;function ne(e,t,r){try{Object.defineProperty(e,t,{value:r,writable:!1,configurable:!1,enumerable:!0})}catch{try{Object.defineProperty(e,t,{value:r,writable:!1,configurable:!0,enumerable:!0})}catch{}}}var K=!1,N={editBefore:null,edit:null};function Fe(e,t,r=!1){const n=[];let a;if(r)try{N.editBefore?.(e)}catch{}for(const s of e.elements){const c=document.querySelector(`[data-id="${s.target}"]`);if(!c){a=s.target;break}if([...Object.keys(s.attrsSet??{}),...s.attrsRemoved??[]].some(i=>!de(i))){a=s.target;break}if(s.text!==void 0&&(!_e(c)||be(c))){a=s.target;break}for(const[i,p]of Object.entries(s.attrsSet??{}))if(!se(c,i)){try{c.setAttribute(i,p)}catch{}oe(c,i,p)}for(const i of s.attrsRemoved??[])se(c,i)||(c.removeAttribute(i),oe(c,i,null));typeof s.text=="string"&&ye(c,s.text),n.push(s.target)}if(r)try{N.edit?.(e.seq,n,a)}catch{}if(a!==void 0){h.post({__frame_patch_miss:{seq:e.seq}},t);return}try{document.dispatchEvent(new CustomEvent("claude:edit",{detail:{seq:e.seq,targets:n}}))}catch{}}function oe(e,t,r){if(!(e instanceof HTMLInputElement))return;const n=t.toLowerCase();n==="checked"?e.checked=r!==null:n==="value"&&e.type!=="file"&&(e.value=r??"")}function se(e,t){const r=t.toLowerCase(),n=e;return r==="data-id"||(r==="value"||r==="checked")&&(n.__artifactSecret===!0||/^(password|hidden|file)$/.test(n.type??"")||/(^|\s)(cc-|one-time-code|current-password|new-password)/i.test(`${e.getAttribute("autocomplete")??""} ${n.autocomplete??""}`))}function ae(e){const t=document.documentElement;e==="light"||e==="dark"?(t.dataset.theme=e,t.style.colorScheme=e,K=!0):K&&(delete t.dataset.theme,t.style.colorScheme="",K=!1)}var B=new Map;function ze(){let e;const t={u:new Promise(r=>{e=r}),r:r=>{t.done=!0,e(r)},done:!1,nulled:!1};return t}function $(){for(const e of B.values())e.done||(e.nulled=!0,e.r(null))}var He=Object.freeze(Object.assign(Object.create(null),{call:Function.prototype.call,apply:Function.prototype.apply,bind:Function.prototype.bind})),q=(e,t)=>{const r=B.get(e);if(!r||r.done){r?.nulled&&A&&h.post({__frame_cap_telemetry:{kind:"cap-load-error",cap:e}},A);return}const n=typeof t=="function"?Object.setPrototypeOf(t,He):Object.assign(Object.create(null),t);typeof n.then=="function"&&delete n.then,r.r(Object.freeze(n))};function ie(){const e=Q?.value??{};ne(window,"claude",e);for(const t of Object.keys(M)){if(e[t]!==void 0){ne(e,t,e[t]);continue}B.set(t,ze())}if(e.use===void 0){const t=r=>{if(typeof r!="string"||!Object.hasOwn(M,r))return Promise.resolve(null);const n=B.get(r);return n?n.u:Promise.resolve(e[r]??null)};try{Object.defineProperty(e,"use",{value:t,writable:!0,configurable:!0,enumerable:!1})}catch{}}}if(C==="framed"){const e=F&&L.test(F)?S(F).catch(()=>{}):Promise.resolve(void 0),t=o=>{if(o.type==="auxclick"&&o.button!==1)return;const m=o.target,k=m&&m.closest?m.closest("a[href],area[href]"):null;if(!k)return;const O=k.getAttribute("href");if(!O)return;let R;try{R=new URL(O,document.baseURI)}catch{return}if((R.protocol==="http:"||R.protocol==="https:")&&R.origin!==location.origin){o.preventDefault();const P=(k.getAttribute("target")??"").toLowerCase(),g=o.type==="auxclick"||o.metaKey||o.ctrlKey||o.shiftKey||o.altKey||!["","_self","_top","_parent"].includes(P);h.post({__frame_nav:!0,url:R.href,newTab:g},"*")}};addEventListener("click",t,!0),addEventListener("auxclick",t,!0);const r={},n=o=>{o.isTrusted&&(r.pointer=!0)},a=o=>{o.isTrusted&&(r.click=!0)};addEventListener("pointermove",n,{capture:!0,passive:!0}),addEventListener("click",a,{capture:!0,passive:!0});const s={cb:null};addEventListener("keydown",o=>s.cb?.(o),!0),e.then(o=>o?.installEscapeForward?.(s,m=>{A&&h.post(m,A)})),e.then(o=>{o?.wireNav&&(o.wireNav(),removeEventListener("click",t,!0),removeEventListener("auxclick",t,!0),removeEventListener("pointermove",n,!0),removeEventListener("click",a,!0),o.wireEngagement?.(r))});let c=null;try{c=Ne()}catch{}ie();let i=null,p=null,f=0;const v=h.on((o,m)=>{te(m)&&Te(o)&&(i=o.__frame_init,A=m,v(),clearTimeout(f),p?.())});h.post({__frame_connect:!0},"*");const d=setTimeout,y=clearTimeout;let w=0;const _=()=>{try{h.post({__frame_alive:!0},"*")}catch{}w=d(_,xe)},E=()=>y(w);_(),addEventListener("load",E,{once:!0});const T=new Promise(o=>{p=o,f=setTimeout(()=>{v(),o()},Ue)}),u=document.readyState==="loading"?new Promise(o=>document.addEventListener("DOMContentLoaded",()=>o(),{once:!0})):Promise.resolve();u.then(()=>{try{c?.restore()}catch{}});const b={cb:null};h.on((o,m)=>{if(te(m)&&Re(o)){try{c?.promoted()}catch{}b.cb?.()}}),T.then(async()=>{if(!i||!A){$();return}ae(i.theme);const o=A;let m=!1,k=!1;h.on((l,Y,D)=>{if(Y!==o)return;Le(l)&&ae(l.__frame_theme.theme),Ae(l)&&Fe(l.__frame_patch,o,D);const G=l?.__fc_mode;G&&typeof G=="object"&&!m&&z&&L.test(z)&&(m=!0,S(z).then(Z=>Z.install?.(o,G.on===!0)).catch(()=>{}));const V=l?.__ft_cmd;V&&typeof V=="object"&&!k&&H&&L.test(H)&&(k=!0,S(H).then(Z=>Z.install?.(o,V)).catch(()=>{}))});const O=Object.keys(i.capabilities??{}).filter(l=>Object.hasOwn(M,l)).map(l=>[l,M[l]]).filter(l=>typeof l[1]=="string"&&L.test(l[1])),R=await Promise.allSettled(O.map(([,l])=>S(l))),P=await e,g=A;if(P?.buildBoot||h.post({__frame_cap_telemetry:{kind:"cap-load-error",cap:"_transforms"}},g),P?.buildBoot)try{j=P.buildBoot(i,P.TRANSFORMS??{},{shellOrigin:g,mount:q,hooks:N},l=>h.post({__frame_cap_telemetry:l},g))}catch{h.post({__frame_cap_telemetry:{kind:"cap-load-error",cap:"_transforms"}},g),j=re(i,g)}else j=re(i,g);const X=l=>h.post({__frame_cap_telemetry:{kind:"cap-load-error",cap:l}},g),ce=j;R.forEach((l,Y)=>{const D=O[Y][0];if(l.status!=="fulfilled"){X(D);return}try{l.value?.install?.(ce)}catch{X(D)}}),$(),await u,E(),h.post({__frame_ready:!0},A),e.then(l=>l?.installSizeReporter?.(g,b)),ce.flags.has("frame_ldx_runtime")&&W&&L.test(W)&&document.querySelector("script#an-form")&&S(W).then(l=>l?.boot?.()).catch(()=>!1).then(l=>{l!==!0&&X("_ldx")})})}else x&&(ie(),Be(x,ee,S,{settle:$,mount:q}))})();</script><!-- /frame-runtime --><meta name="viewport" content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found]){display:none!important}</style></head><body>
+<title>Terminología y ortografía del TFM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+<link rel="stylesheet" href="./css2">
+<style>
+:root{
+  --paper:#F2F4F0; --surface:#FBFCFA; --sunk:#E9ECE6;
+  --ink:#141A1C; --muted:#5A6669; --faint:#7E8A8B;
+  --rule:#D4D9D2; --rule-strong:#B6BFB8;
+  --accent:#0E6B72; --accent-soft:#D9E8E7;
+  --amber:#916310; --amber-soft:#F0E6CE;
+  --oxide:#8C3729; --oxide-soft:#F1DFDA;
+  --ok:#3C6B45; --ok-soft:#DEE9DD;
+  --shadow:0 1px 2px rgba(20,26,28,.05);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#0E1315; --surface:#161D1F; --sunk:#1B2325;
+  --ink:#E3E9E7; --muted:#94A3A3; --faint:#758384;
+  --rule:#26312F; --rule-strong:#394644;
+  --accent:#57BDC2; --accent-soft:#12312F;
+  --amber:#D6A651; --amber-soft:#2E2618;
+  --oxide:#DB8571; --oxide-soft:#33201B;
+  --ok:#8DBE93; --ok-soft:#1B2A1E;
+  --shadow:0 1px 2px rgba(0,0,0,.3);
+}}
+:root[data-theme="dark"]{
+  --paper:#0E1315; --surface:#161D1F; --sunk:#1B2325;
+  --ink:#E3E9E7; --muted:#94A3A3; --faint:#758384;
+  --rule:#26312F; --rule-strong:#394644;
+  --accent:#57BDC2; --accent-soft:#12312F;
+  --amber:#D6A651; --amber-soft:#2E2618;
+  --oxide:#DB8571; --oxide-soft:#33201B;
+  --ok:#8DBE93; --ok-soft:#1B2A1E;
+  --shadow:0 1px 2px rgba(0,0,0,.3);
+}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);
+  font-family:"IBM Plex Serif",Georgia,serif;font-size:17px;line-height:1.6;
+  -webkit-font-smoothing:antialiased}
+.wrap{max-width:860px;margin:0 auto;padding:0 28px 96px}
+p{margin:0 0 1em}
+
+header.head{padding:60px 0 30px;border-bottom:1px solid var(--rule-strong)}
+.eyebrow{font-family:"IBM Plex Sans Condensed",system-ui,sans-serif;font-weight:600;font-size:12px;
+  letter-spacing:.13em;text-transform:uppercase;color:var(--accent);margin:0 0 16px}
+h1{font-family:"IBM Plex Sans",system-ui,sans-serif;font-weight:700;
+  font-size:clamp(32px,5vw,48px);line-height:1.06;letter-spacing:-.022em;margin:0 0 18px;text-wrap:balance}
+.stand{font-size:18.5px;line-height:1.55;color:var(--muted);max-width:62ch;margin:0 0 22px}
+.stand strong{color:var(--ink);font-weight:500}
+.legend{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12.5px;color:var(--faint);line-height:1.9}
+.legend b{color:var(--muted);font-weight:500}
+
+h2.block{font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:15px;font-weight:600;
+  letter-spacing:.02em;text-transform:none;margin:52px 0 6px;padding-bottom:8px;
+  border-bottom:2px solid var(--ink);display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+h2.block span{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;font-weight:400;color:var(--faint)}
+.block-lead{font-size:16px;color:var(--muted);margin:14px 0 4px;max-width:64ch}
+
+/* item */
+.item{border-bottom:1px solid var(--rule);padding:24px 0}
+.item-h{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.tag{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;font-weight:600;
+  padding:3px 8px;border-radius:2px;white-space:nowrap}
+.tag.crit{background:var(--oxide-soft);color:var(--oxide)}
+.tag.warn{background:var(--amber-soft);color:var(--amber)}
+.tag.info{background:var(--accent-soft);color:var(--accent)}
+.tag.ok{background:var(--ok-soft);color:var(--ok)}
+.where{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12.5px;color:var(--faint)}
+.where b{color:var(--muted);font-weight:500}
+.item h3{font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:19px;font-weight:600;
+  letter-spacing:-.012em;line-height:1.28;margin:0 0 12px;flex-basis:100%;text-wrap:balance}
+.orig{background:var(--sunk);border-left:3px solid var(--rule-strong);padding:11px 16px;
+  margin:0 0 14px;font-style:italic;color:var(--muted);font-size:15.5px;line-height:1.5}
+.orig:before{content:"Original · ";font-style:normal;font-family:"IBM Plex Sans Condensed",system-ui,sans-serif;
+  font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}
+.prop{border-left:3px solid var(--accent);background:var(--accent-soft);padding:11px 16px;
+  margin:14px 0 0;font-size:15.5px;line-height:1.5}
+.prop:before{content:"Propuesta · ";font-family:"IBM Plex Sans Condensed",system-ui,sans-serif;
+  font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.item p{font-size:16px;margin:0 0 .8em}
+.item p:last-of-type{margin-bottom:0}
+code{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.86em;
+  background:var(--sunk);padding:1px 5px;border-radius:2px}
+
+/* tabla */
+.tbl-wrap{overflow-x:auto;margin:18px 0;border:1px solid var(--rule);background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14px}
+caption{font-family:"IBM Plex Sans Condensed",system-ui,sans-serif;font-size:11px;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--faint);text-align:left;padding:14px 18px 8px}
+th,td{padding:6px 18px;text-align:left;border-top:1px solid var(--rule)}
+thead th{font-family:"IBM Plex Sans Condensed",system-ui,sans-serif;font-weight:600;font-size:11px;
+  letter-spacing:.07em;text-transform:uppercase;color:var(--faint);border-top:none}
+td.n,th.n{font-family:"IBM Plex Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums;
+  text-align:right;white-space:nowrap}
+tbody tr:last-child td{padding-bottom:12px}
+.hi{color:var(--oxide);font-weight:500}
+.dim{color:var(--faint)}
+
+/* lista compacta */
+ul.compact{list-style:none;margin:8px 0 0;padding:0}
+ul.compact li{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start;
+  padding:0 0 11px;font-size:15.5px;line-height:1.5}
+.loc{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11.5px;line-height:1.6;
+  padding:2px 7px;border-radius:2px;white-space:nowrap;margin-top:2px;
+  background:var(--sunk);color:var(--muted);border:1px solid var(--rule)}
+ul.compact q{font-style:italic;color:var(--muted)}
+q:before{content:"\201C"}q:after{content:"\201D"}
+
+.closer{margin-top:56px;border-top:2px solid var(--ink);padding-top:28px;font-size:16px;color:var(--muted)}
+.closer h2{font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:20px;font-weight:600;
+  color:var(--ink);letter-spacing:-.015em;margin:0 0 14px}
+.closer strong{color:var(--ink);font-weight:500}
+
+@media (max-width:620px){
+  body{font-size:16px}
+  .wrap{padding:0 18px 64px}
+  ul.compact li{grid-template-columns:1fr;gap:5px}
+  .loc{justify-self:start}
+  th,td,caption{padding-left:14px;padding-right:14px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+<style>
+/* añadidos de esta pasada */
+.dec{overflow-x:auto;margin:18px 0;border:1px solid var(--rule);background:var(--surface)}
+.dec table{font-size:14px}
+.dec td.adopt{font-family:"IBM Plex Mono",ui-monospace,monospace;font-weight:600;color:var(--ok);white-space:nowrap}
+.dec td.drop{font-family:"IBM Plex Mono",ui-monospace,monospace;color:var(--oxide);white-space:nowrap}
+.dec td.pgs{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;color:var(--faint);line-height:1.5}
+.dec td.why{color:var(--muted);font-size:13.5px;line-height:1.45}
+.note{border-left:3px solid var(--rule-strong);padding:0 0 0 16px;color:var(--muted);font-size:15.5px;margin:16px 0}
+.mini{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12.5px;color:var(--faint)}
+.pill{display:inline-block;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11.5px;
+  padding:2px 7px;border-radius:2px;background:var(--sunk);color:var(--muted);border:1px solid var(--rule);margin:0 4px 4px 0}
+</style>
+
+<div class="wrap">
+
+<header class="head">
+  <p class="eyebrow">Pasada 2 · Ortografía y terminología</p>
+  <h1>Terminología y ortografía del TFM</h1>
+  <p class="stand">Casi todo esto se aplica con buscar-y-reemplazar. <strong>Las cursivas y las comillas están comprobadas en las fuentes del PDF, no supuestas</strong>: sé exactamente qué palabra va en CMTI y cuál en redonda, así que las cifras de abajo son medidas, no impresiones.</p>
+  <p class="legend">
+    <b>Localización</b> · «p. 45» es el folio impreso; la página del visor es folio + 17.<br>
+    <b>Alcance</b> · quedan fuera los listados de código, los volcados de terminal, los rótulos de esquemático y la bibliografía, donde el inglés y las erratas del propio log son legítimos.<br>
+    <b>Retirado</b> · Álvaro Araujo sin tilde, por indicación tuya.
+  </p>
+</header>
+
+<!-- =============== A =============== -->
+<h2 class="block">A · Tabla de decisiones terminológicas<span>10 decisiones</span></h2>
+<p class="block-lead">Ninguna de estas variantes es un error: el problema es que conviven. La columna «adoptar» es mi recomendación, casi siempre la mayoritaria, para minimizar los cambios. La última columna dice dónde están las que hay que tocar.</p>
+
+<div class="dec">
+  <table>
+    <caption>Formas conviviendo · recuento sobre el cuerpo del documento</caption>
+    <thead><tr><th>Adoptar</th><th>Sustituir</th><th class="n">Cambios</th><th>Páginas afectadas</th><th>Por qué</th></tr></thead>
+    <tbody>
+      <tr><td class="adopt">RS422 · RS485</td><td class="drop">RS-422 · RS-485</td><td class="n">27</td>
+        <td class="pgs">39×2, 40×2, 62, 67, 68, 83×5, 85, 87×5, 89×3, 91, 92×3, 101×2</td>
+        <td class="why">132 sin guion frente a 27 con guion, y las Palabras Clave ya van sin guion. Conviven incluso en la tabla 4.9.</td></tr>
+      <tr><td class="adopt">transceptor</td><td class="drop">transceiver</td><td class="n">15</td>
+        <td class="pgs">34×6, 54×2, 57, 61</td>
+        <td class="why">129 frente a 15. Uno de los 15 es el título del apartado 3.3.1, «Generación de <i>transceivers</i> con TCL».</td></tr>
+      <tr><td class="adopt">baudios · Mbaudios</td><td class="drop">kbps · Mbps</td><td class="n">~32</td>
+        <td class="pgs">84×6, 85×12, 86×7, 89×4, 90×2 <span class="dim">(salvo citas del datasheet)</span></td>
+        <td class="why">El §4.3.2 mide en baudios y el §4.3.3 lo mismo en Mbps; la p. 86 usa las dos, y las conclusiones alternan. Excepción legítima: los límites del LTC2865 (250 kbps, 20 Mbps) van como los da la hoja de características.</td></tr>
+      <tr><td class="adopt">BOOT.BIN</td><td class="drop">BOOT.bin</td><td class="n">9</td>
+        <td class="pgs">15, 16, 17, 18×2, 21, 55, 66</td>
+        <td class="why">Es el nombre real del fichero en la FAT. Ahora 4 en mayúsculas y 9 en minúsculas.</td></tr>
+      <tr><td class="adopt">Data-Strobe</td><td class="drop">data-strobe</td><td class="n">2</td>
+        <td class="pgs">56, 90</td>
+        <td class="why">Es como lo escribe el estándar ECSS.</td></tr>
+      <tr><td class="adopt">half-duplex</td><td class="drop">Half-Duplex</td><td class="n">5</td>
+        <td class="pgs">44×4, 45</td>
+        <td class="why">Minúscula en prosa. Excepción: cuando nombras el jumper <code>H/F</code> del THVD1424, ahí va como lo serigrafía el fabricante.</td></tr>
+      <tr><td class="adopt">NewSpace</td><td class="drop">New Space</td><td class="n">1</td>
+        <td class="pgs">38</td><td class="why">3 frente a 1.</td></tr>
+      <tr><td class="adopt">AMD <span class="dim">(declarando el cambio)</span></td><td class="drop">Xilinx suelto</td><td class="n">—</td>
+        <td class="pgs">Xilinx: 5, 6×2, 12, 15, 17, 18×2, 31, 61, 100 · AMD: 5, 6, 15</td>
+        <td class="why">Se alternan sin criterio. Basta una frase en §2.2 («Xilinx, hoy AMD; en adelante AMD») y luego una sola forma. Los nombres de IP y las guías (<code>axi_dma</code>, PG021) se quedan como los publica el fabricante, y la bibliografía como esté en la fuente.</td></tr>
+      <tr><td class="adopt">«Consultado en»</td><td class="drop">«Recuperado el»</td><td class="n">2</td>
+        <td class="pgs">92×2 <span class="dim">(bibliografía)</span></td><td class="why">4 frente a 2, en el mismo <code>.bib</code>.</td></tr>
+      <tr><td class="adopt">una sola grafía de LINCE</td><td class="drop">tres grafías</td><td class="n">2</td>
+        <td class="pgs">1, 5, lista de acrónimos</td>
+        <td class="why">«Línea de <b>IN</b>dustrialización de <b>C</b>argas de pago y plataformas <b>E</b>spaciales» (p. 1), «Línea de industrialización de cargas de pago y plataformas espaciales» (p. 5 y lista). Las mayúsculas que explican el acrónimo están bien, pero entonces van en las tres.</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- =============== B =============== -->
+<h2 class="block">B · Cursivas<span>comprobadas en las fuentes del PDF</span></h2>
+<p class="block-lead">He separado el texto por familia tipográfica: CMTI/CMBXTI es cursiva, CMR es redonda, CMTT es código y queda fuera. 554 fragmentos en cursiva en 96 páginas.</p>
+
+<div class="item">
+  <div class="item-h"><span class="tag ok">buena noticia</span>
+    <h3>El criterio existe y en su mayor parte está bien aplicado</h3></div>
+  <p>36 extranjerismos van <b>siempre</b> en cursiva y nunca en redonda: <i>bitstream</i> (25), <i>loopback</i> (23), <i>throughput</i> (17), <i>testbench</i> (14), <i>jumper</i>/<i>jumpers</i> (22), <i>worker</i> (9), <i>ring</i> (8), <i>half-duplex</i> (6), <i>master/slave</i> (6), <i>stencil</i> (5), <i>toolchain</i> (4), <i>duty cycle</i>, <i>handshake</i>, <i>skew</i>, <i>preset</i>, <i>wizard</i>, <i>scoreboard</i>, <i>multi-drop</i>, <i>polling</i>, <i>store-and-forward</i>, <i>datasheet</i>, <i>rad-hard</i>, <i>wired-AND</i>… Eso es una política, no una casualidad.</p>
+  <p>Y hay una segunda política implícita, también defendible: <b>cursiva en la primera aparición, redonda después</b>, aplicada a las palabras ya asentadas en castellano — <i>driver</i> (5 cursivas de 151), <i>hardware</i> (4 de 70), <i>firmware</i> (3 de 22).</p>
+  <div class="prop">Declararla. Una frase en §1.4 o en la lista de acrónimos: «Los términos ingleses sin equivalente asentado se marcan en cursiva; los ya incorporados al uso técnico (<i>hardware</i>, <i>software</i>, <i>driver</i>, <i>firmware</i>) se marcan solo en su primera aparición». Con eso, lo que ahora parece descuido pasa a ser criterio, y solo hay que corregir los casos de abajo.<p></p>
+</div>
+
+<div class="item">
+  <div class="item-h"><span class="tag warn">corregir</span>
+    <h3>Siete términos cambian de estilo dentro de la misma página</h3></div>
+  <p>Estos no encajan ni en la política de «siempre cursiva» ni en la de «solo la primera vez», porque el mismo término aparece de las dos formas en la misma página:</p>
+  <ul class="compact">
+    <li><span class="loc">p. 81</span><span><i>frames</i> en cursiva dos veces y en redonda dos veces, <b>en la misma página</b>; <i>frame</i>, en cursiva en la p. 79 y en redonda en las pp. 68 y 81.</span></li>
+    <li><span class="loc">pp. 12, 13, 59, 63</span><span><i>stream</i>: 12 cursivas y 21 redondas, mezcladas en las cuatro páginas.</span></li>
+    <li><span class="loc">pp. 13, 63, 64</span><span><i>buffer</i>: 23 cursivas y 9 redondas; las nueve redondas caen en páginas que también lo llevan en cursiva.</span></li>
+    <li><span class="loc">p. 85</span><span><i>slew rate</i>: 10 cursivas y 2 redondas, y la p. 85 tiene una de cada.</span></li>
+    <li><span class="loc">p. 3</span><span><i>sprint</i> y <i>backlog</i>: en cursiva en la p. 2 y en las dos formas dentro de la p. 3.</span></li>
+    <li><span class="loc">p. 9</span><span><i>full-duplex</i>: cursiva en las pp. 8, 10, 44 y 49; redonda solo en la p. 9.</span></li>
+    <li><span class="loc">—</span><span><i>software</i> nunca va en cursiva (39 apariciones) mientras que <i>hardware</i> sí lo hace cuatro veces. Van en pareja o no van.</span></li>
+  </ul>
+  <div class="note"><b>Falso positivo que no hay que tocar:</b> <i>livelock</i>, <i>benchmark</i> y <i>routers</i> aparecen en redonda en las pp. 92–93, pero eso es la bibliografía —títulos de Mogul y Ramakrishnan, de Dhrystone y del estándar SpaceWire— y ahí van como en el original.</div>
+</div>
+
+<!-- =============== C =============== -->
+<h2 class="block">C · Comillas<span>1 punto, 6 apariciones</span></h2>
+
+<div class="item">
+  <div class="item-h"><span class="tag crit">crítico</span>
+    <span class="where"><b>p. 66</b> · pdf 83 &nbsp;|&nbsp; <b>p. 85</b> · pdf 102 (×2) &nbsp;|&nbsp; <b>p. 89</b> · pdf 106</span>
+    <h3>Las comillas del documento no son comillas: son los símbolos matemáticos ≪ y ≫</h3></div>
+  <p>Las seis comillas angulares del TFM están compuestas con la fuente <b>CMSY6</b> —Computer Modern Symbol a 6 puntos—, es decir, con <code>$\ll$</code> y <code>$\gg$</code>, los operadores «mucho menor que» y «mucho mayor que». No son <code>«</code> ni <code>»</code>. Se ven más pequeñas, con el espaciado de un operador matemático a los dos lados, y al copiar el PDF salen como U+226A y U+226B, no como comillas.</p>
+  <p>No hay ninguna otra comilla en el documento: cero <code>« »</code>, cero <code>“ ”</code>. Las seis son estas.</p>
+  <ul class="compact">
+    <li><span class="loc">p. 66</span><span>el estado de <q>FIFO vacía</q> · se manifestaba como <q>todo el tráfico acaba en el canal cero</q></span></li>
+    <li><span class="loc">p. 85</span><span>distinguir <q>el transporte no llegó a transmitir</q> de <q>el bus corrompió los bytes</q> · y la cita del datasheet del LTC2865</span></li>
+    <li><span class="loc">p. 89</span><span>la macro se llama <q>SLO desactivado</q></span></li>
+  </ul>
+  <div class="prop">Con <code>babel</code> en español y codificación T1, escribir <code>«…»</code> directamente, o usar <code>\enquote{}</code> de <code>csquotes</code>, que además elige el nivel de anidamiento. La cita del LTC2865 de la p. 85 es un caso aparte: son tres líneas en inglés de una fuente citada, y gana como <code>quote</code> sangrado (o <code>quotation</code>), sin comillas, con la referencia [23] al final.</div>
+</div>
+
+<!-- =============== D =============== -->
+<h2 class="block">D · Números y unidades<span>4 puntos</span></h2>
+
+<div class="item">
+  <div class="item-h"><span class="tag info">corregir</span>
+    <span class="where"><b>pp. 22, 88, 90</b></span>
+    <h3>Tres números usan el punto como separador de millares; los otros 140 usan espacio fino</h3></div>
+  <ul class="compact">
+    <li><span class="loc">p. 22</span><span><q>desde 50 hasta <b>4.000.000</b> baudios</q> → 4 000 000</span></li>
+    <li><span class="loc">p. 88</span><span><q>velocidad entre 50 y <b>4.000.000</b> de baudios</q> → 4 000 000</span></li>
+    <li><span class="loc">p. 90</span><span><q>el trabajo ha producido <b>20.188</b> líneas de código</q> → 20 188</span></li>
+  </ul>
+  <div class="prop">Espacio fino en los tres (<code>\,</code> o <code>siunitx</code>). El resto del documento ya lo hace bien: 140 apariciones con espacio fino, 81 decimales con coma. Es el criterio del SI y el que pide la RAE.</div>
+</div>
+
+<div class="item">
+  <div class="item-h"><span class="tag info">corregir</span>
+    <span class="where"><b>p. 100</b> · tabla 5.1 &nbsp;|&nbsp; <b>p. 43</b> · figura 3.8</span>
+    <h3>Dos porcentajes van pegados al número, contra 39 que llevan espacio</h3></div>
+  <p>En la tabla del presupuesto conviven <q>15 %</q> y <q><b>6%</b></q> en filas consecutivas. En la figura 3.8, <q>η ≥<b>96%</b></q>.</p>
+  <div class="prop">Espacio fino antes del signo, como el resto. Es el uso correcto en español y en el SI.</div>
+</div>
+
+<div class="item">
+  <div class="item-h"><span class="tag warn">verificar</span>
+    <span class="where"><b>p. 80</b> · tablas 4.6 y 4.5</span>
+    <h3>Las cabeceras de la tabla 4.6 escriben las velocidades sin separador</h3></div>
+  <p><code>115200 · 230400 · 460800 · 921600 · 1M · 2M · 4M</code>, mientras que la prosa de la misma página escribe «115 200». Y dentro de la propia cabecera se mezclan dos notaciones: cifras completas para las cuatro primeras y sufijo M para las tres últimas.</p>
+  <div class="prop">Unificar a espacio fino, o dejar la cabecera compacta y decir en el pie que las velocidades están en baudios. Lo que no conviene es tener las dos notaciones dentro de la misma fila.</div>
+</div>
+
+<div class="item">
+  <div class="item-h"><span class="tag info">corregir</span>
+    <h3>Espacio fino no separable en las magnitudes</h3></div>
+  <p>Repasar que todas van con <code>\,</code> y ninguna se parte al final de línea: <span class="pill">1,8 V</span><span class="pill">120 Ω</span><span class="pill">100 µs</span><span class="pill">460 kbps</span><span class="pill">3,52 W</span><span class="pill">32 bits</span><span class="pill">4,7 nF</span><span class="pill">±2 %</span><span class="pill">120 ppm</span>. Con <code>siunitx</code> (<code>\SI{1,8}{\volt}</code>) sale solo y de paso unifica el decimal.</p>
+</div>
+
+<!-- =============== E =============== -->
+<h2 class="block">E · Lista de acrónimos<span>23 ausencias + 1 sobrante</span></h2>
+<p class="block-lead">La lista tiene 78 entradas y está bien hecha. Faltan estas, ordenadas por número de usos en el cuerpo. La columna «1.ª vez» es dónde habría que definirla también en el texto.</p>
+<div class="tbl-wrap">
+  <table>
+    <thead><tr><th>Sigla</th><th class="n">Usos</th><th class="n">1.ª vez</th><th>Desarrollo propuesto</th></tr></thead>
+    <tbody>
+      <tr><td class="form">TDEST</td><td class="n">20</td><td class="n">p. 11</td><td class="dim">Transfer Destination — señal de AXI4-Stream que identifica el canal de destino.</td></tr>
+      <tr><td class="form">TLAST</td><td class="n">13</td><td class="n">p. 11</td><td class="dim">Transfer Last — marca de fin de paquete en AXI4-Stream.</td></tr>
+      <tr><td class="form">BER</td><td class="n">8</td><td class="n">p. 84</td><td class="dim">Está en la lista, pero se usa 8 veces sin volver a definirse; conviene desarrollarla también en su primera aparición del capítulo 4.</td></tr>
+      <tr><td class="form">RTL</td><td class="n">5</td><td class="n">p. 4</td><td class="dim">Register Transfer Level — nivel de descripción del hardware. Aparece ya en el título del anexo C.</td></tr>
+      <tr><td class="form">TVALID / TREADY</td><td class="n">5 / 5</td><td class="n">p. 11</td><td class="dim">Definidas en una nota al pie de la p. 11, pero no en la lista.</td></tr>
+      <tr><td class="form">SPW</td><td class="n">5</td><td class="n">p. 39</td><td class="dim">Abreviatura de SpaceWire usada en el rutado y en los esquemáticos.</td></tr>
+      <tr><td class="form">HPC</td><td class="n">3</td><td class="n">p. 6</td><td class="dim">High Pin Count — variante del conector FMC. Se define en el texto pero no en la lista.</td></tr>
+      <tr><td class="form">HP</td><td class="n">3</td><td class="n">p. 11</td><td class="dim">High Performance — puertos AXI del PS. Se confunde fácilmente con HPC y en el documento aparecen a dos páginas de distancia.</td></tr>
+      <tr><td class="form">BIF</td><td class="n">3</td><td class="n">p. 17</td><td class="dim">Boot Image Format — fichero que describe el orden de la imagen de arranque.</td></tr>
+      <tr><td class="form">SMP</td><td class="n">2</td><td class="n">p. 15</td><td class="dim">Symmetric Multiprocessing — multiprocesamiento simétrico.</td></tr>
+      <tr><td class="form">SAR</td><td class="n">2</td><td class="n">p. 43</td><td class="dim">Successive Approximation Register — arquitectura del ADC ADS7950.</td></tr>
+      <tr><td class="form">TVS</td><td class="n">2</td><td class="n">p. 40</td><td class="dim">Está en la lista; solo falta desarrollarla en su primera aparición.</td></tr>
+      <tr><td class="form">WNS</td><td class="n">2</td><td class="n">p. 77</td><td class="dim">Ídem: en la lista, sin desarrollar en la tabla 4.1 donde es una columna.</td></tr>
+      <tr><td class="form">SG</td><td class="n">2</td><td class="n">p. 12</td><td class="dim">Ídem.</td></tr>
+      <tr><td class="form">RSB · EMC · LDO · CRC · IDE · GUI · QEMU · PYMES · MMIO</td><td class="n">1 c/u</td><td class="n">15–96</td><td class="dim">Un uso cada una. O se desarrollan en el sitio, o se sustituyen por su nombre completo y desaparece el problema.</td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="note"><b>Y al revés:</b> <b>SLO</b> está en la lista de acrónimos y no es un acrónimo — la entrada dice «Pin de los transceptores LTC2865 que habilita el limitador de velocidad de flanco, activo a nivel bajo». O la sección se titula «Lista de acrónimos y glosario» y se admiten entradas así, o SLO baja al texto, donde ya está explicado en §3.4.2 y §4.3.3.</div>
+
+<!-- =============== F =============== -->
+<h2 class="block">F · Rótulos y numeración<span>3 puntos</span></h2>
+
+<div class="item">
+  <div class="item-h"><span class="tag info">corregir</span>
+    <span class="where">los 9 listados de código</span>
+    <h3>«Programación 3.1» no es el rótulo de un listado</h3></div>
+  <p>«Programación» nombra la actividad, no el objeto. En castellano un listado de código se rotula <i>Listado</i>, <i>Código</i> o <i>Programa</i>, y el índice correspondiente, «Índice de listados».</p>
+  <div class="prop"><code>\renewcommand{\lstlistingname}{Listado}</code> y <code>\renewcommand{\lstlistlistingname}{Índice de listados}</code>. Una línea en el preámbulo y cambia en los nueve sitios.</div>
+</div>
+
+<div class="item">
+  <div class="item-h"><span class="tag info">corregir</span>
+    <span class="where"><b>p. 108</b> y siguientes</span>
+    <h3>Los listados de los anexos también arrastran el contador del capítulo 5</h3></div>
+  <p>«Programación 5.1» y «Programación 5.2» en el anexo C, igual que las tablas 5.1–5.6 que ya salieron en la pasada anterior. Es el mismo <code>\appendix</code> ausente, así que se arreglan de una vez.</p>
+</div>
+
+<div class="item">
+  <div class="item-h"><span class="tag warn">verificar</span>
+    <span class="where">índice · pdf 9</span>
+    <h3>El índice numera los preliminares en romanos mayúsculos y las páginas van en minúsculos</h3></div>
+  <p>El índice dice <q>Resumen y Palabras Clave <b>II</b></q>, <q>Agradecimientos <b>IV</b></q>, <q>Lista de acrónimos <b>X</b></q>. Las páginas correspondientes llevan impreso <b>iii</b>, <b>iv</b>, <b>x</b>… en minúscula. Además el número del índice y el folio real no siempre coinciden: el resumen empieza en la <b>ii</b> y el índice dice II, pero la lista de acrónimos empieza en la <b>x</b> y ocupa hasta la <b>xiii</b>.</p>
+  <div class="prop">Un <code>\pagenumbering{roman}</code> en minúscula antes del <code>\frontmatter</code>, o quitar la mayúscula donde se genera la entrada. Es de esas cosas que solo se ven al mirar el índice y la página a la vez.</div>
+</div>
+
+<!-- =============== G =============== -->
+<h2 class="block">G · Ortografía y gramática<span>5 puntos</span></h2>
+<p class="block-lead">Pasado el corrector con el diccionario es_ES sobre las 5 280 palabras distintas del documento, descontando listados, volcados de terminal, esquemáticos y bibliografía. El cuerpo técnico sale limpio. Todo lo que queda está en el capítulo 3 y en los agradecimientos.</p>
+
+<div class="item">
+  <div class="item-h"><span class="tag crit">crítico</span>
+    <span class="where"><b>pp. 23, 24, 25 (×3), 29, 30</b></span>
+    <h3>«semiperiodo» sin tilde, siete veces, frente a «período» con tilde</h3></div>
+  <p>El documento escribe <b>período</b> con tilde cinco veces (pp. 23, 28, 70) y <b>semiperiodo/semiperiodos</b> sin tilde las siete. Ambas acentuaciones son válidas en español —<i>periodo</i> y <i>período</i>—, pero hay que elegir una, y la palabra compuesta tiene que seguir a la simple. Hay además un <q>por <b>periodo</b> de bit</q> sin tilde en la p. 9.</p>
+  <div class="prop">Como ya usas «período», quedan <b>semiperíodo</b> y <b>semiperíodos</b>, y la p. 9 pasa a «por período de bit». Ocho cambios en total y el criterio queda cerrado. La alternativa (todo sin tilde) son solo seis cambios, pero «período» es la forma que domina en el texto.</div>
+</div>
+
+<div class="item">
+  <div class="item-h"><span class="tag crit">crítico</span>
+    <span class="where">agradecimientos · <b>p. iv</b> · pdf 8</span>
+    <h3>«exámenes» aparece bien la primera vez y mal la segunda, en el mismo párrafo</h3></div>
+  <div class="orig">La de <b>exámenes</b> que hemos salvado en el último momento gracias a las explicaciones en pizarra de Eugenio. […] Las largas horas de estudio con Javier, los <b>examenes</b> sacados en un día…</div>
+  <div class="prop">La segunda, con tilde. Que la primera esté bien es lo que prueba que es una errata y no una decisión.</div>
+</div>
+
+<div class="item">
+  <div class="item-h"><span class="tag crit">crítico</span>
+    <span class="where">agradecimientos · <b>p. iv</b> · pdf 8</span>
+    <h3>Paralelismo roto en la enumeración del B105</h3></div>
+  <div class="orig">Formar parte del B105 ha sido excepcional, he podido disfrutar del buen rollo, empaparme del conocimiento sobre todos vuestros trabajos, y <b>contado</b> con vuestra ayuda y consejo en todo momento…</div>
+  <p>Los tres términos cuelgan de «he podido»: <i>disfrutar</i>, <i>empaparme</i> y… <i>contado</i>, que es participio y no encaja.</p>
+  <div class="prop">«…he podido disfrutar del buen rollo, empaparme del conocimiento sobre todos vuestros trabajos <b>y contar</b> con vuestra ayuda y consejo en todo momento…». De paso, la coma antes de la «y» sobra en una enumeración de tres.</div>
+</div>
+
+<div class="item">
+  <div class="item-h"><span class="tag info">corregir</span>
+    <span class="where">agradecimientos · <b>p. iv</b> · pdf 8</span>
+    <h3>Dos detalles menores más en el mismo texto</h3></div>
+  <ul class="compact">
+    <li><span class="loc">régimen</span><span><q>Gracias a todos los que han <b>participado de</b> este desarrollo</q> → <i>participar en</i>. «Participar de» significa compartir una opinión o una cualidad, no tomar parte.</span></li>
+    <li><span class="loc">repetición</span><span><q>Al resto de compañeros del <b>laboratorio</b>, por hacer del <b>laboratorio</b> algo más que un lugar de trabajo</q> → «…por hacer de él algo más que un lugar de trabajo».</span></li>
+  </ul>
+  <div class="note">Lo que <b>no</b> toco: «las cerves», «el buen rollo», «ser mopa oficial vistiendo de blanco» y el salto de la tercera a la segunda persona con Dani. Son unos agradecimientos y el registro coloquial es suyo; solo lo señalo por si prefiere uniformar el trato.</div>
+</div>
+
+<div class="item">
+  <div class="item-h"><span class="tag ok">falsos positivos</span>
+    <h3>Lo que el corrector marca y no hay que tocar</h3></div>
+  <p>Para que no te hagan dudar cuando pases tu propio corrector: <code>Configuracion</code>, <code>Envia</code>, <code>Inyeccion</code>, <code>tambien</code>, <code>tension</code>, <code>maximo</code>, <code>fisico</code>, <code>unico</code>, <code>semaforos</code>, <code>via</code> están todos dentro de listados de código o de volcados de terminal; <code>Revision</code>, <code>Master</code>, <code>Duplex</code> son rótulos de esquemático de Altium; <code>caracterizacion</code> y <code>comunicacion</code> son nombres de directorio del repositorio; <code>eXtensible</code>, <code>areas</code> y <code>expansion</code> son inglés (el desarrollo de AXI y el <i>Summary</i>).</p>
+  <div class="note">Aparte: los mensajes de la propia aplicación llevan las tildes sin poner —<q>Envia 'Hola' por UART 0</q>, <q>Configuracion : 9600</q>—. En la memoria van tal cual, porque es lo que imprime el programa, pero si algún día se tocan esas cadenas, ahí están.</div>
+</div>
+
+<!-- =============== H =============== -->
+<h2 class="block">H · <i>Summary</i> en inglés<span>2 puntos</span></h2>
+<ul class="compact">
+  <li><span class="loc">p. ii</span><span><q>The boards connect to it in order to extend its capabilities and <b>widen the development window</b>.</q> Traducción literal de «ampliar la ventana de desarrollo», que en inglés no significa nada reconocible — <i>window</i> se lee como ventana temporal. Propuesta: <q>…to extend its capabilities and broaden the range of interfaces that can be developed and tested on it</q>.</span></li>
+  <li><span class="loc">p. ii</span><span><q>CAN, PWM, <b>analogue</b> and SpaceWire interfaces</q>. Ortografía británica en un texto que por lo demás no marca variedad. Es válida, pero conviene decidirla y aplicarla en todo el <i>Summary</i> y en las <i>Keywords</i>.</span></li>
+</ul>
+
+<!-- =============== I =============== -->
+<h2 class="block">I · Comprobado y limpio<span>no hace falta repasarlo</span></h2>
+<div class="tbl-wrap">
+  <table>
+    <thead><tr><th>Comprobación</th><th>Resultado</th></tr></thead>
+    <tbody>
+      <tr><td>Corrector es_ES sobre 5 280 palabras distintas</td><td class="dim">solo las erratas del bloque G; el cuerpo técnico, limpio</td></tr>
+      <tr><td>«en base a», «dicho/dicha», «a nivel de»</td><td class="dim">0, 0 y 1 — prácticamente ausentes</td></tr>
+      <tr><td>«el mismo / la misma» como pronombre</td><td class="dim">2 en 90 páginas</td></tr>
+      <tr><td>Decimales con coma</td><td class="dim">81 en el cuerpo, ninguno con punto fuera de listados</td></tr>
+      <tr><td>Separador de millares</td><td class="dim">140 con espacio fino frente a los 3 del bloque D</td></tr>
+      <tr><td>Porcentajes con espacio</td><td class="dim">39 correctos frente a los 2 del bloque D</td></tr>
+      <tr><td>Cursiva de extranjerismos</td><td class="dim">36 términos con criterio constante; 7 con mezcla</td></tr>
+      <tr><td>Nombres de fichero, IP y rutas del repositorio</td><td class="dim">consistentes entre capítulos</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="closer">
+  <h2>Siguiente</h2>
+  <p><strong>Alcance</strong>: qué se poda del cuerpo y qué se va a los anexos. Es la pasada que más tiempo lleva y la que más mueve, con el §3.1 y las cinco hojas de esquemático a página completa como candidatos principales. Y detrás, el <strong>hilo</strong> — donde, como pediste, la ordenación temporal la dejo señalada y sin insistir, porque en un trabajo que se desarrolló por sprints el orden cronológico puede tener razones que la memoria no cuenta pero tú sí conoces.</p>
+  <p class="dim" style="font-size:15px;margin-top:22px">Las cursivas salen de separar el texto del PDF por familia tipográfica (CMTI/CMBXTI frente a CMR), las comillas de identificar la fuente glifo a glifo, y la ortografía de pasar hunspell con el diccionario es_ES sobre el vocabulario del documento, excluyendo bibliografía. Los recuentos son medidos; las páginas son folios impresos.</p>
+</div>
+
+</div>
+
+</div></body></html>
