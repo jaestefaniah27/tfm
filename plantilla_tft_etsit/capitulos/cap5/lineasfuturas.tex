@@ -5,7 +5,7 @@ misma plataforma y sin cambiar sus decisiones de diseño.
 
 \textbf{Cerrar los pendientes detectados durante la validación.} Son correcciones acotadas y ya
 identificadas: invertir el valor por defecto de la señal \texttt{SLO} en el driver y renombrar la
-macro correspondiente, de modo que los tres buses arranquen a 4~Mbps en lugar de quedar limitados
+macro correspondiente, de modo que los tres buses arranquen a 4~Mbaudios en lugar de quedar limitados
 a los 250~kbps del modo lento; fabricar la revisión V2 de la placa AOCS, cuyo esquemático ya
 corrige el error de conexión del eje Z del bloque de motores, y repetir sobre ella la batería de
 pruebas eléctricas; y completar la medida de recepción de la variante DMA14 para cerrar la tabla
@@ -23,7 +23,7 @@ pruebas en placa contra el enlace del otro conector.
 \textbf{Ampliar el driver y su campaña de pruebas a las condiciones de operación del satélite.}
 El driver actual se ha validado con tráfico continuo de diez segundos sobre buses conocidos. Los
 pasos siguientes son medir el comportamiento en ejecuciones largas, añadir el tratamiento y el
-recuento de errores de trama y de colisión que el bus RS-485 multipunto puede provocar en vuelo, y
+recuento de errores de trama y de colisión que el bus RS485 multipunto puede provocar en vuelo, y
 exponer esas estadísticas a la capa de software superior. Todo ello se apoya en la API de cinco
 funciones ya definida y no exige tocar el RTL.
 

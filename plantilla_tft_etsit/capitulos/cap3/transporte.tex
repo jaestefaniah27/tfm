@@ -195,7 +195,7 @@ esta variante es la única en la que \texttt{Transceiver\_Send} es bloqueante.
 \subsubsection{Notificación de fin de transmisión (\texttt{TX\_ISR\_EOF\_HANDLER})}
 
 El DMA sabe cuándo ha terminado de \textit{entregar} el paquete al puente, pero no cuándo el
-UART ha terminado de \textit{emitirlo} por el cobre. Para una línea RS-485 con control de
+UART ha terminado de \textit{emitirlo} por el cobre. Para una línea RS485 con control de
 dirección esa diferencia importa: no se puede soltar el bus antes de que el último bit haya
 salido.
 
@@ -463,7 +463,7 @@ los transceptores está integrado como \textit{module reference}, y Vivado \text
 \textit{checkpoint}} de síntesis fuera de contexto. Editar el VHDL y relanzar la implementación
 no cambia el \textit{bitstream}: el flujo termina sin aviso, cierra \textit{timing} y escribe un
 \texttt{.bit} con el RTL antiguo. La comprobación quedó incorporada al procedimiento: verificar
-que el \textit{hash} del \texttt{BOOT.bin} cambia antes de dar por bueno un \textit{bitstream}
+que el \textit{hash} del \texttt{BOOT.BIN} cambia antes de dar por bueno un \textit{bitstream}
 nuevo.
 
 Con estas correcciones el driver quedó estable: la campaña completa pasó de \textbf{0 de 36} a
@@ -499,7 +499,7 @@ tabla~\ref{tab:loopback_buses}:
     \label{tab:loopback_buses}
 \end{table}
 
-La emulación es fiel al comportamiento eléctrico de un bus RS-485: en reposo la línea está a
+La emulación es fiel al comportamiento eléctrico de un bus RS485: en reposo la línea está a
 nivel alto y los transmisores hacen \textit{wired-AND}, de modo que la señal de recepción de un
 canal es el AND de las transmisiones de \textbf{los demás} canales de su bus. En particular,
 \textbf{un canal no se oye a sí mismo}, igual que en la PCB, donde el receptor se inhibe mientras
@@ -547,7 +547,7 @@ canal (T2), transmisión concurrente de tres maestros (T3), recepción multipunt
 \textbf{en el receptor}, nunca al retornar de la función de envío: hacerlo al retornar daría cifras
 falsas, porque el envío es bloqueante en la variante MCDMA y no bloqueante en las otras dos.
 
-Con el lazo dentro de la FPGA, la señal no atraviesa los transceptores RS-485 ni el cableado, de
+Con el lazo dentro de la FPGA, la señal no atraviesa los transceptores RS485 ni el cableado, de
 modo que lo que se mide es exactamente el \textbf{coste del transporte PS--PL}, que es el objeto
 de la comparativa. Lo que \textbf{no} se
 mide es la integridad física del bus (reflexiones, terminación, tiempos de vuelta del control

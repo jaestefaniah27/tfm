@@ -50,18 +50,18 @@ midiera transportes y no implementaciones desiguales.
 
 \textbf{El cuarto objetivo, diseñar y fabricar una placa que ejercitara los catorce transceptores
 sobre topologías realistas, se ha cumplido y la placa se ha caracterizado eléctricamente.} Sus
-catorce canales se reparten en un bus RS-485 multipunto de siete nodos y dos buses RS-422
+catorce canales se reparten en un bus RS485 multipunto de siete nodos y dos buses RS422
 \textit{master/slave}, configurables por \textit{jumper} sin recablear. La batería de nueve tests
 recorre la polarización de reposo, el mapa de conectividad real, la integridad del bus multipunto,
 la velocidad máxima de cada bus, la diafonía, la colisión y la estabilidad sostenida, y la placa
 los supera todos: cero bytes espurios en reposo, cero fugas entre buses, recuperación limpia tras
-una colisión y tasa de error nula en los dos buses RS-422 tras diez segundos de tráfico continuo.
+una colisión y tasa de error nula en los dos buses RS422 tras diez segundos de tráfico continuo.
 La campaña acotó además el efecto del \textbf{limitador de \textit{slew rate}} de los
 transceptores. El pin \texttt{SLO} del LTC2865 es un habilitador de modo lento \textbf{activo a
 nivel bajo}: con él a 0, que es el valor por defecto del software, el driver queda limitado a los
 250~kbps nominales del chip en ese modo, pese a que la macro correspondiente se llama «SLO
 desactivado». Con el limitador desactivado (\texttt{SLO}~=~1), los tres buses pasan de
-460~kbps--1~Mbps a \textbf{4~Mbps} con tasa de error nula: cuatro veces más velocidad sin
+460~kbaudios--1~Mbaudios a \textbf{4~Mbaudios} con tasa de error nula: cuatro veces más velocidad sin
 modificar el cobre ni resintetizar la lógica. Queda pendiente invertir ese valor por defecto y
 renombrar la macro.
 
@@ -84,7 +84,7 @@ comprobación del efecto de las resistencias de terminación sobre la integridad
 diferencial), del ADC por SPI, cuyas lecturas siguen linealmente la tensión aplicada, y de las
 señales de PWM de ambas placas. La única interfaz que quedó sin validar es \textbf{SpaceWire}, por
 una razón declarada desde el inicio: la placa expone la capa física LVDS, pero ejercitarla exige
-implementar en la lógica programable la codificación \textit{data-strobe}, la máquina de estados
+implementar en la lógica programable la codificación \textit{Data-Strobe}, la máquina de estados
 del enlace y los niveles superiores del estándar, un desarrollo que por sí solo excede el alcance
 de este trabajo. Con menor peso, tampoco se completó la medida de recepción de la variante DMA14,
 descartada por recursos antes de depurar su lazo de prueba, ni se llegó a fabricar la revisión V2

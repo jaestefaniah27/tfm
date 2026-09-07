@@ -22,11 +22,6 @@ Las rutas `capitulos/…`, `pre/…`, `IMG/…`, `main.tex` y `biblio.bib` son
 relativas a `plantilla_tft_etsit/`. Las rutas `tfm/…` son código fuente del
 proyecto, en la raíz.
 
-Dentro del plan los ficheros de capítulo se abrevian sin el prefijo `capitulos/`:
-`cap4/pcb.tex` es `plantilla_tft_etsit/capitulos/cap4/pcb.tex`, y `anexoC.tex` es
-`plantilla_tft_etsit/capitulos/anexos/anexoC.tex`. Los de `pre/` e `IMG/` van
-completos.
-
 **Compilar** (MiKTeX con pdflatex, desde `plantilla_tft_etsit/`):
 
 ```
@@ -84,28 +79,29 @@ va a mover.
 
 Solo `main.tex`. Cuatro cambios que arreglan varios bloques del informe de golpe.
 
-- [x] `\appendix` antes del primer `\chapter` de anexo (`main.tex:270-282`).
+- [ ] `\appendix` antes del primer `\chapter` de anexo (`main.tex:270-282`).
       Arregla «Tabla 5.1» → A.1/B.1 y «Programación 5.1/5.2» del anexo C.
       *(p. 100 del PDF: «No es capítulo 5»; bloque F del HTML)*
-- [x] `\usepackage[T1]{fontenc}`. **Causa raíz de las comillas**: sin fontenc, OT1
+- [ ] `\usepackage[T1]{fontenc}`. **Causa raíz de las comillas**: sin fontenc, OT1
       no tiene guillemets y babel-spanish los compone con CMSY6 (`≪` / `≫`, los
       operadores «mucho menor/mayor que»). Las seis comillas del documento
       (`cap3/transporte.tex:410,459`, `cap4/pcb.tex:93,94,138`,
       `cap5/conclusiones.tex:62`) se arreglan con esta línea, sin tocar el texto.
       *(bloque C del HTML)*
-- [x] `\renewcommand\lstlistingname{Listado}` y
+- [ ] `\renewcommand\lstlistingname{Listado}` y
       `\renewcommand\lstlistlistingname{Índice de listados}` (`main.tex:126-127`).
       «Programación» nombra la actividad, no el objeto. Cambia en los nueve listados.
       *(bloque F)*
-- [x] Romanos en minúscula en el índice de los preliminares: el índice dice
+- [ ] Romanos en minúscula en el índice de los preliminares: el índice dice
       `II`, `IV`, `X` y las páginas imprimen `ii`, `iv`, `x`. Revisar también que
       el número del índice coincida con el folio real (el resumen empieza en ii).
       *(bloque F, `pdf 9`)*
-- [x] Compilar y comprobar: sin `??`, índice correcto, anexos con letra, y que
+- [ ] Compilar y comprobar: sin `??`, índice correcto, anexos con letra, y que
       T1 no haya roto ninguna caja (cambia la partición silábica de todo el texto).
 
 **Commit:** `Rev2.1: preambulo, appendix, fontenc T1 y rotulo de listados`
- — Terminología unificada (buscar y reemplazar)
+
+## Rev2.2 — Terminología unificada (buscar y reemplazar)
 
 Ninguna variante es un error; el problema es que conviven. Se adopta la mayoritaria.
 
@@ -342,8 +338,7 @@ necesitan Altium, cámara o dibujo nuevo están en la lista manual del final.
 - [ ] **p. 9** Figura de topologías RS: texto más grande, y valorar partirla en dos
       para facilitar el salto de página. `IMG/Desarrollo/diagrama_topologia_rs.tex`
 - [ ] **p. 11** Figuras de AXI: «de 10», pero agrandar el texto pequeño sin
-      aumentar el alto. `IMG/Desarrollo/diagrama_axi_full.tex`,
-      `diagrama_axi_lite.tex` y `diagrama_axi_stream.tex`
+      aumentar el alto. `diagrama_axi_full/lite/stream.tex`
 - [ ] **p. 12** Figura 2.6 (DMA): muy pequeña. `IMG/Desarrollo/diagrama_dma.tex`
 - [ ] **p. 13** Figura 2.7 (MCDMA): muy pequeña. `IMG/Desarrollo/diagrama_mcdma.tex`
 - [ ] **p. 54** Cajas de código sobre fondo blanco (configuración de RTEMS):

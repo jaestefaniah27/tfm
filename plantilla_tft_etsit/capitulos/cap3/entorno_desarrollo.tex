@@ -17,10 +17,10 @@ entorno de desarrollo.
 \subsection{Instalación de Vivado y Vitis}
 
 Para el desarrollo de la lógica programable (PL) y la generación de imágenes de arranque, se
-utilizaron las herramientas oficiales de AMD Xilinx: Vivado Design Suite y Vitis Unified
+utilizaron las herramientas oficiales de AMD: Vivado Design Suite y Vitis Unified
 Software Platform. Vivado se empleó para el diseño a nivel de hardware y la generación del
 \textit{bitstream}, mientras que Vitis se utilizó para empaquetar los binarios y generar la imagen de
-arranque (BOOT.bin). Ambas estaban instaladas previamente en la máquina virtual, en su
+arranque (BOOT.BIN). Ambas estaban instaladas previamente en la máquina virtual, en su
 \textbf{versión 2025.1}, que es la que se mantuvo durante todo el trabajo y con la que son
 coherentes los componentes de arranque precompilados empleados más adelante.
 
@@ -66,7 +66,7 @@ escribiendo los resultados por la consola serie.
 La complejidad de este ejercicio no reside en la puerta AND en sí, sino en
 recorrer correctamente el procedimiento que lleva un programa escrito en C/C++ y un
 \textit{bitstream} hasta la ZCU102. En resumen, ese procedimiento consiste en generar dos
-ficheros y copiarlos en una tarjeta SD: el \texttt{BOOT.bin}, que contiene el \textit{bitstream}
+ficheros y copiarlos en una tarjeta SD: el \texttt{BOOT.BIN}, que contiene el \textit{bitstream}
 de la PL y todo el software de arranque, y el \texttt{rtems.img}, que contiene la aplicación que
 se ejecutará en el PS. El primero se construye con Vivado y Vitis; el segundo, compilando la
 aplicación de RTEMS. Los apartados que siguen recorren cada uno de esos pasos.
@@ -113,7 +113,7 @@ hardware como .xsa.
 
 \textbf{Generación de la imagen de arranque (Vitis).} El objetivo de este paso es empaquetar el
 hardware generado en Vivado, junto con el software de arranque, en un único binario
-(\texttt{BOOT.bin}) que el MPSoC pueda ejecutar desde la tarjeta SD. El proceso fue el siguiente:
+(\texttt{BOOT.BIN}) que el MPSoC pueda ejecutar desde la tarjeta SD. El proceso fue el siguiente:
 
 \begin{enumerate}
     \item Se creó un componente de tipo \textit{Platform} en Vitis, utilizando como base el .xsa
@@ -130,7 +130,7 @@ hardware generado en Vivado, junto con el software de arranque, en un único bin
 
 La lista siguiente detalla cada componente con su modo y su destino. El nivel de detalle es
 deliberado: el modo y el orden de los componentes dentro del fichero BIF son la parte del
-procedimiento que la documentación de Xilinx no reúne en un solo sitio, y un error en cualquiera de
+procedimiento que la documentación de AMD no reúne en un solo sitio, y un error en cualquiera de
 los dos impide el arranque sin dar un mensaje útil.
 
 \begin{itemize}
@@ -138,7 +138,7 @@ los dos impide el arranque sin dar un mensaje útil.
     de excepción EL3. Se encuentra en la carpeta \texttt{build} de la aplicación anterior.
     \item \texttt{pmufw.elf}, en modo \textit{pmufw\_image} y destino a53-0. Es el firmware de la
     unidad de gestión de potencia y se descargó del repositorio de firmware precompilado de
-    Xilinx para la ZCU102\footnote{\url{https://github.com/Xilinx/soc-prebuilt-firmware/tree/xilinx_v2025.1/zcu102-zynqmp}}.
+    AMD para la ZCU102\footnote{\url{https://github.com/Xilinx/soc-prebuilt-firmware/tree/xilinx_v2025.1/zcu102-zynqmp}}.
     \item \texttt{BLOCK\_DESIGN\_ZYNQ\_AND\_wrapper.bit}, en modo \textit{datafile} y con la PL
     como dispositivo de destino. Es el \textit{bitstream} generado por Vivado.
     \item \texttt{bl31.elf}, en modo \textit{datafile}, destino a53-0 y nivel de excepción EL3. Es
@@ -182,10 +182,10 @@ direcciones de la PL. Sin él, el primer acceso a los GPIO aborta la ejecución.
 
 \textbf{Carga en la tarjeta SD y arranque de la placa.}
 Los dos ficheros se copian en la partición FAT de una tarjeta SD, que se inserta en el zócalo
-\texttt{J100} de la placa~\cite{xilinx2023ug1182}. El \texttt{BOOT.bin} es el que el MPSoC ejecuta
+\texttt{J100} de la placa~\cite{xilinx2023ug1182}. El \texttt{BOOT.BIN} es el que el MPSoC ejecuta
 nada más alimentarse. Inicializa el PS, carga el \textit{bitstream} en la PL y encadena el resto
 de etapas hasta U-Boot. U-Boot, a su vez, carga el \texttt{rtems.img} en memoria y le cede el
-control. Si el ensayo solo ejercita la PL, el \texttt{BOOT.bin} basta por sí solo, ya que lleva
+control. Si el ensayo solo ejercita la PL, el \texttt{BOOT.BIN} basta por sí solo, ya que lleva
 dentro el \textit{bitstream}.
 
 Antes de encender la placa hay que colocar el selector de modo de arranque en la posición de
@@ -258,7 +258,7 @@ serie: los trocea, los numera y comprueba que cada trozo llega sin errores.} con
 mismo formato que usa un USB corriente, de la que la ZCU102 lee los ficheros de arranque.} de
 la SD mediante
 \texttt{fatwrite}; \texttt{loady} y \texttt{fatwrite} son comandos de la consola de U-Boot.
-Opcionalmente puede enviar también el \texttt{BOOT.bin}, pero no se utilizó porque el archivo es
+Opcionalmente puede enviar también el \texttt{BOOT.BIN}, pero no se utilizó porque el archivo es
 grande y la conexión USB-serie es lenta. De esta manera, cada vez que se quería probar un cambio
 en la aplicación de RTEMS, bastaba con ejecutar este único script y reiniciar la ZCU pulsando su
 botón de \textit{ResetCPU}. Este botón reinicia el sistema de procesamiento sin cortar la
@@ -957,7 +957,7 @@ configuraciones de relojes y alimentación cruciales para el correcto funcionami
 \section{Herramientas de apoyo al desarrollo del transceptor}
 % ---------------------------------------------------------------------------
 
-\subsection{Generación de transceivers con TCL}
+\subsection{Generación de transceptores con TCL}
 
 Se desarrolló un script de TCL, \texttt{new\_generate\_transceivers.tcl}, que permite generar y
 conectar automáticamente un número deseado de transceptores en el \textit{Block Design} de Vivado.
@@ -1245,7 +1245,7 @@ deliberadamente componentes con \textit{VIO} nativo a 1,8~V.
 
 El criterio de partida no fue la cualificación formal para espacio. El componente cualificado es
 la pieza \textit{rad-hard}, con un coste unitario y unos plazos de suministro que no encajan en un
-programa New Space como LINCE. La práctica habitual en este ámbito es otra: emplear componentes de
+programa NewSpace como LINCE. La práctica habitual en este ámbito es otra: emplear componentes de
 catálogo, no cualificados oficialmente, que acreditan \textbf{herencia de vuelo} por haberse
 utilizado ya en misiones anteriores.
 
@@ -1294,7 +1294,7 @@ ocurrió.
 
 Sobre esas reglas generales se impusieron dos restricciones adicionales propias de las señales que
 transportan estas placas. La primera es el \textbf{rutado en par diferencial} con impedancia
-controlada para las líneas SPW, RS-422/RS-485 y CAN. La segunda es la
+controlada para las líneas SPW, RS422/RS485 y CAN. La segunda es la
 \textbf{longitud acotada} en las líneas de conmutación rápida procedentes del FMC, de manera que 
 las señales tarden lo mismo en llegar a su destino.
 
@@ -1308,7 +1308,7 @@ por Indra, esta placa fue diseñada con total libertad para maximizar la flexibi
 ensayos en laboratorio.
 
 El transceptor seleccionado para los catorce canales es el \textbf{LTC2865}~\cite{ltc2865} de
-Analog Devices, un transceptor RS-485/RS-422 de hasta 20~Mbps. Su pin de alimentación lógica
+Analog Devices, un transceptor RS485/RS422 de hasta 20~Mbps. Su pin de alimentación lógica
 independiente (\texttt{VL}) le permite operar la interfaz digital directamente a los 1,8~V del
 FMC, tal como exige la sección~\ref{sec:seleccion_componentes}. Expone además un
 pin \texttt{SLO} de limitación de \textit{slew} controlable desde el MPSoC, que tendrá un papel
@@ -1482,9 +1482,9 @@ transceptor \textbf{THVD1424RGTR}. Este integrado, sugerido dentro del proyecto 
 posterioridad al diseño de la placa de comunicación serie propia, mejora al LTC2865 empleado en
 aquella. Además de
 soportar VIO de 1,8~V, incorpora resistencias de terminación internas conmutables y permite
-seleccionar entre modo \textit{Half-Duplex} y \textit{Full-Duplex} sin cambiar el hardware. Por
+seleccionar entre modo \textit{half-duplex} y \textit{full-duplex} sin cambiar el hardware. Por
 estas ventajas se adoptó para las dos tarjetas oficiales. La configuración se expone mediante
-\textit{jumpers} físicos de 2 pines: \textbf{H/F} (conmuta entre \textit{Half-Duplex} y \textit{Full-Duplex}), \textbf{SLR}
+\textit{jumpers} físicos de 2 pines: \textbf{H/F} (conmuta entre \textit{half-duplex} y \textit{full-duplex}), \textbf{SLR}
 (habilita control de \textit{slew rate}), \textbf{TERM\_TX / TERM\_RX} (conectan las resistencias de
 terminación internas). Los tres canales salen por los conectores J2, J3 y J4.
 
@@ -1515,7 +1515,7 @@ MPSoC. Una única línea digital controla así, de forma complementaria, transmi
 Esta decisión responde a dos motivos. Por un lado, el equipo de Indra comunicó que en la
 arquitectura del satélite los esclavos solo transmiten bajo demanda del OBC. Por ello, no
 existe un escenario real en el que un nodo deba transmitir y recibir simultáneamente. Por
-otro lado, en modo \textit{Half-Duplex} las líneas TX y RX comparten físicamente el mismo par
+otro lado, en modo \textit{half-duplex} las líneas TX y RX comparten físicamente el mismo par
 diferencial A/B. Si el receptor permaneciera activo durante la transmisión, el nodo escucharía
 su propio eco. El circuito completo de un canal, con esa conexión y los cuatro \textit{jumpers}
 de configuración, es el de la figura~\ref{fig:cdhs_rs}.
@@ -1857,7 +1857,7 @@ interfaces externas hacia el conector FMC.
 
 Para controlar las líneas de PWM se instanció el bloque \texttt{PWMx4\_auto\_test}, que genera
 desde la PL cuatro señales PWM a 10~kHz, 5~kHz, 1~kHz y 100~Hz con \textit{duty cycle} del
-50\%. No necesita ningún driver en el PS. Se utilizó el mismo BOOT.bin para todas las
+50\%. No necesita ningún driver en el PS. Se utilizó el mismo BOOT.BIN para todas las
 pruebas de CDHS.
 
 Para probar el ADC ADS7950 de la placa CDHS, se desarrolló una pequeña aplicación de
@@ -1884,7 +1884,7 @@ línea 2 a 0), y durante los siguientes segundos, en el sentido contrario.
 
 La comunicación por SpaceWire quedó fuera del alcance de la validación por su alta complejidad
 técnica. El estándar no se agota en la capa física LVDS que expone la placa, sino que exige
-implementar en la lógica programable la codificación \textit{data-strobe}, la máquina de estados
+implementar en la lógica programable la codificación \textit{Data-Strobe}, la máquina de estados
 de establecimiento y recuperación del enlace, y los niveles de paquete y red. Este desarrollo,
 por sí solo, excede el alcance de este trabajo.
 

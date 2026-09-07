@@ -6,7 +6,7 @@ y los volcados completos del terminal de las pruebas de validación hardware del
 
 \section*{C.1 Mapa de señales LINCE Comunicación Serial}
 
-La tabla~\ref{tab:mapa_lince_serial} recoge el mapeado de los 14 drivers RS-485/RS-422 de la placa
+La tabla~\ref{tab:mapa_lince_serial} recoge el mapeado de los 14 drivers RS485/RS422 de la placa
 LINCE Comunicación Serial con el conector FMC HPC0 (P2) de la ZCU102. Cada driver expone las
 señales TX, RX, SLO y DE (esta última ausente en los drivers 7 y 11, que solo disponen de
 control de dirección hardware).
@@ -251,7 +251,7 @@ tiempo de simulación desproporcionado, de modo que ninguna de ellas se barre.
 
 Se recoge aquí el recuento de líneas de código de autoría propia escritas en el trabajo, desglosado
 por lenguaje y por función. El criterio de recuento es restrictivo: se excluye todo el código
-generado automáticamente por las herramientas (los IPs de Xilinx, los ficheros que Vivado produce al
+generado automáticamente por las herramientas (los IP de AMD, los ficheros que Vivado produce al
 empaquetar un IP o al sintetizar un diseño de bloques), el código de terceros incorporado al
 proyecto (el sistema de compilación \texttt{waf} de RTEMS, el árbol de dispositivos de Xilinx) y las
 copias de un mismo fichero replicadas entre las distintas variantes del proyecto, de las que se
