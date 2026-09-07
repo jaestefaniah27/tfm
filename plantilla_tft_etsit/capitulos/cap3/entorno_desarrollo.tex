@@ -1778,71 +1778,22 @@ falta el equipamiento de laboratorio que cierra los enlaces sobre cable real.
 Este apartado describe esas herramientas. Son las que producen los resultados del capítulo~4, y
 conocerlas es necesario para interpretar las trazas y las medidas que allí se presentan.
 
-\subsection{Aplicación de testing del driver serie en RTEMS}
+\subsection{Aplicación de testing del driver serie en RTEMS} \label{sec:testing_driver}
 
-La aplicación de testing del driver serie está estructurada en tres archivos:
+Para ejercitar el driver sobre la placa se escribió una aplicación de pruebas, repartida en tres
+ficheros: \texttt{init.c}, con la configuración estática de RTEMS; el propio driver
+(\texttt{transceiver.c} y \texttt{transceiver.h}); y \texttt{main.c}, que usa su API pública.
 
-\begin{itemize}
-    \item \texttt{init.c}: configuración del sistema RTEMS mediante macros de
-    \texttt{confdefs.h}.
-    \item \texttt{transceiver.c} + \texttt{transceiver.h}: driver del transceptor serie sobre AXI GPIO.
-    \item \texttt{main.c}: aplicación de testing que usa la API del driver.
-\end{itemize}
+La aplicación abre los catorce canales, registra en cada uno un \textit{callback} de recepción que
+reconstruye las líneas byte a byte, y lanza una tarea de consola que espera comandos del usuario
+por el puerto USB. Desde ella se envía un mensaje por un canal concreto o por todos a la vez, que
+es la forma en que se ejercitaron los buses en las campañas del capítulo de validación hardware.
+La consola permite además conmutar el limitador de \textit{slew rate} sin reiniciar el sistema,
+reejecutando la inicialización del canal con otra configuración.
 
-\subsubsection{Configuración del sistema RTEMS --- \texttt{init.c}}
-
-\texttt{init.c} es el fichero de configuración estática de RTEMS. No contiene lógica de
-aplicación. Define el entorno de ejecución mediante macros que \texttt{<rtems/confdefs.h>}
-convierte en estructuras de datos internas del kernel:
-
-\begin{lstlisting}[caption={Configuración estática de RTEMS en init.c}]
-CONFIGURE_APPLICATION_NEEDS_CLOCK_DRIVER    // rtems_task_wake_after()
-CONFIGURE_APPLICATION_NEEDS_CONSOLE_DRIVER // stdin/stdout (printf, fgets)
-CONFIGURE_MICROSECONDS_PER_TICK 10000       // Tick = 10 ms (100 Hz)
-CONFIGURE_UNLIMITED_OBJECTS                 // Sin limite de tareas/semaforos
-CONFIGURE_UNIFIED_WORK_AREAS               // Un unico pool de memoria
-CONFIGURE_INIT_TASK_STACK_SIZE (64 KB)    // Stack grande para Init
-\end{lstlisting}
-
-\subsubsection{Aplicación de testing --- \texttt{main.c}}
-
-La aplicación tiene tres secciones claramente separadas:
-
-\textbf{Callback de recepción \texttt{on\_rx\_data()}.} Se registra en el driver y se invoca desde la
-tarea \textit{worker} cuando llegan datos. Implementa un ensamblador de líneas por canal. Por cada
-byte recibido, acumula hasta encontrar un carácter de fin de línea (\verb|\n| o \verb|\r|),
-momento en el que imprime la línea completa con el formato
-\texttt{[RX UART 02]: mensaje}. Hay un \texttt{AppLineBuffer} (1024 bytes) por cada uno de los
-14 canales, declarado estáticamente en el array \texttt{rx\_lines[MAX\_TRANSCEIVERS]}. Esto evita
-mezclar caracteres de UARTs distintas en la misma línea de consola.
-
-\textbf{Tarea de consola TX \texttt{Tx\_Console\_Task()}.} Es una tarea RTEMS independiente
-(prioridad 100, baja) que bloquea en \texttt{fgets(stdin)} esperando comandos del usuario por
-la consola USB. El protocolo de comandos es:
-
-\begin{lstlisting}[caption={Protocolo de comandos de la aplicación de testing}]
-<ID> <MENSAJE>     -> Envia MENSAJE por la UART numero ID
-ALL <MENSAJE>      -> Envia MENSAJE por TODAS las UARTs
-<ID> SLO ON        -> Reconfigura UART ID con Slew Rate limitado
-<ID> SLO OFF       -> Reconfigura UART ID con Slew Rate normal
-ALL SLO ON/OFF     -> Aplica configuracion SLO a todas las UARTs
-\end{lstlisting}
-
-Los comandos SLO re-ejecutan \texttt{Transceiver\_Init()} con una configuración distinta, lo que
-permite reconfigurar el hardware en caliente sin reiniciar el sistema.
-
-\textbf{Función \texttt{Init()} --- punto de entrada RTEMS.} RTEMS la llama al arrancar en lugar
-de \texttt{main()}. La secuencia de inicialización es:
-
-\begin{enumerate}
-    \item \texttt{mmu\_map\_pl\_axi\_early()}: mapea en la MMU la región del PL para acceso \textit{bare-metal}.
-    \item \texttt{Transceiver\_Global\_INIT()}: descubre el hardware e instala la ISR maestra.
-    \item Bucle de inicialización: para cada UART se invoca \texttt{Transceiver\_Init()}, se
-    registra su \textit{callback} de recepción y se envía el mensaje de disponibilidad del canal.
-    \item Creación y lanzamiento de \texttt{Tx\_Console\_Task}.
-    \item \texttt{rtems\_task\_delete(RTEMS\_SELF)}: la tarea Init se elimina a sí misma; el
-    kernel queda con las \textit{worker tasks} + la tarea de consola.
-\end{enumerate}
+El detalle de la configuración estática de RTEMS, la tabla de comandos de la consola y la
+secuencia de arranque de la aplicación se recogen en el apartado C.7 del Anexo~\ref{anx:rtl}.
+ef{anx:rtl}.
 
 \subsection{Aplicación de testing de las placas CDHS y AOCS}
 

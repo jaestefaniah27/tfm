@@ -1,8 +1,8 @@
 Este anexo recoge el mapa de señales completo entre los conectores FMC de la ZCU102 y las
 placas LINCE Comunicación Serial, CDHS y AOCS, la tabla de frecuencias soportadas
 por el NCO del transceptor serie junto con su error medido, el recuento del código desarrollado
-a lo largo del trabajo, la descripción RTL detallada de los bloques auxiliares del transceptor
-y los volcados completos del terminal de las pruebas de validación hardware del Capítulo~4.
+a lo largo del trabajo, la descripción RTL detallada de los bloques auxiliares del transceptor,
+el detalle de la aplicación de testing del driver serie y los volcados completos del terminal de las pruebas de validación hardware del Capítulo~4.
 
 \section*{C.1 Mapa de señales LINCE Comunicación Serial}
 
@@ -343,13 +343,76 @@ sección~\ref{sec:transporte_desarrollo}, donde \texttt{Data\_read} lo conduce l
 registro, hacía que el receptor de DMA capturase varias veces la misma palabra de la FIFO. Con
 la lectura a nivel, la FIFO avanza exactamente en el ciclo en que el consumidor acepta el dato.
 
-\section*{C.7 Volcados completos de terminal de las pruebas serie RS422/RS485}
+\section*{C.7 Aplicación de testing del driver serie en RTEMS}
+
+Este apartado detalla la aplicación de pruebas con la que se ejercitó el driver serie sobre la
+ZCU102, resumida en la sección~\ref{sec:testing_driver} del capítulo de desarrollo. Está repartida
+en tres ficheros: \texttt{init.c}, con la configuración estática del sistema; el driver
+(\texttt{transceiver.c} y \texttt{transceiver.h}); y \texttt{main.c}, con la aplicación propiamente
+dicha.
+
+\subsection*{C.7.1 Configuración del sistema --- \texttt{init.c}}
+
+\texttt{init.c} no contiene lógica de aplicación. Define el entorno de ejecución mediante macros
+que \texttt{<rtems/confdefs.h>} convierte en estructuras de datos internas del núcleo.
+
+\begin{lstlisting}[caption={Configuración estática de RTEMS en init.c}]
+CONFIGURE_APPLICATION_NEEDS_CLOCK_DRIVER    // rtems_task_wake_after()
+CONFIGURE_APPLICATION_NEEDS_CONSOLE_DRIVER // stdin/stdout (printf, fgets)
+CONFIGURE_MICROSECONDS_PER_TICK 10000       // Tick = 10 ms (100 Hz)
+CONFIGURE_UNLIMITED_OBJECTS                 // Sin limite de tareas/semaforos
+CONFIGURE_UNIFIED_WORK_AREAS               // Un unico pool de memoria
+CONFIGURE_INIT_TASK_STACK_SIZE (64 KB)    // Stack grande para Init
+\end{lstlisting}
+
+\subsection*{C.7.2 Aplicación --- \texttt{main.c}}
+
+La aplicación tiene tres secciones claramente separadas.
+
+\textbf{Callback de recepción \texttt{on\_rx\_data()}.} Se registra en el driver y se invoca desde
+la tarea \textit{worker} cuando llegan datos. Implementa un ensamblador de líneas por canal: por
+cada byte recibido acumula hasta encontrar un carácter de fin de línea (\verb|\n| o \verb|\r|),
+momento en el que imprime la línea completa con el formato \texttt{[RX UART 02]: mensaje}. Hay un
+\texttt{AppLineBuffer} de 1024 bytes por cada uno de los 14 canales, declarado estáticamente en el
+array \texttt{rx\_lines[MAX\_TRANSCEIVERS]}. Esto evita mezclar caracteres de UART distintas en la
+misma línea de consola.
+
+\textbf{Tarea de consola de transmisión \texttt{Tx\_Console\_Task()}.} Es una tarea de RTEMS
+independiente, de prioridad 100, que bloquea en \texttt{fgets(stdin)} esperando comandos del
+usuario por la consola USB. El protocolo de comandos es el siguiente.
+
+\begin{lstlisting}[caption={Protocolo de comandos de la aplicación de testing}]
+<ID> <MENSAJE>     -> Envia MENSAJE por la UART numero ID
+ALL <MENSAJE>      -> Envia MENSAJE por TODAS las UARTs
+<ID> SLO ON        -> Reconfigura UART ID con Slew Rate limitado
+<ID> SLO OFF       -> Reconfigura UART ID con Slew Rate normal
+ALL SLO ON/OFF     -> Aplica configuracion SLO a todas las UARTs
+\end{lstlisting}
+
+Los comandos SLO reejecutan \texttt{Transceiver\_Init()} con una configuración distinta, lo que
+permite reconfigurar el hardware en caliente sin reiniciar el sistema.
+
+\textbf{Función \texttt{Init()}.} RTEMS la llama al arrancar en lugar de \texttt{main()}. La
+secuencia de inicialización es:
+
+\begin{enumerate}
+    \item \texttt{mmu\_map\_pl\_axi\_early()}: mapea en la MMU la región de la PL para acceso
+    \textit{bare-metal}.
+    \item \texttt{Transceiver\_Global\_INIT()}: descubre el hardware e instala la ISR maestra.
+    \item Bucle de inicialización: para cada UART se invoca \texttt{Transceiver\_Init()}, se
+    registra su \textit{callback} de recepción y se envía el mensaje de disponibilidad del canal.
+    \item Creación y lanzamiento de \texttt{Tx\_Console\_Task}.
+    \item \texttt{rtems\_task\_delete(RTEMS\_SELF)}: la tarea Init se elimina a sí misma; el
+    núcleo queda con las tareas \textit{worker} y la tarea de consola.
+\end{enumerate}
+
+\section*{C.8 Volcados completos de terminal de las pruebas serie RS422/RS485}
 
 Este apartado recoge la salida íntegra del terminal de las dos sesiones de prueba de
 comunicaciones serie RS422/RS485 descritas en las secciones~\ref{sec:cdhs_rs} y
 \ref{sec:validacion_aocs} del capítulo de validación hardware.
 
-\subsection*{C.7.1 Placa CDHS (3 transceptores)}
+\subsection*{C.8.1 Placa CDHS (3 transceptores)}
 
 La sesión recoge el descubrimiento dinámico de los tres transceptores instanciados en el
 \textit{bitstream} y los intercambios de \textit{loopback} entre UART~0, UART~1 y UART~2.
@@ -433,7 +496,7 @@ Tx -> UART 2: OK
 CMD> [RX UART 00]: HOLA MUNDO
 \end{lstlisting}
 
-\subsection*{C.7.2 Placa AOCS (5 transceptores)}
+\subsection*{C.8.2 Placa AOCS (5 transceptores)}
 
 La sesión recoge el descubrimiento dinámico de los cinco transceptores instanciados en el
 \textit{bitstream} y los cuatro pares de \textit{loopback} ejercitados entre UART~0 y el
@@ -502,7 +565,7 @@ Tx -> UART 1: OK
 CMD> [RX UART 00]: HOLA
 \end{lstlisting}
 
-\section*{C.8 Volcado completo del barrido del ADC}
+\section*{C.9 Volcado completo del barrido del ADC}
 
 Este apartado recoge la salida íntegra del terminal del barrido de tensión aplicado al canal
 CH2 del ADC ADS7950 de la placa CDHS, descrito en la sección~\ref{sec:validacion_cdhs} del
