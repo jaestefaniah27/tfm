@@ -1,22 +1,28 @@
 % ===========================================================================
-% CAPÍTULO 4 — RESULTADOS: validación de la placa de comunicación serie
+% CAPÍTULO 4 — RESULTADOS: comparativa de las arquitecturas de transporte
 % ===========================================================================
 
-\section{Validación de la placa de comunicación serie} \label{sec:validacion_propia}
+\section{Comparativa de las arquitecturas de transporte PS--PL} \label{sec:resultados_benchmark}
 
-\subsection{Verificación del driver con catorce transceptores}
+Esta sección recoge la medida de las tres arquitecturas de transporte descritas en la
+sección~\ref{sec:transporte_desarrollo}, con la que se cierra el segundo objetivo del trabajo:
+seleccionar la que mejor escala en rendimiento, en ocupación de la lógica programable y en consumo
+de recursos de CPU. A diferencia de las secciones anteriores, la campaña \textbf{no involucra
+ninguna de las tres placas}: los buses se cierran dentro de la propia lógica programable, de modo
+que lo que se mide es el camino de datos entre la PL y el PS y no la capa física.
 
-Se cargó un \textit{bitstream} con 14 transceptores instanciados (canales 0 a 13), con los canales
-adicionales conectados a los pines externos del conector J3 de la ZCU102. El sistema opera
-correctamente con todos ellos, de modo que la arquitectura de ISR maestra con tareas
+% ---------------------------------------------------------------------------
+\subsection{Condiciones de la campaña}
+% ---------------------------------------------------------------------------
+
+Como paso previo se cargó un \textit{bitstream} con 14 transceptores instanciados (canales 0 a 13),
+con los canales adicionales conectados a los pines externos del conector J3 de la ZCU102. El sistema
+opera correctamente con todos ellos, de modo que la arquitectura de ISR maestra con tareas
 \textit{worker} individuales escala hasta el número máximo de instancias soportado. La prueba
-sobre la placa de comunicación serie fabricada se recoge en la
-sección~\ref{sec:resultados_pcb}.
+equivalente sobre la placa de comunicación serie fabricada se recoge en la
+sección~\ref{sec:validacion_propia}.
 
-\subsection{Comparativa de las arquitecturas de transporte PS--PL} \label{sec:resultados_benchmark}
-
-Esta sección recoge la medida de las tres arquitecturas descritas en la
-sección~\ref{sec:transporte_desarrollo}. Las tres se ejecutaron sobre la misma ZCU102, con el
+Las tres variantes se ejecutaron sobre la misma ZCU102, con el
 mismo transceptor serie de catorce canales, el mismo programa de pruebas
 (\texttt{bench\_main.c}) y los buses cerrados por el módulo de \textit{loopback} de la PL
 descrito en la sección~\ref{sec:bench_loopback}. Lo único que difiere entre las tres corridas es
@@ -32,7 +38,7 @@ el transporte}, sino la ausencia de lazo. Las cifras válidas de esa corrida son
 hardware, la huella de memoria y el coste en interrupciones de la transmisión.
 
 % ---------------------------------------------------------------------------
-\subsubsection{Coste de hardware}
+\subsection{Coste de hardware}
 % ---------------------------------------------------------------------------
 
 Las tres arquitecturas están implementadas sobre el mismo dispositivo (XCZU9EG, 274\,080 LUT,
@@ -91,7 +97,7 @@ El margen de \textit{timing} (WNS) es positivo y holgado en las tres, por lo que
 al límite y las diferencias de rendimiento no son atribuibles a la implementación física.
 
 % ---------------------------------------------------------------------------
-\subsubsection{Coste de software}
+\subsection{Coste de software}
 % ---------------------------------------------------------------------------
 
 La tabla~\ref{tab:bench_sw} recoge lo que cuesta cada variante del lado del PS: el tamaño del
@@ -125,7 +131,7 @@ tiene que señalizar quién ha terminado. Son trece tareas menos, con sus trece 
 correspondientes cambios de contexto.
 
 % ---------------------------------------------------------------------------
-\subsubsection{Coste en interrupciones}
+\subsection{Coste en interrupciones}
 % ---------------------------------------------------------------------------
 
 La métrica cuenta cuántas veces se expropia la CPU por cada kilobyte movido, acumulado sobre la
@@ -184,7 +190,7 @@ recepción}: tres por kilobyte, unas \textbf{cuatrocientas veces menos}. La CPU 
 atendiendo el bus a estar disponible para la aplicación.
 
 % ---------------------------------------------------------------------------
-\subsubsection{Latencia}
+\subsection{Latencia}
 % ---------------------------------------------------------------------------
 
 Tiempo desde justo antes de la llamada de envío hasta que el receptor tiene el frame de 11 bytes
@@ -238,7 +244,7 @@ comportamiento notablemente determinista, una propiedad especialmente valiosa en
 tiempo real embarcado.
 
 % ---------------------------------------------------------------------------
-\subsubsection{\textit{Throughput}}
+\subsection{\textit{Throughput}}
 % ---------------------------------------------------------------------------
 
 A 115\,200 baudios en formato 8N1, cada byte ocupa 10 bits de línea, por lo que el techo físico
@@ -303,7 +309,7 @@ simultáneos en el bus multipunto, el MCDMA sostiene \textbf{68\,504~B/s} frente
 GPIO, sin perder ningún byte.
 
 % ---------------------------------------------------------------------------
-\subsubsection{Barrido de velocidad}
+\subsection{Barrido de velocidad}
 % ---------------------------------------------------------------------------
 
 Se reprograman los catorce transceptores a cada velocidad y se
@@ -389,7 +395,7 @@ En los siete puntos, y en ambas variantes, el número de errores de transporte e
 saturación del GPIO no produce corrupción, solo pérdida de rendimiento.
 
 % ---------------------------------------------------------------------------
-\subsubsection{Robustez}
+\subsection{Robustez}
 % ---------------------------------------------------------------------------
 
 Dos pruebas adicionales verifican que la ganancia de rendimiento no se paga con fragilidad: el
@@ -434,7 +440,7 @@ sección~\ref{sec:transporte_depuracion} entregaban menos datos a los \textit{ri
 comparables.
 
 % ---------------------------------------------------------------------------
-\subsubsection{Selección de la arquitectura de transporte}
+\subsection{Selección de la arquitectura de transporte}
 % ---------------------------------------------------------------------------
 
 La tabla~\ref{tab:bench_resumen} reúne en una sola vista las magnitudes de los apartados

@@ -1,10 +1,16 @@
-En este capítulo se recogen los resultados de la validación hardware del sistema completo,
-organizados en tres bloques según la placa validada: la sección~\ref{sec:validacion_cdhs} cubre
-las pruebas realizadas con la placa CDHS, la sección~\ref{sec:validacion_aocs} las realizadas con
-la placa AOCS, y la sección~\ref{sec:validacion_propia} recoge la validación de la placa de
-comunicación serie: la comparativa de las tres arquitecturas de transporte
-PS--PL y la caracterización eléctrica de la placa ya fabricada, sobre sus catorce
-transceptores. Las tres placas se conectan a la ZCU102 mediante FMC.
+En este capítulo se recogen los resultados de la validación del sistema completo. Los tres primeros
+bloques se organizan según la placa validada, todas ellas conectadas a la ZCU102 mediante FMC: la
+sección~\ref{sec:validacion_cdhs} cubre las pruebas realizadas con la placa CDHS, la
+sección~\ref{sec:validacion_aocs} las realizadas con la placa AOCS y la
+sección~\ref{sec:validacion_propia} la caracterización eléctrica de la placa de comunicación serie
+sobre sus catorce transceptores. El cuarto bloque no valida una placa sino una decisión de diseño:
+la sección~\ref{sec:resultados_benchmark} compara las tres arquitecturas de transporte PS--PL con
+los buses cerrados dentro de la lógica programable, y selecciona la definitiva.
+
+El orden de validación no coincide con el de diseño de la sección~\ref{sec:diseno_hardware}: las
+placas CDHS y AOCS, diseñadas después de la de comunicación serie, se validaron antes que ella. La
+causa es de calendario y no técnica: Sener e Indra necesitaban ambas tarjetas en fecha para validar
+su propio firmware sobre la ZCU102, por lo que su verificación tuvo prioridad.
 
 % ===========================================================================
 \section{Validación CDHS} \label{sec:validacion_cdhs}
