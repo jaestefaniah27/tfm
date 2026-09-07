@@ -317,14 +317,29 @@ un manual: el detalle fino de implementación que no cambia el argumento se muev
 a los anexos y en el cuerpo queda el resultado más una frase de enlace con `\ref`.
 Corte, no reescritura.
 
-**Requiere que Jorge marque los apartados concretos antes de empezar.**
-Candidatos, a confirmar:
+El análisis previo está hecho y vive en **`Revisiones/REV2_8_analisis.md`**, con el
+recuento de líneas de cada bloque y el reparto cuerpo/anexo propuesto.
 
-- [ ] §3.1 Entorno de desarrollo: instalación y configuración paso a paso.
-- [ ] §3.3 Generación de transceptores con TCL: el detalle del script.
-- [ ] Configuración de RTEMS (las cajas de código de la p. 54).
-- [ ] Las cinco hojas de esquemático a página completa.
-- [ ] Mapas de registro y tablas exhaustivas que aún queden en el cuerpo.
+**Requiere que Jorge marque los apartados concretos antes de empezar.**
+Candidatos por orden de rendimiento, a confirmar:
+
+- [ ] §3.1.3 Validación del flujo de extremo a extremo (puerta AND), 292 líneas:
+      bajar el VHDL, la lista de componentes del BIF, la secuencia de Vitis y las
+      dos capturas. Quedan unas 25 líneas de resultado en el cuerpo.
+- [ ] §3.5.4 y §3.5.5 Subsistemas de las placas CDHS y AOCS, 306 líneas: bajar
+      referencias de componente, reparto de pines, esquemáticos a página completa,
+      alimentación y conectores. Se quedan el diagrama de bloques, la restricción
+      de 1,8~V, la elección del THVD1424 y el cortocircuito DE--RE.
+- [ ] §3.4 Gestión interna de la transmisión y de la recepción del driver
+      (líneas 1121--1230): bajar entera, dejando API y mapa de registros arriba.
+- [ ] §3.6.1 Aplicación de testing del driver, 66 líneas: bajar las dos cajas de
+      código y la secuencia de `Init()`. Cierra el punto de la p. 54 de la Rev2.9.
+- [ ] §3.1.1, §3.1.2 y §3.3: comprimir en el sitio, sin mover nada al anexo.
+- [ ] Reordenar el anexo C en tres bloques: referencia, implementación trasladada
+      y volcados de terminal.
+
+No entran: §3.2 (transmisor y receptor), §3.5.6 (fabricación) y
+`cap3/transporte.tex`.
 
 **Commit:** `Rev2.8: bajar el detalle de bajo nivel a los anexos`
 
