@@ -377,7 +377,7 @@ que evalúa $\mathrm{inc} = \lfloor 2^{32} \cdot f_{\mathrm{baud}} / f_{\mathrm{
 cada entrada de la tabla, de modo que basta cambiar la constante de frecuencia de reloj para
 reajustar las 54 velocidades. La tabla tiene dos columnas por entrada: el incremento nominal y el
 de doble frecuencia, que selecciona \texttt{half\_mode}. Este segundo valor es el que permite medir
-semiperiodos de bit, algo que necesitan tanto el transmisor, en el campo de parada, como el
+semiperíodos de bit, algo que necesitan tanto el transmisor, en el campo de parada, como el
 receptor, en el bit de inicio. Tabularlo en lugar de duplicar el primero evita arrastrar
 multiplicado por dos el error de truncamiento del incremento nominal.
 
@@ -440,7 +440,7 @@ tabla~\ref{tab:tx_puertos}.
         \texttt{Start}     & in  & Pulso de petición de transmisión. \\
         \texttt{Data}      & in  & Palabra a transmitir (9 bits, alineada en el LSB). \\
         \texttt{baud\_sel} & in  & Índice de velocidad dentro de la tabla del NCO (6 bits). \\
-        \texttt{stop\_bit} & in  & Duración del campo de parada, en semiperiodos de bit
+        \texttt{stop\_bit} & in  & Duración del campo de parada, en semiperíodos de bit
                                    (\texttt{010}~=~1, \texttt{011}~=~1,5, \texttt{100}~=~2). \\
         \texttt{parity}    & in  & Modo de paridad: par, impar, \textit{mark}, \textit{space}
                                    o deshabilitada. \\
@@ -462,7 +462,7 @@ adelante.
 
 \subsubsection{Máquina de estados}
 
-La temporización del tiempo de bit y del semiperiodo de bit la proporciona el NCO, instanciado
+La temporización del tiempo de bit y del semiperíodo de bit la proporciona el NCO, instanciado
 dentro del propio transmisor: la FSM lo habilita, lo pone a cero y conmuta su entrada
 \texttt{half\_mode} según el estado, y consume su salida \texttt{tick} como base de tiempos. El
 comportamiento se organiza en siete estados:
@@ -493,7 +493,7 @@ comportamiento se organiza en siete estados:
 
     \item \textbf{\texttt{StopBit}}: mantiene la línea en alto y conmuta el NCO a
     \texttt{half\_mode}, que lo hace oscilar al doble de la velocidad seleccionada. Contando
-    semiperiodos (dos, tres o cuatro según \texttt{stop\_bit}) se obtienen los tres campos de
+    semiperíodos (dos, tres o cuatro según \texttt{stop\_bit}) se obtienen los tres campos de
     parada admitidos, incluido el de 1,5~bits, que no es expresable con una cuenta de bits enteros.
     Alcanzada la cuenta pasa a \texttt{PostDE}.
 
@@ -509,7 +509,7 @@ qué bit sale a la línea en cada momento recae en un camino de datos puramente 
 la acompaña, y que evita tener que desplazar o rotar la palabra de entrada.
 
 \textbf{Banco de contadores.} Tres contadores síncronos con habilitación y borrado independientes,
-gobernados por la FSM: el de bits de datos (4 bits), el de semiperiodos del campo de parada
+gobernados por la FSM: el de bits de datos (4 bits), el de semiperíodos del campo de parada
 (3~bits) y el de retardo de \texttt{DE} (14~bits, suficiente para el valor por defecto de
 \texttt{DELAY\_CYCLES}). Todos comparten el mismo proceso síncrono y el mismo reset asíncrono.
 
@@ -672,7 +672,7 @@ que gobiernan el enlace: la ventana de \texttt{DE}, los \textit{ticks} con los q
 delimita cada bit y los instantes en los que el receptor muestrea. La configuración representada es
 de 8 bits de datos, paridad par, un bit de parada y orden LSB \textit{first}, con el dato
 \texttt{0x53}. El transmisor consume un \textit{tick} por frontera de bit y pasa al doble de
-frecuencia en el campo de parada, donde cuenta semiperiodos. El receptor, tras alinear su fase
+frecuencia en el campo de parada, donde cuenta semiperíodos. El receptor, tras alinear su fase
 medio bit después del flanco de inicio, muestrea en el centro de cada bit. El primer muestreo, en
 el centro del bit de inicio, es el que descarta los falsos inicios de trama. Las zonas sombreadas
 \texttt{PreDE} y \texttt{PostDE} no están dibujadas a escala: duran 100~$\mu$s frente a los
@@ -796,7 +796,7 @@ desplazamiento y la FIFO, y añade la lógica de acoplamiento entre ellos y con 
     peticiones que llegan con una transmisión en curso se ignoran en lugar de corromperla.
 
     \item \textbf{Adaptación del campo de parada.} El PS codifica los bits de parada en dos bits;
-    transmisor y receptor los esperan como una cuenta de semiperiodos de tres bits. Una pequeña
+    transmisor y receptor los esperan como una cuenta de semiperíodos de tres bits. Una pequeña
     lógica combinacional traduce entre ambas representaciones.
 
     \item \textbf{Vector de depuración.} Una salida de cuatro bits agrupa las señales internas del

@@ -176,7 +176,7 @@ La codificación \textit{Data-Strobe} (DS) supera esta limitación empleando dos
 diferenciales: \textit{Data} transmite directamente el flujo de datos, mientras que
 \textit{Strobe} conmuta únicamente cuando el bit a transmitir es idéntico al anterior
 (permaneciendo constante si el dato cambia). De este modo, se garantiza exactamente una transición
-por periodo de bit entre ambas líneas. En recepción, el reloj se recupera de forma inmediata
+por período de bit entre ambas líneas. En recepción, el reloj se recupera de forma inmediata
 aplicando una operación XOR a ambas señales y el dato se muestrea directamente de la línea
 \textit{Data}, lo que elimina la necesidad de un alineamiento estricto de reloj y proporciona una
 alta tolerancia al desfase (\textit{skew}) entre pares~\cite{ecss50spw,parkes2012spw}. Proporciona

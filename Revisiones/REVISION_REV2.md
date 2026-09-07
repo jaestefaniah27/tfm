@@ -79,24 +79,24 @@ va a mover.
 
 Solo `main.tex`. Cuatro cambios que arreglan varios bloques del informe de golpe.
 
-- [ ] `\appendix` antes del primer `\chapter` de anexo (`main.tex:270-282`).
+- [x] `\appendix` antes del primer `\chapter` de anexo (`main.tex:270-282`).
       Arregla «Tabla 5.1» → A.1/B.1 y «Programación 5.1/5.2» del anexo C.
       *(p. 100 del PDF: «No es capítulo 5»; bloque F del HTML)*
-- [ ] `\usepackage[T1]{fontenc}`. **Causa raíz de las comillas**: sin fontenc, OT1
+- [x] `\usepackage[T1]{fontenc}`. **Causa raíz de las comillas**: sin fontenc, OT1
       no tiene guillemets y babel-spanish los compone con CMSY6 (`≪` / `≫`, los
       operadores «mucho menor/mayor que»). Las seis comillas del documento
       (`cap3/transporte.tex:410,459`, `cap4/pcb.tex:93,94,138`,
       `cap5/conclusiones.tex:62`) se arreglan con esta línea, sin tocar el texto.
       *(bloque C del HTML)*
-- [ ] `\renewcommand\lstlistingname{Listado}` y
+- [x] `\renewcommand\lstlistingname{Listado}` y
       `\renewcommand\lstlistlistingname{Índice de listados}` (`main.tex:126-127`).
       «Programación» nombra la actividad, no el objeto. Cambia en los nueve listados.
       *(bloque F)*
-- [ ] Romanos en minúscula en el índice de los preliminares: el índice dice
+- [x] Romanos en minúscula en el índice de los preliminares: el índice dice
       `II`, `IV`, `X` y las páginas imprimen `ii`, `iv`, `x`. Revisar también que
       el número del índice coincida con el folio real (el resumen empieza en ii).
       *(bloque F, `pdf 9`)*
-- [ ] Compilar y comprobar: sin `??`, índice correcto, anexos con letra, y que
+- [x] Compilar y comprobar: sin `??`, índice correcto, anexos con letra, y que
       T1 no haya roto ninguna caja (cambia la partición silábica de todo el texto).
 
 **Commit:** `Rev2.1: preambulo, appendix, fontenc T1 y rotulo de listados`
@@ -105,12 +105,12 @@ Solo `main.tex`. Cuatro cambios que arreglan varios bloques del informe de golpe
 
 Ninguna variante es un error; el problema es que conviven. Se adopta la mayoritaria.
 
-- [ ] `RS-422` / `RS-485` → `RS422` / `RS485`. 19 ocurrencias en `capitulos/`
+- [x] `RS-422` / `RS-485` → `RS422` / `RS485`. 19 ocurrencias en `capitulos/`
       (132 sin guion frente a 27 con guion; las Palabras Clave ya van sin guion).
       Conviven dentro de la tabla 4.9.
-- [ ] `transceiver` → `transceptor`. 7 ocurrencias, incluido el título de §3.3.1
+- [x] `transceiver` → `transceptor`. 7 ocurrencias, incluido el título de §3.3.1
       «Generación de transceivers con TCL».
-- [ ] Velocidad de línea siempre en **baudios** / **Mbaudios** (decisión tomada,
+- [x] Velocidad de línea siempre en **baudios** / **Mbaudios** (decisión tomada,
       en contra de lo que proponía el HTML). Hoy el cuerpo tiene 28 en baudios y
       35 en bps, y `cap4/pcb.tex` es casi todo bps mientras `cap3` y `cap4/benchmark`
       van en baudios. Convertir los de `cap4/pcb.tex:78,79,80,84,105,148,150,189,201,226`
@@ -119,17 +119,17 @@ Ninguna variante es un error; el problema es que conviven. Se adopta la mayorita
       LTC2865 (`pcb.tex:139`) y el máximo nominal que la referencia
       (`pcb.tex:143,149`), y las velocidades de estándares ajenos al transceptor
       (CAN y SpaceWire en `cap2/contexto_proyecto.tex`), que sus normas dan en bps.
-- [ ] `BOOT.bin` → `BOOT.BIN`. 8 ocurrencias. Es el nombre real en la FAT.
-- [ ] `data-strobe` → `Data-Strobe` (2). Es como lo escribe el ECSS.
-- [ ] `Half-Duplex` → `half-duplex` (5). **Excepción:** el jumper H/F del THVD1424
+- [x] `BOOT.bin` → `BOOT.BIN`. 8 ocurrencias. Es el nombre real en la FAT.
+- [x] `data-strobe` → `Data-Strobe` (2). Es como lo escribe el ECSS.
+- [x] `Half-Duplex` → `half-duplex` (5). **Excepción:** el jumper H/F del THVD1424
       va como lo serigrafía el fabricante.
-- [ ] `New Space` → `NewSpace` (1).
-- [ ] Xilinx / AMD: una frase en §2.2 («Xilinx, hoy AMD; en adelante AMD») y a
+- [x] `New Space` → `NewSpace` (1).
+- [x] Xilinx / AMD: una frase en §2.2 («Xilinx, hoy AMD; en adelante AMD») y a
       partir de ahí una sola forma. Los nombres de IP y guías (`axi_dma`, PG021)
       y la bibliografía se quedan como los publica el fabricante.
-- [ ] `biblio.bib:6,14` — `Recuperado el` → `Consultado en` (4 frente a 2 en el
+- [x] `biblio.bib:6,14` — `Recuperado el` → `Consultado en` (4 frente a 2 en el
       mismo `.bib`).
-- [ ] LINCE con una sola grafía. Hoy hay tres:
+- [x] LINCE con una sola grafía. Hoy hay tres:
       - `cap1/intro.tex:3` — «Línea de **IN**dustrialización de **C**argas de pago
         y plataformas **E**spaciales»
       - `cap2/contexto_proyecto.tex:6` — «Línea de industrialización de cargas de
@@ -146,19 +146,19 @@ Ninguna variante es un error; el problema es que conviven. Se adopta la mayorita
 El criterio ya existe y está bien aplicado en 36 términos. Falta declararlo y
 cerrar los siete que se mezclan dentro de la misma página.
 
-- [ ] Declarar la política en §1.4 o en la lista de acrónimos: los términos
+- [x] Declarar la política en §1.4 o en la lista de acrónimos: los términos
       ingleses sin equivalente asentado van en cursiva; los ya incorporados al uso
       técnico (*hardware*, *software*, *driver*, *firmware*) solo en su primera
       aparición.
-- [ ] `frame` / `frames` — p. 81 lleva dos en cursiva y dos en redonda; también
+- [x] `frame` / `frames` — p. 81 lleva dos en cursiva y dos en redonda; también
       p. 79 (cursiva) frente a pp. 68 y 81 (redonda).
-- [ ] `stream` — 12 cursivas y 21 redondas, mezcladas en pp. 12, 13, 59, 63.
-- [ ] `buffer` — 23 cursivas y 9 redondas; las nueve caen en pp. 13, 63, 64, que
+- [x] `stream` — 12 cursivas y 21 redondas, mezcladas en pp. 12, 13, 59, 63.
+- [x] `buffer` — 23 cursivas y 9 redondas; las nueve caen en pp. 13, 63, 64, que
       también lo llevan en cursiva.
-- [ ] `slew rate` — 10 cursivas y 2 redondas; la p. 85 tiene una de cada.
-- [ ] `sprint` y `backlog` — cursiva en p. 2, las dos formas dentro de la p. 3.
-- [ ] `full-duplex` — cursiva en pp. 8, 10, 44, 49; redonda solo en la p. 9.
-- [ ] `software` (39, nunca en cursiva) y `hardware` (4 cursivas de 70): van en
+- [x] `slew rate` — 10 cursivas y 2 redondas; la p. 85 tiene una de cada.
+- [x] `sprint` y `backlog` — cursiva en p. 2, las dos formas dentro de la p. 3.
+- [x] `full-duplex` — cursiva en pp. 8, 10, 44, 49; redonda solo en la p. 9.
+- [x] `software` (39, nunca en cursiva) y `hardware` (4 cursivas de 70): van en
       pareja o no van. Con la política declarada, ambos solo en la primera vez.
 
 No tocar: *livelock*, *benchmark* y *routers* en redonda en pp. 92–93 son títulos
@@ -168,30 +168,30 @@ de la bibliografía.
 
 ## Rev2.4 — Números, unidades y acrónimos
 
-- [ ] Separador de millares con espacio fino (140 apariciones ya lo hacen bien):
+- [x] Separador de millares con espacio fino (140 apariciones ya lo hacen bien):
       `anexoC.tex:200`, `cap3/entorno_desarrollo.tex:331` y
       `cap5/conclusiones.tex:11` → `4\,000\,000`;
       `anexoC.tex:274` y `cap5/conclusiones.tex:93` → `20\,188`.
-- [ ] Porcentajes con espacio fino: `6%` en la tabla del presupuesto (convive con
+- [x] Porcentajes con espacio fino: `6%` en la tabla del presupuesto (convive con
       `15 %` en filas consecutivas) y `η ≥ 96%` en la figura 3.8. 39 ya están bien.
-- [ ] Tabla 4.6 (p. 80): la cabecera escribe `115200 · 230400 · … · 1M · 2M · 4M`
+- [x] Tabla 4.6 (p. 80): la cabecera escribe `115200 · 230400 · … · 1M · 2M · 4M`
       mientras la prosa de la misma página escribe «115 200», y dentro de la
       cabecera se mezclan cifra completa y sufijo M. Unificar a espacio fino, o
       dejarla compacta y decir la unidad en el pie. Lo que no vale es tener las
       dos notaciones en la misma fila.
-- [ ] Repasar que todas las magnitudes lleven `\,` **no separable** y no se
+- [x] Repasar que todas las magnitudes lleven `\,` **no separable** y no se
       partan al final de línea: `1,8 V`, `120 Ω`, `100 µs`, `460 kbaudios`,
       `3,52 W`, `32 bits`, `4,7 nF`, `±2 %`, `120 ppm`.
       **Sin `siunitx`** (decidido): son cinco sitios rotos frente a 140 correctos,
       y no compensa un segundo refactor de tipografía encima del `fontenc T1`.
-- [ ] Añadir a `pre/acronimos.tex` las 23 ausencias, y desarrollarlas también en
+- [x] Añadir a `pre/acronimos.tex` las 23 ausencias, y desarrollarlas también en
       su primera aparición: TDEST (20 usos), TLAST (13), BER (8, ya está en la
       lista pero sin desarrollar en el cap. 4), RTL (5), TVALID/TREADY (5+5, solo
       en nota al pie de la p. 11), SPW (5), HPC (3), HP (3), BIF (3), SMP (2),
       SAR (2), TVS (2), WNS (2, es una columna de la tabla 4.1), SG (2), y las de
       un solo uso: RSB, EMC, LDO, CRC, IDE, GUI, QEMU, PYMES, MMIO — o se
       desarrollan en el sitio, o se sustituyen por el nombre completo.
-- [ ] SLO está en la lista de acrónimos y no es un acrónimo. Solución adoptada:
+- [x] SLO está en la lista de acrónimos y no es un acrónimo. Solución adoptada:
       **renombrar la sección a «Lista de acrónimos y glosario»** y dejar la entrada
       donde está. Revisar de paso si hay más entradas que sean glosario y no sigla.
 
@@ -202,24 +202,24 @@ de la bibliografía.
 El cuerpo técnico sale limpio con el corrector es_ES. Todo lo que queda está en el
 capítulo 3 y en los agradecimientos.
 
-- [ ] `semiperiodo` / `semiperiodos` → `semiperíodo` / `semiperíodos`, 7 veces
+- [x] `semiperiodo` / `semiperiodos` → `semiperíodo` / `semiperíodos`, 7 veces
       (pp. 23, 24, 25×3, 29, 30). El documento ya usa «período» con tilde cinco
       veces; la palabra compuesta tiene que seguir a la simple.
-- [ ] p. 9: «por periodo de bit» → «por período de bit».
-- [ ] `pre/greetings.tex:24` — `examenes` → `exámenes`. La primera aparición del
+- [x] p. 9: «por periodo de bit» → «por período de bit».
+- [x] `pre/greetings.tex:24` — `examenes` → `exámenes`. La primera aparición del
       mismo párrafo ya está bien, lo que prueba que es errata.
-- [ ] `pre/greetings.tex:15` — paralelismo roto: «he podido disfrutar…,
+- [x] `pre/greetings.tex:15` — paralelismo roto: «he podido disfrutar…,
       empaparme… y **contado** con…» → «…y **contar** con vuestra ayuda…».
       La coma antes de la «y» sobra en una enumeración de tres.
-- [ ] `pre/greetings.tex` — «han participado **de** este desarrollo» →
+- [x] `pre/greetings.tex` — «han participado **de** este desarrollo» →
       «participado **en**». «Participar de» es compartir una opinión, no tomar parte.
-- [ ] `pre/greetings.tex` — repetición: «Al resto de compañeros del laboratorio,
+- [x] `pre/greetings.tex` — repetición: «Al resto de compañeros del laboratorio,
       por hacer del **laboratorio** algo más…» → «por hacer **de él** algo más…».
-- [ ] `pre/resumen.tex` (Summary, p. ii) — «widen the development window» no
+- [x] `pre/resumen.tex` (Summary, p. ii) — «widen the development window» no
       significa nada en inglés; *window* se lee como ventana temporal. Propuesta:
       «…to extend its capabilities and broaden the range of interfaces that can be
       developed and tested on it».
-- [ ] `pre/resumen.tex` — «analogue» es ortografía británica en un texto que no
+- [x] `pre/resumen.tex` — «analogue» es ortografía británica en un texto que no
       marca variedad. Decidir una y aplicarla en Summary y Keywords.
 
 No tocar: «las cerves», «el buen rollo» y el registro coloquial de los
