@@ -52,7 +52,7 @@ Las pruebas de \textit{loopback} mostraron que los mensajes enviados por UART 0 
 UART 2 y viceversa, y los enviados por UART 1 llegaban correctamente. En algunas
 recepciones de esta captura aparecen caracteres corruptos (\texttt{?}), correspondientes a
 una iteración previa del diseño antes de aplicar la corrección de robustez del receptor
-descrita en el Capítulo~3 (verificación de \textit{start-bit} a mitad de período). Una
+descrita en la sección~\ref{sec:startbit_robustez} (verificación de \textit{start-bit} a mitad de período). Una
 vez implementada esa mejora en la FSM del receptor, los caracteres corruptos desaparecieron
 por completo en las pruebas posteriores. La salida completa del terminal se recoge en el
 apartado C.7 del Anexo~C.

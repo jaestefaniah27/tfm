@@ -482,8 +482,8 @@ variante cuando su lazo de recepción no llegó a funcionar, y justifica el dise
 de la variante C: de las tres arquitecturas es la única que satisface a la vez el presupuesto de
 área y el de líneas de interrupción del dispositivo.
 
-El GPIO es una opción razonable \textbf{para pocos canales a baja velocidad}: es cuatro veces más
-pequeño en lógica, no necesita mapeo de MMU ni gestión de coherencia de caché, y su driver es
+El GPIO es una opción razonable \textbf{para pocos canales a baja velocidad}: ocupa menos de la mitad de lógica que el MCDMA
+(6\,434 LUT frente a 14\,191, tabla~\ref{tab:bench_hw}), no necesita mapeo de MMU ni gestión de coherencia de caché, y su driver es
 sensiblemente más simple. Los datos acotan su uso: \textbf{no sirve para catorce canales}, y su
 limitación no se cura subiendo la velocidad de la línea, porque el cuello de botella está en el
 otro extremo.

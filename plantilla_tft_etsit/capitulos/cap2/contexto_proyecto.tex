@@ -178,10 +178,10 @@ diferenciales: \textit{Data} transmite directamente el flujo de datos, mientras 
 (permaneciendo constante si el dato cambia). De este modo, se garantiza exactamente una transición
 por período de bit entre ambas líneas. En recepción, el reloj se recupera de forma inmediata
 aplicando una operación XOR a ambas señales y el dato se muestrea directamente de la línea
-\textit{Data}, lo que elimina la necesidad de un alineamiento estricto de reloj y proporciona una
-alta tolerancia al desfase (\textit{skew}) entre pares~\cite{ecss50spw,parkes2012spw}. Proporciona
-enlaces punto a punto \textit{full-duplex} asíncronos de hasta 400~Mbps. Su pila incluye una capa de
-red que permite encaminar paquetes a través de \textit{routers} SpaceWire~\cite{ecss50spw,parkes2012spw}.
+\textit{Data}, lo que elimina la necesidad de un alineamiento estricto de reloj y aporta una
+alta tolerancia al desfase (\textit{skew}) entre pares. El estándar define enlaces punto a punto
+\textit{full-duplex} asíncronos de hasta 400~Mbps, con una pila que incluye una capa de red para
+encaminar paquetes a través de \textit{routers} SpaceWire~\cite{ecss50spw,parkes2012spw}.
 
 \subsection{CAN}
 

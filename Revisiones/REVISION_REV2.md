@@ -232,40 +232,44 @@ volcados de terminal, rótulos de Altium, nombres de directorio).
 
 Puntos de precisión, cada uno con una comprobación detrás.
 
-- [ ] **p. 10** «La frase de proporciona queda rara o inconexa»: dos frases
-      seguidas empiezan por «proporciona» en §2.5.3 (SpaceWire). Refundir.
+- [x] **p. 10** «La frase de proporciona queda rara o inconexa»: dos frases
+      seguidas empiezan por «proporciona» en §2.5.3 (SpaceWire). Refundido en una
+      sola: «…aporta una alta tolerancia al desfase. El estándar define enlaces
+      punto a punto full-duplex…».
 - [x] **p. 15** «¿Libro de instrucciones?» y «Ojo con esto, que no te pase como a
       Diego». Aclarado en persona con el tutor: el aviso era que la memoria no se
       lea como un manual, y aquí el detalle está justificado. No se toca el texto
       del entorno de desarrollo. Lo que sí sale de esa conversación es la pasada
       **Rev2.8**, más abajo.
-- [ ] **p. 53** La figura 3.17 (placa de comunicación serie soldada) no se cita en
-      ningún sitio. Citarla con las otras dos.
-- [ ] **p. 70** «¿Referencia exacta?»: la corrección de robustez del receptor se
-      cita como «descrita en el Capítulo 3». Poner `\ref` a la subsección exacta.
-- [ ] **p. 76** `cap4/benchmark.tex:19` — «Revisa ese J3». Contrastar el pinout de
-      `tfm/00_docs/ug1182-zcu102-eval-bd.pdf` con los constraints de
-      `tfm/01_ip_serie/constraints/` (hay un `ZCU102_RD_J3_6.xdc`, que apunta a que
-      J3 es correcto) y con `zcu102_constraints.xdc`.
-      **Si no cuadra:** podar la frase y decir solo «pines externos de la ZCU102»,
-      sin nombrar el conector, antes que dejar un dato erróneo.
-- [ ] **p. 83** `cap4/benchmark.tex:485` — «Revisa ese factor de 4». Contrastar el
-      «cuatro veces más pequeño en lógica» del GPIO con la tabla 4.1.
-- [ ] **p. 86** «Esto no se ve en la tabla o gráfica»: se afirma que la diferencia
-      del bus A se mantiene en la parte alta del barrido incluso con SLO=1, y los
-      datos no lo enseñan. O se corrige la afirmación, o se marca en la tabla.
-- [ ] **p. 89** `cap5/conclusiones.tex:42` — «¿Son 5 o 6?». Contar las funciones
-      de la API pública en §3.5 y cuadrar la cifra.
-- [ ] **p. 92** `biblio.bib:10` — «Antoniooooooo». El `.bib` dice «Jorge
-      **Alejandro** Estefanía Hidalgo» y el PDF revisado imprimía «Jorge
-      **Antonio**». Fijar el nombre correcto.
-- [ ] **p. 95** `anexos/anexoA.tex:31` — falta un «de»: «conocimiento adquirido,
+- [x] **p. 53** La figura 3.17 (placa de comunicación serie soldada) no se cita en
+      ningún sitio. Ya resuelto antes de esta pasada: `entorno_desarrollo.tex:1746`
+      la cita con `\ref{fig:serial_soldada}`.
+- [x] **p. 70** «¿Referencia exacta?»: la corrección de robustez del receptor se
+      cita como «descrita en el Capítulo 3». Añadido `\label{sec:startbit_robustez}`
+      en `entorno_desarrollo.tex:652` y `\ref` en `validacion_hardware.tex:55`
+      (imprime «sección 3.2.3»).
+- [x] **p. 76** `cap4/benchmark.tex:19` — «Revisa ese J3». Verificado: `ZCU102_RD_J3_6.xdc:39`
+      rotula «PROTOTYPE HEADER (J3)» y mapea ahí las UART 8–12 con pines J3.6–J3.24.
+      J3 es el conector correcto (cabecera de prototipo de la PL). No se toca.
+- [x] **p. 83** `cap4/benchmark.tex:485` — «Revisa ese factor de 4». Erróneo:
+      GPIO 6\,434 LUT frente a MCDMA 14\,191 (tabla 4.5) → «ocupa menos de la mitad
+      de lógica que el MCDMA», con las cifras entre paréntesis.
+- [x] **p. 86** «Esto no se ve en la tabla o gráfica»: la afirmación era falsa —
+      con SLO=1 los tres buses llegan a 4~Mbaudios por igual (figura 4.9). Corregida:
+      la penalización del bus multipunto solo aparece con el limitador activo.
+- [x] **p. 89** `cap5/conclusiones.tex:42` — «¿Son 5 o 6?». Son 6
+      (`entorno_desarrollo.tex:1004` y su itemize). Conclusiones decía «cinco» →
+      «seis».
+- [x] **p. 92** `biblio.bib:10` — «Antoniooooooo». Ya resuelto: el `.bib` y las
+      cuatro portadas/encabezados dicen «Jorge Alejandro Estefanía Hidalgo». No
+      queda ningún «Antonio» en el fuente.
+- [x] **p. 95** `anexos/anexoA.tex:31` — falta un «de»: «conocimiento adquirido,
       por ejemplo cómo se sintetiza…» → «adquirido de, por ejemplo, cómo se
       sintetiza…».
-- [ ] **p. 98** `anexos/anexoA.tex:145` — añadir la sigla junto al término:
-      «*single event upsets* (SEU)». Ya está definida en `pre/acronimos.tex:117`.
-- [ ] **p. 98** `anexos/anexoA.tex:164` — «Anexo~C» debe ser el Anexo B
-      (presupuesto). Poner un `\label` y un `\ref` en vez de la letra a mano.
+- [x] **p. 98** `anexos/anexoA.tex:145` — añadida la sigla: «*single event upsets*
+      (SEU)».
+- [x] **p. 98** `anexos/anexoA.tex:164` — «Anexo~C» → `Anexo~\ref{anx:presupuesto}`
+      (imprime «Anexo B»). `\label` añadidos a los tres anexos en `main.tex`.
 
 **Commit:** `Rev2.6: correcciones de precision y referencias cruzadas`
 

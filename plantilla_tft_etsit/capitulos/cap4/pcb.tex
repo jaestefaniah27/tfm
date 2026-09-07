@@ -201,8 +201,9 @@ correcto.
 El bus A alcanza su límite antes que los otros dos (460~kbaudios frente a 1~Mbaudios con el mismo ajuste de
 SLO). Este comportamiento es coherente con su naturaleza y no constituye un defecto de la placa:
 siete nodos conectados a un bus compartido cargan más la línea y generan más reflexiones que un
-enlace punto a punto. La diferencia se mantiene en la parte alta del barrido incluso con el bit SLO
-a 1, por lo que es independiente del efecto descrito en la sección anterior.
+enlace punto a punto. Con el bit SLO a 1, en cambio, los tres buses alcanzan por igual los
+4~Mbaudios (figura~\ref{fig:pcb_slo}): esta penalización del bus multipunto solo se observa con el
+limitador de \textit{slew rate} activo, que es su valor por defecto.
 
 El test T3 lo cuantifica en la tabla~\ref{tab:pcb_multidrop}: registra cuántos de los seis esclavos
 reciben la trama del maestro \textbf{íntegra} a cada velocidad.
