@@ -317,29 +317,39 @@ un manual: el detalle fino de implementación que no cambia el argumento se muev
 a los anexos y en el cuerpo queda el resultado más una frase de enlace con `\ref`.
 Corte, no reescritura.
 
-El análisis previo está hecho y vive en **`Revisiones/REV2_8_analisis.md`**, con el
-recuento de líneas de cada bloque y el reparto cuerpo/anexo propuesto.
+El análisis está hecho y vive en **`Revisiones/REV2_8_analisis.md`**, con el
+reparto cuerpo/anexo de cada bloque y el orden de ejecución. Dos criterios que
+gobiernan la pasada: se poda **prosa densa, no páginas** (una figura a página
+completa alivia la lectura, no la carga), y el anexo **no es un vertedero**, así
+que solo baja lo que tenga sentido consultar aparte.
 
-**Requiere que Jorge marque los apartados concretos antes de empezar.**
-Candidatos por orden de rendimiento, a confirmar:
+Apartados confirmados, en orden de ejecución:
 
-- [ ] §3.1.3 Validación del flujo de extremo a extremo (puerta AND), 292 líneas:
-      bajar el VHDL, la lista de componentes del BIF, la secuencia de Vitis y las
-      dos capturas. Quedan unas 25 líneas de resultado en el cuerpo.
-- [ ] §3.5.4 y §3.5.5 Subsistemas de las placas CDHS y AOCS, 306 líneas: bajar
-      referencias de componente, reparto de pines, esquemáticos a página completa,
-      alimentación y conectores. Se quedan el diagrama de bloques, la restricción
-      de 1,8~V, la elección del THVD1424 y el cortocircuito DE--RE.
-- [ ] §3.4 Gestión interna de la transmisión y de la recepción del driver
-      (líneas 1121--1230): bajar entera, dejando API y mapa de registros arriba.
-- [ ] §3.6.1 Aplicación de testing del driver, 66 líneas: bajar las dos cajas de
-      código y la secuencia de `Init()`. Cierra el punto de la p. 54 de la Rev2.9.
+- [ ] §3.6.1 Aplicación de testing del driver (líneas 1781--1846): bajar las dos
+      cajas de código y la secuencia de `Init()`. Arriba quedan diez líneas, y la
+      reconfiguración del `slew rate` se menciona solo de pasada. Cierra el punto
+      de la p. 54 de la Rev2.9.
+- [ ] §3.1.3 Validación del flujo de extremo a extremo (líneas 55--346): bajar el
+      VHDL, la lista de componentes del BIF, la secuencia de Vitis, la tabla del
+      `SW6` y el volcado de la tabla de verdad. Arriba se queda el bloque de
+      automatización, y **hay que decir que cada iteración llevaba casi una hora
+      de media**: es lo que justifica los tres scripts.
 - [ ] §3.1.1, §3.1.2 y §3.3: comprimir en el sitio, sin mover nada al anexo.
+- [ ] §3.5.4 y §3.5.5: bajar solo los cinco subsistemas que nombran componentes
+      sin decisión detrás (ADC, alimentación CDHS, conectores externos,
+      alimentación AOCS y las frecuencias del `PWMx4_auto_test`). Unas 70 líneas.
+      **Las hojas de esquemático se quedan donde están.**
+- [ ] §3.4 Gestión interna de la transmisión y la recepción (líneas 1121--1230):
+      la última, por ser la de más riesgo. Bajan tamaños de buffer, semáforos,
+      nombres de estructuras y la figura TikZ. Arriba quedan dos párrafos de
+      resumen, **incluida la independencia entre latencia y volumen de datos**,
+      que la §4.4 necesita.
 - [ ] Reordenar el anexo C en tres bloques: referencia, implementación trasladada
       y volcados de terminal.
 
-No entran: §3.2 (transmisor y receptor), §3.5.6 (fabricación) y
-`cap3/transporte.tex`.
+No entran: §3.2 (transmisor y receptor), §3.5.6 (fabricación),
+`cap3/transporte.tex` y la interfaz con el hardware del driver (§3.4, el
+descubrimiento del mapa de direcciones).
 
 **Commit:** `Rev2.8: bajar el detalle de bajo nivel a los anexos`
 
