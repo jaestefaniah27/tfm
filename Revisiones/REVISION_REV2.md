@@ -84,29 +84,28 @@ va a mover.
 
 Solo `main.tex`. Cuatro cambios que arreglan varios bloques del informe de golpe.
 
-- [ ] `\appendix` antes del primer `\chapter` de anexo (`main.tex:270-282`).
+- [x] `\appendix` antes del primer `\chapter` de anexo (`main.tex:270-282`).
       Arregla «Tabla 5.1» → A.1/B.1 y «Programación 5.1/5.2» del anexo C.
       *(p. 100 del PDF: «No es capítulo 5»; bloque F del HTML)*
-- [ ] `\usepackage[T1]{fontenc}`. **Causa raíz de las comillas**: sin fontenc, OT1
+- [x] `\usepackage[T1]{fontenc}`. **Causa raíz de las comillas**: sin fontenc, OT1
       no tiene guillemets y babel-spanish los compone con CMSY6 (`≪` / `≫`, los
       operadores «mucho menor/mayor que»). Las seis comillas del documento
       (`cap3/transporte.tex:410,459`, `cap4/pcb.tex:93,94,138`,
       `cap5/conclusiones.tex:62`) se arreglan con esta línea, sin tocar el texto.
       *(bloque C del HTML)*
-- [ ] `\renewcommand\lstlistingname{Listado}` y
+- [x] `\renewcommand\lstlistingname{Listado}` y
       `\renewcommand\lstlistlistingname{Índice de listados}` (`main.tex:126-127`).
       «Programación» nombra la actividad, no el objeto. Cambia en los nueve listados.
       *(bloque F)*
-- [ ] Romanos en minúscula en el índice de los preliminares: el índice dice
+- [x] Romanos en minúscula en el índice de los preliminares: el índice dice
       `II`, `IV`, `X` y las páginas imprimen `ii`, `iv`, `x`. Revisar también que
       el número del índice coincida con el folio real (el resumen empieza en ii).
       *(bloque F, `pdf 9`)*
-- [ ] Compilar y comprobar: sin `??`, índice correcto, anexos con letra, y que
+- [x] Compilar y comprobar: sin `??`, índice correcto, anexos con letra, y que
       T1 no haya roto ninguna caja (cambia la partición silábica de todo el texto).
 
 **Commit:** `Rev2.1: preambulo, appendix, fontenc T1 y rotulo de listados`
-
-## Rev2.2 — Terminología unificada (buscar y reemplazar)
+ — Terminología unificada (buscar y reemplazar)
 
 Ninguna variante es un error; el problema es que conviven. Se adopta la mayoritaria.
 

@@ -1,6 +1,13 @@
 \documentclass[a4paper,12pt]{book}
 \usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
 \usepackage[spanish]{babel}
+% Números romanos de los preliminares en minúscula (no versalita) también en los
+% índices, para que el número del índice coincida con el que imprime el folio.
+\makeatletter
+\providecommand\es@scroman[1]{#1}
+\renewcommand\es@scroman[1]{#1}
+\makeatother
 \usepackage{fancyhdr}
 \usepackage{amsmath, mathtools}
 \usepackage{amssymb}
@@ -126,8 +133,8 @@
   \@mainmattertrue
   \pagenumbering{arabic}}
 
-\renewcommand\lstlistingname{Programación}
-\renewcommand\lstlistlistingname{Índice de programación}
+\renewcommand\lstlistingname{Listado}
+\renewcommand\lstlistlistingname{Índice de listados}
 \addto\captionsspanish{\renewcommand*\contentsname{Índice}}
 \addto\captionsspanish{\renewcommand{\tablename}{Tabla}  
           \renewcommand{\listtablename}{Índice de tablas}}
@@ -267,16 +274,16 @@
 \bibliographystyle{unsrt}
 \bibliography{biblio}
 
-\backmatter
-\chapter{Anexo A: Aspectos éticos, económicos, sociales y ambientales}
+\appendix
+\chapter{Aspectos éticos, económicos, sociales y ambientales}
     \import{capitulos/anexos/}{anexoA.tex}
 
 \newpage
-\chapter{Anexo B: Presupuesto económico}
+\chapter{Presupuesto económico}
     \import{capitulos/anexos/}{anexoB.tex}
 
 \newpage
-\chapter{Anexo C: Mapas de señales, tabla del NCO, volumen de código y detalle RTL}
+\chapter{Mapas de señales, tabla del NCO, volumen de código y detalle RTL}
     \import{capitulos/anexos/}{anexoC.tex}
 \newpage
 
