@@ -193,7 +193,7 @@ atendiendo el bus a estar disponible para la aplicación.
 \subsection{Latencia}
 % ---------------------------------------------------------------------------
 
-Tiempo desde justo antes de la llamada de envío hasta que el receptor tiene el frame de 11 bytes
+Tiempo desde justo antes de la llamada de envío hasta que el receptor tiene el \textit{frame} de 11 bytes
 completo, sobre 50 muestras. Los estadísticos están en la tabla~\ref{tab:bench_latencia} y la
 comparación en la figura~\ref{fig:bench_latencia}, que excluye la variante DMA14 por carecer de
 lazo de recepción.
@@ -399,7 +399,7 @@ saturación del GPIO no produce corrupción, solo pérdida de rendimiento.
 % ---------------------------------------------------------------------------
 
 Dos pruebas adicionales verifican que la ganancia de rendimiento no se paga con fragilidad: el
-envío de tres frames corruptos seguidos de uno válido (T7) y el envío de 8~KB sin que la
+envío de tres \textit{frames} corruptos seguidos de uno válido (T7) y el envío de 8~KB sin que la
 aplicación vacíe un \textit{ring} de 4~KB (T5), diseñado explícitamente para desbordar. La
 tabla~\ref{tab:bench_robustez} recoge el resultado de ambas.
 
@@ -419,7 +419,7 @@ tabla~\ref{tab:bench_robustez} recoge el resultado de ambas.
     \label{tab:bench_robustez}
 \end{table}
 
-Ambas variantes rechazan los tres frames corruptos y siguen aceptando el frame válido posterior:
+Ambas variantes rechazan los tres \textit{frames} corruptos y siguen aceptando el \textit{frame} válido posterior:
 el error no deja el driver en un estado inconsistente.
 
 Los bytes descartados de la última columna \textbf{no son errores de transporte}, que son cero en

@@ -308,7 +308,7 @@ mantiene un anillo de un solo descriptor por canal, cuyo puntero al siguiente ap
         \texttt{+0x1C} & \texttt{SIDEBAND} & Transmisión: \texttt{COMPLETE} (bit 31). \\
         \hline
     \end{tabular}
-    \caption{Estructura del descriptor de buffer (BD) del MCDMA.}
+    \caption{Estructura del descriptor de \textit{buffer} (BD) del MCDMA.}
     \label{tab:mcdma_bd}
 \end{table}
 
@@ -540,10 +540,10 @@ transmisión siguen llegando a los pines, con lo que los \textit{constraints} de
 siendo válidos y ninguna asignación de pines cambia.
 
 Sobre este banco se ejecuta \texttt{bench\_main.c}, el mismo programa en las tres variantes, con
-ocho pruebas: autodiagnóstico del lazo (T0), latencia de un frame (T1), \textit{throughput} de un
+ocho pruebas: autodiagnóstico del lazo (T0), latencia de un \textit{frame} (T1), \textit{throughput} de un
 canal (T2), transmisión concurrente de tres maestros (T3), recepción multipunto de seis esclavos
 (T4), desbordamiento del \textit{buffer} de software (T5), barrido de velocidad de 115\,200 a
-4~Mbaudios (T6) y recuperación ante frames corruptos (T7). El cronómetro para siempre
+4~Mbaudios (T6) y recuperación ante \textit{frames} corruptos (T7). El cronómetro para siempre
 \textbf{en el receptor}, nunca al retornar de la función de envío: hacerlo al retornar daría cifras
 falsas, porque el envío es bloqueante en la variante MCDMA y no bloqueante en las otras dos.
 
