@@ -278,23 +278,23 @@ Puntos de precisión, cada uno con una comprobación detrás.
 El tutor firma el enfoque («me ha encantado, mis dieces») y pide trabajo de
 redacción encima, no de contenido.
 
-- [ ] **p. 96** «Suena un pelín a Claudia»: el párrafo del PERTE y la masa crítica.
+- [x] **p. 96** «Suena un pelín a Claudia»: el párrafo del PERTE y la masa crítica.
       Criterio para todo el anexo, no solo para ese párrafo: **pasar el anexo
       entero buscando frases pedantes o poco naturales. Si no aportan información,
       fuera. Si son necesarias, se reescriben de forma directa.** Sospechosos
       típicos: la abstracción sin sujeto («es el mecanismo por el que…»), el
       paralelismo retórico y la frase que solo reformula la anterior.
-- [ ] **p. 96** «Separa en dos oraciones»: el párrafo del TFM como mecanismo de
+- [x] **p. 96** «Separa en dos oraciones»: el párrafo del TFM como mecanismo de
       formación («Aplica conocimiento académico… y deja como resultado…»).
-- [ ] **p. 96** «No se termina de entender en la primera pasada, largo y
+- [x] **p. 96** «No se termina de entender en la primera pasada, largo y
       complicado»: el párrafo NewSpace/COTS/residuos. Reordenar y partir.
-- [ ] **p. 96** «Ponlo el último entonces»: mover el apartado de consumo
+- [x] **p. 96** «Ponlo el último entonces»: mover el apartado de consumo
       energético al final de la lista de impactos ambientales, ya que es el que se
       desarrolla en detalle a continuación.
-- [ ] **p. 97** Marcar en negrita que el consumo es el apartado sobre el que
+- [x] **p. 97** Marcar en negrita que el consumo es el apartado sobre el que
       inciden directamente las decisiones de diseño de este trabajo. El tutor lo da
       por buen criterio de ampliación.
-- [ ] **p. 97** Pregunta de tribunal: ¿qué caudal real va a haber? Si se envían
+- [x] **p. 97** Pregunta de tribunal: ¿qué caudal real va a haber? Si se envían
       pocas muestras por segundo y el canal no se satura, ¿sigue compensando?
       No hay medida de caudal de misión, así que la respuesta va como **acotación
       honesta, no como dato**: el caudal de misión no está fijado, y el cambio es
@@ -302,11 +302,11 @@ redacción encima, no de contenido.
       rendimiento y la energía por byte; con tráfico bajo porque la variante GPIO
       no era una opción de todos modos, ni por número de canales ni por coste de
       interrupción. Escrito de forma directa, sin adornar la falta de dato.
-- [ ] **p. 97** Matizar la conclusión de «menos satélites o más pequeños»: el
+- [x] **p. 97** Matizar la conclusión de «menos satélites o más pequeños»: el
       margen liberado vale si por las interfaces viaja tráfico sostenido. Decir que
       la plataforma se diseña sin fijar si servirá para telemetría, carga de pago o
       ambas.
-- [ ] **p. 98** «Troppo longo, recorta»: el apartado de limitaciones del análisis.
+- [x] **p. 98** «Troppo longo, recorta»: el apartado de limitaciones del análisis.
 
 **Commit:** `Rev2.7: reescribir el anexo etico para legibilidad`
 

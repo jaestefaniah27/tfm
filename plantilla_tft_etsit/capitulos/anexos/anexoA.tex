@@ -22,34 +22,24 @@ propia para producir en serie plataformas de microsatélite y sus cargas de pago
 comunicaciones del ordenador de a bordo es uno de los bloques que, de no desarrollarse aquí, habría
 que adquirir a proveedores extracomunitarios sujetos a controles de exportación. Un transceptor
 serie escrito en VHDL propio, con su código fuente disponible y su comportamiento medido y
-documentado, es exactamente lo contrario de un componente opaco de terceros: puede auditarse,
-modificarse y volver a sintetizarse sin depender de licencias ni de autorizaciones externas.
+documentado, puede auditarse, modificarse y volver a sintetizarse sin depender de licencias ni de
+autorizaciones externas, a diferencia de un componente cerrado de terceros.
 
-Un programa de este tipo persigue empleo cualificado y no empleo genérico. Un ingeniero que diseña
-y verifica un transceptor añade mucho más valor por hora de trabajo que quien ensambla un producto
-ya definido por otro proveedor. Ese valor añadido es exportable a otros proyectos. El conocimiento
-adquirido de, por ejemplo, cómo se sintetiza un puente VHDL o cómo se caracteriza un driver serie a
-alta velocidad, permanece en el país aunque cambie el contratista. Comprar el mismo subsistema a un
-proveedor externo no deja detrás ese conocimiento.
+El desarrollo propio deja además conocimiento en el país. Un ingeniero que diseña y verifica un
+transceptor aporta más valor por hora que quien integra un producto ya definido por otro proveedor,
+y ese conocimiento (cómo se sintetiza un puente VHDL, cómo se caracteriza un driver serie a alta
+velocidad) permanece aunque cambie el contratista. Comprar el mismo subsistema fuera no lo deja.
 
-Generar ese empleo cualificado no es inmediato. Exige años de preparación y, sobre todo,
-experiencia en programas reales, que solo se adquiere participando en misiones. Sin misiones en
-marcha no hay dónde formar a ese personal. Retenerlo después no es más sencillo. El perfil es
-internacionalmente móvil. Compite con fabricantes y agencias de países con industria espacial
-consolidada, y con el sector tecnológico civil, que no exige los mismos plazos de cualificación.
-Sin continuidad de proyectos en España, el resultado habitual es la fuga de titulados hacia esos
-otros destinos.
-
-Un programa como el PERTE Aeroespacial no busca sostener esa plantilla de forma indefinida con
-fondos públicos. Busca alcanzar una masa crítica de empresas y de personal cualificado que sostenga
-una cadena de suministro nacional. Esa masa crítica permite que la industria se sostenga después
-por contratos comerciales, sin depender de la siguiente convocatoria. Es la autonomía estratégica
-declarada al inicio de este apartado: una industria que deja de necesitar la subvención pública.
-
-Un trabajo de fin de máster desarrollado dentro de un programa de este tipo es precisamente el
-mecanismo por el que se forma ese personal. Aplica conocimiento académico a un problema real, con
-las restricciones y los plazos de una misión concreta, y deja como resultado a alguien capacitado
-para seguir trabajando en el sector.
+Formar ese personal cualificado lleva años y exige experiencia en programas reales, que solo se
+adquiere participando en misiones. Retenerlo tampoco es sencillo: el perfil es internacionalmente
+móvil y compite con agencias y fabricantes de países con industria espacial consolidada y con el
+sector tecnológico civil. Sin continuidad de proyectos en España, el resultado habitual es la fuga
+de titulados. El PERTE Aeroespacial no pretende sostener esa plantilla de forma indefinida con
+fondos públicos, sino alcanzar una masa crítica de empresas y personal que permita a la industria
+sostenerse después por contratos comerciales. Un trabajo de fin de máster dentro de un programa así
+forma parte de ese mecanismo: aplica conocimiento académico a un problema real, con las
+restricciones y los plazos de una misión concreta. Su resultado es alguien capacitado para seguir
+trabajando en el sector.
 
 \textbf{Doble uso civil y militar.} Una plataforma de microsatélites LEO con capacidad de
 observación y de comunicaciones es tecnología de doble uso por definición: los mismos enlaces serie
@@ -64,22 +54,15 @@ componente, pero queda declarada.
 \textbf{Residuos electrónicos y ciclo de vida del hardware.} El trabajo ha producido seis placas de
 circuito impreso físicas (dos unidades de cada uno de los tres diseños), con más de doscientos
 componentes montados y conectores metálicos, además de las revisiones descartadas durante el
-desarrollo. Todo ello es residuo de aparatos eléctricos y electrónicos en el sentido de la
-Directiva 2012/19/UE~\cite{ue2012weee}, y los componentes seleccionados cumplen la Directiva
-2011/65/UE de restricción de sustancias peligrosas~\cite{ue2011rohs}, que es la razón por la que la
-lista de materiales especifica encapsulados y acabados libres de plomo. El enfoque NewSpace
-adoptado por el proyecto, basado en componentes comerciales (COTS) en lugar de piezas cualificadas
-para espacio, reduce el coste y el plazo pero acorta la vida útil esperada del hardware y aumenta
-la frecuencia de sustitución, con el consiguiente aumento del volumen de residuo por unidad de
-servicio prestado.
+desarrollo. Todo ello es residuo de aparatos eléctricos y electrónicos en el sentido de la Directiva
+2012/19/UE~\cite{ue2012weee}. Los componentes seleccionados cumplen la Directiva 2011/65/UE de
+restricción de sustancias peligrosas~\cite{ue2011rohs}, y por eso la lista de materiales especifica
+encapsulados y acabados libres de plomo.
 
-\textbf{Consumo energético y presupuesto de potencia en órbita.} La lógica programable es el
-elemento del MPSoC cuyo consumo depende directamente de las decisiones de diseño tomadas en este
-trabajo: la estimación de Vivado da 3,52~W para la variante GPIO, 3,86~W para la de catorce
-controladores DMA y 3,62~W para la solución MCDMA finalmente seleccionada
-(tabla~\ref{tab:bench_hw}). En un microsatélite de 100--200~kg, alimentado por paneles solares y
-con un presupuesto de potencia cerrado, cada vatio de la aviónica es un vatio que no está
-disponible para la carga de pago. Este impacto se analiza en detalle en el apartado siguiente.
+El proyecto adopta un enfoque NewSpace: componentes comerciales (COTS) en lugar de piezas
+cualificadas para espacio. Esto reduce el coste y el plazo, pero acorta la vida útil esperada del
+hardware y aumenta la frecuencia de sustitución, con el consiguiente aumento del volumen de residuo
+por unidad de servicio prestado.
 
 \textbf{Sostenibilidad del entorno orbital.} LINCE produce microsatélites de órbita baja destinados
 a operar en constelación. La densidad de objetos en LEO es el principal problema de sostenibilidad
@@ -87,6 +70,14 @@ del sector, documentado anualmente por la Oficina de Basura Espacial de la ESA
 \cite{esa_environment_report}, y toda decisión que acorte la vida operativa de un satélite (por
 ejemplo, un fallo de aviónica no recuperable) adelanta su sustitución y, con ella, un lanzamiento
 adicional y un objeto más en órbita.
+
+\textbf{Consumo energético y presupuesto de potencia en órbita.} La lógica programable es
+\textbf{el único elemento del MPSoC cuyo consumo depende directamente de las decisiones de diseño
+tomadas en este trabajo}: la estimación de Vivado da 3,52~W para la variante GPIO, 3,86~W para la de
+catorce controladores DMA y 3,62~W para la solución MCDMA finalmente seleccionada
+(tabla~\ref{tab:bench_hw}). En un microsatélite de 100--200~kg, alimentado por paneles solares y
+con un presupuesto de potencia cerrado, cada vatio de la aviónica es un vatio que no está
+disponible para la carga de pago. Este impacto se analiza en detalle en el apartado siguiente.
 }
 \vspace{0.3cm}
 
@@ -146,12 +137,20 @@ frente a los \textit{single event upsets} (SEU), y un satélite que sobrevive a 
 lugar de perderse es un satélite que no hay que sustituir: se evitan un lanzamiento y un objeto
 adicional en una órbita ya congestionada~\cite{esa_environment_report}.
 
-\textbf{Limitaciones del análisis.} Las cifras de potencia proceden de la estimación del
-implementador de Vivado y no de una medida sobre el carril de alimentación de la placa, por lo que
-sirven para comparar variantes entre sí, que es su propósito aquí, pero no como valor absoluto de
-consumo. El cálculo tampoco incluye el consumo del sistema de procesamiento, que es donde el efecto
-descrito debería ser mayor y donde una medida instrumentada del carril del PS ampliaría de forma
-apreciable la diferencia observada.
+\textbf{Caudal de misión.} El cálculo anterior supone el canal trabajando a caudal sostenido. El
+caudal real de la misión no está fijado todavía, y conviene acotar la conclusión sin adornar esa
+falta de dato. Con tráfico alto por las interfaces, el argumento se sostiene por la energía por byte
+y por el margen de CPU. Con tráfico bajo, si el canal no se satura, la ventaja en energía por byte
+se diluye, pero la variante GPIO tampoco era una opción: ni por número de canales ni por coste de
+interrupción. El cambio es favorable en los dos escenarios. Por eso la plataforma se dimensiona sin
+fijar si las interfaces servirán a telemetría, a la carga de pago o a ambas, y el margen liberado,
+de CPU y de área, vale mientras por ellas circule tráfico sostenido.
+
+\textbf{Limitaciones del análisis.} Las cifras de potencia son la estimación del implementador de
+Vivado, no una medida sobre el carril de alimentación de la placa, por lo que sirven para comparar
+variantes entre sí, que es su propósito aquí, pero no como valor absoluto de consumo. El cálculo
+tampoco incluye el consumo del sistema de procesamiento, que es donde el efecto descrito debería ser
+mayor.
 }
 \vspace{0.3cm}
 
