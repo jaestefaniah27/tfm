@@ -8,7 +8,7 @@ siguiéndolos uno a uno, para poder declarar en cada caso qué se ha conseguido 
 
 \textbf{El primer objetivo, diseñar un transceptor serie configurable en VHDL, se ha cumplido.}
 El bloque desarrollado opera sobre los estándares RS422 y RS485 y admite la configuración completa
-del formato de trama en tiempo de ejecución: velocidad entre 50 y 4.000.000 de baudios sobre una
+del formato de trama en tiempo de ejecución: velocidad entre 50 y 4\,000\,000 de baudios sobre una
 tabla de 54 entradas, de 5 a 9 bits de datos, cinco modos de paridad, tres campos de parada
 (incluido el de 1,5 bits) y los dos órdenes de bit. Su base de tiempos, un NCO de 32 bits validado
 velocidad a velocidad con un \textit{testbench} dedicado, presenta un error nulo o inferior a
@@ -90,7 +90,7 @@ de este trabajo. Con menor peso, tampoco se completó la medida de recepción de
 descartada por recursos antes de depurar su lazo de prueba, ni se llegó a fabricar la revisión V2
 de la placa AOCS.
 
-En términos de volumen, el trabajo ha producido \textbf{20.188 líneas de código} de autoría propia
+En términos de volumen, el trabajo ha producido \textbf{20\,188 líneas de código} de autoría propia
 (excluyendo todo lo generado automáticamente por las herramientas y el código de terceros),
 repartidas entre el RTL del transceptor y el puente, sus \textit{testbenches}, el driver de RTEMS,
 las aplicaciones de prueba y las herramientas de automatización del flujo. El desglose completo se

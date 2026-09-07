@@ -53,9 +53,9 @@ alguna.
         \hline
         \textbf{Variante} & \textbf{LUT} & \textbf{\%} & \textbf{Registros} & \textbf{BRAM} & \textbf{Potencia} & \textbf{WNS} & \textbf{LUT/canal} \\
         \hline
-        GPIO   & 6\,434  & 2,35\,\%  & 7\,726  & 7  & 3,52 W & 4,69 ns & 460 \\
-        DMA14  & 40\,217 & 14,67\,\% & 53\,943 & 35 & 3,86 W & 4,05 ns & 2\,873 \\
-        MCDMA  & 14\,191 & 5,18\,\%  & 16\,438 & 18 & 3,62 W & 5,14 ns & 1\,014 \\
+        GPIO   & 6\,434  & 2,35\,\%  & 7\,726  & 7  & 3,52~W & 4,69~ns & 460 \\
+        DMA14  & 40\,217 & 14,67\,\% & 53\,943 & 35 & 3,86~W & 4,05~ns & 2\,873 \\
+        MCDMA  & 14\,191 & 5,18\,\%  & 16\,438 & 18 & 3,62~W & 5,14~ns & 1\,014 \\
         \hline
     \end{tabular}
     \caption{Ocupación de la lógica programable de las tres variantes sobre el XCZU9EG.}
@@ -322,13 +322,13 @@ comportamiento entre ambas arquitecturas es inmediata.
     \centering
     \begin{tabular}{lrrrrrrr}
         \hline
-        \textbf{Variante} & \textbf{115200} & \textbf{230400} & \textbf{460800} & \textbf{921600} & \textbf{1M} & \textbf{2M} & \textbf{4M} \\
+        \textbf{Variante} & \textbf{115\,200} & \textbf{230\,400} & \textbf{460\,800} & \textbf{921\,600} & \textbf{1\,000\,000} & \textbf{2\,000\,000} & \textbf{4\,000\,000} \\
         \hline
         GPIO  & 3\,471 & 4\,087 & 4\,485 & 4\,714 & 4\,733 & 4\,848 & 4\,907 \\
         MCDMA & 11\,458 & 22\,789 & 45\,104 & 88\,298 & 96\,186 & 183\,053 & \textbf{344\,781} \\
         \hline
     \end{tabular}
-    \caption{\textit{Throughput} (B/s) frente a la velocidad de línea.}
+    \caption{\textit{Throughput} (B/s) frente a la velocidad de línea (baudios).}
     \label{tab:bench_baudios}
 \end{table}
 

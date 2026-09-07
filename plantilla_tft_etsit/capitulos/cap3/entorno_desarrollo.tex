@@ -124,8 +124,8 @@ hardware generado en Vivado, junto con el software de arranque, en un único bin
     se obtiene el \texttt{zynqmp\_fsbl\_proyect.elf}.
     \item Se lanzó el generador de imágenes de Vitis (\textit{Create Zynq UltraScale+ Boot Image})
     y se añadieron los componentes en el orden indicado en la figura
-    \ref{fig:vitis_boot_image}, ya que el orden dentro del fichero BIF determina la secuencia
-    de arranque.
+    \ref{fig:vitis_boot_image}, ya que el orden dentro del fichero BIF (\textit{Boot Image Format})
+    determina la secuencia de arranque.
 \end{enumerate}
 
 La lista siguiente detalla cada componente con su modo y su destino. El nivel de detalle es
@@ -328,7 +328,7 @@ fundamentales son:
 Los parámetros configurables son:
 
 \begin{itemize}
-    \item Velocidad de bus, o \textit{baudrate}, desde 50 hasta 4.000.000 baudios.
+    \item Velocidad de bus, o \textit{baudrate}, desde 50 hasta 4\,000\,000 baudios.
     \item Número de bits de parada, o \textit{stop bits}, que marcan el final de la trama y
     devuelven la línea a reposo: 1, 1,5 o 2.
     \item Modo de paridad: par, impar, marca, espacio o deshabilitada. La paridad es un único bit

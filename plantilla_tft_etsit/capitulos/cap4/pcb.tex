@@ -81,7 +81,7 @@ apartados siguientes desarrollan las que necesitan explicación.
         T6 Vuelta del bus & \textit{Guard time} mínimo de \textbf{0~$\mu$s}: el control de dirección del transceptor suelta la línea a tiempo y no hace falta guarda en software. \\
         T7 Diafonía & \textbf{0 bytes de fuga} del bus A hacia los buses B y C. \\
         T8 Colisión & La trama sale corrupta, como debe, y el bus \textbf{se recupera}: el intercambio siguiente es limpio. \\
-        T9 Estabilidad & 10~s de tráfico continuo: bus A a 460~kbaudios, BER de 147~ppm; buses B y C a 1~Mbaudios, \textbf{BER de 0}. \\
+        T9 Estabilidad & 10~s de tráfico continuo: bus A a 460~kbaudios, tasa de error de bit (BER) de 147~ppm; buses B y C a 1~Mbaudios, \textbf{BER de 0}. \\
         \hline
     \end{tabular}
     \caption{Resultado de los nueve tests de caracterización de la PCB.}
@@ -261,7 +261,7 @@ limpia de cada uno:
         \hline
         \textbf{Bus} & \textbf{Velocidad} & \textbf{Tramas} & \textbf{Bytes} & \textbf{BER} \\
         \hline
-        A (RS485 multipunto) & 460\,800  & 6\,781  & 433\,984 & 147 ppm \\
+        A (RS485 multipunto) & 460\,800  & 6\,781  & 433\,984 & 147~ppm \\
         B (RS422)            & 1\,000\,000 & 14\,408 & 922\,112 & \textbf{0} \\
         C (RS422)            & 1\,000\,000 & 14\,466 & 925\,824 & \textbf{0} \\
         \hline
