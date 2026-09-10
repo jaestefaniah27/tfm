@@ -52,247 +52,80 @@ sintético Dhrystone~\cite{weicker1984dhrystone}, que ejercita la aritmética en
 cadenas y las llamadas a función, y que sirve aquí únicamente como comprobación de que el
 \textit{toolchain} genera código funcional y el planificador ejecuta una carga sostenida.
 
-\subsection{Validación del flujo de desarrollo de extremo a extremo}
+\subsection{Validación del flujo de desarrollo de extremo a extremo} \label{sec:flujo_extremo_a_extremo}
 
-Una vez preparadas todas las herramientas de desarrollo, se realizó un desarrollo
-completo de principio a fin implementando un ejemplo sencillo: una
-\textbf{puerta AND}.
+Con las herramientas ya instaladas, quedaba por comprobar que encajaban entre sí. Antes de
+abordar el transceptor serie se recorrió el flujo completo con el ejemplo más pequeño posible:
+una \textbf{puerta AND}. La puerta se describió en VHDL y se sintetizó en la \textbf{PL}, y en el
+\textbf{PS} se escribió un programa de RTEMS que excitaba todas las combinaciones de sus entradas,
+leía la salida por AXI e imprimía cada resultado por la consola serie. La dificultad no está en la
+puerta, sino en el camino que lleva un \textit{bitstream} y un programa en C hasta la ZCU102.
 
-En este ejemplo se repartieron las tareas entre las dos mitades del MPSoC: la puerta AND se
-implementó en la \textbf{PL}, describiéndola en VHDL, y en el \textbf{PS} se escribió un
-programa que excitaba todas las combinaciones de sus entradas y leía la salida en cada caso,
-escribiendo los resultados por la consola serie.
+Ese camino se reduce a producir dos ficheros y copiarlos en la partición FAT de una tarjeta SD:
+el \texttt{BOOT.BIN}, que reúne el \textit{bitstream} de la PL y todo el software de arranque
+(FSBL, PMUFW, BL31, U-Boot y el \textit{device tree}), y el \texttt{rtems.img}, que contiene la
+aplicación que ejecuta el PS. El primero se construye con Vivado y Vitis; el segundo, compilando
+la aplicación de RTEMS. El detalle del procedimiento --- la descripción VHDL, el \textit{Block
+Design}, los componentes del fichero BIF con su modo y su destino, la posición del conmutador de
+arranque y el volcado del barrido de la tabla de verdad --- se recoge en el apartado C.8 del
+Anexo~\ref{anx:rtl}. El proyecto completo está en \texttt{tfm/00\_docs/AND\_example} dentro del
+repositorio del proyecto~\cite{repo_tfm}.
 
-La complejidad de este ejercicio no reside en la puerta AND en sí, sino en
-recorrer correctamente el procedimiento que lleva un programa escrito en C/C++ y un
-\textit{bitstream} hasta la ZCU102. En resumen, ese procedimiento consiste en generar dos
-ficheros y copiarlos en una tarjeta SD: el \texttt{BOOT.BIN}, que contiene el \textit{bitstream}
-de la PL y todo el software de arranque, y el \texttt{rtems.img}, que contiene la aplicación que
-se ejecutará en el PS. El primero se construye con Vivado y Vitis; el segundo, compilando la
-aplicación de RTEMS. Los apartados que siguen recorren cada uno de esos pasos.
+El barrido de la tabla de verdad salió por la consola serie con la salida a uno únicamente cuando
+ambas entradas valían uno. Fue la primera confirmación de que la cadena entera funcionaba: el VHDL
+sintetizado en la PL, la imagen de arranque, la aplicación de RTEMS y la comunicación
+PS$\leftrightarrow$PL por AXI. De esa puesta en marcha salió además un detalle que reaparece más
+adelante: RTEMS desconoce a priori las direcciones de la PL, así que hay que declarar el rango
+\texttt{0xA0000000}--\texttt{0xA01FFFFF} como memoria de periférico nada más arrancar la tarea
+\texttt{Init}. Sin ese mapeado, el primer acceso a los GPIO aborta la ejecución. El mismo problema
+vuelve en el apartado~\ref{sec:testing_driver}, ya resuelto como
+\texttt{mmu\_map\_pl\_axi\_early()}.
 
-\textbf{Parte Vivado.} Se creó un proyecto nuevo en Vivado llamado \texttt{and\_gate\_ps\_p}, y se
-diseñó la puerta AND en VHDL:
+\textbf{Automatización del flujo.} Lo que hizo falta corregir no fue el ejemplo, sino el coste de
+repetirlo. Cada iteración obliga a sintetizar el diseño en Vivado, crear y compilar una plataforma
+y una aplicación nuevas en Vitis, ensamblar la imagen de arranque, compilar la imagen de RTEMS,
+copiar los ficheros a la tarjeta y arrancar la placa: \textbf{casi una hora de media}. Y cuando la
+placa no arranca, no da ninguna indicación del motivo. Agrava el problema que Vitis reutiliza
+artefactos ya compilados de la plataforma y de la aplicación: un .xsa nuevo no siempre se propaga
+a la imagen final, el sistema se comporta como antes del cambio en el VHDL y limpiar y recompilar
+no da un resultado fiable. De ahí la regla que se adoptó para el resto del trabajo, plataforma y
+aplicación nuevas ante cualquier cambio en la PL, que es más lenta pero garantiza que la imagen
+corresponde al hardware recién sintetizado.
 
-\begin{lstlisting}[language=VHDL, caption={AND\_GATE.vhd --- ejemplo de puerta AND en VHDL}]
-library IEEE;
-use IEEE.STD_LOGIC_1164.ALL;
+Con ese tiempo por iteración, automatizar dejó de ser una comodidad. Se escribieron tres
+herramientas, disponibles en el repositorio del proyecto~\cite{repo_tfm}. La primera,
+\texttt{make\_img.sh}, automatiza la compilación de la aplicación de RTEMS: deduce su nombre del
+directorio desde el que se lanza, ejecuta \texttt{waf}\footnote{\texttt{waf} es el sistema de
+compilación que emplean las aplicaciones de RTEMS; el fichero \texttt{wscript} de cada aplicación
+describe sus fuentes y opciones de compilación.} (configurándolo la primera vez), convierte el
+ejecutable a binario plano con \texttt{objcopy} y lo empaqueta con
+\texttt{mkimage}\footnote{Herramienta de U-Boot que añade al binario una cabecera con los datos que
+el gestor de arranque necesita para cargarlo y ejecutarlo, entre ellos la dirección de memoria en
+la que debe copiarlo.} en el formato de imagen que espera U-Boot, generando \texttt{rtems.img}.
 
-entity AND_GATE is
-    Port ( A_B_IN : in  STD_LOGIC_VECTOR (1 downto 0);
-           Z_OUT  : out STD_LOGIC);
-end AND_GATE;
+La segunda, \texttt{automate\_ymodem\_update.py}, evita tener que quitar y poner la tarjeta SD en
+cada prueba. Escrito en Python sobre \texttt{pyserial}, invoca al script anterior para regenerar la
+imagen, interrumpe por el puerto USB-serie el \textit{autoboot}\footnote{Arranque automático que
+U-Boot lanza tras un breve tiempo de espera; pulsando una tecla durante esa ventana se accede a su
+consola de comandos.} de U-Boot, transfiere \texttt{rtems.img} por
+YMODEM\footnote{Protocolo para enviar ficheros por un enlace serie: los trocea, los numera y
+comprueba que cada trozo llega sin errores.} con el comando \texttt{loady} y lo escribe en la
+partición FAT de la SD con \texttt{fatwrite}. Probar un cambio en la aplicación pasó a ser un único
+script más el botón de \textit{ResetCPU} de la placa, que reinicia el sistema de procesamiento sin
+cortar la alimentación.
 
-architecture Behavioral of AND_GATE is
-begin
-    Z_OUT <= A_B_IN(1) and A_B_IN(0);
-end Behavioral;
-\end{lstlisting}
-
-Después se creó un \textit{Block Design}, se añadió el bloque Zynq UltraScale+ MPSoC IP y se
-configuró automáticamente usando \textit{Block Automation} de Vivado. Se añadió el fichero VHDL
-del paso anterior al \textit{Block Design}. Se añadieron dos AXI GPIO IPs al \textit{block design} para
-comunicar el PS con la PL, y se conectaron los bloques entre sí, utilizando \textit{Automate
-Connection} de Vivado para todas las conexiones faltantes. El diseño resultante es el de la
-figura~\ref{fig:block_design_and}, donde se aprecia la estructura que se repetirá en todos los
-diseños del trabajo: el bloque del PS, los periféricos de la PL y el interconector AXI que los une,
-con el bloque VHDL propio colgando de uno de los dos AXI GPIO.
-
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=\textwidth]{IMG/Desarrollo/block_design_and.png}
-    \caption{\textit{Block Design} del ejemplo de la puerta AND.}
-    \label{fig:block_design_and}
-\end{figure}
-
-Después se creó un \textit{Wrapper} del \textit{Block Design} para que Vivado pudiera sintetizarlo
-correctamente. La pestaña \textit{Address Editor} de Vivado lista las direcciones base con las que el PS accede
-a los registros de cada periférico de la PL. El proyecto completo de este ejemplo, con el diseño y
-el código de las dos mitades, está en el repositorio bajo \texttt{tfm/00\_docs/AND\_example}. Por último, se generó el \textit{BitStream} y se exportó el
-hardware como .xsa.
-
-\textbf{Generación de la imagen de arranque (Vitis).} El objetivo de este paso es empaquetar el
-hardware generado en Vivado, junto con el software de arranque, en un único binario
-(\texttt{BOOT.BIN}) que el MPSoC pueda ejecutar desde la tarjeta SD. El proceso fue el siguiente:
-
-\begin{enumerate}
-    \item Se creó un componente de tipo \textit{Platform} en Vitis, utilizando como base el .xsa
-    exportado desde Vivado, y se compiló.
-    \item Sobre esa plataforma se creó una aplicación a partir del ejemplo \textit{Zynq MP FSBL},
-    el cargador de arranque de primera etapa (\textit{First Stage Boot Loader}), que es el primer
-    programa que ejecuta el PS y el que carga el resto de componentes de la imagen. Al compilarla
-    se obtiene el \texttt{zynqmp\_fsbl\_proyect.elf}.
-    \item Se lanzó el generador de imágenes de Vitis (\textit{Create Zynq UltraScale+ Boot Image})
-    y se añadieron los componentes en el orden indicado en la figura
-    \ref{fig:vitis_boot_image}, ya que el orden dentro del fichero BIF (\textit{Boot Image Format})
-    determina la secuencia de arranque.
-\end{enumerate}
-
-La lista siguiente detalla cada componente con su modo y su destino. El nivel de detalle es
-deliberado: el modo y el orden de los componentes dentro del fichero BIF son la parte del
-procedimiento que la documentación de AMD no reúne en un solo sitio, y un error en cualquiera de
-los dos impide el arranque sin dar un mensaje útil.
-
-\begin{itemize}
-    \item \texttt{zynqmp\_fsbl\_proyect.elf}, en modo \textit{bootloader}, destino a53-0 y nivel
-    de excepción EL3. Se encuentra en la carpeta \texttt{build} de la aplicación anterior.
-    \item \texttt{pmufw.elf}, en modo \textit{pmufw\_image} y destino a53-0. Es el firmware de la
-    unidad de gestión de potencia y se descargó del repositorio de firmware precompilado de
-    AMD para la ZCU102\footnote{\url{https://github.com/Xilinx/soc-prebuilt-firmware/tree/xilinx_v2025.1/zcu102-zynqmp}}.
-    \item \texttt{BLOCK\_DESIGN\_ZYNQ\_AND\_wrapper.bit}, en modo \textit{datafile} y con la PL
-    como dispositivo de destino. Es el \textit{bitstream} generado por Vivado.
-    \item \texttt{bl31.elf}, en modo \textit{datafile}, destino a53-0 y nivel de excepción EL3. Es
-    el firmware de ARM Trusted Firmware y se descarga del mismo sitio que el PMUFW.
-    \item \texttt{u-boot.elf}, en modo \textit{datafile}, destino a53-0 y nivel de excepción EL2.
-    U-Boot es un gestor de arranque de segunda etapa. Se ejecuta después del FSBL, inicializa
-    los periféricos necesarios (tarjeta SD, red, consola serie) y carga en memoria la imagen
-    del sistema operativo (en este caso \texttt{rtems.img}), a la que cede el control.
-    Ofrece además una consola interactiva desde la que se puede inspeccionar la memoria o
-    elegir manualmente qué imagen arrancar, lo que resultó útil durante la depuración.
-    \item \texttt{system.dtb}, en modo \textit{datafile}, destino a53-0 y dirección de carga
-    \texttt{0x100000}. Este \textit{device tree} es el que permite a BL31 saber dónde está
-    enlazado el BL33 (U-Boot) y arrancarlo.
-\end{itemize}
-
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=\textwidth]{IMG/Desarrollo/vitis_boot_image.png}
-    \caption{Generador de imágenes de arranque de Vitis.}
-    \label{fig:vitis_boot_image}
-\end{figure}
-
-\textbf{Parte RTEMS.} Una vez generado el archivo de arranque, se desarrolló un software de
-ejemplo que interactuaba con los puertos GPIO conectados por AXI. Excitaba todas las
-combinaciones posibles de la puerta AND en la PL y leía su salida. Fue necesario añadir
-un archivo de mapeado de memoria para que el sistema operativo reconociera las direcciones
-correspondientes a la PL, y un \texttt{wscript} para la compilación. Ambos fuentes están
-disponibles en \texttt{tfm/00\_docs/AND\_example/} dentro del repositorio del proyecto
-\cite{repo_tfm}.
-
-El primero de ellos, \texttt{and\_demo.c}, contiene la tarea \texttt{Init} de RTEMS. Escribe la
-pareja de entradas \texttt{(A,B)} en el registro de datos del \texttt{axi\_gpio\_0} (mapeado en
-\texttt{0xA0000000}) y espera un instante a que la lógica de la PL se estabilice. Después lee la
-salida \texttt{Z} del \texttt{axi\_gpio\_1} (\texttt{0xA0010000}) e imprime cada resultado por la
-consola serie.
-
-El segundo, \texttt{mmu\_pl\_map.c}, es el archivo de mapeado mencionado: declara como memoria de
-periférico el rango \texttt{0xA0000000}--\texttt{0xA01FFFFF}, donde Vivado ha situado los AXI GPIO.
-Este mapeado se realiza nada más arrancar \texttt{Init}, ya que RTEMS desconoce a priori las
-direcciones de la PL. Sin él, el primer acceso a los GPIO aborta la ejecución.
-
-\textbf{Carga en la tarjeta SD y arranque de la placa.}
-Los dos ficheros se copian en la partición FAT de una tarjeta SD, que se inserta en el zócalo
-\texttt{J100} de la placa~\cite{xilinx2023ug1182}. El \texttt{BOOT.BIN} es el que el MPSoC ejecuta
-nada más alimentarse. Inicializa el PS, carga el \textit{bitstream} en la PL y encadena el resto
-de etapas hasta U-Boot. U-Boot, a su vez, carga el \texttt{rtems.img} en memoria y le cede el
-control. Si el ensayo solo ejercita la PL, el \texttt{BOOT.BIN} basta por sí solo, ya que lleva
-dentro el \textit{bitstream}.
-
-Antes de encender la placa hay que colocar el selector de modo de arranque en la posición de
-tarjeta SD. Es el conmutador DIP \texttt{SW6}, la referencia 44 del plano de componentes de la
-ZCU102~\cite{xilinx2023ug1182}, cuyas posiciones recoge la tabla~\ref{tab:sw6}. Conviene tenerlo
-presente porque la configuración de fábrica es \texttt{QSPI32}: sin cambiar el conmutador, la
-placa no arranca desde la tarjeta aunque los ficheros estén correctamente copiados.
-
-\begin{table}[H]
-    \centering
-    \begin{tabular}{lcc}
-        \hline
-        \textbf{Modo de arranque} & \textbf{\texttt{PS\_MODE[3:0]}} & \textbf{SW6 [4:1]} \\
-        \hline
-        JTAG                      & 0000 & ON, ON, ON, ON \\
-        QSPI32 (por defecto)      & 0010 & ON, ON, OFF, ON \\
-        \textbf{Tarjeta SD}       & 1110 & \textbf{OFF, OFF, OFF, ON} \\
-        \hline
-    \end{tabular}
-    \caption{Posiciones del selector de modo de arranque SW6 de la ZCU102
-    \cite{xilinx2023ug1182}.}
-    \label{tab:sw6}
-\end{table}
-
-Con la tarjeta insertada y el conmutador en su sitio, el barrido completo de la tabla de verdad se
-obtiene por la consola serie y confirma el comportamiento esperado de la puerta AND:
-
-\begin{lstlisting}[caption={Salida de terminal --- barrido de la puerta AND}]
-## Transferring control to RTEMS (at address 000100000) ...
-Barrido AND via PL
-A=0, B=0, Z=0 (raw=0x00000000)
-A=0, B=1, Z=0 (raw=0x00000000)
-A=1, B=0, Z=0 (raw=0x00000000)
-A=1, B=1, Z=1 (raw=0x00000001)
-
-[ RTEMS shutdown ]
-\end{lstlisting}
-
-La primera línea la emite U-Boot al ceder el control a la imagen de RTEMS. Las cuatro siguientes
-son las escritas por \texttt{and\_demo.c}, con la salida \texttt{Z} a uno únicamente cuando ambas
-entradas valen uno. Esta traza fue la primera confirmación de que el flujo completo funcionaba
-de extremo a extremo. Incluye el VHDL sintetizado en la PL, la imagen de arranque, la aplicación
-de RTEMS y la comunicación PS$\leftrightarrow$PL por AXI. La salida se conserva en
-\texttt{tfm/\allowbreak 00\_docs/\allowbreak logs\_terminal/\allowbreak and\_gate\_output.txt}.
-
-Para facilitar el desarrollo rápido en la parte de RTEMS se desarrollaron dos herramientas,
-disponibles en \texttt{tfm/07\_tools/} dentro del repositorio del proyecto~\cite{repo_tfm}. La primera,
-\texttt{make\_img.sh}, automatiza la
-compilación. Deduce el nombre de la aplicación del directorio desde el que se lanza y ejecuta
-\texttt{waf}\footnote{\texttt{waf} es el sistema de compilación que emplean las aplicaciones de
-RTEMS; el fichero \texttt{wscript} de cada aplicación describe sus fuentes y opciones de
-compilación.} (configurándolo la primera vez). Convierte el ejecutable a binario plano con
-\texttt{objcopy}\footnote{Utilidad del \textit{toolchain} cruzado que extrae del ejecutable
-compilado una copia del contenido tal cual debe quedar en memoria, sin la información auxiliar
-que el ejecutable lleva para el enlazado y la depuración.}, lo comprime y lo empaqueta con
-\texttt{mkimage}\footnote{Herramienta de U-Boot que añade al binario una cabecera con los datos
-que el gestor de arranque necesita para cargarlo y ejecutarlo, entre ellos la dirección de
-memoria en la que debe copiarlo.} en el formato de imagen que
-espera U-Boot, generando \texttt{rtems.img}.
-
-La segunda, \texttt{automate\_ymodem\_update.py}, evita tener que quitar y poner la tarjeta SD
-en cada prueba. Escrito en Python sobre \texttt{pyserial}\footnote{Biblioteca de Python para
-manejar puertos serie, empleada aquí para dialogar con la consola de U-Boot.}, invoca al script
-anterior para regenerar la imagen. A través de la conexión USB-serie con la placa, interrumpe
-el \textit{autoboot}\footnote{Arranque automático que U-Boot lanza tras un breve tiempo de
-espera; pulsando una tecla durante esa ventana se accede a su consola de comandos.} de U-Boot y
-transfiere \texttt{rtems.img} por YMODEM\footnote{Protocolo para enviar ficheros por un enlace
-serie: los trocea, los numera y comprueba que cada trozo llega sin errores.} con el comando
-\texttt{loady}. Por último, lo escribe en la partición FAT\footnote{Partición de la tarjeta SD, con el
-mismo formato que usa un USB corriente, de la que la ZCU102 lee los ficheros de arranque.} de
-la SD mediante
-\texttt{fatwrite}; \texttt{loady} y \texttt{fatwrite} son comandos de la consola de U-Boot.
-Opcionalmente puede enviar también el \texttt{BOOT.BIN}, pero no se utilizó porque el archivo es
-grande y la conexión USB-serie es lenta. De esta manera, cada vez que se quería probar un cambio
-en la aplicación de RTEMS, bastaba con ejecutar este único script y reiniciar la ZCU pulsando su
-botón de \textit{ResetCPU}. Este botón reinicia el sistema de procesamiento sin cortar la
-alimentación de la placa.
-
-La puesta en marcha del flujo requirió varias iteraciones. Cada intento implica sintetizar el
-diseño en Vivado, crear y compilar la plataforma en Vitis, crear y compilar la aplicación,
-generar la imagen de arranque, compilar la imagen de RTEMS, copiar los ficheros a la tarjeta SD y
-arrancar la placa. Una iteración completa lleva varios minutos. Cuando la placa no arranca, el
-sistema no ofrece ninguna indicación del motivo.
-
-A ello se añade que Vitis reutiliza artefactos ya compilados de la plataforma y de la aplicación.
-Un .xsa nuevo no siempre se propaga a la imagen final, y el sistema se comporta como antes del
-cambio en el VHDL. Limpiar y recompilar no da un resultado fiable. Por ello, el
-procedimiento adoptado es crear una plataforma y una aplicación nuevas para cada cambio en la PL.
-Es más lento, pero garantiza que la imagen generada corresponde al hardware recién sintetizado.
-
-\textbf{Automatización de la generación de la imagen.} Repetir a mano toda esta secuencia en
-cada iteración del diseño (exportar el XSA, crear y compilar la plataforma en Vitis, compilar el
-FSBL y ensamblar el BOOT.BIN) es largo y propenso al error humano. Olvidar un componente,
-invertir su orden dentro del BIF o arrastrar un artefacto antiguo impide que la placa arranque.
-El sistema no ofrece ninguna indicación del motivo. A ello se suma el tiempo de navegar por los
-asistentes gráficos de cada herramienta. Para eliminar ambos costes se desarrolló el script
-\texttt{generate\_boot.sh} (disponible en
-\texttt{tfm/06\_firmware/boot\_scripts/} del repositorio del proyecto~\cite{repo_tfm}), un
-\textit{wizard} interactivo en Bash. Encadena todos estos pasos de forma desatendida. El script
-ofrece tres puntos de entrada, según el estado en que se encuentre el trabajo. Puede partir del
-proyecto de Vivado y generar el \textit{bitstream} desde cero, partir de un proyecto con
-\textit{bitstream} ya generado para exportar solo el XSA, o partir directamente de un XSA ya
-exportado. A partir de ahí invoca Vitis en modo script mediante su API Python para crear la
-plataforma y compilar el FSBL. Después llama a \texttt{bootgen} para ensamblar el BOOT.BIN final
-con los componentes de arranque precompilados (PMUFW, BL31, U-Boot, DTB). El tiempo de iteración
-hardware $\rightarrow$ imagen pasa así de varios minutos de interacción gráfica a una sola
-ejecución de terminal. La imagen generada corresponde siempre al hardware recién sintetizado.
+La tercera, \texttt{generate\_boot.sh}, cubre la mitad que faltaba, la del \texttt{BOOT.BIN}. Es un
+\textit{wizard} interactivo en Bash que encadena de forma desatendida los pasos que antes se hacían
+navegando por los asistentes gráficos de Vivado y Vitis, donde olvidar un componente, invertir su
+orden dentro del BIF o arrastrar un artefacto antiguo basta para que la placa no arranque. Ofrece
+tres puntos de entrada según el estado del trabajo: partir del proyecto de Vivado y generar el
+\textit{bitstream} desde cero, partir de un proyecto con \textit{bitstream} ya generado para
+exportar solo el XSA, o partir directamente de un XSA exportado. A partir de ahí invoca Vitis en
+modo script mediante su API Python para crear la plataforma y compilar el FSBL, y llama a
+\texttt{bootgen} para ensamblar el BOOT.BIN con los componentes de arranque precompilados. El
+tiempo de iteración hardware $\rightarrow$ imagen pasa de una sesión larga de interacción gráfica a
+una sola ejecución de terminal, y la imagen generada corresponde siempre al hardware recién
+sintetizado.
 
 Este flujo quedó establecido como procedimiento estándar para el resto del trabajo.
 

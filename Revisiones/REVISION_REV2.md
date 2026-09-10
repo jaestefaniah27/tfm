@@ -329,7 +329,7 @@ Apartados confirmados, en orden de ejecución:
       cajas de código y la secuencia de `Init()`. Arriba quedan diez líneas, y la
       reconfiguración del `slew rate` se menciona solo de pasada. Cierra el punto
       de la p. 54 de la Rev2.9.
-- [ ] §3.1.3 Validación del flujo de extremo a extremo (líneas 55--346): bajar el
+- [x] §3.1.3 Validación del flujo de extremo a extremo (líneas 55--346): bajar el
       VHDL, la lista de componentes del BIF, la secuencia de Vitis, la tabla del
       `SW6` y el volcado de la tabla de verdad. Arriba se queda el bloque de
       automatización, y **hay que decir que cada iteración llevaba casi una hora

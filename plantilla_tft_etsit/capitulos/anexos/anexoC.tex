@@ -2,7 +2,9 @@ Este anexo recoge el mapa de señales completo entre los conectores FMC de la ZC
 placas LINCE Comunicación Serial, CDHS y AOCS, la tabla de frecuencias soportadas
 por el NCO del transceptor serie junto con su error medido, el recuento del código desarrollado
 a lo largo del trabajo, la descripción RTL detallada de los bloques auxiliares del transceptor,
-el detalle de la aplicación de testing del driver serie y los volcados completos del terminal de las pruebas de validación hardware del Capítulo~4.
+el detalle de la aplicación de testing del driver serie, el procedimiento completo del ejemplo
+de validación del flujo de desarrollo y los volcados completos del terminal de las pruebas de
+validación hardware del Capítulo~4.
 
 \section*{C.1 Mapa de señales LINCE Comunicación Serial}
 
@@ -406,13 +408,169 @@ secuencia de inicialización es:
     núcleo queda con las tareas \textit{worker} y la tarea de consola.
 \end{enumerate}
 
-\section*{C.8 Volcados completos de terminal de las pruebas serie RS422/RS485}
+\section*{C.8 Flujo de desarrollo de extremo a extremo: ejemplo de la puerta AND}
+
+Este apartado recoge el procedimiento completo del ejemplo de validación descrito en el
+apartado~\ref{sec:flujo_extremo_a_extremo}: la puerta AND descrita en VHDL y sintetizada en la PL,
+la imagen de arranque que la lleva a la placa y la traza que confirma su funcionamiento. El
+proyecto completo, con el diseño y el código de las dos mitades, está en
+\texttt{tfm/00\_docs/AND\_example} dentro del repositorio del proyecto~\cite{repo_tfm}.
+
+\subsection*{C.8.1 Descripción VHDL y \textit{Block Design}}
+
+El proyecto de Vivado, llamado \texttt{and\_gate\_ps\_p}, parte de la descripción de la puerta:
+
+\begin{lstlisting}[language=VHDL, caption={AND\_GATE.vhd}]
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+entity AND_GATE is
+    Port ( A_B_IN : in  STD_LOGIC_VECTOR (1 downto 0);
+           Z_OUT  : out STD_LOGIC);
+end AND_GATE;
+
+architecture Behavioral of AND_GATE is
+begin
+    Z_OUT <= A_B_IN(1) and A_B_IN(0);
+end Behavioral;
+\end{lstlisting}
+
+Sobre un \textit{Block Design} nuevo se añadió el bloque Zynq UltraScale+ MPSoC IP, configurado con
+la \textit{Block Automation} de Vivado, el fichero VHDL anterior y dos AXI GPIO IP para comunicar
+el PS con la PL. Las conexiones restantes se resolvieron con \textit{Automate Connection}. El
+resultado es la figura~\ref{fig:block_design_and}, y en ella se aprecia la estructura que se repite
+en todos los diseños del trabajo: el bloque del PS, los periféricos de la PL y el interconector AXI
+que los une, con el bloque VHDL propio colgando de uno de los dos AXI GPIO.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{IMG/Desarrollo/block_design_and.png}
+    \caption{\textit{Block Design} del ejemplo de la puerta AND.}
+    \label{fig:block_design_and}
+\end{figure}
+
+Después se creó un \textit{Wrapper} del \textit{Block Design} para que Vivado pudiera sintetizarlo.
+La pestaña \textit{Address Editor} lista las direcciones base con las que el PS accede a los
+registros de cada periférico de la PL. Por último se generó el \textit{BitStream} y se exportó el
+hardware como .xsa.
+
+\subsection*{C.8.2 Generación de la imagen de arranque en Vitis}
+
+Este paso empaqueta el hardware generado en Vivado, junto con el software de arranque, en el único
+binario que el MPSoC ejecuta desde la tarjeta SD:
+
+\begin{enumerate}
+    \item Se creó un componente de tipo \textit{Platform} en Vitis, tomando como base el .xsa
+    exportado desde Vivado, y se compiló.
+    \item Sobre esa plataforma se creó una aplicación a partir del ejemplo \textit{Zynq MP FSBL},
+    el cargador de arranque de primera etapa (\textit{First Stage Boot Loader}), que es el primer
+    programa que ejecuta el PS y el que carga el resto de componentes de la imagen. Al compilarla
+    se obtiene el \texttt{zynqmp\_fsbl\_proyect.elf}.
+    \item Se lanzó el generador de imágenes de Vitis (\textit{Create Zynq UltraScale+ Boot Image})
+    y se añadieron los componentes en el orden de la figura~\ref{fig:vitis_boot_image}, ya que el
+    orden dentro del fichero BIF (\textit{Boot Image Format}) determina la secuencia de arranque.
+\end{enumerate}
+
+El modo y el orden de los componentes dentro del BIF son la parte del procedimiento que la
+documentación de AMD no reúne en un solo sitio, y un error en cualquiera de los dos impide el
+arranque sin dar un mensaje útil. De ahí el detalle de la lista siguiente:
+
+\begin{itemize}
+    \item \texttt{zynqmp\_fsbl\_proyect.elf}, en modo \textit{bootloader}, destino a53-0 y nivel
+    de excepción EL3. Se encuentra en la carpeta \texttt{build} de la aplicación anterior.
+    \item \texttt{pmufw.elf}, en modo \textit{pmufw\_image} y destino a53-0. Es el firmware de la
+    unidad de gestión de potencia y se descargó del repositorio de firmware precompilado de
+    AMD para la ZCU102\footnote{\url{https://github.com/Xilinx/soc-prebuilt-firmware/tree/xilinx_v2025.1/zcu102-zynqmp}}.
+    \item \texttt{BLOCK\_DESIGN\_ZYNQ\_AND\_wrapper.bit}, en modo \textit{datafile} y con la PL
+    como dispositivo de destino. Es el \textit{bitstream} generado por Vivado.
+    \item \texttt{bl31.elf}, en modo \textit{datafile}, destino a53-0 y nivel de excepción EL3. Es
+    el firmware de ARM Trusted Firmware y se descarga del mismo sitio que el PMUFW.
+    \item \texttt{u-boot.elf}, en modo \textit{datafile}, destino a53-0 y nivel de excepción EL2.
+    U-Boot es un gestor de arranque de segunda etapa. Se ejecuta después del FSBL, inicializa
+    los periféricos necesarios (tarjeta SD, red, consola serie) y carga en memoria la imagen
+    del sistema operativo (en este caso \texttt{rtems.img}), a la que cede el control.
+    Ofrece además una consola interactiva desde la que se puede inspeccionar la memoria o
+    elegir manualmente qué imagen arrancar, lo que resultó útil durante la depuración.
+    \item \texttt{system.dtb}, en modo \textit{datafile}, destino a53-0 y dirección de carga
+    \texttt{0x100000}. Este \textit{device tree} es el que permite a BL31 saber dónde está
+    enlazado el BL33 (U-Boot) y arrancarlo.
+\end{itemize}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{IMG/Desarrollo/vitis_boot_image.png}
+    \caption{Generador de imágenes de arranque de Vitis.}
+    \label{fig:vitis_boot_image}
+\end{figure}
+
+\subsection*{C.8.3 Aplicación de RTEMS y arranque desde la tarjeta SD}
+
+La aplicación se reparte en dos fuentes. \texttt{and\_demo.c} contiene la tarea \texttt{Init}:
+escribe la pareja de entradas \texttt{(A,B)} en el registro de datos del \texttt{axi\_gpio\_0}
+(mapeado en \texttt{0xA0000000}), espera un instante a que la lógica de la PL se estabilice, lee la
+salida \texttt{Z} del \texttt{axi\_gpio\_1} (\texttt{0xA0010000}) e imprime cada resultado por la
+consola serie. \texttt{mmu\_pl\_map.c} declara como memoria de periférico el rango
+\texttt{0xA0000000}--\texttt{0xA01FFFFF}, donde Vivado ha situado los AXI GPIO; el mapeado se
+realiza nada más arrancar \texttt{Init}, porque RTEMS desconoce a priori las direcciones de la PL.
+La compilación necesita además un \texttt{wscript}.
+
+Los dos ficheros, \texttt{BOOT.BIN} y \texttt{rtems.img}, se copian en la partición FAT de una
+tarjeta SD, que se inserta en el zócalo \texttt{J100} de la placa~\cite{xilinx2023ug1182}. El
+\texttt{BOOT.BIN} es el que el MPSoC ejecuta nada más alimentarse: inicializa el PS, carga el
+\textit{bitstream} en la PL y encadena el resto de etapas hasta U-Boot, que a su vez carga el
+\texttt{rtems.img} en memoria y le cede el control. Si el ensayo solo ejercita la PL, el
+\texttt{BOOT.BIN} basta por sí solo, ya que lleva dentro el \textit{bitstream}.
+
+Antes de encender la placa hay que colocar el selector de modo de arranque en la posición de
+tarjeta SD. Es el conmutador DIP \texttt{SW6}, la referencia 44 del plano de componentes de la
+ZCU102~\cite{xilinx2023ug1182}, cuyas posiciones recoge la tabla~\ref{tab:sw6}. Conviene tenerlo
+presente porque la configuración de fábrica es \texttt{QSPI32}: sin cambiar el conmutador, la
+placa no arranca desde la tarjeta aunque los ficheros estén correctamente copiados.
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{lcc}
+        \hline
+        \textbf{Modo de arranque} & \textbf{\texttt{PS\_MODE[3:0]}} & \textbf{SW6 [4:1]} \\
+        \hline
+        JTAG                      & 0000 & ON, ON, ON, ON \\
+        QSPI32 (por defecto)      & 0010 & ON, ON, OFF, ON \\
+        \textbf{Tarjeta SD}       & 1110 & \textbf{OFF, OFF, OFF, ON} \\
+        \hline
+    \end{tabular}
+    \caption{Posiciones del selector de modo de arranque SW6 de la ZCU102
+    \cite{xilinx2023ug1182}.}
+    \label{tab:sw6}
+\end{table}
+
+\subsection*{C.8.4 Barrido de la tabla de verdad}
+
+Con la tarjeta insertada y el conmutador en su sitio, el barrido completo sale por la consola
+serie:
+
+\begin{lstlisting}[caption={Salida de terminal --- barrido de la puerta AND}]
+## Transferring control to RTEMS (at address 000100000) ...
+Barrido AND via PL
+A=0, B=0, Z=0 (raw=0x00000000)
+A=0, B=1, Z=0 (raw=0x00000000)
+A=1, B=0, Z=0 (raw=0x00000000)
+A=1, B=1, Z=1 (raw=0x00000001)
+
+[ RTEMS shutdown ]
+\end{lstlisting}
+
+La primera línea la emite U-Boot al ceder el control a la imagen de RTEMS. Las cuatro siguientes
+son las escritas por \texttt{and\_demo.c}, con la salida \texttt{Z} a uno únicamente cuando ambas
+entradas valen uno. La salida se conserva en
+\texttt{tfm/\allowbreak 00\_docs/\allowbreak logs\_terminal/\allowbreak and\_gate\_output.txt}.
+
+\section*{C.9 Volcados completos de terminal de las pruebas serie RS422/RS485}
 
 Este apartado recoge la salida íntegra del terminal de las dos sesiones de prueba de
 comunicaciones serie RS422/RS485 descritas en las secciones~\ref{sec:cdhs_rs} y
 \ref{sec:validacion_aocs} del capítulo de validación hardware.
 
-\subsection*{C.8.1 Placa CDHS (3 transceptores)}
+\subsection*{C.9.1 Placa CDHS (3 transceptores)}
 
 La sesión recoge el descubrimiento dinámico de los tres transceptores instanciados en el
 \textit{bitstream} y los intercambios de \textit{loopback} entre UART~0, UART~1 y UART~2.
@@ -496,7 +654,7 @@ Tx -> UART 2: OK
 CMD> [RX UART 00]: HOLA MUNDO
 \end{lstlisting}
 
-\subsection*{C.8.2 Placa AOCS (5 transceptores)}
+\subsection*{C.9.2 Placa AOCS (5 transceptores)}
 
 La sesión recoge el descubrimiento dinámico de los cinco transceptores instanciados en el
 \textit{bitstream} y los cuatro pares de \textit{loopback} ejercitados entre UART~0 y el
@@ -565,7 +723,7 @@ Tx -> UART 1: OK
 CMD> [RX UART 00]: HOLA
 \end{lstlisting}
 
-\section*{C.9 Volcado completo del barrido del ADC}
+\section*{C.10 Volcado completo del barrido del ADC}
 
 Este apartado recoge la salida íntegra del terminal del barrido de tensión aplicado al canal
 CH2 del ADC ADS7950 de la placa CDHS, descrito en la sección~\ref{sec:validacion_cdhs} del
