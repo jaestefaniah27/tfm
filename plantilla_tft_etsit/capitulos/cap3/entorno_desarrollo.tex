@@ -26,31 +26,19 @@ coherentes los componentes de arranque precompilados empleados más adelante.
 
 \subsection{Instalación de RTEMS}
 
-En lugar de utilizar binarios precompilados, se optó por compilar el sistema operativo RTEMS
-(versión 7) desde cero, garantizando el control total sobre la configuración del núcleo. Se
-siguió para ello la guía \textit{Quick Start} del manual de usuario oficial del
-proyecto~\cite{rtems_quickstart}, que describe paso a paso todo el proceso. La
-compilación se realizó utilizando la herramienta RTEMS Source Builder (RSB)~\cite{rtems_rsb}. Se generó un
-\textit{toolchain} cruzado específico para la arquitectura AArch64. Se configuró y compiló el Board
-Support Package (BSP) correspondiente a la plataforma ZynqMP (\texttt{zynqmp\_apu}),
-habilitando explícitamente el soporte para multiprocesamiento simétrico (SMP).
+RTEMS (versión 7) se compiló desde código fuente en lugar de partir de binarios precompilados,
+siguiendo la guía \textit{Quick Start} del manual de usuario oficial del
+proyecto~\cite{rtems_quickstart} y empleando la herramienta RTEMS Source Builder
+(RSB)~\cite{rtems_rsb}. Un binario genérico no habría garantizado la combinación exacta que este
+trabajo necesitaba: un \textit{toolchain} cruzado para la arquitectura AArch64, el BSP
+\texttt{zynqmp\_apu} concreto de la ZCU102 y el soporte de multiprocesamiento simétrico (SMP)
+habilitado explícitamente en la configuración del núcleo. Sobre ese control se apoyó después la
+integración del driver propio del transceptor.
 
-En este trabajo, unos binarios precompilados de RTEMS no habrían bastado. La
-compilación desde código fuente fue la vía que permitió fijar con precisión la
-arquitectura AArch64 objetivo, el BSP \texttt{zynqmp\_apu} concreto de la ZCU102 y la
-versión~7 de RTEMS, y habilitar explícitamente el soporte SMP en la configuración del
-núcleo. Sobre ese control total se apoyó después la integración del driver propio del
-transceptor. Un binario precompilado genérico no habría garantizado esa combinación
-exacta de arquitectura, BSP y opciones de núcleo.
-
-Para validar el entorno recién compilado, se ejecutaron pruebas preliminares utilizando el
-emulador QEMU (\texttt{qemu-system-aarch64}) configurado con la máquina
-\texttt{xlnx-zcu102}. Se verificó la correcta ejecución de dos de los ejemplos que el propio
-RTEMS incluye en su BSP: \texttt{hello.exe}, que confirma que el arranque, la consola serie y la
-salida estándar funcionan, y \texttt{dhrystone.exe}, una implementación del \textit{benchmark}
-sintético Dhrystone~\cite{weicker1984dhrystone}, que ejercita la aritmética entera, el manejo de
-cadenas y las llamadas a función, y que sirve aquí únicamente como comprobación de que el
-\textit{toolchain} genera código funcional y el planificador ejecuta una carga sostenida.
+El entorno recién compilado se validó sobre el emulador QEMU (\texttt{qemu-system-aarch64}) con la
+máquina \texttt{xlnx-zcu102}, ejecutando los ejemplos \texttt{hello.exe} y
+\texttt{dhrystone.exe}~\cite{weicker1984dhrystone} que el propio BSP incluye: confirman que el
+arranque y la consola serie funcionan y que el \textit{toolchain} genera código funcional.
 
 \subsection{Validación del flujo de desarrollo de extremo a extremo} \label{sec:flujo_extremo_a_extremo}
 
@@ -795,16 +783,12 @@ configuraciones de relojes y alimentación cruciales para el correcto funcionami
 
 Se desarrolló un script de TCL, \texttt{new\_generate\_transceivers.tcl}, que permite generar y
 conectar automáticamente un número deseado de transceptores en el \textit{Block Design} de Vivado.
-Su punto de entrada es el procedimiento \texttt{create\_many\_transceivers}, que recibe el número de
-instancias y los nombres del bloque Zynq y del \textit{SmartConnect} a los que engancharse. La
-llamada empleada en el diseño de catorce canales es
-\texttt{create\_many\_transceivers 14 "zynq\_ultra\_ps\_e\_0" "axi\_smc"}. Para que funcione
-correctamente, es necesario tener las fuentes .vhd del transceptor en el proyecto, el
-\textit{Block Design} creado, y el bloque IP Zynq UltraScale+ MPSoC importado y configurado
-previamente. A partir de ahí, el script se encarga de añadir y conectar el resto de los bloques
-necesarios: un AXI GPIO de doble canal por transceptor, el controlador de interrupciones común, un
-bloque de solo lectura con los metadatos del sistema que consulta el driver, y la asignación de
-direcciones en el mapa de memoria del PS. El script está en
+Recibe el número de instancias y los nombres del bloque Zynq y del \textit{SmartConnect} a los que
+engancharse, y a partir de ahí añade y conecta el resto de los bloques necesarios: un AXI GPIO de
+doble canal por transceptor, el controlador de interrupciones común, un bloque de solo lectura con
+los metadatos del sistema que consulta el driver, y la asignación de direcciones en el mapa de
+memoria del PS. Parte de un proyecto que ya tenga las fuentes .vhd del transceptor, el
+\textit{Block Design} creado y el bloque IP Zynq UltraScale+ MPSoC configurado. El script está en
 \texttt{tfm/01\_ip\_serie/scripts/} dentro del repositorio del proyecto~\cite{repo_tfm}, y cada
 proyecto de Vivado conserva su copia en el subdirectorio \texttt{scripts/} correspondiente.
 

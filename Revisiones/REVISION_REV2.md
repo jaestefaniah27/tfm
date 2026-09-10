@@ -334,7 +334,7 @@ Apartados confirmados, en orden de ejecución:
       `SW6` y el volcado de la tabla de verdad. Arriba se queda el bloque de
       automatización, y **hay que decir que cada iteración llevaba casi una hora
       de media**: es lo que justifica los tres scripts.
-- [ ] §3.1.1, §3.1.2 y §3.3: comprimir en el sitio, sin mover nada al anexo.
+- [x] §3.1.1, §3.1.2 y §3.3: comprimir en el sitio, sin mover nada al anexo.
 - [ ] §3.5.4 y §3.5.5: bajar solo los cinco subsistemas que nombran componentes
       sin decisión detrás (ADC, alimentación CDHS, conectores externos,
       alimentación AOCS y las frecuencias del `PWMx4_auto_test`). Unas 70 líneas.
