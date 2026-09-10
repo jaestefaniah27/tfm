@@ -335,17 +335,24 @@ Apartados confirmados, en orden de ejecución:
       automatización, y **hay que decir que cada iteración llevaba casi una hora
       de media**: es lo que justifica los tres scripts.
 - [x] §3.1.1, §3.1.2 y §3.3: comprimir en el sitio, sin mover nada al anexo.
-- [ ] §3.5.4 y §3.5.5: bajar solo los cinco subsistemas que nombran componentes
-      sin decisión detrás (ADC, alimentación CDHS, conectores externos,
-      alimentación AOCS y las frecuencias del `PWMx4_auto_test`). Unas 70 líneas.
-      **Las hojas de esquemático se quedan donde están.**
-- [ ] §3.4 Gestión interna de la transmisión y la recepción (líneas 1121--1230):
-      la última, por ser la de más riesgo. Bajan tamaños de buffer, semáforos,
-      nombres de estructuras y la figura TikZ. Arriba quedan dos párrafos de
-      resumen, **incluida la independencia entre latencia y volumen de datos**,
-      que la §4.4 necesita.
-- [ ] Reordenar el anexo C en tres bloques: referencia, implementación trasladada
-      y volcados de terminal.
+- [x] Reordenar el anexo C en tres bloques: referencia (C.1--C.5), implementación
+      trasladada (C.6--C.8) y volcados de terminal (C.9--C.10). El orden ya salió
+      así del traslado; lo que se hizo fue anunciarlo en el párrafo de entrada.
+      No se añadieron encabezados de bloque para no renumerar y no tocar a mano
+      las referencias `C.x` repartidas por los capítulos 3 y 4.
+
+**Descartados por Jorge, con la poda ya en marcha:**
+
+- [~] §3.5.4 y §3.5.5: bajar los cinco subsistemas que nombran componentes sin
+      decisión detrás (ADC, alimentación CDHS, conectores externos, alimentación
+      AOCS y las frecuencias del `PWMx4_auto_test`), unas 70 líneas. Se deja
+      estar: poca ganancia para lo que cuesta.
+- [~] §3.4 Gestión interna de la transmisión y la recepción: descartada **por
+      riesgo**. Era la poda de prosa más grande que quedaba, así que el capítulo 3
+      baja bastante menos de lo que preveía el análisis. Si más adelante hace
+      falta recortar de verdad, este es el bloque al que volver, con el cuidado ya
+      identificado: la independencia entre latencia y volumen de datos tiene que
+      quedarse arriba porque la §4.4 la necesita.
 
 No entran: §3.2 (transmisor y receptor), §3.5.6 (fabricación),
 `cap3/transporte.tex` y la interfaz con el hardware del driver (§3.4, el
