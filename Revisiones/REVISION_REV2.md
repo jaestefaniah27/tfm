@@ -325,7 +325,7 @@ que solo baja lo que tenga sentido consultar aparte.
 
 Apartados confirmados, en orden de ejecución:
 
-- [ ] §3.6.1 Aplicación de testing del driver (líneas 1781--1846): bajar las dos
+- [x] §3.6.1 Aplicación de testing del driver (líneas 1781--1846): bajar las dos
       cajas de código y la secuencia de `Init()`. Arriba quedan diez líneas, y la
       reconfiguración del `slew rate` se menciona solo de pasada. Cierra el punto
       de la p. 54 de la Rev2.9.
