@@ -455,11 +455,16 @@ Rev2.9 en cuanto el fichero esté en `IMG/`.
       Hechos los cinco por Jorge y colocados en `IMG/Esquematicos/`: la hoja de
       nivel superior de la placa serie (3.4), el subsistema CAN (3.8) y el canal
       RS (3.9) de la CDHS, la hoja de nivel superior de la AOCS (3.10) y su
-      subsistema SpaceWire (3.12). Las dos hojas de nivel superior dejan de
-      necesitar `sidewaysfigure`: recortadas caben derechas, así que el lector ya
-      no tiene que girar el documento. A la de la AOCS se le quitaron los 30
+      subsistema SpaceWire (3.12). A la hoja de la AOCS se le quitaron los 30
       píxeles de abajo, donde asomaba cortado el cajetín de Altium. Las hojas
       completas siguen en `IMG/pcbs/` como fuente y para el anexo.
+
+      La hoja de la placa serie (3.4) se queda apaisada y a página completa. El
+      recorte permitía ponerla derecha al ancho de caja, pero es la más densa de
+      las cinco y el criterio no es si se lee en pantalla: el tribunal puede
+      leerla en papel, donde no se puede ampliar. Girada gana un 40 % de tamaño
+      lineal. La hoja de la AOCS (3.10) sí va derecha, porque tiene pocos bloques
+      y rótulos grandes.
 - [ ] **p. 49** Render 3D de la placa AOCS con fondo blanco. Prioridad baja.
 - [ ] **p. 56** Recortar las fotos de los arneses antes de juntarlas.
 - [ ] **p. 9** Mini figura de SpaceWire para §2.5.3: muy ancha y corta, que ocupe
