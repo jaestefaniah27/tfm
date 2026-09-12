@@ -4,6 +4,12 @@
 % chip, los puertos AXI que los comunican y lo que añade la placa alrededor.
 % Fuente del PDF que incluye la memoria (capítulo 2).
 %
+% Sobre la planta: los rótulos de cada banda van fuera de su recuadro de trazos
+% en lugar de encajados en una esquina, que es donde se montaban encima de la
+% línea. La banda va más estrecha que antes (16,4 cm en vez de 19,6) para que el
+% factor de escala hasta el ancho de caja suba y la letra se lea, y a cambio
+% ocupa algo más de alto, que es el reparto que interesa aquí.
+%
 % Compilar:  pdflatex diagrama_mpsoc_zynq.tex
 % ---------------------------------------------------------------------------
 \documentclass[border=8pt,12pt]{standalone}
@@ -31,121 +37,95 @@
     sig/.style={-{Stealth[length=4.5pt]}, line width=0.7pt, cRef!85!black},
     bus/.style={{Stealth[length=4.5pt]}-{Stealth[length=4.5pt]},
                 line width=0.9pt, cRef!70!black},
-    lbl/.style={font=\sffamily\scriptsize, inner sep=2pt},
-    tlbl/.style={font=\ttfamily\scriptsize, inner sep=2pt},
-    name/.style={font=\ttfamily\scriptsize, align=center},
+    lbl/.style={font=\sffamily\small, inner sep=2pt},
+    sub/.style={font=\sffamily\scriptsize, text=cRef!55!black, inner sep=2pt},
+    bandlbl/.style={font=\sffamily\small, text=cRef!45!black, inner sep=2pt},
+    leg/.style={font=\sffamily\footnotesize, inner sep=2pt},
 ]
 
 % ===================== Bandas =====================
-\draw[band] (-0.3,8.70) rectangle (19.3,10.70);
-\node[lbl, anchor=north west, text=cRef!55!black] at (-0.2,10.63) {\textbf{PS}};
-\node[lbl, anchor=north east, text=cRef!55!black] at (19.2,10.63)
-      {\textbf{MPSoC (chip)}};
+\draw[band] (-0.30,9.20) rectangle (16.10,11.70);
+\node[bandlbl, anchor=south west] at (0.05,11.75) {\textbf{PS}};
+\node[bandlbl, anchor=south east] at (16.05,11.75) {\textbf{MPSoC (chip)}};
 
-\draw[band] (-0.3,3.00) rectangle (19.3,7.20);
-\node[lbl, anchor=south west, text=cRef!55!black] at (-0.2,3.07) {\textbf{PL}};
+\draw[band] (-0.30,2.90) rectangle (16.10,6.75);
+\node[bandlbl, anchor=south west] at (0.05,6.85) {\textbf{PL}};
 
-\draw[band] (-0.3,-0.30) rectangle (19.3,2.30);
-\node[lbl, anchor=north west, text=cRef!55!black] at (-0.2,2.23) {\textbf{ZCU102}};
-\node[lbl, anchor=south east, text=cRef!55!black] at (19.2,-0.23)
-      {\textbf{placa de evaluación}};
+\draw[band] (-0.30,-0.30) rectangle (16.10,2.30);
+\node[bandlbl, anchor=south west] at (0.05,2.40)
+      {\textbf{ZCU102 (placa de evaluación)}};
 
 % ===================== PS: bloques =====================
-\draw[ext] (0.10,8.95) rectangle (4.30,10.35);
-\node[align=center] at (2.20,9.65) {Controlador\\de memoria DDR};
+\draw[ext] (0.10,9.60) rectangle (3.50,11.20);
+\node[align=center] at (1.80,10.40) {Controlador\\de memoria DDR};
 
-\draw[ext] (4.60,8.95) rectangle (8.80,10.35);
-\node[align=center] at (6.70,9.65) {4 $\times$\\Cortex-A53};
+\draw[ext] (3.80,9.60) rectangle (7.20,11.20);
+\node[align=center] at (5.50,10.40) {4 $\times$\\Cortex-A53};
 
-\draw[ext] (9.10,8.95) rectangle (13.30,10.35);
-\node at (11.20,9.65) {PMU};
+\draw[ext] (7.50,9.60) rectangle (10.90,11.20);
+\node at (9.20,10.40) {PMU};
 
-\draw[ext] (13.60,8.95) rectangle (17.80,10.35);
-\node at (15.70,9.65) {GIC};
+\draw[ext] (11.20,9.60) rectangle (14.60,11.20);
+\node at (12.90,10.40) {GIC};
 
 % ===================== Puertos AXI (entre PS y PL) =====================
 % El texto del capitulo manda mirar aqui, asi que la banda va recuadrada y
 % rotulada: es el camino que recorren los datos de los catorce enlaces serie.
 \draw[draw=cPropio, line width=2pt, rounded corners=5pt, fill=cPropio!5]
-      (0.15,7.22) rectangle (17.75,8.58);
+      (0.20,7.40) rectangle (14.50,8.90);
 
-\draw[ip] (0.40,7.50) rectangle (4.00,8.30);
-\node[lbl] at (2.20,7.90) {AXI4 HP};
+\draw[ip] (0.40,7.65) rectangle (3.20,8.65);
+\node[lbl] at (1.80,8.15) {AXI4 HP};
 
-\draw[ip] (4.90,7.50) rectangle (17.50,8.30);
-\node[lbl] at (11.20,7.90) {AXI4 GP};
+\draw[ip] (3.80,7.65) rectangle (14.30,8.65);
+\node[lbl] at (9.05,8.15) {AXI4 GP};
 
 \node[lbl, anchor=east, text=cPropio!60!black, fill=white, inner xsep=4pt]
-      at (17.70,7.05) {\textbf{puertos AXI: el camino entre PS y PL}};
+      at (14.50,7.08) {\textbf{puertos AXI: el camino entre PS y PL}};
 
-\draw[bus] (2.20,8.95) -- (2.20,8.30);
-\draw[bus] (6.70,8.95) -- (6.70,8.30);
-\draw[bus] (11.20,8.95) -- (11.20,8.30);
-\draw[bus] (15.70,8.95) -- (15.70,8.30);
-
-\draw[bus] (2.20,7.50) -- (2.20,6.90);
-\draw[bus] (11.20,7.50) -- (11.20,6.90);
+% Del PS a los puertos, y de los puertos a la matriz.
+\foreach \x in {1.80, 5.50, 9.20, 12.90} {\draw[bus] (\x,9.60) -- (\x,8.65);}
+\foreach \x in {1.80, 5.50} {\draw[bus] (\x,7.65) -- (\x,6.45);}
 
 % ===================== PL: matriz reconfigurable =====================
-\draw[ip] (0.10,3.30) rectangle (18.10,6.90);
-\node[lbl, text=cIP!45!black] at (9.10,6.62) {\textbf{Matriz reconfigurable}};
+\draw[ip] (0.10,3.15) rectangle (14.90,6.45);
+\node[leg, text=cIP!45!black] at (7.50,6.15) {\textbf{Matriz reconfigurable}};
 
-\draw[draw=cIP!60!black, line width=0.5pt, rounded corners=1pt]
-      (0.40,4.40) rectangle (4.40,5.60);
-\node[align=center] at (2.40,5.00) {Tablas de\\búsqueda};
-
-\draw[draw=cIP!60!black, line width=0.5pt, rounded corners=1pt]
-      (4.70,4.40) rectangle (8.70,5.60);
-\node at (6.70,5.00) {Biestables};
-
-\draw[draw=cIP!60!black, line width=0.5pt, rounded corners=1pt]
-      (9.00,4.40) rectangle (13.00,5.60);
-\node at (11.00,5.00) {BRAM};
-
-\draw[draw=cIP!60!black, line width=0.5pt, rounded corners=1pt]
-      (13.30,4.40) rectangle (17.30,5.60);
-\node at (15.30,5.00) {DSP};
+\foreach \x/\t in {0.45/{Tablas de\\búsqueda}, 3.95/{Biestables},
+                   7.45/{BRAM}, 10.95/{DSP}} {
+    \draw[draw=cIP!60!black, line width=0.5pt, rounded corners=1pt]
+          (\x,4.10) rectangle (\x+3.20,5.40);
+    \node[align=center] at (\x+1.60,4.75) {\t};
+}
 
 % ===================== ZCU102: periféricos de la placa =====================
-\draw[ext] (0.15,0.00) rectangle (3.45,1.70);
-\node at (1.80,0.85) {DDR};
-
-\draw[ext] (3.70,0.00) rectangle (7.00,1.70);
-\node[align=center] at (5.35,0.85) {FMC HPC0};
-
-\draw[ext] (7.25,0.00) rectangle (10.55,1.70);
-\node[align=center] at (8.90,0.85) {FMC HPC1};
-
-\draw[ext] (10.80,0.00) rectangle (14.10,1.70);
-\node[align=center] at (12.45,0.85) {Tarjeta SD};
-
-\draw[ext] (14.35,0.00) rectangle (17.65,1.70);
-\node[align=center] at (16.00,0.85) {Consola\\serie (USB)};
-
-\node[lbl, anchor=north, text=cRef!55!black] at (1.80,0.35) {memoria externa};
-\node[lbl, anchor=north, text=cRef!55!black] at (5.35,0.35) {conector mezzanine};
-\node[lbl, anchor=north, text=cRef!55!black] at (8.90,0.35) {conector mezzanine};
-\node[lbl, anchor=north, text=cRef!55!black] at (12.45,0.35) {arranque del sistema};
+\foreach \x/\t/\s in {0.15/{DDR}/{memoria externa},
+                      3.07/{FMC HPC0}/{mezzanine},
+                      5.99/{FMC HPC1}/{mezzanine},
+                      8.91/{Tarjeta SD}/{arranque},
+                      11.83/{Consola\\serie (USB)}/{}} {
+    \draw[ext] (\x,0.00) rectangle (\x+2.70,1.70);
+    \node[align=center] at (\x+1.35,1.02) {\t};
+    \node[sub, anchor=north] at (\x+1.35,0.62) {\s};
+}
 
 % ===================== FMC hacia la PL =====================
-\draw[bus] (5.35,1.70) -- (5.35,3.30);
-\draw[bus] (8.90,1.70) -- (8.90,3.30);
+\draw[bus] (4.42,1.70) -- (4.42,3.15);
+\draw[bus] (7.34,1.70) -- (7.34,3.15);
 
 % ===================== DDR: bypass hasta el controlador del PS =====================
-\draw[bus] (1.80,1.70) -- (1.80,2.00) -- (-0.15,2.00) -- (-0.15,9.65) -- (0.10,9.65);
+\draw[bus] (1.50,1.70) -- (1.50,2.02) -- (-0.15,2.02) -- (-0.15,10.40) -- (0.10,10.40);
 
 % ===================== SD y consola: bypass hasta la banda PS =====================
-\draw[sig] (12.45,1.70) -- (12.45,2.00) -- (18.50,2.00) -- (18.50,8.70);
-\node[lbl, anchor=east, text=cRef!55!black] at (18.40,8.55) {arranque};
-
-\draw[bus] (16.00,1.70) -- (16.00,2.00) -- (19.00,2.00) -- (19.00,8.70);
-\node[lbl, anchor=west, text=cRef!55!black] at (19.05,8.55) {consola};
+% Sin rotulo: los dos bloques de origen ya dicen lo que son.
+\draw[sig] (10.26,1.70) -- (10.26,2.02) -- (15.10,2.02) -- (15.10,9.20);
+\draw[bus] (13.18,1.70) -- (13.18,2.02) -- (15.65,2.02) -- (15.65,9.20);
 
 % ===================== Leyenda =====================
-\draw[ip] (0.10,-1.10) rectangle (0.42,-0.88);
-\node[lbl, anchor=west] at (0.50,-0.99) {interconexión AXI y lógica programable};
-\draw[ext] (7.20,-1.10) rectangle (7.52,-0.88);
-\node[lbl, anchor=west] at (7.60,-0.99) {silicio del PS y placa ZCU102};
+\draw[ip]  (0.10,-1.58) rectangle (0.48,-1.26);
+\node[leg, anchor=west] at (0.60,-1.42) {interconexión AXI y lógica programable};
+\draw[ext] (7.60,-1.58) rectangle (7.98,-1.26);
+\node[leg, anchor=west] at (8.10,-1.42) {silicio del PS y placa ZCU102};
 
 \end{tikzpicture}
 \end{document}

@@ -26,9 +26,9 @@
                    line width=1.7pt, cRef!60!black},
     ctrl/.style  ={-{Stealth[length=5pt]}, line width=0.8pt, cRef!80!black},
     irq/.style   ={-{Stealth[length=5pt]}, line width=0.8pt, cIP!70!black},
-    rot/.style   ={font=\sffamily\scriptsize, text=cRef!45!black, inner sep=2pt},
+    rot/.style   ={font=\sffamily\small, text=cRef!45!black, inner sep=2pt},
 }
-\newcommand{\sub}[1]{{\scriptsize\textcolor{cRef!30!black}{#1}}}
+\newcommand{\sub}[1]{{\footnotesize\textcolor{cRef!30!black}{#1}}}
 
 \begin{document}
 \begin{tikzpicture}[x=1cm, y=1cm]
@@ -39,7 +39,7 @@
      {\textbf{AXI DMA}\\[5pt]
       \sub{MM2S: memoria $\rightarrow$ perif\'erico}\\[1pt]
       \sub{S2MM: perif\'erico $\rightarrow$ memoria}};
-\node[ext, minimum width=2.6cm, minimum height=2.4cm] (pl) at (12,0)
+\node[ext, minimum width=2.6cm, minimum height=2.4cm] (pl) at (12.6,0)
      {perif\'erico\\(PL)};
 
 % ===================== CPU, aparte =====================

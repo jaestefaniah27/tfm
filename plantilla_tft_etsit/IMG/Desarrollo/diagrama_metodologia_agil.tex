@@ -46,22 +46,24 @@
 }
 
 % ===================== Sprint =====================
-\draw[blk] (4.60,3.90) rectangle (12.80,9.10);
-\node[align=center] at (8.70,8.55) {Sprint --- 2 semanas};
+\draw[blk] (4.60,3.90) rectangle (13.00,9.10);
+\node[align=center] at (8.80,8.55) {Sprint --- 2 semanas};
 
-\foreach \x/\t/\n in {4.95/Pendiente/2, 7.65/{En curso}/1, 10.35/Hecho/2} {
-    \draw[ip] (\x,4.25) rectangle (\x+2.50,7.55);
-    \node[lbl] at (\x+1.25,7.20) {\t};
+% Las tres columnas caben con 0,20 cm de margen a cada lado del recuadro azul:
+% con 2,50 de ancho la de Hecho se salia por la derecha.
+\foreach \x/\t/\n in {5.00/Pendiente/2, 7.70/{En curso}/1, 10.40/Hecho/2} {
+    \draw[ip] (\x,4.25) rectangle (\x+2.40,7.55);
+    \node[lbl] at (\x+1.20,7.20) {\t};
     \foreach \i in {1,...,\n} {
         \draw[card] (\x+0.20,3.65+0.80*\i)
-              rectangle (\x+2.30,4.20+0.80*\i);
+              rectangle (\x+2.20,4.20+0.80*\i);
     }
 }
-\node[note] at (8.70,7.90) {tablero tipo Kanban (Jira)};
+\node[note] at (8.80,7.90) {tablero tipo Kanban (Jira)};
 
 % ===================== Reunión de cierre =====================
-\draw[blk] (4.60,0.20) rectangle (12.80,3.10);
-\node[align=center] at (8.70,2.72) {Reunión de cierre};
+\draw[blk] (4.60,0.20) rectangle (13.00,3.10);
+\node[align=center] at (8.80,2.72) {Reunión de cierre};
 
 \node[note, anchor=north west, text=cRef!20!black, align=left] at (5.20,2.35)
       {1. Revisión del sprint cerrado\\[2pt]
@@ -73,10 +75,10 @@
 \draw[sig] (3.00,6.50) -- (4.60,6.50);
 \node[note, anchor=south] at (3.80,6.60) {selección};
 
-\draw[sig] (8.70,3.90) -- (8.70,3.10);
+\draw[sig] (8.80,3.90) -- (8.80,3.10);
 
 % ===================== Realimentación: cierra el lazo =====================
-\draw[sig] (8.70,0.20) -- (8.70,-0.75) -- (1.50,-0.75) -- (1.50,3.90);
+\draw[sig] (8.80,0.20) -- (8.80,-0.75) -- (1.50,-0.75) -- (1.50,3.90);
 \node[note, anchor=north] at (5.10,-0.85)
       {realimentación al backlog --- 20 sprints en total};
 

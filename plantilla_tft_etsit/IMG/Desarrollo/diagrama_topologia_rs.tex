@@ -28,8 +28,8 @@
     band/.style={draw=cRef!45, dashed, line width=0.7pt, rounded corners=4pt},
     sig/.style={-{Stealth[length=4.5pt]}, line width=0.7pt, cRef!85!black},
     stream/.style={-{Stealth[length=6pt]}, line width=1.5pt, cRef!60!black},
-    lbl/.style={font=\sffamily\scriptsize, inner sep=2pt},
-    tlbl/.style={font=\ttfamily\scriptsize, inner sep=2pt},
+    lbl/.style={font=\sffamily\small, inner sep=2pt},
+    tlbl/.style={font=\ttfamily\small, inner sep=2pt},
     name/.style={font=\ttfamily\scriptsize, align=center},
     res/.style={draw=cRef!85!black, line width=0.9pt, fill=white},
 ]
@@ -83,25 +83,26 @@
 \node[tlbl] at (1.8,2.05) {RX};
 
 % ----- Esclavo(s): se dibuja más de un receptor posible -----
-\draw[ext] (13.05,1.55) rectangle (14.65,5.55);
-\draw[ext, fill=cExt!10] (12.9,1.7) rectangle (14.5,5.7);
-\node[lbl] at (13.7,3.7) {Esclavo(s)};
-\node[tlbl] at (13.7,5.35) {RX};
-\node[tlbl] at (13.7,2.05) {TX};
+% Cajas más anchas que las del maestro: «Esclavo(s)» no cabía en 1,6 cm.
+\draw[ext] (13.25,1.55) rectangle (15.55,5.55);
+\draw[ext, fill=cExt!10] (13.1,1.7) rectangle (15.4,5.7);
+\node[lbl] at (14.25,3.7) {Esclavo(s)};
+\node[tlbl] at (14.25,5.35) {RX};
+\node[tlbl] at (14.25,2.05) {TX};
 
 % ----- Par de ida: TX del maestro -> RX del/de los esclavo(s) -----
-\draw[cRef!85!black, line width=1.1pt] (2.8,5.2) -- (12.9,5.2);
-\draw[cRef!85!black, line width=1.1pt] (2.8,4.6) -- (12.9,4.6);
+\draw[cRef!85!black, line width=1.1pt] (2.8,5.2) -- (13.1,5.2);
+\draw[cRef!85!black, line width=1.1pt] (2.8,4.6) -- (13.1,4.6);
 \draw[stream] (5.6,5.55) -- (7.6,5.55);
 \node[lbl, anchor=south, text=cRef!45!black] at (6.6,5.58) {datos};
 
 % terminación en el extremo receptor (esclavo)
-\draw[res] (12.6,4.6) rectangle (12.9,5.2);
-\node[lbl, anchor=north east, text=cRef!45!black] at (12.45,4.45) {120~$\Omega$};
+\draw[res] (12.8,4.6) rectangle (13.1,5.2);
+\node[lbl, anchor=north east, text=cRef!45!black] at (12.65,4.45) {120~$\Omega$};
 
 % ----- Par de vuelta: TX del/de los esclavo(s) -> RX del maestro -----
-\draw[cRef!85!black, line width=1.1pt] (2.8,2.6) -- (12.9,2.6);
-\draw[cRef!85!black, line width=1.1pt] (2.8,2.0) -- (12.9,2.0);
+\draw[cRef!85!black, line width=1.1pt] (2.8,2.6) -- (13.1,2.6);
+\draw[cRef!85!black, line width=1.1pt] (2.8,2.0) -- (13.1,2.0);
 \draw[stream] (7.6,1.65) -- (5.6,1.65);
 \node[lbl, anchor=north, text=cRef!45!black] at (6.6,1.62) {datos};
 
