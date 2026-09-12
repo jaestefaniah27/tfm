@@ -366,28 +366,64 @@ Al final a propósito: T1, `\appendix`, los cambios de prosa y la poda de la Rev
 mueven la paginación. Aquí van solo las que se resuelven desde el `.tex`; las que
 necesitan Altium, cámara o dibujo nuevo están en la lista manual del final.
 
-- [ ] **p. 3** Figura 1.1 (metodología ágil): «se lee muy mal». Letra más grande,
-      o un diagrama más básico que muestre el proceso de pensar más que la
-      herramienta. `IMG/Desarrollo/diagrama_metodologia_agil.tex`
-- [ ] **p. 6** Figura 2.1: señalar los puertos AXI con una flecha grande o un
-      recuadro. Tal como está, el lector no encuentra lo que el texto le pide mirar.
-- [ ] **p. 9** Figura de topologías RS: texto más grande, y valorar partirla en dos
-      para facilitar el salto de página. `IMG/Desarrollo/diagrama_topologia_rs.tex`
-- [ ] **p. 11** Figuras de AXI: «de 10», pero agrandar el texto pequeño sin
-      aumentar el alto. `diagrama_axi_full/lite/stream.tex`
-- [ ] **p. 12** Figura 2.6 (DMA): muy pequeña. `IMG/Desarrollo/diagrama_dma.tex`
-- [ ] **p. 13** Figura 2.7 (MCDMA): muy pequeña. `IMG/Desarrollo/diagrama_mcdma.tex`
-- [ ] **p. 54** Cajas de código sobre fondo blanco (configuración de RTEMS):
-      «me tienden a decir poco». Resumir o pasar a tabla. Coordinado con la Rev2.8.
-- [ ] **p. 56** Figuras de arneses: juntarlas en un `subfigure` para que ocupen
-      menos. El recorte de las imágenes va en la lista manual.
-- [ ] **p. 64** Convertir a tabla la comparativa de interrupciones por kilobyte y
-      coste en lógica de las tres variantes. «¿Tablita?»
-- [ ] **p. 72** Figuras 4.3 y 4.4 (CAN con y sin terminación): ponerlas en
-      paralelo; aunque queden más pequeñas, la diferencia se ve.
-- [ ] **p. 73** Listado 4.2 (barrido del ADC): los saltos de línea cortan la salida
-      del terminal. Bajar el tamaño y reducir espacios para que cada línea entre
-      entera.
+Las páginas que cita cada punto son las de la Rev2.7. La Rev2.8 movió la
+paginación, así que abajo se anota entre paréntesis dónde ha quedado cada cosa.
+
+La palanca común a casi todas las figuras TikZ es la misma: son ficheros
+`standalone` cuyo dibujo va en centímetros fijos, de modo que la letra no
+depende del tamaño de fuente del fichero sino del factor con que LaTeX escala el
+PDF hasta el ancho de caja. Pasar la clase a `12pt` agranda el texto sin tocar
+la caja envolvente, que es justo lo que pedía el tutor.
+
+- [x] **p. 3 (ahora p. 3)** Figura 1.1 (metodología ágil): «se lee muy mal».
+      Rehecha. A 620 pt de ancho por 277 de alto la figura se escalaba a 0,70 y
+      ningún tamaño de letra la salvaba, así que se cambió la planta: la reunión
+      de cierre se apila bajo el sprint en vez de alinearse a su derecha, y la
+      lista de las cuatro fases pasa a una sola columna. Queda en 381 $\times$ 311
+      pt, se incluye al 0,82 del ancho de caja y el rótulo sale a cuerpo de
+      texto. De paso, el estilo `cap` chocaba con la clave `cap` de TikZ (error
+      de `pgfkeys` en cada compilación): renombrado a `note`.
+- [x] **p. 6 (ahora p. 7)** Figura 2.1: señalar los puertos AXI.
+      **Ojo, decisión que conviene revisar.** El diagrama oficial de AMD que
+      ocupaba esa figura no dibuja los puertos AXI en ninguna parte, así que no
+      había nada que recuadrar: de ahí que «el lector no encuentre lo que el
+      texto le pide mirar». El repositorio ya tenía `diagrama_mpsoc_zynq.tex`,
+      propio y huérfano desde hace commits, que sí los dibuja. Ahora es la
+      figura 2.1, con la banda AXI recuadrada en azul y rotulada, y el diagrama
+      de AMD pasa a ser la 2.2 con el detalle interno. Si sobra una de las dos,
+      la que se cae es la de AMD.
+- [x] **p. 9 (ahora p. 10)** Topologías RS: clase a `12pt` y paso de 0,92 a 1,0
+      del ancho de caja. **No se parte en dos**: las dos mitades comparten un
+      único `\ref` y partirla obliga a renumerar figuras por todo el capítulo 2
+      para poca ganancia. A 14,3 cm de alto cabe holgada en su página.
+- [x] **p. 11 (ahora p. 12)** Figuras de AXI: clase a `12pt`. La caja no se
+      mueve (470,4 $\times$ 135,0 pt frente a 470,4 $\times$ 134,5) y el texto sube
+      un 20 %. Alto intacto, que era la condición.
+- [x] **p. 12 (ahora p. 12)** Figura del DMA: clase a `12pt` y ancho de caja
+      completo.
+- [x] **p. 13 (ahora p. 13)** Figura del MCDMA: igual que la anterior.
+- [x] **p. 54** Cajas de código de la configuración de RTEMS: ya lo cerró la
+      Rev2.8 al bajarlas al apartado C.7. Se comprobó sobre el PDF actual.
+- [x] **p. 56 (ahora p. 51)** Arneses: los tres en un `subfigure`, y los tres
+      `\subsubsection` de una frase fundidos en un párrafo. De tres páginas a
+      media. El recorte de las fotos sigue en la lista manual.
+- [x] **p. 64 (ahora p. 58)** Tabla 3.10 con IRQ/KB, LUT totales, LUT por canal
+      y líneas de interrupción de las tres variantes, más las dos notas al pie
+      (el AXI INTC que reduce por OR, y las ocho líneas de `pl_ps_irq0`). Los
+      párrafos que venían detrás sueltan las cifras que ahora están en la tabla.
+- [x] **p. 72 (ahora p. 66)** CAN con y sin terminación: en paralelo, figura 4.3
+      con dos `subfigure`.
+- [x] **p. 73 (ahora p. 66)** Listado 4.2: se añade un estilo `terminal` en
+      `main.tex` (cuerpo `\scriptsize`, sin numeración de línea, márgenes e
+      interlineado ajustados) y se aplica a los doce volcados de terminal del
+      documento, que hasta ahora alternaban el estilo por defecto con un
+      `basicstyle` puesto a mano. Cada línea entra entera.
+
+También se quitó un residuo de edición de la Rev2.8: un `ef{anx:rtl}.` suelto
+en `cap3/entorno_desarrollo.tex`, que salía impreso.
+
+Comprobado sobre el PDF: 129 páginas, cero referencias sin resolver, cero
+errores y las mismas diez cajas desbordadas que ya había antes de tocar nada.
 
 No tocar: las figuras 4.2 (flancos con y sin limitador de slew rate) de la p. 71,
 que el tutor da por buenas.

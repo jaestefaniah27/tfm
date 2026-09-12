@@ -339,19 +339,38 @@ serialización se mide en la sección~\ref{sec:resultados_benchmark}.
 % ---------------------------------------------------------------------------
 
 Con las tres arquitecturas construidas y medidas sobre la misma placa, la elección se decide en
-dos ejes. En \textbf{coste de CPU} la variante GPIO queda descartada por sí sola: sus 1\,250
-interrupciones por kilobyte la mantienen en \textit{livelock} y su rendimiento no mejora al subir
-la velocidad de línea. Las dos variantes con DMA resuelven ese problema por igual, hasta 3
-interrupciones por kilobyte en transmisión, de modo que la diferencia entre ellas no está en lo
-que rinden sino en lo que cuestan.
+dos ejes: el coste de CPU y el coste en la lógica programable. La tabla~\ref{tab:coste_variantes}
+recoge las cifras de ambos, ya justificadas en los apartados anteriores.
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{lrrrr}
+        \hline
+        \textbf{Variante} & \textbf{IRQ/KB} & \textbf{LUT} & \textbf{LUT/canal} & \textbf{Líneas IRQ} \\
+        \hline
+        A --- GPIO  & 1\,250 & 6\,434  & 460   & 1$^{*}$ \\
+        B --- DMA14 & 3      & 40\,217 & 2\,873 & 28 \\
+        C --- MCDMA & \textbf{3} & 14\,191 & \textbf{1\,014} & \textbf{3} \\
+        \hline
+        \multicolumn{5}{l}{\footnotesize $^{*}$ Un AXI INTC reduce por OR las veintiocho fuentes a una sola línea.} \\
+        \multicolumn{5}{l}{\footnotesize El PS ofrece ocho líneas en \texttt{pl\_ps\_irq0}. Ocupación sobre las 274\,080 LUT del XCZU9EG.} \\
+    \end{tabular}
+    \caption{Coste de las tres variantes de transporte.}
+    \label{tab:coste_variantes}
+\end{table}
+
+En \textbf{coste de CPU} la variante GPIO queda descartada por sí sola: sus 1\,250 interrupciones
+por kilobyte la mantienen en \textit{livelock} y su rendimiento no mejora al subir la velocidad de
+línea. Las dos variantes con DMA resuelven ese problema por igual, de modo que la diferencia entre
+ellas no está en lo que rinden sino en lo que cuestan.
 
 Ahí la comparación es concluyente. Replicar catorce motores cuesta \textbf{2,8 veces} la lógica de
-compartir uno solo, 2\,873 frente a 1\,014 LUT por canal para el mismo número de canales, y esa
-distancia se triplica en cuanto se plantee el endurecimiento por TMR: la variante DMA14 llevaría
-cerca de la mitad del dispositivo, mientras que la multicanal sigue siendo asumible. En
-interrupciones la diferencia no es de grado sino cualitativa, porque veintiocho líneas contra las
-ocho disponibles obligan a reducirlas por OR y a escanear catorce registros de estado en cada
-evento, mientras que tres líneas caben con holgura.
+compartir uno solo para el mismo número de canales, y esa distancia se triplica en cuanto se
+plantee el endurecimiento por TMR: la variante DMA14 llevaría cerca de la mitad del dispositivo,
+mientras que la multicanal sigue siendo asumible. En interrupciones la diferencia no es de grado
+sino cualitativa, porque veintiocho líneas contra las ocho disponibles obligan a reducirlas por OR
+y a escanear catorce registros de estado en cada evento, mientras que tres líneas caben con
+holgura.
 
 La variante MCDMA se adopta por ello como \textbf{solución final}. A cambio hay que asumir la
 serialización de la transmisión y diseñar y verificar lógica propia en lugar de instanciar IP de
@@ -420,7 +439,7 @@ entremezclados, un paquete de 256~bytes que fuerza el cierre por longitud y dos 
 sobre el mismo canal. Un \textit{scoreboard} comprueba byte a byte el \texttt{TDEST} de la
 cabecera, que el canal esté en rango y que el dato coincida con el inyectado:
 
-\begin{lstlisting}[basicstyle=\ttfamily\scriptsize, caption={Salida de la simulación de \texttt{tb\_bridge\_rx.vhd}}]
+\begin{lstlisting}[style=terminal, caption={Salida de la simulación de \texttt{tb\_bridge\_rx.vhd}}]
 -- Reset liberado --
 T1: canal unico ch2 (3 bytes, timeout)
 T2: multi-canal ch0/ch5/ch13 (1 byte c/u, timeout)
@@ -444,7 +463,7 @@ $\rightarrow$ realimentación de la línea $\rightarrow$ puente de recepción $\
 configurando los canales a 921\,600~8N1 y comprobando que cada byte reaparece etiquetado con su
 canal de origen:
 
-\begin{lstlisting}[basicstyle=\ttfamily\scriptsize, caption={Salida de la simulación del sistema completo, \texttt{tb\_system\_e2e.vhd}}]
+\begin{lstlisting}[style=terminal, caption={Salida de la simulación del sistema completo, \texttt{tb\_system\_e2e.vhd}}]
 [CONFIG] Escribiendo 921600 8N1 en canales 0 y 1...
 [TEST-1] TX->CH0 loopback: 0xA5, 0x3C ...
 [TEST-1] PASS
@@ -512,7 +531,7 @@ propiedades de las que depende la validez de toda la comparativa: que en reposo 
 están en alto, que un maestro llega a todos los esclavos de su bus pero \textbf{no a sí mismo}, y
 que ningún bus se oye desde otro:
 
-\begin{lstlisting}[basicstyle=\ttfamily\scriptsize, caption={Salida de la simulación de \texttt{tb\_bench\_loopback.v}}]
+\begin{lstlisting}[style=terminal, caption={Salida de la simulación de \texttt{tb\_bench\_loopback.v}}]
   ok  reposo rd = 1
   ok  rd[1] sigue a td[0] = 0
   ok  rd[6] sigue a td[0] = 0

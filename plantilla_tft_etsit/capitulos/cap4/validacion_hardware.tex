@@ -119,7 +119,7 @@ transferencia física CAN0$\leftrightarrow$CAN1, filtrado de identificadores est
 extendido, manejo de tramas RTR y pruebas de interrupción por hardware. El resultado fue
 \textbf{26/26 tests PASS, 0 FAILED}:
 
-\begin{lstlisting}[caption={Resumen de resultados del test CAN (placa CDHS)}]
+\begin{lstlisting}[style=terminal, caption={Resumen de resultados del test CAN (placa CDHS)}]
 [PASS] CAN0 initialization (Fast Mode)
 [PASS] CAN1 initialization (Slow Mode)
 [PASS] Loopback RX ID matches TX ID
@@ -138,20 +138,25 @@ Un resultado relevante adicional fue la verificación del efecto de las resisten
 terminación sobre la integridad de la señal CAN. Sin terminación, la señal presentaba
 reflexiones visibles que degradaban los flancos (figura~\ref{fig:can_sin_term}); con ambas
 resistencias de 60~$\Omega$ conectadas, la forma de onda resultó limpia y bien definida
-(figura~\ref{fig:can_con_term}).
+(figura~\ref{fig:can_con_term}). La figura~\ref{fig:can_term} enfrenta las dos capturas.
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.78\textwidth]{IMG/can_sin_term.png}
-    \caption{Señal diferencial CAN sin resistencias de terminación.}
-    \label{fig:can_sin_term}
-\end{figure}
-
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=0.78\textwidth]{IMG/can_con_term.png}
-    \caption{Señal diferencial CAN con resistencias de terminación (60~$\Omega$ + 60~$\Omega$).}
-    \label{fig:can_con_term}
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{IMG/can_sin_term.png}
+        \caption{Sin terminación.}
+        \label{fig:can_sin_term}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{IMG/can_con_term.png}
+        \caption{Con 60~$\Omega$ + 60~$\Omega$.}
+        \label{fig:can_con_term}
+    \end{subfigure}
+    \caption{Señal diferencial CAN con y sin resistencias de terminación.}
+    \label{fig:can_term}
 \end{figure}
 
 \subsection{ADC SPI (termistores)}
@@ -170,7 +175,7 @@ Los resultados confirmaron el rango de conversión esperado, validando el driver
 nivel y la cadena analógica de la placa CDHS. La captura registra el canal CH2 siendo
 sometido a un barrido de tensión con la fuente de laboratorio:
 
-\begin{lstlisting}[caption={Lectura del ADC ADS7950 durante barrido de tensión en CH2}]
+\begin{lstlisting}[style=terminal, caption={Lectura del ADC ADS7950 durante barrido de tensión en CH2}]
 ADS7950: CH0= 244  CH1=  43  CH2=   0  CH3=  19   <- tension en CH2 = 0 V
 ADS7950: CH0= 245  CH1=  43  CH2=1577  CH3=  19   <- subida
 ADS7950: CH0= 245  CH1=  43  CH2=3419  CH3=  21   <- cerca del maximo
@@ -235,7 +240,7 @@ correctamente 5 instancias (\texttt{0xA0000000}--\texttt{0xA0004000}, INTC en
 (UART 0$\leftrightarrow$4, UART 0$\leftrightarrow$3, UART 0$\leftrightarrow$2,
 UART 0$\leftrightarrow$1) resultaron todas correctas sin errores de \textit{framing}.
 
-\begin{lstlisting}[caption={Salida de terminal --- prueba RS422/RS485 con la placa AOCS (5 transceptores)}]
+\begin{lstlisting}[style=terminal, caption={Salida de terminal --- prueba RS422/RS485 con la placa AOCS (5 transceptores)}]
 [TRANSCEIVER DEBUG] Detectados: 5 | Base: 0xA0000000 | INT: 0xA0005000
 CMD> 0 HOLA  ->  [RX UART 04]: HOLA
 CMD> 4 HOLA  ->  [RX UART 00]: HOLA

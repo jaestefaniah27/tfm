@@ -218,7 +218,7 @@ independientes. Las entradas de la tabla por debajo de 9\,600~baudios y la de 4~
 ejercitan, por quedar la primera fuera del uso previsto y exigir la segunda un tiempo de simulación
 desproporcionado. La transcripción siguiente recoge el principio y el final de la campaña:
 
-\begin{lstlisting}[basicstyle=\ttfamily\scriptsize, caption={Salida de la simulación de \texttt{tb\_NCO.vhd} (extracto)}]
+\begin{lstlisting}[style=terminal, caption={Salida de la simulación de \texttt{tb\_NCO.vhd} (extracto)}]
 ---- Configuracion: 9600 half=0 baud=9600 ----
 CFG=9600 expected=9600.0 Hz  measured=9600.002000 Hz  err=0.002000 Hz (0.2 ppm)
 ---- Configuracion: 9600 half=1 baud=9600 ----
@@ -734,7 +734,7 @@ cinco anchuras de palabra (5 a 9 bits) $\times$ dos órdenes de bit $\times$ tre
 tramas de contenido distinto en cada una. En total, \textbf{450 tramas} comparadas dato a dato
 entre lo enviado y lo recibido:
 
-\begin{lstlisting}[basicstyle=\ttfamily\scriptsize, caption={Salida de la simulación de \texttt{tb\_CONFIGURABLE\_SERIAL\_TOP.vhd} (extracto)}]
+\begin{lstlisting}[style=terminal, caption={Salida de la simulación de \texttt{tb\_CONFIGURABLE\_SERIAL\_TOP.vhd} (extracto)}]
 ==== TB START: TX->RX loopback tests ====
 ==== sending byte ====
 PASS cfg bits=5 order='0' stop=1 par=0 sent=11 rec=11
@@ -1610,7 +1610,6 @@ reejecutando la inicialización del canal con otra configuración.
 
 El detalle de la configuración estática de RTEMS, la tabla de comandos de la consola y la
 secuencia de arranque de la aplicación se recogen en el apartado C.7 del Anexo~\ref{anx:rtl}.
-ef{anx:rtl}.
 
 \subsection{Aplicación de testing de las placas CDHS y AOCS}
 
@@ -1659,42 +1658,40 @@ por sí solo, excede el alcance de este trabajo.
 
 \subsection{Arneses y equipamiento de validación}
 
-\subsubsection{Arnés para verificar comunicaciones RS422}
+\subsubsection{Arneses de \textit{loopback}}
 
-Arnés a 4 hilos, cruzando las líneas TX-P/N de un driver con las RX-P/N del opuesto
-(figura~\ref{fig:arnes_rs422}).
-
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=0.45\textwidth]{IMG/arnes_rs422.jpg}
-    \caption{Arnés de \textit{loopback} RS422 a 4 hilos entre dos conectores D-Sub-9.}
-    \label{fig:arnes_rs422}
-\end{figure}
-
-\subsubsection{Arnés para verificar comunicaciones RS485}
-
-Arnés a 2 hilos, en el que se conectan A+ y B$-$ de un driver con los del otro
-(figura~\ref{fig:arnes_rs485}).
+Cada bus se cierra sobre sí mismo con un arnés propio, para poder ejercitarlo sin más equipo que
+la placa (figura~\ref{fig:arneses}). El de \textbf{RS422} va a 4 hilos y cruza las líneas TX-P/N
+de un driver con las RX-P/N del opuesto. El de \textbf{RS485} va a 2 hilos y conecta A+ y B$-$ de
+un driver con los del otro. En \textbf{CAN} se unen las líneas CAN\_H y CAN\_L del canal nominal
+con las del redundante; como ambos canales convergen en el mismo conector J1, el arnés emplea un
+único D-Sub-9 con los hilos cruzados entre ambos pares, dejando puntas accesibles para la sonda
+del osciloscopio.
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.45\textwidth]{IMG/arnes_rs485.jpg}
-    \caption{Arnés de \textit{loopback} RS485 a 2 hilos entre dos conectores D-Sub-9.}
-    \label{fig:arnes_rs485}
-\end{figure}
-
-\subsubsection{Arnés para verificar comunicaciones CAN}
-
-Se conectan las líneas CAN\_H y CAN\_L del canal nominal con las del canal redundante.
-Como ambos canales convergen en el mismo conector J1, el arnés emplea un único D-Sub-9
-con los hilos cruzados entre ambos pares, dejando puntas accesibles para la sonda del
-osciloscopio (figura~\ref{fig:arnes_can}).
-
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=0.45\textwidth]{IMG/arnes_can.png}
-    \caption{Arnés de interconexión CAN nominal--redundante.}
-    \label{fig:arnes_can}
+    \begin{subfigure}[b]{0.32\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{IMG/arnes_rs422.jpg}
+        \caption{RS422, 4 hilos.}
+        \label{fig:arnes_rs422}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.32\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{IMG/arnes_rs485.jpg}
+        \caption{RS485, 2 hilos.}
+        \label{fig:arnes_rs485}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.32\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{IMG/arnes_can.png}
+        \caption{CAN nominal--redundante.}
+        \label{fig:arnes_can}
+    \end{subfigure}
+    \caption{Arneses de \textit{loopback} sobre conector D-Sub-9.}
+    \label{fig:arneses}
 \end{figure}
 
 \subsubsection{Equipo de laboratorio utilizado}

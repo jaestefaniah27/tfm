@@ -6,7 +6,7 @@
 %
 % Compilar:  pdflatex diagrama_mpsoc_zynq.tex
 % ---------------------------------------------------------------------------
-\documentclass[border=8pt]{standalone}
+\documentclass[border=8pt,12pt]{standalone}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
@@ -64,11 +64,19 @@
 \node at (15.70,9.65) {GIC};
 
 % ===================== Puertos AXI (entre PS y PL) =====================
+% El texto del capitulo manda mirar aqui, asi que la banda va recuadrada y
+% rotulada: es el camino que recorren los datos de los catorce enlaces serie.
+\draw[draw=cPropio, line width=2pt, rounded corners=5pt, fill=cPropio!5]
+      (0.15,7.22) rectangle (17.75,8.58);
+
 \draw[ip] (0.40,7.50) rectangle (4.00,8.30);
 \node[lbl] at (2.20,7.90) {AXI4 HP};
 
 \draw[ip] (4.90,7.50) rectangle (17.50,8.30);
 \node[lbl] at (11.20,7.90) {AXI4 GP};
+
+\node[lbl, anchor=east, text=cPropio!60!black, fill=white, inner xsep=4pt]
+      at (17.70,7.05) {\textbf{puertos AXI: el camino entre PS y PL}};
 
 \draw[bus] (2.20,8.95) -- (2.20,8.30);
 \draw[bus] (6.70,8.95) -- (6.70,8.30);

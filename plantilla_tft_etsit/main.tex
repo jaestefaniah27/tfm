@@ -113,6 +113,18 @@
   xleftmargin=1.5em,
 }
 
+% Estilo para los volcados de terminal. No son código que se cite línea a línea,
+% sino transcripciones cuyo valor está en que cada línea entre entera: cuerpo
+% menor, sin numeración y con interlineado y márgenes ajustados.
+\lstdefinestyle{terminal}{
+  basicstyle=\ttfamily\scriptsize,
+  numbers=none,
+  xleftmargin=0.5em,
+  aboveskip=0.7\baselineskip,
+  belowskip=0.5\baselineskip,
+  lineskip=-0.25pt,
+}
+
 \lstdefinelanguage{VHDL}{
   morekeywords={library,use,entity,is,port,in,out,inout,buffer,std_logic_vector,
     std_logic,end,architecture,of,begin,when,others,process,if,then,elsif,else,

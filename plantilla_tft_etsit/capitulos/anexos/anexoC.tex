@@ -360,7 +360,7 @@ dicha.
 \texttt{init.c} no contiene lógica de aplicación. Define el entorno de ejecución mediante macros
 que \texttt{<rtems/confdefs.h>} convierte en estructuras de datos internas del núcleo.
 
-\begin{lstlisting}[caption={Configuración estática de RTEMS en init.c}]
+\begin{lstlisting}[style=terminal, caption={Configuración estática de RTEMS en init.c}]
 CONFIGURE_APPLICATION_NEEDS_CLOCK_DRIVER    // rtems_task_wake_after()
 CONFIGURE_APPLICATION_NEEDS_CONSOLE_DRIVER // stdin/stdout (printf, fgets)
 CONFIGURE_MICROSECONDS_PER_TICK 10000       // Tick = 10 ms (100 Hz)
@@ -577,7 +577,7 @@ comunicaciones serie RS422/RS485 descritas en las secciones~\ref{sec:cdhs_rs} y
 La sesión recoge el descubrimiento dinámico de los tres transceptores instanciados en el
 \textit{bitstream} y los intercambios de \textit{loopback} entre UART~0, UART~1 y UART~2.
 
-\begin{lstlisting}[basicstyle=\ttfamily\scriptsize, caption={Salida completa del terminal --- prueba RS422/RS485 con la placa CDHS (3 transceptores)}]
+\begin{lstlisting}[style=terminal, caption={Salida completa del terminal --- prueba RS422/RS485 con la placa CDHS (3 transceptores)}]
 MMU_MAP: return from mmu_map_pl_axi_early()
 [TRANSCEIVER DEBUG] Detectados: 3 | Base: 0xA0000000 | INT: 0xA0003000
 [TRANSCEIVER DEBUG]   - Transceptor 0: 0xA0000000
@@ -662,7 +662,7 @@ La sesión recoge el descubrimiento dinámico de los cinco transceptores instanc
 \textit{bitstream} y los cuatro pares de \textit{loopback} ejercitados entre UART~0 y el
 resto de canales.
 
-\begin{lstlisting}[basicstyle=\ttfamily\scriptsize, caption={Salida completa del terminal --- prueba RS422/RS485 con la placa AOCS (5 transceptores)}]
+\begin{lstlisting}[style=terminal, caption={Salida completa del terminal --- prueba RS422/RS485 con la placa AOCS (5 transceptores)}]
 MMU_MAP: return from mmu_map_pl_axi_early()
 [TRANSCEIVER DEBUG] Detectados: 5 | Base: 0xA0000000 | INT: 0xA0005000
 [TRANSCEIVER DEBUG]   - Transceptor 0: 0xA0000000
@@ -733,7 +733,7 @@ capítulo de validación hardware. Se aprecian los dos tramos de subida y bajada
 aplicada a CH2, los dos escalones intermedios en los que la fuente se dejó fija y la
 estabilidad de los otros tres canales durante todo el ensayo.
 
-\begin{lstlisting}[basicstyle=\ttfamily\scriptsize, caption={Salida completa del terminal --- barrido de tensión sobre CH2 del ADS7950 (placa CDHS)}]
+\begin{lstlisting}[style=terminal, caption={Salida completa del terminal --- barrido de tensión sobre CH2 del ADS7950 (placa CDHS)}]
 ADS7950: CH0= 244  CH1=  43  CH2=   0  CH3=  19
 ADS7950: CH0= 243  CH1=  43  CH2=   0  CH3=  19
 ADS7950: CH0= 244  CH1=  43  CH2=   0  CH3=  19
