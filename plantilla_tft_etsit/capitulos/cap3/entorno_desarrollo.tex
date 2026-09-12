@@ -49,15 +49,15 @@ una \textbf{puerta AND}. La puerta se describió en VHDL y se sintetizó en la \
 leía la salida por AXI e imprimía cada resultado por la consola serie. La dificultad no está en la
 puerta, sino en el camino que lleva un \textit{bitstream} y un programa en C hasta la ZCU102.
 
-Ese camino se reduce a producir dos ficheros y copiarlos en la partición FAT de una tarjeta SD:
-el \texttt{BOOT.BIN}, que reúne el \textit{bitstream} de la PL y todo el software de arranque
-(FSBL, PMUFW, BL31, U-Boot y el \textit{device tree}), y el \texttt{rtems.img}, que contiene la
-aplicación que ejecuta el PS. El primero se construye con Vivado y Vitis; el segundo, compilando
-la aplicación de RTEMS. El detalle del procedimiento --- la descripción VHDL, el \textit{Block
-Design}, los componentes del fichero BIF con su modo y su destino, la posición del conmutador de
-arranque y el volcado del barrido de la tabla de verdad --- se recoge en el apartado C.8 del
-Anexo~\ref{anx:rtl}. El proyecto completo está en \texttt{tfm/00\_docs/AND\_example} dentro del
-repositorio del proyecto~\cite{repo_tfm}.
+Ese camino se reduce a dejar dos ficheros en la tarjeta SD desde la que arranca la placa. Uno es
+la \textbf{imagen de arranque}, que reúne el \textit{bitstream} de la PL y todo el software que
+levanta el sistema antes de que exista aplicación alguna; el otro es la \textbf{imagen de la
+aplicación} que después ejecuta el PS. La primera se construye con Vivado y Vitis, la segunda
+compilando la aplicación de RTEMS. El procedimiento paso a paso --- la descripción VHDL, el
+\textit{Block Design}, los componentes de la imagen de arranque, la posición del conmutador de la
+placa y el volcado del barrido --- se recoge en el apartado C.8 del Anexo~\ref{anx:rtl}, y el
+proyecto completo está en \texttt{tfm/00\_docs/AND\_example} dentro del
+repositorio~\cite{repo_tfm}.
 
 El barrido de la tabla de verdad salió por la consola serie con la salida a uno únicamente cuando
 ambas entradas valían uno. Fue la primera confirmación de que la cadena entera funcionaba: el VHDL
@@ -74,48 +74,35 @@ repetirlo. Cada iteración obliga a sintetizar el diseño en Vivado, crear y com
 y una aplicación nuevas en Vitis, ensamblar la imagen de arranque, compilar la imagen de RTEMS,
 copiar los ficheros a la tarjeta y arrancar la placa: \textbf{casi una hora de media}. Y cuando la
 placa no arranca, no da ninguna indicación del motivo. Agrava el problema que Vitis reutiliza
-artefactos ya compilados de la plataforma y de la aplicación: un .xsa nuevo no siempre se propaga
-a la imagen final, el sistema se comporta como antes del cambio en el VHDL y limpiar y recompilar
-no da un resultado fiable. De ahí la regla que se adoptó para el resto del trabajo, plataforma y
-aplicación nuevas ante cualquier cambio en la PL, que es más lenta pero garantiza que la imagen
-corresponde al hardware recién sintetizado.
+artefactos ya compilados: un diseño nuevo no siempre llega a la imagen final, la placa se comporta
+como antes del cambio en el VHDL y limpiar y recompilar no da un resultado fiable. De ahí la regla
+que se adoptó para el resto del trabajo, plataforma y aplicación nuevas ante cualquier cambio en
+la PL, que es más lenta pero garantiza que la imagen corresponde al hardware recién sintetizado.
 
 Con ese tiempo por iteración, automatizar dejó de ser una comodidad. Se escribieron tres
-herramientas, disponibles en el repositorio del proyecto~\cite{repo_tfm}. La primera,
-\texttt{make\_img.sh}, automatiza la compilación de la aplicación de RTEMS: deduce su nombre del
-directorio desde el que se lanza, ejecuta \texttt{waf}\footnote{\texttt{waf} es el sistema de
-compilación que emplean las aplicaciones de RTEMS; el fichero \texttt{wscript} de cada aplicación
-describe sus fuentes y opciones de compilación.} (configurándolo la primera vez), convierte el
-ejecutable a binario plano con \texttt{objcopy} y lo empaqueta con
-\texttt{mkimage}\footnote{Herramienta de U-Boot que añade al binario una cabecera con los datos que
-el gestor de arranque necesita para cargarlo y ejecutarlo, entre ellos la dirección de memoria en
-la que debe copiarlo.} en el formato de imagen que espera U-Boot, generando \texttt{rtems.img}.
+herramientas que, entre las tres, cubren el camino entero y están disponibles en el
+repositorio~\cite{repo_tfm}:
 
-La segunda, \texttt{automate\_ymodem\_update.py}, evita tener que quitar y poner la tarjeta SD en
-cada prueba. Escrito en Python sobre \texttt{pyserial}, invoca al script anterior para regenerar la
-imagen, interrumpe por el puerto USB-serie el \textit{autoboot}\footnote{Arranque automático que
-U-Boot lanza tras un breve tiempo de espera; pulsando una tecla durante esa ventana se accede a su
-consola de comandos.} de U-Boot, transfiere \texttt{rtems.img} por
-YMODEM\footnote{Protocolo para enviar ficheros por un enlace serie: los trocea, los numera y
-comprueba que cada trozo llega sin errores.} con el comando \texttt{loady} y lo escribe en la
-partición FAT de la SD con \texttt{fatwrite}. Probar un cambio en la aplicación pasó a ser un único
-script más el botón de \textit{ResetCPU} de la placa, que reinicia el sistema de procesamiento sin
-cortar la alimentación.
+\begin{itemize}
+    \item \texttt{make\_img.sh} compila la aplicación de RTEMS y la deja empaquetada en el formato
+    de imagen que el gestor de arranque espera encontrar en la tarjeta.
 
-La tercera, \texttt{generate\_boot.sh}, cubre la mitad que faltaba, la del \texttt{BOOT.BIN}. Es un
-\textit{wizard} interactivo en Bash que encadena de forma desatendida los pasos que antes se hacían
-navegando por los asistentes gráficos de Vivado y Vitis, donde olvidar un componente, invertir su
-orden dentro del BIF o arrastrar un artefacto antiguo basta para que la placa no arranque. Ofrece
-tres puntos de entrada según el estado del trabajo: partir del proyecto de Vivado y generar el
-\textit{bitstream} desde cero, partir de un proyecto con \textit{bitstream} ya generado para
-exportar solo el XSA, o partir directamente de un XSA exportado. A partir de ahí invoca Vitis en
-modo script mediante su API Python para crear la plataforma y compilar el FSBL, y llama a
-\texttt{bootgen} para ensamblar el BOOT.BIN con los componentes de arranque precompilados. El
-tiempo de iteración hardware $\rightarrow$ imagen pasa de una sesión larga de interacción gráfica a
-una sola ejecución de terminal, y la imagen generada corresponde siempre al hardware recién
-sintetizado.
+    \item \texttt{automate\_ymodem\_update.py} ahorra el vaivén de la tarjeta SD. En lugar de
+    sacarla de la placa, copiar el fichero desde el ordenador y volver a montarla, el script manda
+    la imagen a la placa por el mismo cable USB que hace de consola y la deja escrita en la
+    tarjeta. Probar un cambio en la aplicación se quedó en lanzar el script y pulsar el botón que
+    reinicia el procesador sin cortar la alimentación.
 
-Este flujo quedó establecido como procedimiento estándar para el resto del trabajo.
+    \item \texttt{generate\_boot.sh} cubre la mitad que faltaba, la de la imagen de arranque.
+    Encadena de forma desatendida los pasos que antes se hacían navegando por los asistentes
+    gráficos de Vivado y Vitis, donde olvidar un componente o arrastrar un artefacto antiguo basta
+    para que la placa no arranque sin decir por qué. Admite empezar desde el proyecto de Vivado o
+    desde un diseño ya sintetizado, según lo que haya cambiado.
+\end{itemize}
+
+El tiempo de iteración pasó así de una sesión larga de interacción gráfica a un par de órdenes en
+el terminal, con la garantía de que lo que arranca en la placa corresponde al hardware recién
+sintetizado. Este flujo quedó establecido como procedimiento estándar para el resto del trabajo.
 
 % ---------------------------------------------------------------------------
 \section{Diseño del transceptor serie configurable (PL)}
