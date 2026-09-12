@@ -449,9 +449,17 @@ No salen del `.tex`: hacen falta Altium, cámara o un dibujo nuevo. Entran en la
 Rev2.9 en cuanto el fichero esté en `IMG/`.
 
 - [ ] **p. 5** Foto de la ZCU102 para §2.2. «Quiero ver una foto de la placa».
-- [ ] **pp. 45, 50** Reexportar los esquemáticos recortados al bloque de interés
+- [x] **pp. 45, 50** Reexportar los esquemáticos recortados al bloque de interés
       en vez de la hoja completa. «El resto de la hoja te aporta poco», y «como te
       toque un viejete, ese texto no lo lee ni con telescopio». Aplica a todos.
+      Hechos los cinco por Jorge y colocados en `IMG/Esquematicos/`: la hoja de
+      nivel superior de la placa serie (3.4), el subsistema CAN (3.8) y el canal
+      RS (3.9) de la CDHS, la hoja de nivel superior de la AOCS (3.10) y su
+      subsistema SpaceWire (3.12). Las dos hojas de nivel superior dejan de
+      necesitar `sidewaysfigure`: recortadas caben derechas, así que el lector ya
+      no tiene que girar el documento. A la de la AOCS se le quitaron los 30
+      píxeles de abajo, donde asomaba cortado el cajetín de Altium. Las hojas
+      completas siguen en `IMG/pcbs/` como fuente y para el anexo.
 - [ ] **p. 49** Render 3D de la placa AOCS con fondo blanco. Prioridad baja.
 - [ ] **p. 56** Recortar las fotos de los arneses antes de juntarlas.
 - [ ] **p. 9** Mini figura de SpaceWire para §2.5.3: muy ancha y corta, que ocupe
