@@ -377,8 +377,11 @@ necesitan Altium, cámara o dibujo nuevo están en la lista manual del final.
       aumentar el alto. `diagrama_axi_full/lite/stream.tex`
 - [ ] **p. 12** Figura 2.6 (DMA): muy pequeña. `IMG/Desarrollo/diagrama_dma.tex`
 - [ ] **p. 13** Figura 2.7 (MCDMA): muy pequeña. `IMG/Desarrollo/diagrama_mcdma.tex`
-- [ ] **p. 54** Cajas de código sobre fondo blanco (configuración de RTEMS):
-      «me tienden a decir poco». Resumir o pasar a tabla. Coordinado con la Rev2.8.
+- [x] **p. 54** Cajas de código sobre fondo blanco (configuración de RTEMS):
+      «me tienden a decir poco». Resuelto en Rev2.8: las dos cajas (macros de
+      `confdefs.h` y protocolo de comandos de consola) bajaron a C.7 del Anexo C;
+      en el cuerpo (`entorno_desarrollo.tex:1598-1613`) solo queda el resumen en
+      prosa. Ítem duplicado que quedó sin marcar; no requiere trabajo en la Rev2.9.
 - [ ] **p. 56** Figuras de arneses: juntarlas en un `subfigure` para que ocupen
       menos. El recorte de las imágenes va en la lista manual.
 - [ ] **p. 64** Convertir a tabla la comparativa de interrupciones por kilobyte y
