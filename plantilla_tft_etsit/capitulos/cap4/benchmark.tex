@@ -313,13 +313,16 @@ GPIO, sin perder ningún byte.
 % ---------------------------------------------------------------------------
 
 Se reprograman los catorce transceptores a cada velocidad y se
-mide un bloque de 1~KB en cada punto. La tabla~\ref{tab:bench_baudios} recoge los siete puntos del
+mide un bloque de 1~KB en cada punto. El punto de 115\,200 lo mide por tanto esta prueba, y no la
+del apartado anterior: de ahí que difiera en 3~B/s (un 0,03\,\%) del valor de la
+tabla~\ref{tab:bench_throughput}. La tabla~\ref{tab:bench_baudios} recoge los siete puntos del
 barrido, omitiendo la variante DMA14 por carecer de lazo de recepción, y la
 figura~\ref{fig:bench_baudios} los representa en escala logarítmica, donde la diferencia de
 comportamiento entre ambas arquitecturas es inmediata.
 
 \begin{table}[H]
     \centering
+    \small
     \begin{tabular}{lrrrrrrr}
         \hline
         \textbf{Variante} & \textbf{115\,200} & \textbf{230\,400} & \textbf{460\,800} & \textbf{921\,600} & \textbf{1\,000\,000} & \textbf{2\,000\,000} & \textbf{4\,000\,000} \\
@@ -419,8 +422,9 @@ tabla~\ref{tab:bench_robustez} recoge el resultado de ambas.
     \label{tab:bench_robustez}
 \end{table}
 
-Ambas variantes rechazan los tres \textit{frames} corruptos y siguen aceptando el \textit{frame} válido posterior:
-el error no deja el driver en un estado inconsistente.
+Las tres variantes rechazan los tres \textit{frames} corruptos. En las dos que disponen de lazo de
+recepción, el \textit{frame} válido posterior se acepta con normalidad: el error no deja el driver
+en un estado inconsistente.
 
 Los bytes descartados de la última columna \textbf{no son errores de transporte}, que son cero en
 las tres variantes: cuentan un byte cada vez que un dato llega correctamente pero \textbf{no cabe

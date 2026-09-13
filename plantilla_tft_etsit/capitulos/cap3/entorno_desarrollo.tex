@@ -136,7 +136,7 @@ fundamentales son:
 Los parámetros configurables son:
 
 \begin{itemize}
-    \item Velocidad de bus, o \textit{baudrate}, desde 50 hasta 4\,000\,000 baudios.
+    \item Velocidad de bus, o \textit{baudrate}, desde 50 hasta 4\,000\,000~baudios.
     \item Número de bits de parada, o \textit{stop bits}, que marcan el final de la trama y
     devuelven la línea a reposo: 1, 1,5 o 2.
     \item Modo de paridad: par, impar, marca, espacio o deshabilitada. La paridad es un único bit
@@ -444,7 +444,7 @@ avanza con cada \textit{tick} en \texttt{RcvData} y se compara con la anchura de
 decodificada a partir de \texttt{data\_bits}.
 
 \textbf{Cálculo de la paridad esperada.} La red de puertas XOR opera sobre
-\texttt{shiftRegister\_Q}, es decir, sobre la palabra que el registro de desplazamiento ya ha
+\texttt{shiftRegister\_\allowbreak Q}, es decir, sobre la palabra que el registro de desplazamiento ya ha
 normalizado. Gracias a esa normalización el cálculo es el mismo en LSB y en MSB \textit{first}, y
 reutiliza sin cambios el esquema del transmisor: paridad par, su complemento para la impar y las
 constantes de los modos \textit{mark} y \textit{space}.
@@ -622,10 +622,7 @@ la lógica: viaja del PS al pin del transceptor físico sin tocar el canal.
 
 \begin{sidewaysfigure}
     \centering
-    \figpendiente{IMG/Desarrollo/diagrama_transceptor.pdf}{0.97\textheight}{diagrama de bloques
-    del transceptor serie --- NCO, transmisor, receptor, registro de desplazamiento y FIFO
-    dentro de \texttt{CONFIGURABLE\_SERIAL}, con sus puertos agrupados por función y
-    las líneas físicas TD/RD/DE/SLO hacia el transceptor de la PCB}
+    \includegraphics[width=0.97\textheight]{IMG/Desarrollo/diagrama_transceptor.pdf}
     \caption{Diagrama de bloques de un canal del transceptor serie configurable.}
     \label{fig:transceptor_bloques}
 \end{sidewaysfigure}
@@ -825,7 +822,7 @@ trae el \textit{bitstream}, prepara el controlador de interrupciones, instala la
 interrupción común y devuelve el número de canales encontrados.
 
 \texttt{Transceiver\_Init()} se llama una vez por canal. Recibe una estructura
-\texttt{Transceiver\_Config\_t} con la tasa de baudios, los bits de datos, la paridad, los bits de
+\texttt{Transceiver\_\allowbreak Config\_t} con la tasa de baudios, los bits de datos, la paridad, los bits de
 parada y el orden de bits, y deja el canal listo para operar.
 
 \texttt{Transceiver\_SetRxCallback()} registra la función de recepción, el \textit{callback}. La
@@ -881,7 +878,7 @@ tabla~\ref{tab:mapa_registros_gpio} recoge el reparto de bits.
 \end{table}
 
 Los campos de configuración de protocolo se escriben una sola vez, en
-\texttt{Transceiver\_Init()}, y permanecen fijos mientras el canal está abierto. El driver guarda
+\texttt{Transceiver\_\allowbreak Init()}, y permanecen fijos mientras el canal está abierto. El driver guarda
 esa palabra y la reutiliza como base cada vez que toca los bits inferiores, para no alterar la
 configuración al transmitir. Los bits de control funcionan como pulsos, no como niveles. Para
 transmitir se deposita el byte en los bits 8:0 y se lleva \texttt{SEND} a uno y de vuelta a cero, lo
@@ -1342,8 +1339,8 @@ de niveles \textbf{TXU0104PWR} para excitar los circuitos de control de calentad
 Las cuatro líneas adaptadas salen por J5.
 
 Para la validación de esta interfaz se diseñó un bloque VHDL autónomo,
-\texttt{PWMx4\_auto\_test}, sintetizado en la PL junto al resto del diseño de Vivado. El bloque
-genera cuatro señales PWM independientes con \textit{duty cycle} del 50\% a partir del reloj de
+\texttt{PWMx4\_\allowbreak auto\_test}, sintetizado en la PL junto al resto del diseño de Vivado. El bloque
+genera cuatro señales PWM independientes con \textit{duty cycle} del 50\,\% a partir del reloj de
 100~MHz de la FPGA: canal 0 a 10~kHz, canal 1 a 5~kHz, canal 2 a 1~kHz y canal 3 a
 100~Hz. Al ser completamente autónomo no requiere ningún driver ni intervención del PS, lo
 que permitió verificar el subsistema PWM de la placa con el mismo BOOT.BIN utilizado para
@@ -1362,8 +1359,8 @@ termistores se conectan por J6.
 El conector FMC suministra 12~V, 3,3~V y el carril VADJ a 1,8~V. El convertidor conmutado
 \textbf{R-78E5.0-1.0} genera los 5~V necesarios para la etapa de potencia de los transceptores
 RS y CAN a partir de los 12~V del FMC. Se eligió este módulo DC/DC por su integración en
-un \textit{footprint} reducido de 3 pines (equivalente a un regulador lineal) y su eficiencia $\geq
-96\%$, evitando la disipación térmica que tendría un LDO con ese diferencial de tensión.
+un \textit{footprint} reducido de 3 pines (equivalente a un regulador lineal) y su eficiencia
+$\geq$~96\,\%, evitando la disipación térmica que tendría un LDO con ese diferencial de tensión.
 
 \subsubsection{Conectores externos}
 
@@ -1615,7 +1612,7 @@ interfaces externas hacia el conector FMC.
 
 Para controlar las líneas de PWM se instanció el bloque \texttt{PWMx4\_auto\_test}, que genera
 desde la PL cuatro señales PWM a 10~kHz, 5~kHz, 1~kHz y 100~Hz con \textit{duty cycle} del
-50\%. No necesita ningún driver en el PS. Se utilizó el mismo BOOT.BIN para todas las
+50\,\%. No necesita ningún driver en el PS. Se utilizó el mismo BOOT.BIN para todas las
 pruebas de CDHS.
 
 Para probar el ADC ADS7950 de la placa CDHS, se desarrolló una pequeña aplicación de

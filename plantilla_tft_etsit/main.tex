@@ -180,6 +180,11 @@
 \evensidemargin = 2.5cm
 \headsep = 1cm
 \footskip = 1.5cm
+% El logo de 3cm de la cabecera necesita 31pt de alto, no los 12pt por defecto.
+% Se compensa restando lo mismo a \topmargin, de modo que la mancha de texto
+% queda donde estaba y fancyhdr deja de avisar en cada página.
+\setlength{\headheight}{31.03018pt}
+\addtolength{\topmargin}{-19.03018pt}
 
 %Encabezado y pie de página
 

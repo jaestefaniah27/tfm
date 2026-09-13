@@ -76,7 +76,7 @@ apartados siguientes desarrollan las que necesitan explicación.
         T1 Reposo & \textbf{0 bytes espurios} en los catorce canales: la polarización de \textit{fail-safe} de la placa funciona y las líneas no flotan. \\
         T2 Topología & Los tres buses están puenteados como indican los \textit{jumpers} y \textbf{no hay ni un cruce entre buses} (0 enlaces no esperados). \\
         T3 Multipunto & \textbf{6/6 esclavos} del bus A oyen íntegro al maestro, hasta 460~kbaudios. \\
-        T4 Velocidad máx. & Bus A: \textbf{460~kbaudios}. Buses B y C: \textbf{1~Mbaudios}. Por encima, la tasa de error se dispara. \\
+        T4 Velocidad máx. & Con el limitador activo (SLO~=~0). Bus A: \textbf{460~kbaudios}. Buses B y C: \textbf{1~Mbaudios}. Por encima, la tasa de error se dispara. \\
         T5 Limitador SLO & Con el bit SLO a 1, los tres buses llegan \textbf{limpios a 4~Mbaudios}. \\
         T6 Vuelta del bus & \textit{Guard time} mínimo de \textbf{0~$\mu$s}: el control de dirección del transceptor suelta la línea a tiempo y no hace falta guarda en software. \\
         T7 Diafonía & \textbf{0 bytes de fuga} del bus A hacia los buses B y C. \\
@@ -124,7 +124,7 @@ figura~\ref{fig:pcb_slo}.
         ]
         \addplot[fill=cGPIO,  draw=none] coordinates {(Bus A,0.46) (Bus B,1.0) (Bus C,1.0)};
         \addplot[fill=cMCDMA, draw=none] coordinates {(Bus A,4.0) (Bus B,4.0) (Bus C,4.0)};
-        \legend{Limitador activo (SLO = 0\, por defecto), Limitador desactivado (SLO = 1)}
+        \legend{{Limitador activo (SLO = 0, por defecto)}, {Limitador desactivado (SLO = 1)}}
         \end{axis}
     \end{tikzpicture}
     \caption{Velocidad máxima sin errores en cada bus según el valor del bit SLO.}
