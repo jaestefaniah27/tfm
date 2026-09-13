@@ -55,7 +55,7 @@ levanta el sistema antes de que exista aplicación alguna; el otro es la \textbf
 aplicación} que después ejecuta el PS. La primera se construye con Vivado y Vitis, la segunda
 compilando la aplicación de RTEMS. El procedimiento paso a paso --- la descripción VHDL, el
 \textit{Block Design}, los componentes de la imagen de arranque, la posición del conmutador de la
-placa y el volcado del barrido --- se recoge en el apartado C.8 del Anexo~\ref{anx:rtl}, y el
+placa y el volcado del barrido --- se recoge en el apartado~\ref{anxC:flujo_and} del Anexo~\ref{anx:rtl}, y el
 proyecto completo está en \texttt{tfm/00\_docs/AND\_example} dentro del
 repositorio~\cite{repo_tfm}.
 
@@ -225,7 +225,7 @@ CFG=3686400 expected=7372800.0 Hz  measured=7371913.012000 Hz  err=-886.988000 H
 Fin del testbench: medidas completadas para todas las frecuencias.
 \end{lstlisting}
 
-De esa campaña procede la tabla~\ref{tab:nco} del Anexo~C, y su lectura valida el diseño: el peor
+De esa campaña procede la tabla~\ref{tab:nco} del Anexo~\ref{anx:rtl}, y su lectura valida el diseño: el peor
 error de todo el rango es de 120~ppm (a 3,6864~Mbaudios), dos órdenes de magnitud por debajo de la
 tolerancia habitual del $\pm$2\,\% de un receptor UART, y en la mayoría de las velocidades estándar
 el error es nulo o inferior a 1~ppm. El NCO queda así acreditado como fuente de temporización
@@ -581,7 +581,7 @@ sección~\ref{sec:transporte_desarrollo}: con la lectura a nivel la FIFO avanza 
 ciclo en que el consumidor acepta el dato.
 
 La descripción RTL de ambos bloques, con los caminos de desplazamiento y la construcción de las
-señales de escritura y lectura, se recoge en el apartado C.6 del Anexo~C.
+señales de escritura y lectura, se recoge en el apartado~\ref{anxC:rtl_fifo} del Anexo~\ref{anx:rtl}.
 
 \subsection{Bloque de canal} \label{sec:bloque_canal}
 
@@ -1204,8 +1204,8 @@ convertidor DC/DC los 5~V de su etapa de potencia, esta placa no necesita ningun
 conversión. Todos los carriles llegan directamente del FMC. Sendos conectores
 de dos pines dan acceso externo a los carriles de 12~V y 3,3~V.
 
-El mapa completo de señales entre esta placa y el conector FMC se encuentra en el Anexo~C de
-este documento. El esquemático completo (12 hojas, PDF) y la BOM están disponibles en
+El mapa completo de señales entre esta placa y el conector FMC se encuentra en el
+apartado~\ref{anxC:mapa_serial} del Anexo~\ref{anx:rtl}. El esquemático completo (12 hojas, PDF) y la BOM están disponibles en
 \texttt{tfm/00\_docs/pcbs/serial/} del repositorio del proyecto.
 
 % ----- CDHS -----
@@ -1372,7 +1372,7 @@ Los escudos metálicos de todos los conectores están conectados al plano de GND
 mantener la continuidad de apantallamiento EMI con los cables blindados.
 
 El mapa completo de señales entre la placa CDHS y el conector FMC se encuentra en el
-Anexo~C de este documento. El esquemático (PDF) y la BOM están disponibles en
+apartado~\ref{anxC:mapa_cdhs} del Anexo~\ref{anx:rtl}. El esquemático (PDF) y la BOM están disponibles en
 \texttt{tfm/00\_docs/pcbs/cdhs/}.
 
 % ----- AOCS -----
@@ -1508,7 +1508,7 @@ los motores, que no se alimenta del FMC: admite alimentación exterior a través
 bornes banana, independiente del resto de la placa.
 
 El mapa completo de señales entre la placa AOCS y el conector FMC se encuentra en el
-Anexo~C. Los esquemáticos (PDF) y la BOM están disponibles en
+apartado~\ref{anxC:mapa_aocs} del Anexo~\ref{anx:rtl}. Los esquemáticos (PDF) y la BOM están disponibles en
 \texttt{tfm/00\_docs/pcbs/aocs/}. El fichero \texttt{LINCE3\_AOCS\_V2.pdf} es la revisión aquí
 descrita, la única que refleja el estado final del diseño, y del que proceden todas las hojas de
 esquemático reproducidas en esta sección. \texttt{LINCE3\_AOCS.pdf} es un volcado anterior que se
@@ -1599,7 +1599,7 @@ La consola permite además conmutar el limitador de \textit{slew rate} sin reini
 reejecutando la inicialización del canal con otra configuración.
 
 El detalle de la configuración estática de RTEMS, la tabla de comandos de la consola y la
-secuencia de arranque de la aplicación se recogen en el apartado C.7 del Anexo~\ref{anx:rtl}.
+secuencia de arranque de la aplicación se recogen en el apartado~\ref{anxC:testing_driver} del Anexo~\ref{anx:rtl}.
 
 \subsection{Aplicación de testing de las placas CDHS y AOCS}
 

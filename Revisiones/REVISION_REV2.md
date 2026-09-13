@@ -432,12 +432,41 @@ que el tutor da por buenas.
 
 ## Rev2.10 — Compilación y verificación final
 
-- [ ] Compilar de cero y comprobar: cero `??`, índice, índice de figuras, índice de
-      tablas e índice de listados correctos.
-- [ ] Anexos rotulados A, B, C, con tablas A.x/B.x/C.x y listados C.x.
-- [ ] Repasar las seis comillas ya como `«»` reales, y la cita del LTC2865 de la
-      p. 85 como `quote` sangrado en vez de entrecomillada.
-- [ ] Regenerar el PDF y comprobar los folios citados en este plan.
+- [x] Compilar de cero y comprobar: cero `??`, índice, índice de figuras, índice de
+      tablas e índice de listados correctos. Cero `??` y cero referencias sin
+      resolver. **Faltaba el índice de listados**: `main.tex` llamaba a
+      `\tableofcontents`, `\listoffigures` y `\listoftables`, pero no a
+      `\lstlistoflistings`, aunque el nombre en español ya estaba puesto desde
+      hacía tiempo. Añadido; recoge los quince listados del documento.
+- [x] Anexos rotulados A, B, C, con tablas A.x/B.x/C.x y listados C.x. Correcto:
+      tablas `B.1` y `C.1`–`C.6`, listados `C.1`–`C.7`. El anexo A no tiene
+      ninguna tabla, así que no hay `A.x` que comprobar.
+
+      Lo que sí estaba mal es que **los veinte apartados del anexo C eran
+      `\section*`**, sin numerar, con el «C.1» escrito a mano dentro del título.
+      No entraban en el índice: treinta y seis páginas que solo se podían recorrer
+      pasando hojas. Convertidos a `\section` con su `\label`. La numeración que
+      genera `\appendix` coincide exactamente con la que estaba a mano, así que
+      ninguna cita del cuerpo cambia de número.
+- [x] Las once menciones al anexo repartidas por los capítulos 3, 4 y 5 iban
+      escritas a mano (`apartado C.8 del Anexo~C`). Pasan a `\ref`. Las tres del
+      mapa de señales decían solo «el Anexo C» y ahora apuntan al apartado de su
+      placa, que es lo que el lector busca.
+- [x] Repasar las seis comillas ya como `«»` reales, y la cita del LTC2865 de la
+      p. 85 como `quote` sangrado en vez de entrecomillada. Ya estaba hecho: la
+      cita va en `quote` con comillas angulares, y en prosa no queda ninguna
+      comilla recta. Las que aparecen en el fuente están todas dentro de volcados
+      de terminal, donde son literales de la salida.
+- [x] Regenerar el PDF y comprobar los folios citados en este plan. Regenerado:
+      131 páginas. **Los folios que cita este plan son los de la Rev2.7 y ya no
+      valen**; la Rev2.8 y la Rev2.9 movieron la paginación y el desfase no es
+      constante. Cada punto de la Rev2.9 lleva anotado entre paréntesis dónde ha
+      quedado.
+
+**Descartado, decisión de Jorge:** el apartado «Equipo de laboratorio utilizado»
+de la §3.6.3 se queda con su única frase. No cita modelos ni ancho de banda del
+osciloscopio, que es lo que un tribunal de electrónica puede preguntar después de
+leer medidas de flancos de decenas de nanosegundos.
 
 **Commit:** `Rev2.10: regenerar el PDF con la revision Rev2 aplicada`
 

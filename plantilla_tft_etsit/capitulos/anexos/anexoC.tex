@@ -8,7 +8,7 @@ driver serie y el procedimiento completo del ejemplo con el que se validó el fl
 El tercero (C.9--C.10) contiene los volcados completos del terminal de las pruebas de validación
 hardware del Capítulo~4.
 
-\section*{C.1 Mapa de señales LINCE Comunicación Serial}
+\section{Mapa de señales LINCE Comunicación Serial} \label{anxC:mapa_serial}
 
 La tabla~\ref{tab:mapa_lince_serial} recoge el mapeado de los 14 drivers RS485/RS422 de la placa
 LINCE Comunicación Serial con el conector FMC HPC0 (P2) de la ZCU102. Cada driver expone las
@@ -88,7 +88,7 @@ control de dirección hardware).
 \end{longtable}
 }
 
-\section*{C.2 Mapa de señales CDHS}
+\section{Mapa de señales CDHS} \label{anxC:mapa_cdhs}
 
 La tabla~\ref{tab:mapa_cdhs} recoge el mapeado de los cuatro subsistemas de la placa CDHS (SPI del
 ADC, CAN nominal y redundante, los tres canales serie y las cuatro líneas de PWM) con el conector
@@ -128,7 +128,7 @@ FMC HPC0 de la ZCU102.
     \label{tab:mapa_cdhs}
 \end{table}
 
-\section*{C.3 Mapa de señales AOCS}
+\section{Mapa de señales AOCS} \label{anxC:mapa_aocs}
 
 El mapa de la tabla~\ref{tab:mapa_aocs} corresponde a la revisión V2 de la placa, la versión
 cerrada del esquemático (sección~\ref{sec:diseno_aocs}). Respecto a la revisión fabricada, cada canal serie consume
@@ -199,7 +199,7 @@ cortocircuitadas, y el conector J4 alberga dos canales (RS41 y RS42).
 \end{longtable}
 }
 
-\section*{C.4 Tabla de frecuencias del NCO}
+\section{Tabla de frecuencias del NCO} \label{anxC:nco}
 
 La tabla del NCO del transceptor serie contiene \textbf{54 entradas}, de 50 a 4\,000\,000 de
 baudios. La tabla~\ref{tab:nco} recoge las \textbf{29 que ejercita el \textit{testbench}}
@@ -251,7 +251,7 @@ tiempo de simulación desproporcionado, de modo que ninguna de ellas se barre.
     \label{tab:nco}
 \end{table}
 
-\section*{C.5 Volumen y distribución del código desarrollado}
+\section{Volumen y distribución del código desarrollado} \label{anxC:loc}
 
 Se recoge aquí el recuento de líneas de código de autoría propia escritas en el trabajo, desglosado
 por lenguaje y por función. El criterio de recuento es restrictivo: se excluye todo el código
@@ -298,12 +298,12 @@ adelantado en herramientas que hicieran el flujo reproducible y barato de iterar
 manifestó en las campañas de depuración, donde regenerar el diseño completo desde cero pasó a ser
 un comando en lugar de una tarde de trabajo manual.
 
-\section*{C.6 Descripción RTL del registro de desplazamiento y la FIFO}
+\section{Descripción RTL del registro de desplazamiento y la FIFO} \label{anxC:rtl_fifo}
 
 Este apartado detalla los dos bloques auxiliares situados entre el receptor y el PS, cuyo
 comportamiento se resume en la sección~\ref{sec:normalizacion_fifo} del capítulo de desarrollo.
 
-\subsection*{C.6.1 Registro de desplazamiento}
+\subsection{Registro de desplazamiento}
 
 El registro de desplazamiento convierte a paralelo los bits que va entregando el receptor. Sus
 entradas son el bit muestreado (\texttt{D}), un pulso de habilitación por bit recibido
@@ -328,7 +328,7 @@ configuración. Los dos consumidores de la salida, la FIFO y el cálculo de pari
 receptor, pueden así ignorar por completo el orden de bits configurado, y el software del PS
 recibe la palabra en el mismo formato en los cinco anchos y en los dos órdenes posibles.
 
-\subsection*{C.6.2 FIFO}
+\subsection{FIFO}
 
 La FIFO es un bloque IP con 9 bits de datos (para poder almacenar mensajes de 9 bits) y
 512 de profundidad, que permite almacenar temporalmente varios mensajes y habilitarlos
@@ -347,7 +347,7 @@ sección~\ref{sec:transporte_desarrollo}, donde \texttt{Data\_read} lo conduce l
 registro, hacía que el receptor de DMA capturase varias veces la misma palabra de la FIFO. Con
 la lectura a nivel, la FIFO avanza exactamente en el ciclo en que el consumidor acepta el dato.
 
-\section*{C.7 Aplicación de testing del driver serie en RTEMS}
+\section{Aplicación de testing del driver serie en RTEMS} \label{anxC:testing_driver}
 
 Este apartado detalla la aplicación de pruebas con la que se ejercitó el driver serie sobre la
 ZCU102, resumida en la sección~\ref{sec:testing_driver} del capítulo de desarrollo. Está repartida
@@ -355,7 +355,7 @@ en tres ficheros: \texttt{init.c}, con la configuración estática del sistema; 
 (\texttt{transceiver.c} y \texttt{transceiver.h}); y \texttt{main.c}, con la aplicación propiamente
 dicha.
 
-\subsection*{C.7.1 Configuración del sistema --- \texttt{init.c}}
+\subsection{Configuración del sistema --- \texttt{init.c}}
 
 \texttt{init.c} no contiene lógica de aplicación. Define el entorno de ejecución mediante macros
 que \texttt{<rtems/confdefs.h>} convierte en estructuras de datos internas del núcleo.
@@ -369,7 +369,7 @@ CONFIGURE_UNIFIED_WORK_AREAS               // Un unico pool de memoria
 CONFIGURE_INIT_TASK_STACK_SIZE (64 KB)    // Stack grande para Init
 \end{lstlisting}
 
-\subsection*{C.7.2 Aplicación --- \texttt{main.c}}
+\subsection{Aplicación --- \texttt{main.c}}
 
 La aplicación tiene tres secciones claramente separadas.
 
@@ -410,7 +410,7 @@ secuencia de inicialización es:
     núcleo queda con las tareas \textit{worker} y la tarea de consola.
 \end{enumerate}
 
-\section*{C.8 Flujo de desarrollo de extremo a extremo: ejemplo de la puerta AND}
+\section{Flujo de desarrollo de extremo a extremo: ejemplo de la puerta AND} \label{anxC:flujo_and}
 
 Este apartado recoge el procedimiento completo del ejemplo de validación descrito en el
 apartado~\ref{sec:flujo_extremo_a_extremo}: la puerta AND descrita en VHDL y sintetizada en la PL,
@@ -418,7 +418,7 @@ la imagen de arranque que la lleva a la placa y la traza que confirma su funcion
 proyecto completo, con el diseño y el código de las dos mitades, está en
 \texttt{tfm/00\_docs/AND\_example} dentro del repositorio del proyecto~\cite{repo_tfm}.
 
-\subsection*{C.8.1 Descripción VHDL y \textit{Block Design}}
+\subsection{Descripción VHDL y \textit{Block Design}}
 
 El proyecto de Vivado, llamado \texttt{and\_gate\_ps\_p}, parte de la descripción de la puerta:
 
@@ -456,7 +456,7 @@ La pestaña \textit{Address Editor} lista las direcciones base con las que el PS
 registros de cada periférico de la PL. Por último se generó el \textit{BitStream} y se exportó el
 hardware como .xsa.
 
-\subsection*{C.8.2 Generación de la imagen de arranque en Vitis}
+\subsection{Generación de la imagen de arranque en Vitis}
 
 Este paso empaqueta el hardware generado en Vivado, junto con el software de arranque, en el único
 binario que el MPSoC ejecuta desde la tarjeta SD:
@@ -505,7 +505,7 @@ arranque sin dar un mensaje útil. De ahí el detalle de la lista siguiente:
     \label{fig:vitis_boot_image}
 \end{figure}
 
-\subsection*{C.8.3 Aplicación de RTEMS y arranque desde la tarjeta SD}
+\subsection{Aplicación de RTEMS y arranque desde la tarjeta SD}
 
 La aplicación se reparte en dos fuentes. \texttt{and\_demo.c} contiene la tarea \texttt{Init}:
 escribe la pareja de entradas \texttt{(A,B)} en el registro de datos del \texttt{axi\_gpio\_0}
@@ -545,7 +545,7 @@ placa no arranca desde la tarjeta aunque los ficheros estén correctamente copia
     \label{tab:sw6}
 \end{table}
 
-\subsection*{C.8.4 Barrido de la tabla de verdad}
+\subsection{Barrido de la tabla de verdad}
 
 Con la tarjeta insertada y el conmutador en su sitio, el barrido completo sale por la consola
 serie:
@@ -566,13 +566,13 @@ son las escritas por \texttt{and\_demo.c}, con la salida \texttt{Z} a uno única
 entradas valen uno. La salida se conserva en
 \texttt{tfm/\allowbreak 00\_docs/\allowbreak logs\_terminal/\allowbreak and\_gate\_output.txt}.
 
-\section*{C.9 Volcados completos de terminal de las pruebas serie RS422/RS485}
+\section{Volcados completos de terminal de las pruebas serie RS422/RS485} \label{anxC:volcados_serie}
 
 Este apartado recoge la salida íntegra del terminal de las dos sesiones de prueba de
 comunicaciones serie RS422/RS485 descritas en las secciones~\ref{sec:cdhs_rs} y
 \ref{sec:validacion_aocs} del capítulo de validación hardware.
 
-\subsection*{C.9.1 Placa CDHS (3 transceptores)}
+\subsection{Placa CDHS (3 transceptores)} \label{anxC:volcado_cdhs}
 
 La sesión recoge el descubrimiento dinámico de los tres transceptores instanciados en el
 \textit{bitstream} y los intercambios de \textit{loopback} entre UART~0, UART~1 y UART~2.
@@ -656,7 +656,7 @@ Tx -> UART 2: OK
 CMD> [RX UART 00]: HOLA MUNDO
 \end{lstlisting}
 
-\subsection*{C.9.2 Placa AOCS (5 transceptores)}
+\subsection{Placa AOCS (5 transceptores)} \label{anxC:volcado_aocs}
 
 La sesión recoge el descubrimiento dinámico de los cinco transceptores instanciados en el
 \textit{bitstream} y los cuatro pares de \textit{loopback} ejercitados entre UART~0 y el
@@ -725,7 +725,7 @@ Tx -> UART 1: OK
 CMD> [RX UART 00]: HOLA
 \end{lstlisting}
 
-\section*{C.10 Volcado completo del barrido del ADC}
+\section{Volcado completo del barrido del ADC} \label{anxC:volcado_adc}
 
 Este apartado recoge la salida íntegra del terminal del barrido de tensión aplicado al canal
 CH2 del ADC ADS7950 de la placa CDHS, descrito en la sección~\ref{sec:validacion_cdhs} del
