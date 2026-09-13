@@ -2,11 +2,12 @@ Este anexo se organiza en tres bloques. El primero (C.1--C.5) reúne el material
 mapa de señales completo entre los conectores FMC de la ZCU102 y las placas LINCE Comunicación
 Serial, CDHS y AOCS, la tabla de frecuencias soportadas por el NCO del transceptor serie junto con
 su error medido, y el recuento del código desarrollado a lo largo del trabajo. El segundo
-(C.6--C.8) recoge el detalle de implementación que el Capítulo~3 deja fuera para no interrumpir el
+(C.6--C.8) recoge el detalle de implementación que los capítulos~\ref{cap:firmware}
+y~\ref{cap:hardware} dejan fuera para no interrumpir el
 hilo: la descripción RTL de los bloques auxiliares del transceptor, la aplicación de testing del
 driver serie y el procedimiento completo del ejemplo con el que se validó el flujo de desarrollo.
 El tercero (C.9--C.10) contiene los volcados completos del terminal de las pruebas de validación
-hardware del Capítulo~4.
+hardware del capítulo~\ref{cap:resultados}.
 
 \section{Mapa de señales LINCE Comunicación Serial} \label{anxC:mapa_serial}
 
@@ -301,7 +302,7 @@ un comando en lugar de una tarde de trabajo manual.
 \section{Descripción RTL del registro de desplazamiento y la FIFO} \label{anxC:rtl_fifo}
 
 Este apartado detalla los dos bloques auxiliares situados entre el receptor y el PS, cuyo
-comportamiento se resume en la sección~\ref{sec:normalizacion_fifo} del capítulo de desarrollo.
+comportamiento se resume en la sección~\ref{sec:normalizacion_fifo} del capítulo~\ref{cap:firmware}.
 
 \subsection{Registro de desplazamiento}
 
@@ -350,7 +351,7 @@ la lectura a nivel, la FIFO avanza exactamente en el ciclo en que el consumidor 
 \section{Aplicación de testing del driver serie en RTEMS} \label{anxC:testing_driver}
 
 Este apartado detalla la aplicación de pruebas con la que se ejercitó el driver serie sobre la
-ZCU102, resumida en la sección~\ref{sec:testing_driver} del capítulo de desarrollo. Está repartida
+ZCU102, resumida en la sección~\ref{sec:testing_driver} del capítulo~\ref{cap:hardware}. Está repartida
 en tres ficheros: \texttt{init.c}, con la configuración estática del sistema; el driver
 (\texttt{transceiver.c} y \texttt{transceiver.h}); y \texttt{main.c}, con la aplicación propiamente
 dicha.
@@ -570,7 +571,7 @@ entradas valen uno. La salida se conserva en
 
 Este apartado recoge la salida íntegra del terminal de las dos sesiones de prueba de
 comunicaciones serie RS422/RS485 descritas en las secciones~\ref{sec:cdhs_rs} y
-\ref{sec:validacion_aocs} del capítulo de validación hardware.
+\ref{sec:validacion_aocs} del capítulo~\ref{cap:resultados}.
 
 \subsection{Placa CDHS (3 transceptores)} \label{anxC:volcado_cdhs}
 
@@ -729,7 +730,7 @@ CMD> [RX UART 00]: HOLA
 
 Este apartado recoge la salida íntegra del terminal del barrido de tensión aplicado al canal
 CH2 del ADC ADS7950 de la placa CDHS, descrito en la sección~\ref{sec:validacion_cdhs} del
-capítulo de validación hardware. Se aprecian los dos tramos de subida y bajada de la rampa
+capítulo~\ref{cap:resultados}. Se aprecian los dos tramos de subida y bajada de la rampa
 aplicada a CH2, los dos escalones intermedios en los que la fuente se dejó fija y la
 estabilidad de los otros tres canales durante todo el ensayo.
 

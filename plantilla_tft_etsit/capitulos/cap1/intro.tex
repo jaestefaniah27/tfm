@@ -167,25 +167,30 @@ incorporados al uso técnico habitual (hardware, software, driver, firmware) se 
 
 
 
-El resto del documento se organiza en cuatro capítulos y tres anexos.
+El resto del documento se organiza en cinco capítulos y tres anexos.
 
-El \textbf{capítulo 2} recoge el marco teórico: el proyecto LINCE, el MPSoC Zynq UltraScale+ y la
+El \textbf{capítulo~\ref{cap:teoria}} recoge el marco teórico: el proyecto LINCE, el MPSoC Zynq UltraScale+ y la
 plataforma ZCU102, el entorno de herramientas Vivado y Vitis, el sistema operativo de tiempo real
 RTEMS, los estándares de comunicación empleados (RS422, RS485, SpaceWire y CAN) y los mecanismos
 de transporte de datos entre el sistema de procesamiento y la lógica programable, con el bus AXI y
 el acceso directo a memoria.
 
-El \textbf{capítulo 3} describe el desarrollo: la preparación del entorno y del flujo de
-compilación, el diseño del transceptor serie configurable en VHDL, el driver para RTEMS 7, las
-tres arquitecturas de transporte implementadas, el diseño y fabricación de las tres placas de 
-circuito impreso y las herramientas de prueba desarrolladas.
+El \textbf{capítulo~\ref{cap:firmware}} describe el desarrollo del firmware: la preparación del
+entorno y del flujo de compilación, el diseño del transceptor serie configurable en VHDL, el
+driver para RTEMS 7 y las tres arquitecturas de transporte implementadas entre la lógica
+programable y el sistema de procesamiento.
 
-El \textbf{capítulo 4} presenta los resultados: la validación de las placas CDHS y AOCS sobre
+El \textbf{capítulo~\ref{cap:hardware}} cubre el hardware: el criterio de selección de componentes
+bajo la restricción de 1,8~V, las reglas de diseño, el diseño y la fabricación de las tres placas
+de circuito impreso y el banco con el que se validan, con sus aplicaciones de prueba y sus
+arneses.
+
+El \textbf{capítulo~\ref{cap:resultados}} presenta los resultados: la validación de las placas CDHS y AOCS sobre
 cada una de sus interfaces, la caracterización eléctrica de la placa de comunicación serie con
 los catorce transceptores en funcionamiento simultáneo y la comparativa cuantitativa entre las
 tres arquitecturas de transporte.
 
-El \textbf{capítulo 5} reúne las conclusiones y las líneas futuras de trabajo. El
+El \textbf{capítulo~\ref{cap:conclusiones}} reúne las conclusiones y las líneas futuras de trabajo. El
 \textbf{anexo~\ref{anx:etico}} recoge el análisis de aspectos éticos, económicos, sociales y
 ambientales; el \textbf{anexo~\ref{anx:presupuesto}}, el
 presupuesto económico del trabajo; y el \textbf{anexo~\ref{anx:rtl}}, los mapas de señales de las tres placas,
