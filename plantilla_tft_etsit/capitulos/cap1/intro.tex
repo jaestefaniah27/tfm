@@ -91,7 +91,8 @@ utilizada consiste en establecer las tareas que se van a realizar durante un tie
 establecido, denominado \textit{sprint}. Al final de cada \textit{sprint} se celebra una
 reunión estructurada en cuatro fases: revisión del \textit{sprint} cerrado, preparación del
 siguiente, análisis de posibles mejoras sobre la metodología y preguntas finales. Los
-\textit{sprints} han tenido una duración de dos semanas y se han realizado 20 en total.
+\textit{sprints} han tenido una duración de dos semanas y se han realizado 20 en total, con las
+paradas de Navidad y Semana Santa fuera de ciclo.
 
 La figura~\ref{fig:metodologia_agil} recoge el ciclo, desde la selección de tareas del
 \textit{backlog} hasta la reunión que lo cierra y realimenta el siguiente.
@@ -123,7 +124,7 @@ un ejemplo funcional de extremo a extremo. Esta fase fue fundamental para compre
 arquitectura PS-PL del MPSoC y las particularidades del entorno de compilación cruzada
 para sistemas empotrados.
 
-\textbf{Fase 2: Desarrollo e integración (febrero -- junio):} Con el entorno establecido, se abordó
+\textbf{Fase 2: Desarrollo e integración (febrero -- mediados de junio):} Con el entorno establecido, se abordó
 el desarrollo principal: el transceptor serie en VHDL, el driver para RTEMS, el diseño de las
 PCB de comunicación serie, CDHS y AOCS, y las aplicaciones de prueba. Se siguió una metodología
 iterativa: cada módulo se implementaba, se validaba de forma aislada y se integraba en el sistema
@@ -138,7 +139,7 @@ proceso: cada placa se caracterizaba en el laboratorio y, cuando el calendario l
 corrigió y se volvió a fabricar. Quedó fuera del alcance la validación de la comunicación SpaceWire
 presente en la PCB AOCS, por su alta complejidad técnica.
 
-\textbf{Fase 3: Estudio del transporte y caracterización (junio -- julio):} Se caracterizó el firmware desarrollado (VHDL y C) y el hardware (PCBs) mediante un conjunto de pruebas, las cuales
+\textbf{Fase 3: Estudio del transporte y caracterización (finales de junio -- julio):} Se caracterizó el firmware desarrollado (VHDL y C) y el hardware (PCBs) mediante un conjunto de pruebas, las cuales
 revelaron que la aproximación inicial del sistema de transporte de datos no era eficiente. Se desarrollaron
 dos alternativas nuevas: la primera consistió en un sistema de transporte basado en un controlador AXI DMA independiente por canal,
 y la segunda en un sistema de transporte basado en un único controlador AXI MCDMA con un puente VHDL que multiplexa 
