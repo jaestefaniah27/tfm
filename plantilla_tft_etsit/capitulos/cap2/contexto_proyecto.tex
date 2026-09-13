@@ -42,7 +42,15 @@ paralelismo masivo.
 La placa expone dos conectores FMC (\textit{FPGA Mezzanine Card}) HPC (\textit{High Pin Count}), conformes al estándar VITA 57.1
 \cite{vita571fmc}. Sobre ellos se montan tarjetas de expansión (\textit{mezzanines}) que llevan
 pines digitales y pares diferenciales de la FPGA hacia el exterior, que es la vía para conectar
-periféricos físicos a la PL.
+periféricos físicos a la PL. En la figura~\ref{fig:zcu102} están señalados, junto al resto de
+elementos de la tarjeta.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{IMG/zcu102.png}
+    \caption{Tarjeta de evaluación ZCU102~\cite{xilinx2023ug1182}.}
+    \label{fig:zcu102}
+\end{figure}
 
 La figura~\ref{fig:mpsoc_zynq} recoge el reparto, con los puertos AXI entre PS y PL recuadrados:
 son el camino que recorren los datos de los catorce enlaces serie y el objeto de la comparativa
@@ -179,7 +187,17 @@ diferenciales: \textit{Data} transmite directamente el flujo de datos, mientras 
 por período de bit entre ambas líneas. En recepción, el reloj se recupera de forma inmediata
 aplicando una operación XOR a ambas señales y el dato se muestrea directamente de la línea
 \textit{Data}, lo que elimina la necesidad de un alineamiento estricto de reloj y aporta una
-alta tolerancia al desfase (\textit{skew}) entre pares. El estándar define enlaces punto a punto
+alta tolerancia al desfase (\textit{skew}) entre pares. La figura~\ref{fig:data_strobe} recoge el
+mecanismo sobre un flujo de diez bits.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{IMG/Desarrollo/diagrama_data_strobe.pdf}
+    \caption{Codificación \textit{Data-Strobe} y recuperación del reloj.}
+    \label{fig:data_strobe}
+\end{figure}
+
+El estándar define enlaces punto a punto
 \textit{full-duplex} asíncronos de hasta 400~Mbps, con una pila que incluye una capa de red para
 encaminar paquetes a través de \textit{routers} SpaceWire~\cite{ecss50spw,parkes2012spw}.
 

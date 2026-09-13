@@ -448,7 +448,10 @@ que el tutor da por buenas.
 No salen del `.tex`: hacen falta Altium, cámara o un dibujo nuevo. Entran en la
 Rev2.9 en cuanto el fichero esté en `IMG/`.
 
-- [ ] **p. 5** Foto de la ZCU102 para §2.2. «Quiero ver una foto de la placa».
+- [x] **p. 5** Foto de la ZCU102 para §2.2. «Quiero ver una foto de la placa».
+      Puesta como figura 2.1, justo detrás del párrafo que nombra los dos FMC, que
+      es donde la foto aporta: van señalados en ella. Citada al pie como la guía de
+      usuario de la placa, que es de donde sale.
 - [x] **pp. 45, 50** Reexportar los esquemáticos recortados al bloque de interés
       en vez de la hoja completa. «El resto de la hoja te aporta poco», y «como te
       toque un viejete, ese texto no lo lee ni con telescopio». Aplica a todos.
@@ -467,8 +470,15 @@ Rev2.9 en cuanto el fichero esté en `IMG/`.
       y rótulos grandes.
 - [ ] **p. 49** Render 3D de la placa AOCS con fondo blanco. Prioridad baja.
 - [ ] **p. 56** Recortar las fotos de los arneses antes de juntarlas.
-- [ ] **p. 9** Mini figura de SpaceWire para §2.5.3: muy ancha y corta, que ocupe
+- [x] **p. 9** Mini figura de SpaceWire para §2.5.3: muy ancha y corta, que ocupe
       poco y que ilustre el protocolo. El tribunal no lo ha visto nunca.
+      Hecha a mano en TikZ, `IMG/Desarrollo/diagrama_data_strobe.tex`, copiando la
+      referencia que pasó Jorge: cronograma de diez bits con las líneas Data y
+      Strobe, las tres conmutaciones de Strobe marcadas, el reloj recuperado y la
+      XOR que lo produce. Sale a 17,0 $\times$ 5,3 cm, que es la proporción ancha y
+      baja que pedía el tutor. Los niveles se calcularon con la regla del estándar
+      y son coherentes: Strobe conmuta en los bits 3, 5 y 8, los que repiten al
+      anterior, y `D xor S` da un flanco por bit.
 - [ ] **p. 13** Diagrama del coste de la interrupción para §2.6.3. El tutor
       apunta que probablemente adelanta trabajo de la presentación.
 
