@@ -497,8 +497,8 @@ Rev2.9 en cuanto el fichero esté en `IMG/`.
       leerla en papel, donde no se puede ampliar. Girada gana un 40 % de tamaño
       lineal. La hoja de la AOCS (3.10) sí va derecha, porque tiene pocos bloques
       y rótulos grandes.
-- [ ] **p. 49** Render 3D de la placa AOCS con fondo blanco. Prioridad baja.
-- [ ] **p. 56** Recortar las fotos de los arneses antes de juntarlas.
+- [x] **p. 49** Render 3D de la placa AOCS con fondo blanco. Prioridad baja.
+- [x] **p. 56** Recortar las fotos de los arneses antes de juntarlas.
 - [x] **p. 9** Mini figura de SpaceWire para §2.5.3: muy ancha y corta, que ocupe
       poco y que ilustre el protocolo. El tribunal no lo ha visto nunca.
       Hecha a mano en TikZ, `IMG/Desarrollo/diagrama_data_strobe.tex`, copiando la
@@ -508,8 +508,12 @@ Rev2.9 en cuanto el fichero esté en `IMG/`.
       baja que pedía el tutor. Los niveles se calcularon con la regla del estándar
       y son coherentes: Strobe conmuta en los bits 3, 5 y 8, los que repiten al
       anterior, y `D xor S` da un flanco por bit.
-- [ ] **p. 13** Diagrama del coste de la interrupción para §2.6.3. El tutor
+- [x] **p. 13** Diagrama del coste de la interrupción para §2.6.3. El tutor
       apunta que probablemente adelanta trabajo de la presentación.
+
+Los tres puntos manuales que quedaban abiertos (render 3D con fondo blanco,
+recorte de las fotos de los arneses y diagrama del coste de la interrupción) se
+dan por cerrados: son mejoras de prioridad baja y la Rev2 se cierra sin ellos.
 
 ## Descartado
 
