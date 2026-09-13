@@ -5,14 +5,18 @@
 % la XOR de ambas devuelve el reloj.
 % Fuente del PDF que incluye la memoria (capítulo 2).
 %
-% La planta es deliberadamente ancha y baja: la figura ilustra un protocolo que
-% el lector puede no conocer y tiene que ocupar poco sitio en la página.
+% La puerta XOR va intercalada entre la línea Strobe y el reloj, no a un lado:
+% así el dibujo se lee de arriba abajo en el mismo orden en que ocurre, las dos
+% líneas del enlace entran en la puerta y de ella sale el reloj recuperado.
 %
 % Los tres niveles salen de la regla del estándar y son coherentes entre sí:
 %   Data  0 1 0 0 1 1 0 1 1 0
 %   D     0 1 0 0 1 1 0 1 1 0   (la propia línea de datos)
 %   S     0 0 0 1 1 0 0 0 1 1   (conmuta en los bits 3, 5 y 8, los que repiten)
 %   CLK   0 1 0 1 0 1 0 1 0 1   (D xor S: un flanco por bit)
+%
+% Ojo al tocar los estilos: «mark», «name», «cap» y «grid» son claves propias de
+% TikZ y no se pueden reutilizar como nombre de estilo.
 %
 % Compilar:  pdflatex diagrama_data_strobe.tex
 % ---------------------------------------------------------------------------
@@ -37,7 +41,7 @@
     rot/.style={font=\sffamily\small, anchor=east},
     bit/.style={font=\sffamily\small, anchor=south},
     note/.style={font=\sffamily\footnotesize, text=cRef!45!black},
-    sw/.style={-{Stealth[length=5pt]}, draw=cAcc, line width=1.1pt},
+    sw/.style={-{Stealth[length=9pt, width=7pt]}, draw=cAcc, line width=2.2pt},
 ]
 
 \def\bw{1.2}     % ancho de un período de bit
@@ -45,64 +49,64 @@
 \def\x{1.5}      % origen del cronograma
 
 % ===================== Rejilla de períodos de bit =====================
-\foreach \k in {0,...,10} {\draw[rej] ({\x+\k*\bw},1.05) -- ({\x+\k*\bw},4.55);}
+% En dos tramos, para no cruzar la puerta que va intercalada entre S y CLK.
+\foreach \k in {0,...,10} {
+    \draw[rej] ({\x+\k*\bw},4.70) -- ({\x+\k*\bw},7.15);
+    \draw[rej] ({\x+\k*\bw},1.10) -- ({\x+\k*\bw},1.95);
+}
 
 % ===================== Fila de bits =====================
-\node[rot] at (1.35,4.72) {Data};
+\node[rot] at (1.35,7.32) {Data};
 \foreach \b [count=\i from 0] in {0,1,0,0,1,1,0,1,1,0} {
-    \node[bit] at ({\x+\i*\bw+0.5*\bw},4.60) {\b};
+    \node[bit] at ({\x+\i*\bw+0.5*\bw},7.20) {\b};
 }
 
 % ===================== Línea Data =====================
-\node[rot] at (1.35,4.08) {D};
+\node[rot] at (1.35,6.62) {D};
 \foreach \b [count=\i from 0, remember=\b as \lb (initially 0)] in {0,1,0,0,1,1,0,1,1,0} {
-    \draw[wD] ({\x+\i*\bw},{3.80+\b*\amp}) -- ({\x+(\i+1)*\bw},{3.80+\b*\amp});
-    \draw[wD] ({\x+\i*\bw},{3.80+\lb*\amp}) -- ({\x+\i*\bw},{3.80+\b*\amp});
+    \draw[wD] ({\x+\i*\bw},{6.35+\b*\amp}) -- ({\x+(\i+1)*\bw},{6.35+\b*\amp});
+    \draw[wD] ({\x+\i*\bw},{6.35+\lb*\amp}) -- ({\x+\i*\bw},{6.35+\b*\amp});
 }
 
 % ===================== Línea Strobe =====================
-\node[rot] at (1.35,2.83) {S};
+\node[rot] at (1.35,5.07) {S};
 \foreach \b [count=\i from 0, remember=\b as \lb (initially 0)] in {0,0,0,1,1,0,0,0,1,1} {
-    \draw[wD] ({\x+\i*\bw},{2.55+\b*\amp}) -- ({\x+(\i+1)*\bw},{2.55+\b*\amp});
-    \draw[wD] ({\x+\i*\bw},{2.55+\lb*\amp}) -- ({\x+\i*\bw},{2.55+\b*\amp});
+    \draw[wD] ({\x+\i*\bw},{4.80+\b*\amp}) -- ({\x+(\i+1)*\bw},{4.80+\b*\amp});
+    \draw[wD] ({\x+\i*\bw},{4.80+\lb*\amp}) -- ({\x+\i*\bw},{4.80+\b*\amp});
 }
 
 % Las tres conmutaciones de Strobe: los bits que repiten al anterior.
-\draw[sw] ({\x+3*\bw},2.38) -- ({\x+3*\bw},3.28);
-\draw[sw] ({\x+5*\bw},3.28) -- ({\x+5*\bw},2.38);
-\draw[sw] ({\x+8*\bw},2.38) -- ({\x+8*\bw},3.28);
-\node[note, text=cAcc, anchor=north] at ({\x+5*\bw},2.22)
+\draw[sw] ({\x+3*\bw},4.60) -- ({\x+3*\bw},5.58);
+\draw[sw] ({\x+5*\bw},5.58) -- ({\x+5*\bw},4.60);
+\draw[sw] ({\x+8*\bw},4.60) -- ({\x+8*\bw},5.58);
+\node[note, text=cAcc, anchor=north] at ({\x+5*\bw},4.48)
       {S conmuta solo cuando el bit repite al anterior};
 
+% ===================== Puerta XOR: de las dos líneas sale el reloj ==========
+\draw[draw=cPropio, line width=1.1pt] (6.05,3.38) -- (6.85,3.38);
+\draw[draw=cPropio, line width=1.1pt] (6.05,2.82) -- (6.85,2.82);
+\node[note, text=cPropio!60!black, anchor=south] at (6.32,3.42) {D};
+\node[note, text=cPropio!60!black, anchor=south] at (6.32,2.86) {S};
+
+% Cuerpo de la puerta, con el arco trasero doble propio de la XOR.
+\draw[draw=cRef!20!black, line width=1.1pt, fill=white]
+      (6.85,2.55) .. controls (7.10,2.80) and (7.10,3.40) .. (6.85,3.65)
+      .. controls (7.45,3.65) and (7.75,3.40) .. (8.05,3.10)
+      .. controls (7.75,2.80) and (7.45,2.55) .. (6.85,2.55) -- cycle;
+\draw[draw=cRef!20!black, line width=1.1pt]
+      (6.68,2.55) .. controls (6.93,2.80) and (6.93,3.40) .. (6.68,3.65);
+
+\draw[draw=cIP!85!black, line width=1.1pt] (8.05,3.10) -- (8.85,3.10);
+\node[note, text=cIP!60!black, anchor=south] at (8.55,3.14) {CLK};
+
 % ===================== Reloj recuperado =====================
-\node[rot, text=cIP!60!black] at (1.35,1.48) {CLK};
+\node[rot, text=cIP!60!black] at (1.35,1.47) {CLK};
 \foreach \b [count=\i from 0, remember=\b as \lb (initially 0)] in {0,1,0,1,0,1,0,1,0,1} {
     \draw[wC] ({\x+\i*\bw},{1.20+\b*\amp}) -- ({\x+(\i+1)*\bw},{1.20+\b*\amp});
     \draw[wC] ({\x+\i*\bw},{1.20+\lb*\amp}) -- ({\x+\i*\bw},{1.20+\b*\amp});
 }
 \node[note, anchor=north] at ({\x+5*\bw},1.02)
       {exactamente una transición por período de bit};
-
-% ===================== Puerta XOR: recuperación del reloj =====================
-\draw[rej, dashed] (13.95,1.05) -- (13.95,4.55);
-
-\draw[draw=cPropio, line width=1.1pt] (14.15,3.18) -- (14.95,3.18);
-\draw[draw=cPropio, line width=1.1pt] (14.15,2.62) -- (14.95,2.62);
-\node[note, text=cPropio!60!black, anchor=south] at (14.42,3.22) {D};
-\node[note, text=cPropio!60!black, anchor=south] at (14.42,2.66) {S};
-
-% Cuerpo de la puerta, con el arco trasero doble propio de la XOR.
-\draw[draw=cRef!20!black, line width=1.1pt, fill=white]
-      (14.95,2.35) .. controls (15.20,2.60) and (15.20,3.20) .. (14.95,3.45)
-      .. controls (15.55,3.45) and (15.85,3.20) .. (16.05,2.90)
-      .. controls (15.85,2.60) and (15.55,2.35) .. (14.95,2.35) -- cycle;
-\draw[draw=cRef!20!black, line width=1.1pt]
-      (14.78,2.35) .. controls (15.03,2.60) and (15.03,3.20) .. (14.78,3.45);
-
-\draw[draw=cIP!85!black, line width=1.1pt] (16.05,2.90) -- (16.55,2.90);
-\node[note, text=cIP!60!black, anchor=south] at (16.30,2.94) {CLK};
-
-\node[note, anchor=north] at (15.40,2.20) {CLK $=$ D $\oplus$ S};
 
 \end{tikzpicture}
 \end{document}
