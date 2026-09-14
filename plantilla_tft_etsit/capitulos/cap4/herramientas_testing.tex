@@ -62,7 +62,7 @@ y se establecen tests que comprueban que la conexión por CAN funciona correctam
 
 Para probar la placa AOCS, se generó un proyecto de Vivado con \texttt{new\_rebuild\_all.tcl} con
 5 transceptores. Se añadió además un bloque VHDL para controlar los puentes en H por PWM
-(\texttt{Motor\_H\_bridge\_test.vhd}). Este bloque genera 3 PWMs y los enruta por la línea 1 o
+(\texttt{Motor\_H\_Bridge\_test.vhd}). Este bloque genera 3 PWMs y los enruta por la línea 1 o
 línea 2 de cada motor en función de la dirección deseada. Para estas pruebas, se fijó un
 tiempo para cada dirección: durante unos segundos el PWM iba en un sentido (línea 1 activa,
 línea 2 a 0), y durante los siguientes segundos, en el sentido contrario.
