@@ -288,7 +288,7 @@ y la que aparece como línea de trazos en la figura~\ref{fig:bench_throughput}.
             nodes near coords={\pgfmathprintnumber[fixed]{\pgfplotspointmeta}},
         ]
         % Techo físico de la línea a 115200 8N1 (debajo de las barras y sus etiquetas)
-        \draw[cRef, dashed, thick] (axis cs:GPIO,11520) -- (axis cs:MCDMA,11520);
+        \draw[cRef!85!black, dashed, thick] (axis cs:GPIO,11520) -- (axis cs:MCDMA,11520);
         \node[anchor=south west, font=\footnotesize, text=black!65]
             at (axis cs:GPIO,11700) {techo de línea: 11\,520 B/s};
         \addplot[fill=cGPIO, draw=none] coordinates {(GPIO,3471)};
