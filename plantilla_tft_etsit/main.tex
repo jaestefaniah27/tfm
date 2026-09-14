@@ -1,6 +1,12 @@
 \documentclass[a4paper,12pt]{book}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
+% Fuentes vectoriales Latin Modern: sin ellas T1 cae en fuentes EC en mapa de bits
+% (Type 3), que se ven pixeladas y rompen la búsqueda y el copiado de texto.
+\usepackage{lmodern}
+% Tabla ToUnicode para que las ligaduras (fi, fl, ff) se copien y busquen bien.
+\input{glyphtounicode}
+\pdfgentounicode=1
 \usepackage[spanish]{babel}
 % Números romanos de los preliminares en minúscula (no versalita) también en los
 % índices, para que el número del índice coincida con el que imprime el folio.
