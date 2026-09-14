@@ -13,7 +13,7 @@ Terminología y ortografía del TFM
 Casi todo esto se aplica con buscar-y-reemplazar. Las cursivas y las comillas están comprobadas en las fuentes del PDF, no supuestas : sé exactamente qué palabra va en CMTI y cuál en redonda, así que las cifras de abajo son medidas, no impresiones.
 Localización · «p. 45» es el folio impreso; la página del visor es folio + 17.
 Alcance · quedan fuera los listados de código, los volcados de terminal, los rótulos de esquemático y la bibliografía, donde el inglés y las erratas del propio log son legítimos.
-Retirado · Álvaro Araujo sin tilde, por indicación tuya.
+Retirado · Alvaro Araujo sin tilde, por indicación tuya.
 A · Tabla de decisiones terminológicas 10 decisiones 
 Ninguna de estas variantes es un error: el problema es que conviven. La columna «adoptar» es mi recomendación, casi siempre la mayoritaria, para minimizar los cambios. La última columna dice dónde están las que hay que tocar.
 Formas conviviendo · recuento sobre el cuerpo del documento 
