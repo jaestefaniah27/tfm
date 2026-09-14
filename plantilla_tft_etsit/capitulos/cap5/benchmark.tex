@@ -146,7 +146,7 @@ por debajo de la resolución del gráfico. La cifra de DMA14 recoge solo la tran
         \textbf{Variante} & \textbf{IRQ/KB} & \textbf{IRQ TX} & \textbf{IRQ RX} & \textbf{Bytes TX} & \textbf{Bytes RX} \\
         \hline
         GPIO  & 1\,250 & 22\,161 & 129\,382 & 22\,161 & 101\,890 \\
-        DMA14 & 3\,$^{*}$ & 85 & --- & 23\,132 & --- \\
+        DMA14 & 3,8$^{*}$ & 85 & --- & 23\,132 & --- \\
         MCDMA & \textbf{3} & 194 & 192 & 23\,132 & 101\,472 \\
         \hline
         \multicolumn{6}{l}{\footnotesize $^{*}$ Solo transmisión: sin lazo de recepción, la cifra no es comparable.} \\
@@ -171,7 +171,7 @@ por debajo de la resolución del gráfico. La cifra de DMA14 recoge solo la tran
             nodes near coords={\pgfmathprintnumber[fixed]{\pgfplotspointmeta}},
         ]
         \addplot[fill=cGPIO, draw=none] coordinates {(GPIO,1250)};
-        \addplot[fill=cDMA14, draw=none] coordinates {(DMA14,3)};
+        \addplot[fill=cDMA14, draw=none] coordinates {(DMA14,3.8)};
         \addplot[fill=cMCDMA, draw=none] coordinates {(MCDMA,3)};
         \end{axis}
     \end{tikzpicture}
@@ -394,6 +394,67 @@ El barrido delimita la naturaleza del límite de cada arquitectura:
     línea porque el transporte ya no interviene.
 \end{itemize}
 
+El barrido registra también, en cada punto, las interrupciones que atiende el sistema mientras
+viaja el bloque. Multiplicadas por el \textit{throughput} dan la tasa de interrupciones por
+segundo, y la figura~\ref{fig:bench_irq_throughput} enfrenta ambas magnitudes. En la variante GPIO
+se contabilizan siete interrupciones por cada byte: la de transmisión del maestro y la de
+recepción de cada uno de los seis esclavos del bus multipunto. La tasa crece por ello al mismo
+ritmo que el \textit{throughput} y se estanca con él, en torno a 34\,000 interrupciones por
+segundo: la tasa no pasa de esa cifra, y subir la velocidad de línea ya no mueve más datos. Es el
+régimen de \textit{interrupt livelock} descrito en la sección~\ref{sec:teoria_livelock}. La
+variante MCDMA multiplica en cambio por treinta su \textit{throughput} a lo largo del barrido, y a
+4~Mbaudios mueve setenta veces más datos que la GPIO con menos de 3\,700 interrupciones por
+segundo, casi diez veces menos.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            bench,
+            height=7.4cm,
+            xmode=log, ymode=log,
+            log basis x=10, log basis y=10,
+            xlabel={\textit{Throughput} (B/s)},
+            ylabel={Interrupciones por segundo},
+            xmin=2000, xmax=600000,
+            ymin=40,   ymax=150000,
+            xtick={10000, 100000},
+            xticklabels={10\,000, 100\,000},
+            ytick={100, 1000, 10000, 100000},
+            yticklabels={100, 1\,000, 10\,000, 100\,000},
+            xmajorgrids=true,
+            legend style={at={(0.98,0.97)}, anchor=north east},
+        ]
+        % Un punto por velocidad del barrido, de 115 200 a 4 Mbaudios.
+        % Interrupciones por segundo = irq_per_kb x throughput / 1024, ambos del
+        % mismo punto del barrido T6.
+        \addplot[color=cGPIO, line width=1.4pt, mark=square*, mark size=2.2pt,
+                 mark options={fill=cGPIO, draw=white, line width=0.6pt}]
+            coordinates {
+                (3471,24294) (4087,28605) (4485,31391) (4714,32993)
+                (4733,33126) (4848,33931) (4907,34344)};
+        \addlegendentry{GPIO}
+
+        \addplot[color=cMCDMA, line width=1.4pt, mark=*, mark size=2.4pt,
+                 mark options={fill=cMCDMA, draw=white, line width=0.6pt}]
+            coordinates {
+                (11458,89.5) (22789,222.5) (45104,440.5) (88298,862.3)
+                (96186,939.3) (183053,1787.6) (344781,3703.7)};
+        \addlegendentry{MCDMA}
+
+        % Extremos del barrido, con halo blanco para no pisar la rejilla.
+        \node[anchor=north, font=\footnotesize, text=black!65, fill=white, inner sep=1.2pt]
+            at (axis cs:11458,70) {115\,200 Bd};
+        \node[anchor=south, font=\footnotesize, text=black!65, fill=white, inner sep=1.2pt]
+            at (axis cs:344781,4900) {4~MBd};
+        \node[anchor=west, font=\footnotesize, text=cGPIO!85!black, fill=white, inner sep=1.5pt]
+            at (axis cs:5600,30000) {de 115\,200 a 4~MBd: se estanca};
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Interrupciones por segundo frente a \textit{throughput} en el barrido de velocidad.}
+    \label{fig:bench_irq_throughput}
+\end{figure}
+
 En los siete puntos, y en ambas variantes, el número de errores de transporte es \textbf{cero}: la
 saturación del GPIO no produce corrupción, solo pérdida de rendimiento.
 
@@ -458,7 +519,7 @@ anteriores.
          & \textbf{GPIO} & \textbf{DMA14} & \textbf{MCDMA} \\
         \hline
         Lógica (LUT) & \textbf{6\,434} & 40\,217 & 14\,191 \\
-        IRQ/KB & 1\,250 & 3 (solo TX) & \textbf{3} \\
+        IRQ/KB & 1\,250 & 3,8 (solo TX) & \textbf{3} \\
         \textit{Throughput} de 1 canal & 3\,471 B/s (30\,\%) & --- & \textbf{11\,461 B/s (99\,\%)} \\
         Latencia & 4\,606 $\mu$s & --- & \textbf{1\,530 $\mu$s} \\
         Escala con el baudrate & no & --- & \textbf{sí} \\
@@ -485,6 +546,92 @@ con la triplicación TMR que exigiría endurecer el diseño frente a la radiaci�
 variante cuando su lazo de recepción no llegó a funcionar, y justifica el diseño del puente VHDL
 de la variante C: de las tres arquitecturas es la única que satisface a la vez el presupuesto de
 área y el de líneas de interrupción del dispositivo.
+
+La figura~\ref{fig:bench_compromiso} sitúa las tres variantes sobre los dos ejes de la decisión,
+ocupación de la lógica e interrupciones por kilobyte, junto con la ocupación que tendría cada una
+tras la triplicación. La MCDMA triplicada ocuparía prácticamente lo mismo que la DMA14 sin
+triplicar, un 15,5\,\% frente a un 14,7\,\%. Para comparar las tres sobre la misma base, el eje
+vertical cuenta solo las interrupciones de transmisión, único sentido medido en la DMA14
+(tabla~\ref{tab:bench_irq}): 1\,024 por kilobyte en la GPIO, 3,8 en la DMA14 y 8,6 en la MCDMA.
+
+\begin{figure}[htbp]
+    \centering
+    % babel-spanish activa < y >, que TikZ necesita para las puntas de flecha
+    \shorthandoff{<>}%
+    \begin{tikzpicture}
+        \begin{axis}[
+            bench,
+            height=7.8cm,
+            xmin=0, xmax=50,
+            ymode=log, log basis y=10,
+            ymin=0.9, ymax=9000,
+            xtick={0,10,20,30,40,50},
+            ytick={1,10,100,1000},
+            yticklabels={1, 10, 100, 1\,000},
+            xmajorgrids=true,
+            xlabel={Ocupación de LUT del XCZU9EG (\%)},
+            ylabel={Interrupciones de transmisión por KB},
+            legend cell align=left,
+            legend style={at={(0.98,0.97)}, anchor=north east},
+        ]
+        \addlegendimage{only marks, mark=*, mark size=2.8pt, black!65}
+        \addlegendentry{diseño actual}
+        \addlegendimage{only marks, mark=*, mark size=2.8pt,
+                        mark options={fill=white, draw=black!65, line width=1.1pt}}
+        \addlegendentry{proyección con TMR ($\times$3)}
+
+        % Proyección TMR: flechas por detrás de los marcadores. Ordenadas: IRQ de
+        % transmisión por KB (IRQ TX x 1024 / bytes TX, tabla de interrupciones).
+        \draw[-{Stealth[length=5pt]}, dashed, line width=1pt, cGPIO]
+            (axis cs:3.2,1024) -- (axis cs:6.3,1024);
+        \draw[-{Stealth[length=5pt]}, dashed, line width=1pt, cMCDMA!85!black]
+            (axis cs:6.0,8.59) -- (axis cs:14.7,8.59);
+        \draw[-{Stealth[length=5pt]}, dashed, line width=1pt, cDMA14!85!black]
+            (axis cs:15.7,3.76) -- (axis cs:42.9,3.76);
+
+        % GPIO
+        \addplot[forget plot, only marks, mark=square*, mark size=2.8pt, cGPIO,
+                 mark options={draw=white, line width=0.6pt}]
+            coordinates {(2.35,1024)};
+        \addplot[forget plot, only marks, mark=square*, mark size=2.8pt,
+                 mark options={fill=white, draw=cGPIO, line width=1.1pt}]
+            coordinates {(7.05,1024)};
+        % MCDMA
+        \addplot[forget plot, only marks, mark=*, mark size=2.8pt, cMCDMA,
+                 mark options={draw=white, line width=0.6pt}]
+            coordinates {(5.18,8.59)};
+        \addplot[forget plot, only marks, mark=*, mark size=2.8pt,
+                 mark options={fill=white, draw=cMCDMA, line width=1.1pt}]
+            coordinates {(15.54,8.59)};
+        % DMA14
+        \addplot[forget plot, only marks, mark=diamond*, mark size=4.2pt, cDMA14,
+                 mark options={draw=white, line width=0.6pt}]
+            coordinates {(14.67,3.76)};
+        \addplot[forget plot, only marks, mark=diamond*, mark size=4.2pt,
+                 mark options={fill=white, draw=cDMA14, line width=1.1pt}]
+            coordinates {(44.01,3.76)};
+
+        % Rótulos de las variantes
+        \node[anchor=north west, font=\footnotesize, text=cGPIO!85!black]
+            at (axis cs:1.0,600) {\textbf{GPIO}: 1 línea IRQ};
+        \node[anchor=west, font=\footnotesize, text=cGPIO!85!black]
+            at (axis cs:7.9,1024) {7,1\,\%};
+
+        \node[anchor=south, align=center, font=\footnotesize, text=cMCDMA!80!black]
+            at (axis cs:5.18,12.5) {\textbf{MCDMA}\\3 líneas IRQ};
+        \node[anchor=west, font=\footnotesize, text=cMCDMA!80!black]
+            at (axis cs:16.3,8.59) {15,5\,\%};
+
+        \node[anchor=north, align=center, font=\footnotesize, text=cDMA14!80!black]
+            at (axis cs:14.67,2.75) {\textbf{DMA14}: 28 líneas IRQ};
+        \node[anchor=south, font=\footnotesize, text=cDMA14!80!black]
+            at (axis cs:44.01,5.0) {44,0\,\%};
+        \end{axis}
+    \end{tikzpicture}%
+    \shorthandon{<>}
+    \caption{Compromiso entre ocupación y coste en interrupciones.}
+    \label{fig:bench_compromiso}
+\end{figure}
 
 El GPIO es una opción razonable \textbf{para pocos canales a baja velocidad}: ocupa menos de la mitad de lógica que el MCDMA
 (6\,434 LUT frente a 14\,191, tabla~\ref{tab:bench_hw}), no necesita mapeo de MMU ni gestión de coherencia de caché, y su driver es

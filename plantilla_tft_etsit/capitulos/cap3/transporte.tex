@@ -97,8 +97,8 @@ un canal con un único \textit{buffer} activo:
 
 \subsubsection{Coste de la replicación de motores DMA}
 
-La variante opera en placa y en transmisión alcanza \textbf{3 interrupciones por kilobyte}, frente
-a las 1\,250 de la variante GPIO. El límite de la variante no está, por tanto, en el rendimiento
+La variante opera en placa y en transmisión alcanza \textbf{3,8 interrupciones por kilobyte}, frente
+a las 1\,024 de la variante GPIO en ese mismo sentido. El límite de la variante no está, por tanto, en el rendimiento
 que alcanza, sino en el precio que paga por alcanzarlo. Replicar catorce veces el motor DMA choca
 con dos recursos finitos del dispositivo:
 
@@ -344,10 +344,11 @@ recoge las cifras de ambos, ya justificadas en los apartados anteriores.
         \textbf{Variante} & \textbf{IRQ/KB} & \textbf{LUT} & \textbf{LUT/canal} & \textbf{Líneas IRQ} \\
         \hline
         A --- GPIO  & 1\,250 & 6\,434  & 460   & 1$^{*}$ \\
-        B --- DMA14 & 3      & 40\,217 & 2\,873 & 28 \\
+        B --- DMA14 & 3,8$^{\dagger}$ & 40\,217 & 2\,873 & 28 \\
         C --- MCDMA & \textbf{3} & 14\,191 & \textbf{1\,014} & \textbf{3} \\
         \hline
         \multicolumn{5}{l}{\footnotesize $^{*}$ Un AXI INTC reduce por OR las veintiocho fuentes a una sola línea.} \\
+        \multicolumn{5}{l}{\footnotesize $^{\dagger}$ Solo transmisión: sin lazo de recepción, la cifra no es comparable.} \\
         \multicolumn{5}{l}{\footnotesize El PS ofrece ocho líneas en \texttt{pl\_ps\_irq0}. Ocupación sobre las 274\,080 LUT del XCZU9EG.} \\
     \end{tabular}
     \caption{Coste de las tres variantes de transporte.}
