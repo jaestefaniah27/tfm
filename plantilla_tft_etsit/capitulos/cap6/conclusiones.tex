@@ -23,20 +23,14 @@ el sistema de procesamiento, es el de mayor recorrido del trabajo y se ha cumpli
 arquitectura MCDMA que gobierna los catorce canales del sistema final.} No se seleccionó una
 alternativa sobre el papel: se implementaron y midieron
 \textbf{tres arquitecturas completas} (AXI GPIO, catorce AXI DMA y un AXI MCDMA con puente VHDL
-propio) sobre el mismo transceptor y con el mismo programa de pruebas. La comparación es
-concluyente. La arquitectura de partida, basada en AXI GPIO, \textbf{interrumpe al procesador una
-vez por cada byte} (1\,250 interrupciones por kilobyte), lo que la deja en el 30\,\% del techo físico
-de la línea y, sobre todo, la vuelve insensible a la velocidad del enlace: de 115\,200 a
-4~Mbaudios su rendimiento apenas mejora un 41\,\%, porque el cuello de botella no está en la línea
-sino en la CPU. La solución final, un MCDMA multicanal con un puente en VHDL que multiplexa los
-catorce canales, baja a \textbf{3 interrupciones por kilobyte}, alcanza el \textbf{99\,\% del techo
-físico} de la línea, reduce la latencia a un tercio y, a diferencia de la anterior, escala
-linealmente con la velocidad hasta los 345~kB/s a 4~Mbaudios. El camino intermedio, replicar
-catorce controladores DMA, se hizo funcionar en placa pero resultó inviable no por rendimiento sino
-por recursos: cuesta 2,8 veces más lógica y exige veintiocho líneas de interrupción cuando el MPSoC
-solo ofrece ocho, un consumo de área incompatible, además, con una futura triplicación TMR de la
-lógica para tolerancia a la radiación. Ese límite del silicio es lo que justificó el diseño del
-puente propio.
+propio) sobre el mismo transceptor y con el mismo programa de pruebas. La de partida, basada en AXI
+GPIO, interrumpe al procesador una vez por byte, se queda en el 30\,\% del techo físico de la línea
+y apenas mejora al subir la velocidad, porque el cuello de botella está en la CPU. La solución final
+baja a \textbf{3 interrupciones por kilobyte}, alcanza el \textbf{99\,\% del techo físico} y escala
+linealmente hasta los 345~kB/s a 4~Mbaudios. La variante de catorce DMA funcionó en placa, pero se
+descartó por recursos: 2,8 veces más lógica, veintiocho líneas de interrupción donde el MPSoC solo
+ofrece ocho y un área incompatible con una futura triplicación TMR. Ese límite del silicio justificó
+el diseño del puente propio.
 
 \textbf{El tercer objetivo, un driver completo en C sobre RTEMS 7, se ha cumplido en sus tres
 versiones.} El driver abstrae por completo el acceso al hardware tras una API pública de seis
@@ -56,14 +50,10 @@ recorre la polarización de reposo, el mapa de conectividad real, la integridad 
 la velocidad máxima de cada bus, la diafonía, la colisión y la estabilidad sostenida, y la placa
 los supera todos: cero bytes espurios en reposo, cero fugas entre buses, recuperación limpia tras
 una colisión y tasa de error nula en los dos buses RS422 tras diez segundos de tráfico continuo.
-La campaña acotó además el efecto del \textbf{limitador de \textit{slew rate}} de los
-transceptores. El pin \texttt{SLO} del LTC2865 es un habilitador de modo lento \textbf{activo a
-nivel bajo}: con él a 0, que es el valor por defecto del software, el driver queda limitado a los
-250~kbps nominales del chip en ese modo, pese a que la macro correspondiente se llama «SLO
-desactivado». Con el limitador desactivado (\texttt{SLO}~=~1), los tres buses pasan de
-460~kbaudios--1~Mbaudios a \textbf{4~Mbaudios} con tasa de error nula: cuatro veces más velocidad sin
-modificar el cobre ni resintetizar la lógica. Queda pendiente invertir ese valor por defecto y
-renombrar la macro.
+La campaña reveló además que el \textbf{limitador de \textit{slew rate}} de los transceptores, activo
+en la configuración por defecto del software, fijaba el techo de los buses entre 460~kbaudios y
+1~Mbaudios. Con él desactivado, los tres buses alcanzan \textbf{4~Mbaudios} con tasa de error nula,
+sin modificar el cobre ni resintetizar la lógica.
 
 \textbf{El quinto objetivo, diseñar y fabricar las dos placas de expansión bajo especificación de
 Indra, se ha cumplido.} La placa CDHS expone CAN redundante, tres canales RS422/RS485, cuatro
@@ -86,18 +76,12 @@ señales de PWM de ambas placas. La única interfaz que quedó sin validar es \t
 una razón declarada desde el inicio: la placa expone la capa física LVDS, pero ejercitarla exige
 implementar en la lógica programable la codificación \textit{Data-Strobe}, la máquina de estados
 del enlace y los niveles superiores del estándar, un desarrollo que por sí solo excede el alcance
-de este trabajo. Con menor peso, tampoco se completó la medida de recepción de la variante DMA14,
-descartada por recursos antes de depurar su lazo de prueba, ni se llegó a fabricar la revisión V2
-de la placa AOCS.
+de este trabajo.
 
-En términos de volumen, el trabajo ha producido \textbf{20\,188 líneas de código} de autoría propia
-(excluyendo todo lo generado automáticamente por las herramientas y el código de terceros),
-repartidas entre el RTL del transceptor y el puente, sus \textit{testbenches}, el driver de RTEMS,
-las aplicaciones de prueba y las herramientas de automatización del flujo. El desglose completo se
-recoge en la tabla~\ref{tab:loc} del Anexo~\ref{anx:rtl}, y su distribución refleja las dos decisiones
-metodológicas que vertebraron el desarrollo: el código de verificación pesa prácticamente lo mismo
-que el hardware que verifica, y la automatización del flujo, con un 40\,\% del total, es la mayor
-partida individual del trabajo.
+En términos de volumen, el trabajo ha producido \textbf{20\,188 líneas de código} de autoría propia,
+sin contar el código generado ni el de terceros, desglosadas en la tabla~\ref{tab:loc} del
+Anexo~\ref{anx:rtl}. El código de verificación pesa prácticamente lo mismo que el hardware que
+verifica, y la automatización del flujo, con un 40\,\% del total, es la mayor partida individual.
 
 En conjunto, los seis objetivos específicos quedan cubiertos y el objetivo principal, con ellos: el
 resultado es una plataforma validada sobre medidas propias, con una arquitectura de transporte

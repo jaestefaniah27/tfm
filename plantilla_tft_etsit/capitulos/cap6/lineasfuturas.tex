@@ -27,17 +27,14 @@ recuento de errores de trama y de colisión que el bus RS485 multipunto puede pr
 exponer esas estadísticas a la capa de software superior. Todo ello se apoya en la API de seis
 funciones ya definida y no exige tocar el RTL.
 
-\textbf{Endurecer la variante MCDMA mediante triplicación modular (TMR).} La lógica programable
-comercial es susceptible a los \textit{single event upsets} provocados por la radiación en órbita,
-y la mitigación habitual es triplicar la lógica e insertar módulos votadores. La tarea concreta es
-replicar el proyecto de la variante MCDMA triplicando su lógica propia, el puente VHDL y los
-transceptores serie, y comprobar que sigue superando la misma campaña de treinta y seis
-verificaciones. El presupuesto de área lo permite, y esa fue una de las razones de escoger esta
-arquitectura: triplicar el 5,2\,\% de ocupación del MCDMA mantiene el diseño en torno al 16\,\% del
-dispositivo, mientras que la misma operación sobre la variante DMA14 rondaría el 44\,\%
-(sección~\ref{sec:resultados_benchmark}).
-
-Más allá de estas tareas, la calificación para vuelo del subsistema es un trabajo en sí mismo. La
-protección de la memoria de configuración mediante \textit{scrubbing}, la comparación sistemática
-de mecanismos de tolerancia a radiación o la migración a componentes con herencia de vuelo afectan
-al diseño de la placa entera, y no solo a la lógica desarrollada aquí.
+\textbf{Endurecer la plataforma completa frente a la radiación.} Al apostar por componentes
+comerciales, la radiación en órbita afecta a las tres capas de la plataforma. En la lógica
+programable, la mitigación habitual es triplicar (TMR) el transceptor, el puente VHDL y el resto de
+la lógica propia con módulos votadores, y proteger la memoria de configuración mediante
+\textit{scrubbing}. El área lo permite: triplicar el 5,2\,\% que ocupa la variante MCDMA deja el
+diseño en torno al 16\,\% del dispositivo, frente al 44\,\% de la DMA14
+(sección~\ref{sec:resultados_benchmark}). En el software, el driver puede añadir un
+\textit{watchdog} que reinicie los canales bloqueados y memoria con corrección de errores. En las
+placas, el paso a vuelo exige sustituir los componentes de validación por otros con herencia de
+vuelo, lo que obliga a resolver la restricción de 1,8~V del carril VADJ. Cada medida debe superar la misma campaña de pruebas de este trabajo y,
+en última instancia, ensayos de inyección de fallos o de irradiación.
